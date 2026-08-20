@@ -523,6 +523,10 @@ describe("Week calendar accessibility", () => {
       screen.getByRole("region", { name: "All-day events" }),
       { button: 0, clientX: 100, clientY: 0 },
     );
+    // The all-day row now runs a press-and-drag gesture, so the draft is handed
+    // off on release rather than on press. A bare mouseDown leaves the gesture
+    // open. See docs/frontend/week-drag-interaction.md.
+    fireEvent.mouseUp(window, { clientX: 100, clientY: 0 });
 
     await waitFor(() => {
       const draft = selectGridDraft(useDraftStore.getState());
