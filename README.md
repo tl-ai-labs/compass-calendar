@@ -34,6 +34,13 @@ Things you can't do in Compass (yet):
 - See attendees, reminders, locations, and meeting links
 - See your Outlook events
 
+## Weekly view interactions
+
+- **Recurring events**: Set events to repeat with Day, Week, Month, and Year frequencies. When updating your schedule, choose whether to edit or delete a single occurrence versus the whole series.
+- **Event colors**: Organize your schedule with 11 fixed color options.
+
+For more information, see the [week drag interaction guide](docs/frontend/week-drag-interaction.md).
+
 ## Tech stack
 
 - **Frontend**: React, Zustand, TanStack, Tailwind
