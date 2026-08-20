@@ -6,11 +6,9 @@ import {
   useMemo,
 } from "react";
 import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
-import { type GridEventDraft } from "@web/events/event-draft.types";
 import { useWeekEventViewModel } from "@web/events/queries/useWeekEventsQuery";
-import { draftActions } from "@web/events/stores/draft.store";
 import { AllDayGridRow } from "@web/grid/components/AllDayGridRow";
-import { useAllDayDraftCreation } from "@web/grid/hooks/useAllDayDraftCreation";
+import { useAllDayGridDraftCreation } from "@web/views/Week/hooks/grid/useAllDayGridDraftCreation";
 import { type DateCalcs } from "@web/views/Week/hooks/grid/useDateCalcs";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
@@ -45,20 +43,7 @@ export const AllDayRow: FC<Props> = ({
     startOfView,
     endOfView,
   });
-  const getAllDayDraftStartDate = (clientX: number, clientY: number) =>
-    dateCalcs.getDateStrByXY(
-      clientX,
-      clientY,
-      startOfView,
-      YEAR_MONTH_DAY_FORMAT,
-    );
-  const openAllDayDraft = (draft: GridEventDraft) => {
-    draftActions.startGridDraft({ activity: "gridClick", draft });
-  };
-  const onMouseDown = useAllDayDraftCreation({
-    getStartDate: getAllDayDraftStartDate,
-    onCreateGridDraft: openAllDayDraft,
-  });
+  const onMouseDown = useAllDayGridDraftCreation({ dateCalcs, weekProps });
 
   if (children) {
     return (

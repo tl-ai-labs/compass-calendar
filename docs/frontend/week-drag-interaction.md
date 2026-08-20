@@ -105,6 +105,71 @@ pass: the first call flips the edge and updates the field, so the second call
 sees the *new* value and can flip again or compute a different result,
 producing a wrong committed range specifically on edge-flip drags.
 
+## All-day multi-day drag-to-select draft creation
+
+Users can drag horizontally across the Week view's all-day row to create a multi-day draft event spanning multiple columns.
+
+### Gesture lifecycle
+
+The interaction in `packages/web/src/grid/hooks/useAllDayDraftCreation.ts` follows a four-phase lifecycle:
+
+1. **`mousedown` (Initialization)**:
+   - Captures the initial pointer position `pointerStart = { x: clientX, y: clientY }` and resolves `rawAnchorDate` via `getStartDate(clientX, clientY)`.
+   - Computes an initial single-day schedule via `calculateAllDayCreateSchedule` clamped to `visibleBounds`.
+   - Seeds the draft store in creating mode: `draftActions.startGridDraft({ activity: "creating", draft: currentDraft })`.
+   - Attaches capturing window event listeners for `mousemove`, `mouseup`, `blur`, and `keydown`.
+
+2. **Threshold detection (4px move threshold)**:
+   - Movement does not update the draft until the pointer exceeds `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4px), evaluated via `hasExceededInteractionMoveThreshold(point, pointerStart, threshold)`.
+   - Rather than defining a new constant, the all-day gesture deliberately reuses `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` from `@web/interaction/interaction.constants` for consistent drag sensitivity across timed and all-day surfaces.
+
+3. **Live preview (`mousemove`)**:
+   - Once the threshold is exceeded (`hasMoved = true`), each `mousemove` resolves `currentDate = getStartDate(clientX, clientY)`.
+   - Recalculates start and end dates with `calculateAllDayCreateSchedule` and broadcasts the live preview via `draftActions.setGridDraft(currentDraft)`.
+
+4. **`mouseup` (Commit)**:
+   - Cleans up window listeners and commits the draft by invoking `onCreateGridDraft` (which promotes the draft to `activity: "gridClick"`) or `onCreateDraft`.
+
+### Form opens on release (deliberate consequence)
+
+On the Week all-day row, the draft form opens on **pointer release** (`mouseup`) rather than on initial press (`mousedown`). This is a deliberate, approved consequence (change plan section 11, Gate 2): an interaction cannot be classified as a click versus a multi-day drag until the pointer is released without exceeding the drag threshold.
+
+The committed draft **value** is completely unchanged for a plain click — clicking a single column still resolves to that single day. Only the instant the draft form opens moves from press to release.
+
+### Date math and normalization
+
+Schedule calculation in `packages/web/src/grid/interaction/math/all-day.create.ts` is pure and handles boundaries and drag directions:
+
+- **Visible bounds clamping (`clampDayToVisibleBounds`)**:
+  Clamps both `anchorDate` and `currentDate` lexicographically to `[minDate, maxDate]`, preventing drags from expanding beyond the visible week window.
+- **Right-to-left normalization (`normalizeDayRange`)**:
+  Ensures `startDay <= endDay` lexicographically. Dragging leftward (backward in time) normalizes so that the leftmost column becomes `startDay` and the anchor becomes `endDay`.
+- **Exclusive schedule end date (`toExclusiveAllDayEndDate`)**:
+  All-day events in Compass store an exclusive end date (`lastInclusiveDay + 1 day`).
+  *Worked example*: Dragging across Monday `2026-05-18` through Wednesday `2026-05-20` covers 3 inclusive days and produces:
+  ```json
+  {
+    "startDate": "2026-05-18",
+    "endDate": "2026-05-21"
+  }
+  ```
+- **`calculateAllDayCreateSchedule`**: Orchestrates clamping, normalization, and exclusive end date calculation into an `{ startDate, endDate }` pair.
+
+### Cancellation (Escape and window blur)
+
+The gesture cancels cleanly if:
+- The user presses `Escape` during the drag (`keydown` listener).
+- The window loses focus (`blur` listener).
+
+On cancellation, listeners are removed and `draftActions.discard()` resets the draft store without committing. Note that the timed draft creation gesture does not implement an Escape listener, making this dedicated cancellation behavior specific to all-day creation.
+
+### Opt-in via `visibleBounds` and Day-view rationale
+
+Multi-day drag creation is opt-in via the `visibleBounds` option on `useAllDayDraftCreation`:
+
+- **Week view** (`packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts`): Passes `{ minDate, maxDate }` derived from `weekProps.component.weekDays` (`weekDays[0]` and `weekDays[weekDays.length - 1]`), enabling drag-to-select across visible days.
+- **Day view** (`packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx`): Omits `visibleBounds` (`undefined`). In Day view, columns along the x-axis represent different **calendars** (`displayedCalendars`), not days. Dragging horizontally across columns in Day view does not select a multi-day span. Therefore, Day view bypasses the drag gesture entirely and retains its synchronous `mousedown` draft creation path.
+
 ## Pitfall
 
 Do not reintroduce a day-index-only visual (no `date` field) for any new drag
