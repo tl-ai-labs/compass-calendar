@@ -33,3 +33,7 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+
+# SDLC plugin run artifacts and its PostToolUse telemetry hook output
+.sdlc/
+.hook-logs/
