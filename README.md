@@ -34,6 +34,14 @@ Things you can't do in Compass (yet):
 - See attendees, reminders, locations, and meeting links
 - See your Outlook events
 
+## Weekly view interactions
+
+A few things worth knowing once you're living in the week grid:
+
+- **Multi-day select** — an event doesn't have to stay where you first put it. Drag an event to move it to another day, and drag the edge of an all-day event along the strip at the top of the week to stretch it across several days. If you want the mechanics, see [the week drag interaction notes](./docs/frontend/week-drag-interaction.md).
+- **Recurring events** — events can repeat. Edit or delete one and the change lands on just that occurrence — a toast then offers to widen it to this one and everything after it, or to the entire series. The [recurring events runbook](./docs/acceptance/recurring-events.md) is where that behavior gets verified case by case.
+- **Event colors** — give a single event its own color from the event form and it shows up on that event's chip in the grid, so the things you care about are easy to pick out at a glance. Leave it alone and the event just follows your calendar's usual look.
+
 ## Tech stack
 
 - **Frontend**: React, Zustand, TanStack, Tailwind

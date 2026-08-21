@@ -33,3 +33,4 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+.sdlc/
