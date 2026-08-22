@@ -18,6 +18,7 @@ compass.yaml
 ########
 # DIRS #
 ########
+.sdlc/
 .vscode/
 blob-report/
 build/
