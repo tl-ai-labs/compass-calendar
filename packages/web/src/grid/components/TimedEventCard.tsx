@@ -46,6 +46,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, isSafeConferenceUrl } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -115,6 +116,13 @@ const TimedEventCardBase = (
   );
   const showRepeatIcon =
     isRecurring &&
+    !isPlaceholder &&
+    durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
+    position.width >= REPEAT_ICON_MIN_WIDTH;
+  // Share the repeat icon's width and duration gates so narrow or short cards
+  // don't render action icons that collide with event title or time label text.
+  const showJoinIcon =
+    isSafeConferenceUrl(event.conference?.url) &&
     !isPlaceholder &&
     durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
     position.width >= REPEAT_ICON_MIN_WIDTH;
@@ -360,6 +368,14 @@ const TimedEventCardBase = (
           </>
         )}
       </div>
+      {showJoinIcon && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          className={showRepeatIcon ? "right-4.5" : "right-1"}
+          title={event.title}
+          url={event.conference!.url}
+        />
+      )}
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
     </div>
   );

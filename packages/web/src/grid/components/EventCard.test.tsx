@@ -572,4 +572,455 @@ describe("EventCard", () => {
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
   });
+
+  describe("join affordance", () => {
+    const conferenceUrl = "https://meet.google.com/abc-defg-hij";
+
+    it("renders a link with correct href and aria-label on both cards for a valid https url (AC-1)", () => {
+      const event = createEvent({
+        conference: { label: null, url: conferenceUrl },
+        title: "Team Standup",
+      });
+
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={event}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      const timedLink = screen.getByRole("link", {
+        name: "Join meeting: Team Standup",
+      });
+      expect(timedLink).toHaveAttribute("href", conferenceUrl);
+
+      unmount();
+
+      render(
+        <AllDayEventCard
+          event={{ ...event, isAllDay: true }}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+
+      const allDayLink = screen.getByRole("link", {
+        name: "Join meeting: Team Standup",
+      });
+      expect(allDayLink).toHaveAttribute("href", conferenceUrl);
+    });
+
+    it("renders no link for hostile schemes with an https positive control (AC-2)", () => {
+      const hostileSchemes = [
+        "javascript:alert(1)",
+        "data:text/html,<b>hi</b>",
+        "vbscript:msgbox(1)",
+        "file:///etc/passwd",
+      ];
+
+      for (const schemeUrl of hostileSchemes) {
+        const { unmount: unmountTimed } = render(
+          <TimedEventCard
+            displayMode="saved"
+            event={createEvent({
+              conference: { label: null, url: schemeUrl as unknown as string },
+            })}
+            motionMode="idle"
+            position={position}
+          />,
+        );
+        expect(screen.queryByRole("link")).toBeNull();
+        unmountTimed();
+
+        const { unmount: unmountAllDay } = render(
+          <AllDayEventCard
+            event={createEvent({
+              conference: { label: null, url: schemeUrl as unknown as string },
+              isAllDay: true,
+            })}
+            isPlaceholder={false}
+            position={position}
+          />,
+        );
+        expect(screen.queryByRole("link")).toBeNull();
+        unmountAllDay();
+      }
+
+      // Positive control under identical props
+      const { unmount: unmountTimedControl } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+      expect(screen.getByRole("link")).toHaveAttribute("href", conferenceUrl);
+      unmountTimedControl();
+
+      render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+      expect(screen.getByRole("link")).toHaveAttribute("href", conferenceUrl);
+    });
+
+    it("renders no link when conference is undefined, null, or url is empty string (AC-3)", () => {
+      const cases = [
+        undefined,
+        null,
+        { label: null, url: "" },
+        { label: null, url: "   " },
+      ];
+
+      for (const conference of cases) {
+        const { unmount: unmountTimed } = render(
+          <TimedEventCard
+            displayMode="saved"
+            event={createEvent({ conference })}
+            motionMode="idle"
+            position={position}
+          />,
+        );
+        expect(screen.queryByRole("link")).toBeNull();
+        unmountTimed();
+
+        const { unmount: unmountAllDay } = render(
+          <AllDayEventCard
+            event={createEvent({ conference, isAllDay: true })}
+            isPlaceholder={false}
+            position={position}
+          />,
+        );
+        expect(screen.queryByRole("link")).toBeNull();
+        unmountAllDay();
+      }
+    });
+
+    it("timed card hides the link when duration < 15 minutes (AC-4)", () => {
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            startDate: "2024-01-15T09:00:00.000Z",
+            endDate: "2024-01-15T09:14:00.000Z",
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+      expect(screen.queryByRole("link")).toBeNull();
+      unmount();
+
+      render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            startDate: "2024-01-15T09:00:00.000Z",
+            endDate: "2024-01-15T09:15:00.000Z",
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+      expect(screen.getByRole("link")).toBeInTheDocument();
+    });
+
+    it("timed card hides the link when position.width < 40 (AC-5)", () => {
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          position={{ ...position, width: 39 }}
+        />,
+      );
+      expect(screen.queryByRole("link")).toBeNull();
+      unmount();
+
+      render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          position={{ ...position, width: 40 }}
+        />,
+      );
+      expect(screen.getByRole("link")).toBeInTheDocument();
+    });
+
+    it("recurring timed event with a conference renders both icons, join at right-4.5 (AC-6)", () => {
+      const { container } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      const repeatIcon = container.querySelector('svg[class*="right-1"]');
+      const joinLink = screen.getByRole("link");
+
+      expect(repeatIcon).not.toBeNull();
+      expect(joinLink).toHaveClass("right-4.5");
+      expect(joinLink).not.toHaveClass("right-1");
+    });
+
+    it("all-day title container padding across all four permutations (AC-7)", () => {
+      // 1. Neither: repeat=no, join=no
+      const { container: c1, unmount: u1 } = render(
+        <AllDayEventCard
+          event={createEvent({
+            isAllDay: true,
+            title: "Test Event",
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+      const titleWrapper1 = screen.getByText("Test Event").parentElement;
+      expect(titleWrapper1).not.toHaveClass("pr-7");
+      expect(titleWrapper1).not.toHaveClass("pr-3.5");
+      expect(c1.querySelector('svg[class*="right-1"]')).toBeNull();
+      expect(screen.queryByRole("link")).toBeNull();
+      u1();
+
+      // 2. Repeat only: repeat=yes, join=no
+      const { container: c2, unmount: u2 } = render(
+        <AllDayEventCard
+          event={createEvent({
+            isAllDay: true,
+            recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+            title: "Test Event",
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+      const titleWrapper2 = screen.getByText("Test Event").parentElement;
+      expect(titleWrapper2).toHaveClass("pr-3.5");
+      expect(titleWrapper2).not.toHaveClass("pr-7");
+      expect(c2.querySelector('svg[class*="right-1"]')).not.toBeNull();
+      expect(screen.queryByRole("link")).toBeNull();
+      u2();
+
+      // 3. Join only: repeat=no, join=yes
+      const { container: c3, unmount: u3 } = render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+            title: "Test Event",
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+      const titleWrapper3 = screen.getByText("Test Event").parentElement;
+      expect(titleWrapper3).toHaveClass("pr-3.5");
+      expect(titleWrapper3).not.toHaveClass("pr-7");
+      expect(c3.querySelector('svg[class*="right-1"]')).toBeNull();
+      expect(screen.getByRole("link")).toBeInTheDocument();
+      u3();
+
+      // 4. Both: repeat=yes, join=yes
+      const { container: c4 } = render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+            recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+            title: "Test Event",
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+      const titleWrapper4 = screen.getByText("Test Event").parentElement;
+      expect(titleWrapper4).toHaveClass("pr-7");
+      expect(titleWrapper4).not.toHaveClass("pr-3.5");
+      expect(c4.querySelector('svg[class*="right-1"]')).not.toBeNull();
+      expect(screen.getByRole("link")).toBeInTheDocument();
+    });
+
+    it("fireEvent.mouseDown and .click on the link do not invoke onEventMouseDown or onScalerMouseDown (AC-8)", () => {
+      const onEventMouseDownTimed = mock();
+      const onScalerMouseDownTimed = mock();
+      const onEventMouseDownAllDay = mock();
+      const onScalerMouseDownAllDay = mock();
+
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          onEventMouseDown={onEventMouseDownTimed}
+          onScalerMouseDown={onScalerMouseDownTimed}
+          position={position}
+        />,
+      );
+
+      const timedLink = screen.getByRole("link");
+      fireEvent.mouseDown(timedLink);
+      fireEvent.click(timedLink);
+
+      expect(onEventMouseDownTimed).not.toHaveBeenCalled();
+      expect(onScalerMouseDownTimed).not.toHaveBeenCalled();
+      unmount();
+
+      render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+          })}
+          isPlaceholder={false}
+          onEventMouseDown={onEventMouseDownAllDay}
+          onScalerMouseDown={onScalerMouseDownAllDay}
+          position={position}
+        />,
+      );
+
+      const allDayLink = screen.getByRole("link");
+      fireEvent.mouseDown(allDayLink);
+      fireEvent.click(allDayLink);
+
+      expect(onEventMouseDownAllDay).not.toHaveBeenCalled();
+      expect(onScalerMouseDownAllDay).not.toHaveBeenCalled();
+    });
+
+    it("keyDown Enter and Space on the link do not invoke onEventKeyDown (AC-9)", () => {
+      const onEventKeyDownTimed = mock();
+      const onEventKeyDownAllDay = mock();
+
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          onEventKeyDown={onEventKeyDownTimed}
+          position={position}
+        />,
+      );
+
+      const timedLink = screen.getByRole("link");
+      fireEvent.keyDown(timedLink, { key: "Enter" });
+      fireEvent.keyDown(timedLink, { key: " " });
+
+      expect(onEventKeyDownTimed).not.toHaveBeenCalled();
+      unmount();
+
+      render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+          })}
+          isPlaceholder={false}
+          onEventKeyDown={onEventKeyDownAllDay}
+          position={position}
+        />,
+      );
+
+      const allDayLink = screen.getByRole("link");
+      fireEvent.keyDown(allDayLink, { key: "Enter" });
+      fireEvent.keyDown(allDayLink, { key: " " });
+
+      expect(onEventKeyDownAllDay).not.toHaveBeenCalled();
+    });
+
+    it("link has target=_blank, rel='noopener noreferrer' and class ph-no-capture (AC-10)", () => {
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      const timedLink = screen.getByRole("link");
+      expect(timedLink).toHaveAttribute("target", "_blank");
+      expect(timedLink).toHaveAttribute("rel", "noopener noreferrer");
+      expect(timedLink).toHaveClass("ph-no-capture");
+      unmount();
+
+      render(
+        <AllDayEventCard
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            isAllDay: true,
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+
+      const allDayLink = screen.getByRole("link");
+      expect(allDayLink).toHaveAttribute("target", "_blank");
+      expect(allDayLink).toHaveAttribute("rel", "noopener noreferrer");
+      expect(allDayLink).toHaveClass("ph-no-capture");
+    });
+
+    it("accessible name includes the event title (AC-11)", () => {
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            title: "Sprint Retro",
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      expect(
+        screen.getByRole("link", { name: "Join meeting: Sprint Retro" }),
+      ).toBeInTheDocument();
+      unmount();
+
+      render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({
+            conference: { label: null, url: conferenceUrl },
+            title: "",
+          })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      expect(
+        screen.getByRole("link", { name: "Join meeting" }),
+      ).toBeInTheDocument();
+    });
+  });
 });

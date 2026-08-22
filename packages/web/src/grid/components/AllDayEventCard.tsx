@@ -27,6 +27,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, isSafeConferenceUrl } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +76,10 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  const showJoinIcon =
+    isSafeConferenceUrl(event.conference?.url) &&
+    !isPlaceholder &&
+    position.width >= REPEAT_ICON_MIN_WIDTH;
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -186,8 +191,9 @@ const AllDayEventCardBase = (
       )}
       <div
         className={cn("flex min-w-0 items-center", {
-          // Reserve room so a long title truncates before the bottom-right icon.
-          "pr-3.5": showRepeatIcon,
+          // Reserve room so a long title truncates before the bottom-right icon(s).
+          "pr-7": showRepeatIcon && showJoinIcon,
+          "pr-3.5": showRepeatIcon !== showJoinIcon,
         })}
       >
         <span
@@ -198,6 +204,14 @@ const AllDayEventCardBase = (
           {"\u00A0"}
         </span>
       </div>
+      {showJoinIcon && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          className={showRepeatIcon ? "right-4.5" : "right-1"}
+          title={event.title}
+          url={event.conference!.url}
+        />
+      )}
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
       <div

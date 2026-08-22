@@ -40,10 +40,10 @@ export const EventJoinIcon = ({
   <a
     aria-label={title ? `Join meeting: ${title}` : "Join meeting"}
     className={cn(
-      "ph-no-capture absolute bottom-0.5 z-10 flex items-center justify-center rounded-xs p-0.5 hover:opacity-80 focus-visible:outline-1 focus-visible:outline-(--event-focus-color)",
+      "ph-no-capture absolute bottom-0.5 z-10 flex items-center justify-center rounded-xs p-0.5 hover:opacity-80 focus-visible:outline-(--event-focus-color) focus-visible:outline-1",
       className ?? "right-1",
     )}
-    href={url}
+    href={url.trim()}
     onClick={(e) => {
       e.stopPropagation();
     }}
