@@ -27,9 +27,14 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, isSafeConferenceUrl } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
+const JOIN_ICON_MIN_WIDTH = 60;
+// REPEAT_ICON_MIN_WIDTH + 24: the second glyph's 12px box plus the 12px the
+// join icon shifts left to clear the repeat glyph.
+const JOIN_WITH_REPEAT_MIN_WIDTH = 84;
 
 export interface AllDayEventCardProps {
   /** Resolved by a list-level useCalendarLookup call, not fetched here. */
@@ -75,6 +80,15 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  // No duration gate here, matching showRepeatIcon: an all-day event has no
+  // meaningful minute duration to gate on.
+  const conferenceUrl = event.conference?.url;
+  const joinUrl = isSafeConferenceUrl(conferenceUrl) ? conferenceUrl : null;
+  const showJoinIcon =
+    joinUrl !== null &&
+    !isPlaceholder &&
+    position.width >=
+      (showRepeatIcon ? JOIN_WITH_REPEAT_MIN_WIDTH : JOIN_ICON_MIN_WIDTH);
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -186,8 +200,15 @@ const AllDayEventCardBase = (
       )}
       <div
         className={cn("flex min-w-0 items-center", {
-          // Reserve room so a long title truncates before the bottom-right icon.
-          "pr-3.5": showRepeatIcon,
+          // Reserve exactly the horizontal band the bottom-right icons occupy,
+          // so a long title truncates before them instead of running
+          // underneath. Geometry:
+          //   repeat = 10px glyph at right-1 (4px)  -> 4..14px
+          //   join   = 12px glyph at right-1 (4px)  -> 4..16px,
+          //            or at right-4 (16px)         -> 16..28px when both render.
+          "pr-3.5": showRepeatIcon && !showJoinIcon,
+          "pr-4": showJoinIcon && !showRepeatIcon,
+          "pr-7": showRepeatIcon && showJoinIcon,
         })}
       >
         <span
@@ -199,6 +220,14 @@ const AllDayEventCardBase = (
         </span>
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {showJoinIcon && joinUrl && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          label={event.conference?.label ?? null}
+          offsetForRepeatIcon={showRepeatIcon}
+          url={joinUrl}
+        />
+      )}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
       <div
         aria-hidden="true"

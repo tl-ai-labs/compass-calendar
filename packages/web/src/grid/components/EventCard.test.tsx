@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { getEventPalette } from "@web/common/styles/theme.util";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import {
@@ -8,9 +9,17 @@ import {
   GRID_EVENT_TITLE_FONT_SIZE,
 } from "@web/grid/grid.constants";
 import {
+  createEventRegistry,
+  EVENT_INTERACTION_IGNORE_ATTRIBUTE,
+} from "@web/grid/interaction/event.registry";
+import {
   initialEdgeFocusState,
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
+import {
+  type PointerCaptureAdapter,
+  PointerCaptureBoundary,
+} from "@web/interaction/react/PointerCaptureBoundary";
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
 
@@ -44,9 +53,31 @@ const position = {
   width: 140,
 };
 
+const CONFERENCE = {
+  label: "Google Meet",
+  url: "https://meet.google.com/abc-defg-hij",
+};
+
+// Captured before any test replaces it; restored in afterEach per the repo's
+// convention of putting a replaced global back in teardown.
+const originalWindowOpen = window.open;
+
+// The parameters are declared (and unused) purely so `open.mock.calls[n]` is
+// typed as window.open's argument tuple. A bare `mock(() => null)` infers an
+// empty tuple, which makes every calls[0]?.[i] assertion below a TS2493 even
+// though it works at runtime — and those assertions are what pin NFR-4.
+const stubWindowOpen = () => {
+  const open = mock(
+    (_url?: string | URL, _target?: string, _features?: string) => null,
+  );
+  window.open = open as unknown as typeof window.open;
+  return open;
+};
+
 describe("EventCard", () => {
   afterEach(() => {
     useEdgeFocusStore.setState(initialEdgeFocusState, true);
+    window.open = originalWindowOpen;
   });
 
   it("renders timed event details, interaction attributes, and resize handles", () => {
@@ -571,5 +602,575 @@ describe("EventCard", () => {
     expect(card).toHaveAttribute("data-edge-focus", "endDate");
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
+  });
+
+  it("renders a join control on a timed event with a conference link", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Join Google Meet (meet.google.com)",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders no join control on a timed event without a conference link", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent()}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+  });
+
+  it("renders a join control on an all-day event with a conference link", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({ conference: CONFERENCE, isAllDay: true })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Join Google Meet (meet.google.com)",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders no join control on an all-day event without a conference link", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+  });
+
+  it("opens the conference link in a new tab with noopener and noreferrer", () => {
+    const open = stubWindowOpen();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /join/i }));
+
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0]?.[0]).toBe(CONFERENCE.url);
+    expect(open.mock.calls[0]?.[1]).toBe("_blank");
+    // Both are load-bearing: the button has no rel attribute to fall back on,
+    // so this string is the only thing keeping window.opener away from the
+    // opened page (NFR-4). Never weaken to a partial match.
+    expect(open.mock.calls[0]?.[2]).toContain("noopener");
+    expect(open.mock.calls[0]?.[2]).toContain("noreferrer");
+  });
+
+  it("does not start a timed card interaction when the join control is clicked", () => {
+    stubWindowOpen();
+    const onEventMouseDown = mock();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    const joinButton = screen.getByRole("button", { name: /join/i });
+    fireEvent.mouseDown(joinButton);
+    fireEvent.click(joinButton);
+
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+  });
+
+  it("does not start an all-day card interaction when the join control is clicked", () => {
+    stubWindowOpen();
+    const onEventMouseDown = mock();
+
+    render(
+      <AllDayEventCard
+        event={createEvent({ conference: CONFERENCE, isAllDay: true })}
+        isPlaceholder={false}
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    const joinButton = screen.getByRole("button", { name: /join/i });
+    fireEvent.mouseDown(joinButton);
+    fireEvent.click(joinButton);
+
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+  });
+
+  it("keeps join keyboard activation off the timed card's key handler", () => {
+    stubWindowOpen();
+    const onEventKeyDown = mock();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        onEventKeyDown={onEventKeyDown}
+        position={position}
+      />,
+    );
+
+    const joinButton = screen.getByRole("button", { name: /join/i });
+    fireEvent.keyDown(joinButton, { key: "Enter" });
+    fireEvent.keyDown(joinButton, { key: " " });
+
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("keeps join keyboard activation off the all-day card's key handler", () => {
+    stubWindowOpen();
+    const onEventKeyDown = mock();
+
+    render(
+      <AllDayEventCard
+        event={createEvent({ conference: CONFERENCE, isAllDay: true })}
+        isPlaceholder={false}
+        onEventKeyDown={onEventKeyDown}
+        position={position}
+      />,
+    );
+
+    const joinButton = screen.getByRole("button", { name: /join/i });
+    fireEvent.keyDown(joinButton, { key: "Enter" });
+    fireEvent.keyDown(joinButton, { key: " " });
+
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("does not reach a parent shortcut listener from the join control", () => {
+    stubWindowOpen();
+    const onParentKeyDown = mock();
+
+    render(
+      // biome-ignore lint/a11y/noStaticElementInteractions: test wrapper simulates a parent shortcut listener.
+      <div onKeyDown={onParentKeyDown}>
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({ conference: CONFERENCE })}
+          motionMode="idle"
+          position={position}
+        />
+      </div>,
+    );
+
+    fireEvent.keyDown(screen.getByRole("button", { name: /join/i }), {
+      key: "Enter",
+    });
+
+    expect(onParentKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("activates the join control with Enter from the keyboard", async () => {
+    const open = stubWindowOpen();
+    const user = userEvent.setup();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    // fireEvent.keyDown would not prove this: only a real keydown->click
+    // sequence shows that stopPropagation did not also cancel activation.
+    screen.getByRole("button", { name: /join/i }).focus();
+    await user.keyboard("{Enter}");
+
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0]?.[0]).toBe(CONFERENCE.url);
+  });
+
+  it("renders no join control on a timed placeholder", () => {
+    render(
+      <TimedEventCard
+        displayMode="placeholder"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+  });
+
+  it("renders no join control on an all-day placeholder", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({ conference: CONFERENCE, isAllDay: true })}
+        isPlaceholder={true}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+  });
+
+  it("renders no join control for a non-http conference link", () => {
+    // A cached row from an older schema, a hand-seeded demo event, or a future
+    // contract relaxation could carry any of these; none may become clickable.
+    const unsafeUrls = [
+      "javascript:alert(1)",
+      "  javascript:alert(1)  ",
+      "data:text/html,<h1>x</h1>",
+    ];
+
+    for (const url of unsafeUrls) {
+      const { unmount } = render(
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({ conference: { label: "Google Meet", url } })}
+          motionMode="idle"
+          position={position}
+        />,
+      );
+
+      expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+      unmount();
+    }
+  });
+
+  it("falls back to a generic join name without a provider label", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: { label: null, url: CONFERENCE.url },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Join video call (meet.google.com)" }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not put a URL-shaped conference label in the accessible name", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "meet.google.com/abc-defg-hij",
+            url: CONFERENCE.url,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Join video call (meet.google.com)" }),
+    ).toBeInTheDocument();
+  });
+
+  it("discloses the conference host, but never the meeting token, on the join control", () => {
+    // ADR-1 renders a <button> rather than an <a href>, which keeps the URL out
+    // of the DOM but also removes the browser's own pre-navigation disclosure
+    // (hover status bar, copy-link-address). The host is restored so the user
+    // can tell where a provider-supplied link goes before clicking it; the path
+    // is the capability token and must stay out of both the a11y tree and the
+    // tooltip.
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const joinButton = screen.getByRole("button", { name: /join/i });
+    const accessibleName = joinButton.getAttribute("aria-label") ?? "";
+
+    expect(accessibleName).toContain("meet.google.com");
+    expect(accessibleName).not.toContain("abc-defg-hij");
+
+    // The sighted-hover affordance discloses exactly what the screen reader
+    // announces — no more, no less.
+    expect(joinButton.getAttribute("title")).toBe(accessibleName);
+    expect(document.body.innerHTML).not.toContain("abc-defg-hij");
+  });
+
+  it("shifts the join control left when the repeat icon shares the corner", () => {
+    const withRepeat = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: CONFERENCE,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /join/i }).className).toContain(
+      "right-4",
+    );
+    withRepeat.unmount();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const soloClass = screen.getByRole("button", { name: /join/i }).className;
+    expect(soloClass).toContain("right-1");
+    expect(soloClass).not.toContain("right-4");
+  });
+
+  it("hides the join control on a card too narrow for it", () => {
+    const narrowTimed = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={{ ...position, width: 30 }}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+    narrowTimed.unmount();
+
+    // 50 clears the join-alone gate (40) but not the both-icons gate (64), so
+    // the repeat glyph stays and the join control drops out.
+    const withRepeat = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: CONFERENCE,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        motionMode="idle"
+        position={{ ...position, width: 50 }}
+      />,
+    );
+
+    expect(
+      withRepeat.container.querySelector('svg[class*="right-1"]'),
+    ).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+    withRepeat.unmount();
+
+    render(
+      <AllDayEventCard
+        event={createEvent({ conference: CONFERENCE, isAllDay: true })}
+        isPlaceholder={false}
+        position={{ ...position, width: 50 }}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+  });
+
+  it("steps the all-day title reserve up as icons are added", () => {
+    const renderAllDay = (overrides: Partial<GridEvent> = {}) =>
+      render(
+        <AllDayEventCard
+          event={createEvent({
+            isAllDay: true,
+            title: "Conference",
+            ...overrides,
+          })}
+          isPlaceholder={false}
+          position={position}
+        />,
+      );
+    const titleRowClass = () =>
+      screen.getByText("Conference").parentElement?.className;
+    const recurrence = { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] };
+
+    // No icons: no reserve at all, so a plain event is byte-identical to today.
+    const plain = renderAllDay();
+    expect(titleRowClass()).toBe("flex min-w-0 items-center");
+    plain.unmount();
+
+    const repeatOnly = renderAllDay({ recurrence });
+    expect(titleRowClass()).toContain("pr-3.5");
+    repeatOnly.unmount();
+
+    const joinOnly = renderAllDay({ conference: CONFERENCE });
+    expect(titleRowClass()).toContain("pr-4");
+    joinOnly.unmount();
+
+    renderAllDay({ conference: CONFERENCE, recurrence });
+    expect(titleRowClass()).toContain("pr-7");
+  });
+
+  it("keeps the conference URL out of the DOM and out of autocapture", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    // The URL reaches window.open only; it is never an href, a data-* copy, or
+    // any other attribute autocapture could serialise.
+    expect(screen.getByRole("button", { name: /join/i })).toHaveClass(
+      "ph-no-capture",
+    );
+    expect(container.innerHTML).not.toContain(CONFERENCE.url);
+  });
+
+  it("protects busy events by contract rather than by an isBusy guard", () => {
+    // The role matrix (requirements §6) rules join "not possible" for busy
+    // events because the contract never populates `conference` on them, and
+    // explicitly declines to add a redundant isBusy guard. Asserting only the
+    // first half would duplicate the no-conference case and pin nothing, so
+    // this pins both halves — including the absence of the guard.
+    const busy = createEvent({ isBusy: true });
+    expect(busy.conference).toBeUndefined();
+
+    const contractual = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={busy}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).toBeNull();
+    contractual.unmount();
+
+    // There is no isBusy guard: if an upstream change ever did attach a
+    // conference to a busy event, the join control WOULD render. If you are
+    // reading this because the assertion failed, someone added that guard —
+    // which is a fine thing to do, but the role matrix must be updated to
+    // match instead of leaving two sources of truth.
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE, isBusy: true })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /join/i })).not.toBeNull();
+  });
+
+  it("marks the join control as an interaction-ignore subtree", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: CONFERENCE })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /join/i })).toHaveAttribute(
+      EVENT_INTERACTION_IGNORE_ATTRIBUTE,
+      "true",
+    );
+  });
+
+  it("does not let the grid claim a pointerdown that lands on the join control", () => {
+    // The regression test for the one-click-join blocker, and the reason the
+    // design's "this path cannot be automated" note was wrong:
+    // PointerCaptureBoundary is mountable and fireEvent.pointerDown reaches
+    // it. Stopping propagation on the button cannot help here — the boundary
+    // binds onPointerDownCapture on an ancestor and consumes the event in the
+    // capture phase, before any descendant handler runs. Only the registry
+    // declining to resolve the card keeps the grid off this button.
+    stubWindowOpen();
+
+    const registry = createEventRegistry<"all-day" | "timed">({
+      eventIdAttribute: "data-week-interaction-event-id",
+      eventTypeAttribute: "data-week-interaction-event-type",
+      isEventType: (value): value is "all-day" | "timed" =>
+        value === "all-day" || value === "timed",
+    });
+    const owned: string[] = [];
+    const adapter: PointerCaptureAdapter = {
+      cancel: () => undefined,
+      connectCancellationEvents: () => () => undefined,
+      handlePointerCancel: () => false,
+      handlePointerDown: (event) => {
+        const resolved = registry.resolveFromTarget(event.target);
+
+        if (!resolved) {
+          return { reason: "no-event-target", shouldOwn: false };
+        }
+
+        owned.push(resolved.eventId);
+        return { reason: "event-target", shouldOwn: true };
+      },
+      handlePointerMove: () => false,
+      handlePointerUp: () => false,
+    };
+
+    render(
+      <PointerCaptureBoundary adapter={adapter}>
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({ conference: CONFERENCE })}
+          motionMode="idle"
+          position={position}
+        />
+      </PointerCaptureBoundary>,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    registry.register({
+      element: card,
+      eventId: "event-1",
+      eventType: "timed",
+    });
+
+    // The card body still starts an interaction — the fix must not make the
+    // whole card undraggable.
+    fireEvent.pointerDown(screen.getByText("Planning block"));
+    expect(owned).toEqual(["event-1"]);
+
+    // The join control does not.
+    fireEvent.pointerDown(screen.getByRole("button", { name: /join/i }));
+    expect(owned).toEqual(["event-1"]);
   });
 });

@@ -46,6 +46,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, isSafeConferenceUrl } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -56,6 +57,19 @@ import { EventRepeatIcon } from "./EventRepeatIcon";
 // event length, so every recurring timed event qualifies.
 const REPEAT_ICON_MIN_DURATION_MINUTES = 15;
 const REPEAT_ICON_MIN_WIDTH = 40;
+
+// Mirrors REPEAT_ICON_MIN_DURATION_MINUTES for the same reason: duration is
+// stable across the two layout paths a 15-minute event can take, rendered
+// pixel height is not. 15 is GRID_TIME_STEP and the minimum event length, so
+// this gate is intentionally permissive today; it exists so the join gate is
+// structurally identical to the repeat gate and the two cannot drift.
+const JOIN_ICON_MIN_DURATION_MINUTES = 15;
+// Same slot, same 4px inset as the repeat icon, so the same width floor.
+const JOIN_ICON_MIN_WIDTH = 40;
+// REPEAT_ICON_MIN_WIDTH + 24: the second glyph's 12px box plus the 12px the
+// join icon shifts left to clear it. Below this the two icons eat more than a
+// third of the card and the title has nowhere to go.
+const JOIN_WITH_REPEAT_MIN_WIDTH = 64;
 
 interface TimedEventCardProps {
   boxShadow?: CSSProperties["boxShadow"];
@@ -118,6 +132,15 @@ const TimedEventCardBase = (
     !isPlaceholder &&
     durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
     position.width >= REPEAT_ICON_MIN_WIDTH;
+
+  const conferenceUrl = event.conference?.url;
+  const joinUrl = isSafeConferenceUrl(conferenceUrl) ? conferenceUrl : null;
+  const showJoinIcon =
+    joinUrl !== null &&
+    !isPlaceholder &&
+    durationMinutes >= JOIN_ICON_MIN_DURATION_MINUTES &&
+    position.width >=
+      (showRepeatIcon ? JOIN_WITH_REPEAT_MIN_WIDTH : JOIN_ICON_MIN_WIDTH);
 
   const showTimeLabel =
     !event.isAllDay &&
@@ -361,6 +384,14 @@ const TimedEventCardBase = (
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {showJoinIcon && joinUrl && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          label={event.conference?.label ?? null}
+          offsetForRepeatIcon={showRepeatIcon}
+          url={joinUrl}
+        />
+      )}
     </div>
   );
 };

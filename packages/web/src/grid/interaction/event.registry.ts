@@ -1,3 +1,22 @@
+/**
+ * Marks a subtree of an event card as "not a drag/click target for the grid".
+ *
+ * The interaction engine resolves its target by walking up from the pointer's
+ * `event.target` with `closest()`, so *any* descendant of a card — including a
+ * real interactive control like the join button — otherwise resolves to the
+ * card and opens a pending session, which pointerup turns into a synthetic
+ * "click" that opens the event form.
+ *
+ * A descendant cannot opt out by stopping propagation on its own handlers:
+ * `PointerCaptureBoundary` binds `onPointerDownCapture` on an *ancestor* and
+ * calls `preventDefault()` + `stopPropagation()` during the capture phase, so
+ * the descendant's handlers never run at all. This attribute is the only
+ * available opt-out, and it is honored here — the single choke point both the
+ * Week and Day registries funnel through.
+ */
+export const EVENT_INTERACTION_IGNORE_ATTRIBUTE =
+  "data-calendar-event-interaction-ignore";
+
 export interface RegisteredEventTarget<TType extends string> {
   element: HTMLElement;
   eventId: string;
@@ -86,6 +105,23 @@ export const createEventRegistry = <TType extends string>({
       );
 
       if (!element) {
+        return null;
+      }
+
+      // Scoped to this card deliberately: an ignore marker somewhere else in
+      // the ancestor chain (an unrelated wrapper above the card) must not
+      // disable interaction for the card itself.
+      //
+      // Matched by VALUE, not by presence. React stringifies every `data-*`
+      // prop, so a future caller spreading a falsy flag would render
+      // `data-...="false"` — which a bare `[attr]` presence selector would
+      // still match, silently making that card inert. Requiring "true" makes
+      // the opt-out explicit and keeps "false" meaning what it reads as.
+      const ignored = target.closest<HTMLElement>(
+        `[${EVENT_INTERACTION_IGNORE_ATTRIBUTE}="true"]`,
+      );
+
+      if (ignored && element.contains(ignored)) {
         return null;
       }
 
