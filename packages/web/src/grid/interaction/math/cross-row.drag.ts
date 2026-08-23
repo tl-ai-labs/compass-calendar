@@ -21,18 +21,21 @@ const MINUTES_PER_DAY = 24 * 60;
  */
 export const CROSS_ROW_TIMED_DURATION_MIN = 60;
 
-interface CrossRowPlacement {
-  column: DayColumnCache | null;
+interface CrossRowPlacement<TColumnKey = string> {
+  column: DayColumnCache<TColumnKey> | null;
   height: number;
   transform: VisualPoint;
   width: number;
 }
 
 /** Splits a drag's paired layout cache back into the two rows it hit-tests against. */
-export const getDragRowLayouts = (
-  layout: GridLayoutCache,
+export const getDragRowLayouts = <TColumnKey = string>(
+  layout: GridLayoutCache<TColumnKey>,
   sourceRow: DragRow,
-): { allDay: GridLayoutCache | null; timed: GridLayoutCache | null } =>
+): {
+  allDay: GridLayoutCache<TColumnKey> | null;
+  timed: GridLayoutCache<TColumnKey> | null;
+} =>
   sourceRow === "allDay"
     ? { allDay: layout, timed: layout.crossRow ?? null }
     : { allDay: layout.crossRow ?? null, timed: layout };
@@ -45,16 +48,16 @@ export const getDragRowLayouts = (
  *
  * Pure in the pointer, so re-running it at pointerup reproduces the same row.
  */
-export const resolveDragRow = ({
+export const resolveDragRow = <TColumnKey = string>({
   allDay,
   pointerY,
   sourceRow,
   timed,
 }: {
-  allDay: GridLayoutCache | null;
+  allDay: GridLayoutCache<TColumnKey> | null;
   pointerY: number;
   sourceRow: DragRow;
-  timed: GridLayoutCache | null;
+  timed: GridLayoutCache<TColumnKey> | null;
 }): DragRow => {
   if (!allDay || !timed) {
     return sourceRow;
@@ -72,15 +75,15 @@ export const resolveDragRow = ({
  * column drives both the ghost and the commit, so the drop lands where the drag
  * was drawn.
  */
-export const getCrossRowTimedPlacement = ({
+export const getCrossRowTimedPlacement = <TColumnKey = string>({
   layout,
   pointer,
   sourceRect,
 }: {
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
   sourceRect: VisualRect;
-}): CrossRowPlacement & { startMinutes: number } => {
+}): CrossRowPlacement<TColumnKey> & { startMinutes: number } => {
   const column = getNearestDayColumn(layout.dayColumns, pointer.x);
   // Read live rather than trusting the cache's initialScrollTop: the grid can
   // scroll out from under a cross-row drag (the wheel, or the view's own
@@ -116,15 +119,15 @@ export const getCrossRowTimedPlacement = ({
 };
 
 /** The all-day mirror of getCrossRowTimedPlacement: no time of day, so only a column. */
-export const getCrossRowAllDayPlacement = ({
+export const getCrossRowAllDayPlacement = <TColumnKey = string>({
   layout,
   pointer,
   sourceRect,
 }: {
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
   sourceRect: VisualRect;
-}): CrossRowPlacement => {
+}): CrossRowPlacement<TColumnKey> => {
   const column = getNearestDayColumn(layout.dayColumns, pointer.x);
 
   return {

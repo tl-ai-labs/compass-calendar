@@ -1,26 +1,29 @@
 import { type Dayjs } from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { type GridLayoutCacheSources } from "@web/grid/interaction/layout.cache";
-import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
 import {
-  type AllDayResizeEdge,
-  type AllDayResizeVisual,
-} from "@web/grid/interaction/types/all-day-resize.types";
-import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
-import {
-  type TimedResizeEdge,
-  type TimedResizeVisual,
-} from "@web/grid/interaction/types/timed-resize.types";
+  type GridAllDayDragCommitResult,
+  type GridAllDayDragTarget,
+  type GridAllDayResizeCommitResult,
+  type GridAllDayResizeTarget,
+  type GridInteractionCommitResult,
+  type GridInteractionPointerOwnership,
+  type GridInteractionTarget,
+  type GridInteractionVisual,
+  type GridResolvedEventTarget,
+  type GridTimedDragCommitResult,
+  type GridTimedDragTarget,
+  type GridTimedResizeCommitResult,
+  type GridTimedResizeTarget,
+} from "@web/grid/interaction/types/adapter.types";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import {
   type InteractionCancellationTargets,
   type InteractionEngineSchedulerOptions,
 } from "@web/interaction/interaction.engine";
 import { type DayRegisteredEventTarget } from "../registry/day-event.registry";
 
-export interface DayInteractionPointerOwnership {
-  reason: string;
-  shouldOwn: boolean;
-}
+export type DayInteractionPointerOwnership = GridInteractionPointerOwnership;
 
 export interface DayInteractionAdapterOptions {
   engineOptions?: InteractionEngineSchedulerOptions;
@@ -50,91 +53,34 @@ export interface DayInteractionRuntime {
   onMotionActivation?: (target: DayInteractionTarget) => void;
 }
 
-export interface DayAllDayDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayDragEnd";
-}
+export type DayAllDayDragCommitResult = GridAllDayDragCommitResult;
 
-export interface DayAllDayDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "allDayDrag";
-}
+export type DayAllDayDragTarget =
+  GridAllDayDragTarget<DayRegisteredEventTarget>;
 
-export interface DayAllDayResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayResizeEnd";
-}
+export type DayAllDayResizeCommitResult = GridAllDayResizeCommitResult;
 
-export interface DayAllDayResizeTarget {
-  edge: AllDayResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "allDayResize";
-}
+export type DayAllDayResizeTarget =
+  GridAllDayResizeTarget<DayRegisteredEventTarget>;
 
-export interface DayTimedDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedDragEnd";
-}
+export type DayTimedDragCommitResult = GridTimedDragCommitResult;
 
-export interface DayTimedDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "timedDrag";
-}
+export type DayTimedDragTarget = GridTimedDragTarget<DayRegisteredEventTarget>;
 
-export interface DayTimedResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedResizeEnd";
-}
+export type DayTimedResizeCommitResult = GridTimedResizeCommitResult;
 
-export interface DayTimedResizeTarget {
-  edge: TimedResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "timedResize";
-}
+export type DayTimedResizeTarget =
+  GridTimedResizeTarget<DayRegisteredEventTarget>;
 
 export type DayInteractionTarget =
-  | DayAllDayDragTarget
-  | DayAllDayResizeTarget
-  | DayTimedDragTarget
-  | DayTimedResizeTarget;
+  GridInteractionTarget<DayRegisteredEventTarget>;
 
-export type DayInteractionVisual =
-  | AllDayDragVisual
-  | AllDayResizeVisual
-  | TimedDragVisual
-  | TimedResizeVisual;
+export type DayInteractionVisual = GridInteractionVisual<DayColumnKey>;
 
-export type DayInteractionCommitResult =
-  | DayAllDayDragCommitResult
-  | DayAllDayResizeCommitResult
-  | DayTimedDragCommitResult
-  | DayTimedResizeCommitResult;
+export type DayInteractionCommitResult = GridInteractionCommitResult;
 
-export type DayResolvedEventTarget = {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-};
+export type DayResolvedEventTarget =
+  GridResolvedEventTarget<DayRegisteredEventTarget>;
 
 export interface DayInteractionAdapter {
   cancel(): void;

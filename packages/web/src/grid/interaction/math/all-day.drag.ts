@@ -8,26 +8,26 @@ import {
 } from "./cross-row.drag";
 import { resolveDragColumn } from "./drag-column";
 
-interface CreateAllDayDragVisualInput {
-  dayDate: string;
+interface CreateAllDayDragVisualInput<TColumnKey = string> {
+  dayDate: TColumnKey;
   dayIndex: number;
   eventId: string;
   pointerStart: VisualPoint;
   sourceRect: VisualRect;
 }
 
-interface UpdateAllDayDragVisualInput {
-  layout: GridLayoutCache;
+interface UpdateAllDayDragVisualInput<TColumnKey = string> {
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
 }
 
-export const createAllDayDragVisual = ({
+export const createAllDayDragVisual = <TColumnKey = string>({
   dayDate,
   dayIndex,
   eventId,
   pointerStart,
   sourceRect,
-}: CreateAllDayDragVisualInput): AllDayDragVisual => ({
+}: CreateAllDayDragVisualInput<TColumnKey>): AllDayDragVisual<TColumnKey> => ({
   crossRowSize: null,
   dayDate,
   dayIndex,
@@ -42,10 +42,10 @@ export const createAllDayDragVisual = ({
   type: "allDayDrag",
 });
 
-export const updateAllDayDragVisual = (
-  visual: AllDayDragVisual,
-  { layout, pointer }: UpdateAllDayDragVisualInput,
-): AllDayDragVisual => {
+export const updateAllDayDragVisual = <TColumnKey = string>(
+  visual: AllDayDragVisual<TColumnKey>,
+  { layout, pointer }: UpdateAllDayDragVisualInput<TColumnKey>,
+): AllDayDragVisual<TColumnKey> => {
   const { allDay, timed } = getDragRowLayouts(layout, "allDay");
   const row = resolveDragRow({
     allDay,

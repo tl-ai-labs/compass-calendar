@@ -4,6 +4,7 @@ import {
   hasTimedDragVisualMoved,
   hasTimedResizeVisualMoved,
 } from "@web/grid/interaction/commit/timed-moved";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
 
@@ -11,7 +12,7 @@ export { hasTimedDragVisualMoved, hasTimedResizeVisualMoved };
 
 export const timedDragVisualToGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DateColumnKey>,
 ): GridEvent => {
   // The column under the drag knows its own date, so the target day is
   // assigned absolutely; time-of-day rides on the visual's minutes.

@@ -18,6 +18,10 @@ import {
   getNearestDayColumn,
   type SmartScrollCache,
 } from "@web/grid/interaction/layout.cache";
+import {
+  asDateColumnKeys,
+  type DateColumnKey,
+} from "@web/grid/interaction/types/column-key.types";
 import { type DragRow } from "@web/grid/interaction/types/timed-drag.types";
 import { WEEK_EDGE_NAVIGATION_THRESHOLD_PX } from "../edge-navigation";
 
@@ -34,13 +38,13 @@ export interface WeekLayoutCacheInput extends GridLayoutCacheSources {
   visibleDays: string[];
 }
 
-export type WeekLayoutCache = GridLayoutCache;
+export type WeekLayoutCache = GridLayoutCache<DateColumnKey>;
 export type { SmartScrollCache };
 export { getNearestDayColumn };
 
 const weekLayoutCacheOptions = (
   sources: WeekLayoutCacheInput,
-): GridLayoutCacheOptions & WeekLayoutCacheSources => ({
+): GridLayoutCacheOptions<DateColumnKey> & WeekLayoutCacheSources => ({
   ...sources,
   allDayColumnsElementId: ID_ALLDAY_COLUMNS,
   edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX,
@@ -52,7 +56,9 @@ const weekLayoutCacheOptions = (
   snapMinutes: GRID_TIME_STEP,
   timedColumnsElementId: ID_GRID_COLUMNS_TIMED,
   timedVisibleHours: TIMED_VISIBLE_HOURS,
-  visibleDates: sources.visibleDays,
+  // Branding boundary: the runtime supplies plain strings and they are
+  // branded once here rather than validated per-frame on the drag path.
+  visibleDates: asDateColumnKeys(sources.visibleDays),
 });
 
 export const buildTimedWeekLayoutCache = (

@@ -3,6 +3,7 @@ import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { CROSS_ROW_TIMED_DURATION_MIN } from "../math/cross-row.drag";
 import { type AllDayDragVisual } from "../types/all-day-drag.types";
+import { type DateColumnKey } from "../types/column-key.types";
 import { type TimedDragVisual } from "../types/timed-drag.types";
 
 /**
@@ -17,7 +18,7 @@ import { type TimedDragVisual } from "../types/timed-drag.types";
  */
 export const allDayDragVisualToTimedGridEvent = (
   event: GridEvent,
-  visual: AllDayDragVisual,
+  visual: AllDayDragVisual<DateColumnKey>,
 ): GridEvent => {
   const day = dayjs(visual.dayDate).startOf("day");
   const startMinutes = visual.timedStartMinutes ?? 0;
@@ -40,7 +41,7 @@ export const allDayDragVisualToTimedGridEvent = (
  */
 export const timedDragVisualToAllDayGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DateColumnKey>,
 ): GridEvent => {
   const day = dayjs(visual.dayDate);
 

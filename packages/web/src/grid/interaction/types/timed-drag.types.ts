@@ -27,21 +27,19 @@ export type CrossRowSize = { height: number; width: number } | null;
  * frozen while an interaction is in motion. Day *dates* come from the layout
  * cache columns, so they track mid-drag week navigation automatically.
  */
-export interface TimedDragVisual {
+export interface TimedDragVisual<TColumnKey = string> {
   crossRowSize: CrossRowSize;
   /**
-   * Key of the column currently under the drag. Week view columns are
-   * local YYYY-MM-DD dates; Day view columns are CALENDAR IDS (all columns
-   * share the visible date there) - do not dayjs-parse this without knowing
-   * which view produced it.
+   * Key of the column currently under the drag, view-parameterized (Week uses
+   * DateColumnKey, Day uses DayColumnKey).
    */
-  dayDate: string;
+  dayDate: TColumnKey;
   dayIndex: number;
   durationMinutes: number;
   endMinutes: number;
   eventId: string;
-  /** Local YYYY-MM-DD date of the source column at drag start. */
-  initialDayDate: string;
+  /** Key of the source column at drag start. */
+  initialDayDate: TColumnKey;
   initialDayIndex: number;
   initialEndMinutes: number;
   initialStartMinutes: number;

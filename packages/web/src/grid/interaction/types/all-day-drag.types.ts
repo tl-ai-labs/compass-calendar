@@ -11,7 +11,7 @@ import {
  * frozen while an interaction is in motion. Day *dates* come from the layout
  * cache columns, so they track mid-drag week navigation automatically.
  */
-export interface AllDayDragVisual {
+export interface AllDayDragVisual<TColumnKey = string> {
   crossRowSize: CrossRowSize;
   /**
    * Local YYYY-MM-DD date of the column the ghost is snapped to. How the commit
@@ -22,14 +22,14 @@ export interface AllDayDragVisual {
    * on and has no meaningful offset from where the span started.
    */
   /**
-   * Column key semantics match TimedDragVisual.dayDate: a date in the Week
-   * view, a calendar id in the Day view.
+   * Key of the column currently under the drag, view-parameterized (Week uses
+   * DateColumnKey, Day uses DayColumnKey).
    */
-  dayDate: string;
+  dayDate: TColumnKey;
   dayIndex: number;
   eventId: string;
-  /** Local YYYY-MM-DD date of the (window-clamped) source column at drag start. */
-  initialDayDate: string;
+  /** Key of the (window-clamped) source column at drag start. */
+  initialDayDate: TColumnKey;
   initialDayIndex: number;
   pointerStart: VisualPoint;
   /**

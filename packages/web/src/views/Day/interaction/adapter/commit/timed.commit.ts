@@ -5,6 +5,7 @@ import {
   hasTimedDragVisualMoved,
   hasTimedResizeVisualMoved,
 } from "@web/grid/interaction/commit/timed-moved";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
 import {
@@ -16,7 +17,7 @@ import {
 
 export const commitTimedDragInteraction = (
   target: DayTimedDragTarget,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DayColumnKey>,
   visibleDate: Dayjs,
 ): DayTimedDragCommitResult => {
   const hasMoved = hasTimedDragVisualMoved(visual);
@@ -52,7 +53,7 @@ export const commitTimedResizeInteraction = (
 
 export const timedDragVisualToDayGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DayColumnKey>,
   visibleDate: Dayjs,
 ): GridEvent => ({
   ...event,
@@ -75,7 +76,7 @@ export const timedDragVisualToDayGridEvent = (
  * keep the event's own calendarId.
  */
 export const columnMoveCalendarId = (
-  visual: Pick<TimedDragVisual, "dayDate" | "initialDayDate">,
+  visual: Pick<TimedDragVisual<DayColumnKey>, "dayDate" | "initialDayDate">,
   event: GridEvent,
 ): CalendarId | undefined =>
   visual.dayDate !== visual.initialDayDate

@@ -12,7 +12,6 @@ import {
   getResizeHandleEdge,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
-import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
   createAllDayDragVisual,
   updateAllDayDragVisual,
@@ -29,6 +28,10 @@ import {
   createTimedResizeVisual,
   updateTimedResizeVisual,
 } from "@web/grid/interaction/math/timed.resize";
+import {
+  asDayColumnKeys,
+  type DayColumnKey,
+} from "@web/grid/interaction/types/column-key.types";
 import { type VisualPoint } from "@web/grid/interaction/types/timed-drag.types";
 import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
 import {
@@ -67,6 +70,7 @@ import {
 } from "./day-interaction.adapter.types";
 import {
   buildDayLayoutCacheForTarget,
+  type DayLayoutCache,
   isDayDragTarget,
 } from "./geometry/day-layout.cache";
 
@@ -92,7 +96,7 @@ export const createDayInteractionAdapter = ({
   getVisibleDate = () => dayjs(),
   runtime = () => inertRuntime,
 }: DayInteractionAdapterOptions = {}): DayInteractionAdapter => {
-  let layout: GridLayoutCache | null = null;
+  let layout: DayLayoutCache | null = null;
   let scrollTop: number | null = null;
 
   const engine: InteractionEngine<
@@ -257,8 +261,11 @@ export const createDayInteractionAdapter = ({
         const eventColumnIndex = calendarColumnKeys.indexOf(
           target.event.calendarId ?? "",
         );
-        const columnKeys =
-          eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey];
+        // Day branding boundary: the fallback branch's single key is a DATE,
+        // not a calendar id, which is why DayColumnKey is a union.
+        const columnKeys: DayColumnKey[] = asDayColumnKeys(
+          eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey],
+        );
         const initialColumnIndex = Math.max(0, eventColumnIndex);
         const initialColumnKey = columnKeys[initialColumnIndex]!;
         const nextLayout = buildDayLayoutCacheForTarget(

@@ -3,6 +3,7 @@ import { type Dayjs } from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
 import { type AllDayResizeVisual } from "@web/grid/interaction/types/all-day-resize.types";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import {
   type DayAllDayDragCommitResult,
   type DayAllDayDragTarget,
@@ -13,7 +14,7 @@ import { columnMoveCalendarId } from "./timed.commit";
 
 export const commitAllDayDragInteraction = (
   target: DayAllDayDragTarget,
-  visual: AllDayDragVisual,
+  visual: AllDayDragVisual<DayColumnKey>,
 ): DayAllDayDragCommitResult => {
   const hasMoved =
     "dayDate" in visual ? visual.dayDate !== visual.initialDayDate : false;

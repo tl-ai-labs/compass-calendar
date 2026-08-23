@@ -33,3 +33,6 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+# AI-SDLC run bookkeeping (also keeps Biome from linting it - biome.json sets vcs.useIgnoreFile)
+.sdlc/
+.hook-logs/

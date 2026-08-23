@@ -14,6 +14,7 @@ import {
   type GridLayoutCache,
   type GridLayoutCacheSources,
 } from "@web/grid/interaction/layout.cache";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { INTERACTION_EDGE_THRESHOLD_PX } from "@web/interaction/interaction.constants";
 import {
   type DayAllDayDragTarget,
@@ -22,13 +23,13 @@ import {
   type DayTimedDragTarget,
 } from "../day-interaction.adapter.types";
 
-export type DayLayoutCache = GridLayoutCache;
+export type DayLayoutCache = GridLayoutCache<DayColumnKey>;
 export type DayLayoutCacheSources = GridLayoutCacheSources;
 
 export const buildDayTimedLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
-) =>
+  columnKeys: DayColumnKey[],
+): DayLayoutCache | null =>
   buildTimedGridLayoutCache({
     ...sources,
     edgeThresholdPx: INTERACTION_EDGE_THRESHOLD_PX,
@@ -40,20 +41,20 @@ export const buildDayTimedLayoutCache = (
     snapMinutes: GRID_TIME_STEP,
     timedColumnsElementId: ID_GRID_COLUMNS_TIMED,
     timedVisibleHours: TIMED_VISIBLE_HOURS,
-    visibleDates,
+    visibleDates: columnKeys,
   });
 
 export const buildDayAllDayLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
-) =>
+  columnKeys: DayColumnKey[],
+): DayLayoutCache | null =>
   buildAllDayGridLayoutCache({
     ...sources,
     allDayColumnsElementId: ID_ALLDAY_COLUMNS,
     edgeThresholdPx: 0,
     snapMinutes: GRID_TIME_STEP,
     timedVisibleHours: TIMED_VISIBLE_HOURS,
-    visibleDates,
+    visibleDates: columnKeys,
   });
 
 const isAllDayTarget = (
@@ -64,11 +65,11 @@ const isAllDayTarget = (
 export const buildDayLayoutCacheForTarget = (
   target: DayInteractionTarget,
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
-) =>
+  columnKeys: DayColumnKey[],
+): DayLayoutCache | null =>
   isAllDayTarget(target)
-    ? buildDayAllDayLayoutCache(sources, visibleDates)
-    : buildDayTimedLayoutCache(sources, visibleDates);
+    ? buildDayAllDayLayoutCache(sources, columnKeys)
+    : buildDayTimedLayoutCache(sources, columnKeys);
 
 export const isDayDragTarget = (
   target: DayInteractionTarget,
