@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "run_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+  "intent": "feature-extend",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/interaction/interaction.constants.ts",
+      "existed_before": true,
+      "sha_before": "sha256:f7600560c6a2a09465d2054537f3e240ac7ff3209ecdbdc2c1e78d5be64913bc",
+      "sha_after": "sha256:eb5acc69028bcaca35c4b56ccaa7db98e840bba3aa70ce8e070221afc318cee6",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_001",
+      "written_at": "2026-08-20T10:04:03.279Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:d0fb2585187398aa1a2da2cee2ff9ee0e1ba945c646f941abf7d138378242e51",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_002",
+      "written_at": "2026-08-20T10:04:28.638Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:7f472204a97312247124d5a3fdac082cdacada8bf7462b43e699f495c3054779",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_tests_003",
+      "written_at": "2026-08-20T10:04:49.669Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5b055bd33164b7a1dbcc8a33672e7bfc03d328c3270e0b0c3759cbf41d334891",
+      "sha_after": "sha256:5fec6015a5d293357de3a01f5f01eddccd959671fd598853a15d760c7b083724",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_004",
+      "written_at": "2026-08-20T10:06:05.859Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:13e4fa6064b595062f039a047c7878a6cd69bf8faa262febe3975784e5701893",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_006",
+      "written_at": "2026-08-20T10:06:42.227Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:12c22de745284749b42fea039f5d9079cedb45c9313497b7daa8f5fb95950058",
+      "sha_after": "sha256:0979846d62fc4b5cc3574b11d6c061d8f0db9cd0cf7d25e07a9a2ac586e6a75d",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_007",
+      "written_at": "2026-08-20T10:07:00.752Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d4ade6b554cea1815bdc6b8d3bcd2cb1f9c2b4576df53f154b1ca6d8e7a40b69",
+      "sha_after": "sha256:d7e380a52135584fcb029bfa3e50f73b0ae2c2783af37fc2227d74842676ab04",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_tests_005",
+      "written_at": "2026-08-20T10:10:22.678Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:55e0f2ec2995be37115d723e2cbe34164055add3dbe38d24b1db2eaac76a8c39",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_tests_008",
+      "written_at": "2026-08-20T10:11:19.373Z"
+    },
+    {
+      "path": "docs/frontend/week-drag-interaction.md",
+      "existed_before": true,
+      "sha_before": "sha256:c95d1001521d4470e9177a88347e5f723e7ca9ec622af2e0a770440c37964e7e",
+      "sha_after": "sha256:3c7d6af2a36bb2b4f369e922d175fc782c7bc56118d31b574aa6af1106828a36",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_docs_009",
+      "written_at": "2026-08-20T10:11:53.543Z"
+    },
+    {
+      "path": ".gitignore",
+      "existed_before": true,
+      "sha_before": "sha256:0422e3974168753b270e7387fb6035a03e3346cc44d0b254dd34c5b00ff1d3df",
+      "sha_after": "sha256:26889c6647aeeb89229d29642b40a771da018a7e0d3d77e24f37800e647b748c",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_docs_010",
+      "written_at": "2026-08-20T10:12:06.292Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:815aa9cf42622520df80d02e07be6e42038947c583385a55fbc8ab8718c09e8d",
+      "sha_after": "sha256:980d5fd808ee722e402f8f331b23cdec3382c8301b7a63c1224b662c786ae323",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_debug_011",
+      "written_at": "2026-08-20T10:43:02.021Z"
+    }
+  ]
+}

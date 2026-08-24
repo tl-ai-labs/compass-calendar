@@ -1,0 +1,346 @@
+[
+  {
+    "id": "tp_codegen_001",
+    "phase": "codegen",
+    "task_type": "constant_addition",
+    "module": "interaction",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/interaction/interaction.constants.ts",
+    "retry_count": 0,
+    "instruction": "Append `export const ALL_DAY_DRAFT_CREATE_MOVE_THRESHOLD_PX = 4;` to packages/web/src/interaction/interaction.constants.ts and extend the file's existing top-of-file doc comment with a paragraph explaining what the new constant measures. Per change_plan.md D4/§5: it gates drag-to-create in the all-day row, measures HORIZONTAL travel only (the gesture pins y at press, so the shared hasExceededInteractionMoveThreshold collapses to |dx| > t), separates a click that creates one day from a drag that spans day columns, and is the same magnitude as the timed create threshold but kept as its own constant so either can be retuned alone. Do NOT modify, reorder, renumber or unify INTERACTION_MOVE_THRESHOLD_PX (25) or TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX (4) — the file's own comment forbids unification. Append-only below the existing exports.",
+    "inputs": [
+      {
+        "path": "packages/web/src/interaction/interaction.constants.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The file being edited; its doc comment must be extended, not replaced."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "ALL_DAY_DRAFT_CREATE_MOVE_THRESHOLD_PX is exported with value 4",
+      "INTERACTION_MOVE_THRESHOLD_PX and TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX keep their existing values and positions",
+      "The do-not-unify sentence survives verbatim",
+      "The doc comment gains a paragraph naming the new constant and stating it measures horizontal travel only",
+      "bun type-check passes"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_codegen_002",
+    "phase": "codegen",
+    "task_type": "pure_module",
+    "module": "grid-interaction-math",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+    "retry_count": 0,
+    "instruction": "Create packages/web/src/grid/interaction/math/all-day.create.ts — a NEW pure module with no React, no store and no DOM access. Export exactly the three symbols specified in change_plan.md §5: interface AllDayCreateRange { startDate: string; endDate: string } (both YEAR_MONTH_DAY_FORMAT; endDate is EXCLUSIVE — the last dragged day plus one); resolveAllDayCreateRange(anchorDate: string, pointerDate: string): AllDayCreateRange which normalises so startDate = min(anchor, pointer) and endDate = max(anchor, pointer) + 1 day; and isSameAllDayCreateRange(a: AllDayCreateRange | null, b: AllDayCreateRange): boolean where a null `a` is never equal. Use dayjs from @core/util/date/dayjs and YEAR_MONTH_DAY_FORMAT from @core/constants/date.constants. resolveAllDayCreateRange(d, d) MUST return { startDate: d, endDate: dayjs(d).add(1,'day').format(YEAR_MONTH_DAY_FORMAT) } — byte-equal to today's one-day behaviour. Pure and idempotent: branch only on the two arguments, never on computed output. Include the TSDoc comments from §5. No barrel file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/change_plan.md",
+        "content": "<hydrated at execution: sections D1 and 5>",
+        "reason": "Exact signatures and the exclusive-end convention."
+      },
+      {
+        "path": "packages/web/src/grid/interaction/math/all-day.resize.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "Neighbouring module — match its file conventions and import style. Its resizeFromStart/resizeFromEnd are module-private and must NOT be imported or exported."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exports AllDayCreateRange, resolveAllDayCreateRange, isSameAllDayCreateRange and nothing else",
+      "Forward and reverse drags over the same two columns yield an identical range",
+      "endDate is exclusive: dayjs(endDate).diff(startDate,'day') === number of inclusive days",
+      "resolveAllDayCreateRange(d, d) matches today's dayjs(start).add(1,'day') result",
+      "No import of React, the draft store, or any DOM API",
+      "all-day.resize.ts is not modified"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_tests_003",
+    "phase": "tests",
+    "task_type": "unit_test",
+    "module": "grid-interaction-math",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+    "retry_count": 0,
+    "instruction": "Create packages/web/src/grid/interaction/math/all-day.create.test.ts covering the 7 cases in change_plan.md §7.1: forward span ('2026-05-18','2026-05-21') -> { startDate:'2026-05-18', endDate:'2026-05-22' }; reverse span ('2026-05-21','2026-05-18') -> the identical object; same day ('2026-05-20','2026-05-20') -> { startDate:'2026-05-20', endDate:'2026-05-21' }; N-day arithmetic for N=1..7 asserting dayjs(endDate).diff(startDate,'day') === N; month boundary ('2026-05-31','2026-06-02') -> endDate '2026-06-03'; idempotence (calling twice with the same args deep-equals, and re-calling with (anchor, range.startDate) after a reverse drag still returns the reverse-normalised range, proving it never branches on its own output); and the dedupe helper (null a -> false, equal values -> true, differing endDate -> false). Use bun:test (describe/it/expect) only. NO jsdom, NO React Testing Library, no store. Import from './all-day.create'.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+        "content": "<hydrated at execution: output of tp_codegen_002>",
+        "reason": "Module under test."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "All 7 §7.1 cases present",
+      "No jsdom / RTL / store import",
+      "Suite passes under bun test:web"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_codegen_004",
+    "phase": "codegen",
+    "task_type": "hook_extension",
+    "module": "grid-hooks",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+    "retry_count": 0,
+    "instruction": "Extend packages/web/src/grid/hooks/useAllDayDraftCreation.ts per change_plan.md §4, D2, D5, D6, D7, D8. Add optional `isMultiDayDragEnabled?: boolean` to UseAllDayDraftCreationOptions. THE RETURN TYPE IS UNCHANGED and load-bearing: still a bare arrow (event: ReactMouseEvent<HTMLElement>, calendarId?: CalendarId | null) => void — both call sites pass it straight in as onMouseDown and packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx is OFF-LIMITS. Mousedown order is preserved exactly: isRightClick -> return (no preventDefault); preventDefault + stopPropagation; isDrafting -> draftActions.discard() and return (no listeners); capture anchorDate = getStartDate(clientX, clientY). If the flag is falsy, build the draft and hand off exactly as today and RETURN — no listeners, no refs touched. If truthy, cancel any prior gestureRef, then register window mousemove/mouseup with capture:true and window blur. Implement the gesture, resolveRangeForPointer, threshold, cleanup and unmount effect exactly as §4 specifies. CRITICAL (§6): every getStartDate call during the gesture passes pointerStart.y, NEVER the live moveEvent.clientY. Use resolveAllDayCreateRange from @web/grid/interaction/math/all-day.create and ALL_DAY_DRAFT_CREATE_MOVE_THRESHOLD_PX from @web/interaction/interaction.constants. Keep createGridEventDraft(..., undefined, calendarId) — no clientId (D6). Do NOT discard() before the terminal handoff (D8).",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The 66-line file being extended; its click path must survive byte-identical when the flag is off."
+      },
+      {
+        "path": "packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The gesture is modelled on this file: capture-phase listeners, hasMoved/isCancelled/isFinished/isPreviewStarted, cleanup(), gestureRef cancelled on unmount (lines 43-47)."
+      },
+      {
+        "path": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/change_plan.md",
+        "content": "<hydrated at execution: sections 4, 5, 6 and decisions D2/D5/D6/D7/D8>",
+        "reason": "Step-by-step gesture specification and the clientY pin."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Return type is still a bare callable (event, calendarId?) => void",
+      "With the flag absent/false: no window listener is registered and the produced draft is identical to today's",
+      "No call site outside the allowlist needs editing; DayCalendarGrid.tsx compiles unedited",
+      "Every gesture-time getStartDate call receives pointerStart.y, never the live clientY",
+      "Threshold uses hasExceededInteractionMoveThreshold with the pinned y so it collapses to horizontal-only",
+      "cleanup() removes all three listeners with matching capture flags and nulls gestureRef",
+      "blur cancels and discards only when a preview had started",
+      "bun type-check and bun lint pass; no any, no ts-expect-error"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 6000 }
+  },
+  {
+    "id": "tp_tests_005",
+    "phase": "tests",
+    "task_type": "hook_test_extension",
+    "module": "grid-hooks",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+    "retry_count": 0,
+    "instruction": "Extend packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx with the 14 NEW cases in change_plan.md §7.2. COUNT CONTRACT (reconciled at packet planning; §3's '11 cases' was stale): the file has exactly 3 existing tests today — 'creates a one-day all-day draft and stops the opening press', 'ignores right-click presses', 'dismisses an existing draft without creating a replacement'. All 3 must survive UNMODIFIED (they exercise the opt-out path, AC-3). Add 14 new cases => 17 total. Extend renderHarness with an isMultiDayDragEnabled option defaulting to false so existing calls are unchanged, and add the §7.2 column-mapping getStartDate fixture (100px columns from x=0 clamped to [0,6], plus a y term that mirrors getDateByXY's unbounded minute add so a live y WOULD roll the day — this is what makes the vertical-drag test meaningful). Add afterEach(() => draftActions.discard()) alongside the existing afterEach(cleanup). TRAP TO BAKE IN: fireEvent.mouseMove does not set `buttons` in jsdom and the gesture finishes on buttons !== 1, so every drag-continuation mouseMove must pass { buttons: 1, clientX, clientY }; one case must deliberately omit buttons to assert the release-outside-the-window path. Semantic role/name queries only — no CSS, no data-* locators. Restore every spy in teardown.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The 3 existing tests and renderHarness that must be preserved."
+      },
+      {
+        "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "content": "<hydrated at execution: output of tp_codegen_004>",
+        "reason": "Hook under test."
+      },
+      {
+        "path": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/change_plan.md",
+        "content": "<hydrated at execution: section 7.2 case table>",
+        "reason": "The 14 cases and their assertions."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "The 3 pre-existing tests are byte-identical in intent and still pass",
+      "15 new cases are added, 18 total. COUNT RECONCILIATION: change_plan.md §3 said 11, §7.2's table has 14 rows and §10 said 14. The table is the authority for 14, and §7.2's closing prose mandates one further case (deliberately omit `buttons` to prove the release-outside-the-window path finishes the gesture), which is not a table row. 14 + 1 = 15 new; 15 + 3 pre-existing = 18 total. §3's 11 was stale and is superseded.",
+      "Vertical-only drag case asserts a one-day draft with a fixture whose y term would otherwise roll the date",
+      "Edge-clamp case covers both x below 0 and x beyond the last column",
+      "A listener-balance case asserts add/remove parity for mousemove, mouseup and blur",
+      "A Day-shaped (no opt-in, 1-arity getStartDate) case asserts zero listener registrations",
+      "All spies restored in teardown; no store leakage between tests"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 10000 }
+  },
+  {
+    "id": "tp_codegen_006",
+    "phase": "codegen",
+    "task_type": "wrapper_hook",
+    "module": "week-grid-hooks",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+    "retry_count": 0,
+    "instruction": "Create packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts, the Week-local wrapper, mirroring the existing 20-line useTimedGridDraftCreation.ts in the same directory. Per change_plan.md D3 it takes { dateCalcs: DateCalcs; startOfView: Dayjs } — deliberately NOT weekProps, because useDateCalcs.ts shows getDateStrByXY's third parameter is _firstDayInView (underscore-prefixed and discarded), and a Dayjs is a one-line test fixture while WeekProps is not. The argument is still passed through so the signature is honoured. It calls useAllDayDraftCreation with: getStartDate: (clientX, clientY) => dateCalcs.getDateStrByXY(clientX, clientY, startOfView, YEAR_MONTH_DAY_FORMAT); isMultiDayDragEnabled: true; onCreateGridDraft: (draft) => draftActions.startGridDraft({ activity: 'gridClick', draft }). It returns that callable unchanged so AllDayRowRenderProps.onAllDayMouseDown keeps its (event: MouseEvent<HTMLElement>) => void type. Import DateCalcs from ./useDateCalcs as the sibling module does. No barrel file.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The 20-line shape to mirror, including import style and the gridClick handoff."
+      },
+      {
+        "path": "packages/web/src/views/Week/hooks/grid/useDateCalcs.ts",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "Week's DateCalcs signature: getDateStrByXY(x, y, _firstDayInView, format?)."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Takes { dateCalcs, startOfView } and passes startOfView as the third getDateStrByXY argument",
+      "Sets isMultiDayDragEnabled: true",
+      "Opens the finished draft with activity 'gridClick'",
+      "Returns a value directly usable as an onMouseDown prop",
+      "bun type-check passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_codegen_007",
+    "phase": "codegen",
+    "task_type": "call_site_rewire",
+    "module": "week-allday-row",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+    "retry_count": 0,
+    "instruction": "Rewire packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx to the new wrapper. Replace the current lines 48-61 — the getAllDayDraftStartDate arrow, the openAllDayDraft arrow, and the useAllDayDraftCreation({ getStartDate, onCreateGridDraft }) call — with a single `const onMouseDown = useAllDayGridDraftCreation({ dateCalcs, startOfView });`. Then remove the imports that this deletion makes unused — per change_plan.md D3 that is draftActions, GridEventDraft and YEAR_MONTH_DAY_FORMAT, plus the old useAllDayDraftCreation import — but VERIFY each one is genuinely unreferenced elsewhere in the file before removing it; remove only the now-dead ones. Add the import for useAllDayGridDraftCreation. Everything else in the component is untouched: the render-prop contract, onAllDayMouseDown={onMouseDown}, rowsCount and useWeekEventViewModel all stay exactly as they are. This is a surgical edit, not a rewrite.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "The file being edited; import usage must be checked before pruning."
+      },
+      {
+        "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+        "content": "<hydrated at execution: output of tp_codegen_006>",
+        "reason": "The wrapper's exact call signature."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "onAllDayMouseDown still receives a callable with the same type; no render-prop signature changes",
+      "No unused import remains and no still-used import was removed",
+      "dateCalcs and startOfView are both in scope at the call",
+      "bun type-check and bun lint pass"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_tests_008",
+    "phase": "tests",
+    "task_type": "hook_test",
+    "module": "week-grid-hooks",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+    "retry_count": 0,
+    "instruction": "Create packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx covering the 5 cases in change_plan.md §7.3: (1) opt-in is on — mousedown x=50 then mousemove/mouseup x=350 produces a multi-day span in the store, proving Week passes isMultiDayDragEnabled: true; (2) gridClick handoff — after mouseup, useDraftStore.getState().status?.activity === 'gridClick' and gridDraft.values.schedule is the dragged span; (3) format passthrough — the stub records its arguments and getDateStrByXY is called with YEAR_MONTH_DAY_FORMAT and with startOfView as the third argument; (4) y is pinned — the stub records every y it receives and every gesture-time call gets the mousedown y; (5) callable return — the returned value is invoked directly as an onMouseDown prop, which is the compile-time proof of the (event: MouseEvent<HTMLElement>) => void contract. Harness is a DateCalcs-shaped stub (getDateByXY, getDateStrByXY, getMinuteByY, getYByDate) plus a startOfView Dayjs. NO react-query, NO WeekProps, no module mocks. Remember drag-continuation mouseMove needs { buttons: 1 }. Discard store state in teardown.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+        "content": "<hydrated at execution: output of tp_codegen_006>",
+        "reason": "Hook under test."
+      },
+      {
+        "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "content": "<hydrated at execution: output of tp_tests_005>",
+        "reason": "Harness conventions and the buttons:1 trap to stay consistent with."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "All 5 §7.3 cases present",
+      "No react-query provider and no WeekProps fixture required to run",
+      "The y-pin case would fail if the hook passed a live clientY",
+      "Store state discarded in teardown"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 6000 }
+  },
+  {
+    "id": "tp_docs_009",
+    "phase": "docs",
+    "task_type": "doc_addition",
+    "module": "docs-frontend",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "docs/frontend/week-drag-interaction.md",
+    "retry_count": 0,
+    "instruction": "Add a new section 'Drag-to-create in the all-day row' to docs/frontend/week-drag-interaction.md. Document: the gesture lifecycle (capture-phase window mousemove/mouseup plus blur, threshold, live preview via startGridDraft activity 'creating' then setGridDraft, terminal handoff); the clientY pin and WHY it exists — useGridCoordinates.getDateByXY adds getMinuteByY(y) minutes to the column date and getMinuteByY floors at 0 but has no upper bound, so a pointer dragged well below the grid exceeds 1440 minutes and silently rolls the resolved date to the next day; the x-only threshold (feeding the pinned y makes dy identically 0 so the shared helper collapses to |dx| > t); and the exclusive-end all-day convention. Also record the D8 consequence: in Week, click-to-create now completes on mouseup rather than mousedown, and the form still opens because handleChange in packages/web/src/views/Week/components/Draft/hooks/actions/useDraftActions.ts (lines 369-383) calls setIsFormOpen(true) when activity === 'gridClick', re-run by the effect in packages/web/src/views/Week/components/Draft/hooks/effects/useDraftEffects.ts (lines 62-64). USE THOSE FULL PATHS — do not cite the files by bare filename. Match the document's existing heading depth and prose style. Append; do not reorder existing sections.",
+    "inputs": [
+      {
+        "path": "docs/frontend/week-drag-interaction.md",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "Existing structure, heading depth and tone to match."
+      },
+      {
+        "path": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/change_plan.md",
+        "content": "<hydrated at execution: sections 4, 6 and D5/D8>",
+        "reason": "The gesture spec, the pin rationale and the verified form-opening chain."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "New section added; no existing section reordered or rewritten",
+      "The clientY rollover trap is explained with its cause, not just asserted",
+      "useDraftActions.ts and useDraftEffects.ts are cited by full repo-relative path",
+      "Heading depth matches the surrounding document"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 4000 }
+  },
+  {
+    "id": "tp_docs_010",
+    "phase": "docs",
+    "task_type": "config_append",
+    "module": "repo-config",
+    "pass_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+    "artifact_path": ".gitignore",
+    "retry_count": 0,
+    "instruction": "Append a `.sdlc/` entry to .gitignore under the existing `# DIRS #` grouping. STRICT APPEND-ONLY MERGE SEMANTICS: every pre-existing line must remain byte-identical and in its original order — nothing reordered, rewritten, deduplicated or removed. Verified absent at 4189de1, but re-check before writing and make this a no-op if a .sdlc entry already exists. This is deliberately its own packet so AC-13's byte-identical constraint is trivially auditable in the diff: the diff must show exactly one added line.",
+    "inputs": [
+      {
+        "path": ".gitignore",
+        "content": "<hydrated at execution from working tree at 4189de1>",
+        "reason": "Must be preserved byte-for-byte apart from the single appended entry."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      ".gitignore contains a .sdlc/ entry",
+      "git diff shows exactly one added line and zero removed lines",
+      "The entry sits under the # DIRS # grouping"
+    ],
+    "budget": { "maxInputTokens": 3000, "maxOutputTokens": 1500 }
+  }
+]
