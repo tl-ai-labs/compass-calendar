@@ -1,0 +1,11 @@
+{
+  "command": "bun test:web",
+  "captured_before_edits": true,
+  "git_head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "pass": 2298,
+  "fail": 0,
+  "files": 302,
+  "expect_calls": 5772,
+  "duration_sec": 99.43,
+  "note": "node_modules was absent; ran `bun install --frozen-lockfile` first (1430 packages, bun.lock unchanged). Pre-install the suite reported 0 pass / 302 fail from a missing jsdom package, not real failures."
+}

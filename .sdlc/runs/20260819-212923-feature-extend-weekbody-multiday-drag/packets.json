@@ -1,0 +1,196 @@
+[
+  {
+    "id": "tp_p1_constants",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "interaction",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/interaction/interaction.constants.ts",
+    "instruction": "Append ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX = 4 and extend the file-header doc comment with the 'do not unify' paragraph from change_plan.md 3.1. Change nothing else: do not reorder, retype or renumber any existing export.",
+    "inputs": [
+      { "path": "packages/web/src/interaction/interaction.constants.ts", "reason": "full current file - the edit is an append plus a doc-comment extension" }
+    ],
+    "acceptance": [
+      "every existing export keeps its exact name and value",
+      "new export ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX equals 4",
+      "the doc comment explains why it is separate from TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX",
+      "no import statements added"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1500 },
+    "retry_count": 0,
+    "depends_on": [],
+    "routing_note": "codegen + frontend_util -> gemini-flash (rule 7). Append-only, schema-driven."
+  },
+  {
+    "id": "tp_p2_math",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "grid-math",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+    "instruction": "NEW pure module. Export interface AllDayCreateRange { startDate: string; endDate: string } and const getAllDayCreateRange(anchorDate: string, pointerDate: string): AllDayCreateRange. Normalize reverse drags; end is EXCLUSIVE (later day + 1). No clamping. Use dayjs from @core/util/date/dayjs and YEAR_MONTH_DAY_FORMAT from @core/constants/date.constants. Never new Date(string).",
+    "inputs": [
+      { "path": ".sdlc/runs/.../change_plan.md#3.2", "reason": "exact implementation contract, 4 numbered steps" },
+      { "path": "packages/web/src/grid/interaction/math/snap.ts", "reason": "house style of the math folder: named const arrow exports, no default export" }
+    ],
+    "acceptance": [
+      "getAllDayCreateRange('2026-05-20','2026-05-22') === { startDate:'2026-05-20', endDate:'2026-05-23' }",
+      "getAllDayCreateRange('2026-05-22','2026-05-20') === { startDate:'2026-05-20', endDate:'2026-05-23' }",
+      "getAllDayCreateRange('2026-05-20','2026-05-20') === { startDate:'2026-05-20', endDate:'2026-05-21' }",
+      "no React, no DOM, no clamping",
+      "no occurrence of 'new Date('"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1500 },
+    "retry_count": 0,
+    "depends_on": [],
+    "routing_note": "codegen + frontend_util -> gemini-flash (rule 7). Pure function with a fully specified contract."
+  },
+  {
+    "id": "tp_p3_math_test",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-math",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+    "instruction": "NEW bun test file for getAllDayCreateRange. Implement the 8 cases in change_plan.md 7.1 verbatim, including a local resolveDay helper that reproduces getVisibleDateIndexByX's clamp over a fixed 7-day week so the edge cases test composed behavior without a second clamp.",
+    "inputs": [
+      { "path": "packages/web/src/grid/interaction/math/all-day.create.ts", "reason": "the module under test, as produced by tp_p2_math" },
+      { "path": ".sdlc/runs/.../change_plan.md#7.1", "reason": "the 8 test names and their exact expected values" }
+    ],
+    "acceptance": [
+      "imports from 'bun:test', placed after value imports",
+      "8 it() blocks matching the plan's names",
+      "covers forward, reverse, single-day, all-7-days, left-clamp, right-clamp, month boundary, DST boundary",
+      "no new Date('YYYY-MM-DD') anywhere"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2500 },
+    "retry_count": 0,
+    "depends_on": ["tp_p2_math"],
+    "routing_note": "tests -> gemini-flash (rule 8). Genuinely scaffold-heavy: pure-function table tests."
+  },
+  {
+    "id": "tp_p4_hook",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "all-day-drag-create",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+    "instruction": "Extend the click-only hook into the escalating gesture specified in change_plan.md 3.4 and the 17-row state machine in 4. Keep the bare-function return type. Retain the mousedown commit. finish() calls preventDefault but NOT stopPropagation. Preview gate is a resolved-day change. Move handler uses live X and frozen anchor Y.",
+    "inputs": [
+      { "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts", "reason": "the file being extended" },
+      { "path": "packages/web/src/grid/hooks/useTimedDraftCreation.ts", "reason": "reference implementation to mirror" },
+      { "path": ".sdlc/runs/.../change_plan.md#3.4,#4", "reason": "closure table and gesture state machine" }
+    ],
+    "acceptance": [
+      "isRightClick guard returns before preventDefault",
+      "isDrafting branch discards and returns before any listener is installed",
+      "commit(buildDraft(anchorDate)) is the last statement of the mousedown handler",
+      "four window listeners installed; a single cleanup() removes all four with matching capture flags",
+      "finish() has no stopPropagation call",
+      "previewDraft returns early when !isPreviewStarted && pointerDate === anchorDate",
+      "resolvePointerDate passes anchorPoint.y, not mouseEvent.clientY",
+      "no new Activity_DraftEvent member, no new store state"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 4000 },
+    "retry_count": 0,
+    "depends_on": ["tp_p1_constants", "tp_p2_math"],
+    "routing_note": "codegen + existing_file_edit is NOT in rule 7's mechanical task_type list, so it falls through to the default rule -> opus. This is the policy's fail-safe-to-premium path working as designed, and it matches the architect's premium tag: three non-obvious divergences from the reference plus load-bearing closure/hoisting order."
+  },
+  {
+    "id": "tp_p5_hook_test",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "all-day-drag-create",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+    "instruction": "APPEND-ONLY edit. Lines 1-110 must stay byte-identical (AC-4). Append a second afterEach that discards the store, the dateAtX fake resolver, a new renderDragHarness, a trackWindowListeners pair-counting spy, and a sibling describe block with the 12 cases in change_plan.md 7.2.",
+    "inputs": [
+      { "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx", "reason": "the 110 lines that must survive byte-identical" },
+      { "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts", "reason": "the implementation under test, as produced by tp_p4_hook" },
+      { "path": ".sdlc/runs/.../change_plan.md#7.2", "reason": "the 12 test names, simulations and assertions" }
+    ],
+    "acceptance": [
+      "first 110 lines byte-identical to the pre-run file - verified mechanically, not by eye",
+      "listener teardown asserted for keydown as well as mousemove/mouseup/blur (AC-6, FR-15)",
+      "Escape mid-drag and window blur each assert gridDraft === null (AC-5)",
+      "unmount mid-gesture asserts both zero listener balance and gridDraft === null",
+      "a drag asserts onCreateGridDraft called twice with the last call spanning the dragged range (AC-3)",
+      "trackWindowListeners is installed after render() and restored within the test body"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 5000 },
+    "retry_count": 0,
+    "depends_on": ["tp_p4_hook"],
+    "routing_note": "Classified existing_file_edit rather than tests, so it routes to opus by the default rule. Justification: this is not scaffold-heavy test authoring - it is a surgical append to an existing file under a byte-identical-prefix constraint (AC-4, binding) with a listener-spy install/restore window that corrupts later tests in the same file if mistimed. The 'tests -> gemini-flash' rule exists for pattern-based scaffolding; tp_p3 and tp_p7 are that, this is not."
+  },
+  {
+    "id": "tp_p6_week_binding",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "week-grid",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+    "instruction": "NEW ~25-line binding hook mirroring useTimedGridDraftCreation.ts exactly, including its sibling-relative type imports ('../useWeek', './useDateCalcs'). Body given verbatim in change_plan.md 3.6.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts", "reason": "the 20-line pattern to mirror" },
+      { "path": ".sdlc/runs/.../change_plan.md#3.6", "reason": "the file body, given verbatim" }
+    ],
+    "acceptance": [
+      "mirrors useTimedGridDraftCreation's shape and import style",
+      "getStartDate passes weekProps.component.startOfView and YEAR_MONTH_DAY_FORMAT",
+      "onCreateGridDraft calls draftActions.startGridDraft with activity 'gridClick'",
+      "no default export"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1200 },
+    "retry_count": 0,
+    "depends_on": ["tp_p4_hook"],
+    "routing_note": "codegen + frontend_util -> gemini-flash (rule 7). Body specified verbatim in the plan."
+  },
+  {
+    "id": "tp_p7_week_binding_test",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "week-grid",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+    "instruction": "NEW bun test file with the 5 cases in change_plan.md 7.3. Component harness in the style of useAllDayDraftCreation.test.tsx (no renderHook). Stub DateCalcs and WeekProps as described.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts", "reason": "the hook under test" },
+      { "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx", "reason": "harness idiom to copy: render a button, fireEvent, bun:test imports last" },
+      { "path": ".sdlc/runs/.../change_plan.md#7.3", "reason": "the 5 test names and stub shapes" }
+    ],
+    "acceptance": [
+      "5 it() blocks matching the plan's names",
+      "asserts getDateStrByXY called with (clientX, clientY, startOfView, YEAR_MONTH_DAY_FORMAT)",
+      "asserts activity ends at 'gridClick', never stranded at 'creating' (FR-10)",
+      "afterEach(cleanup) and afterEach discarding the store"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 },
+    "retry_count": 0,
+    "depends_on": ["tp_p6_week_binding"],
+    "routing_note": "tests -> gemini-flash (rule 8). New-file scaffolding against an existing harness idiom."
+  },
+  {
+    "id": "tp_p8_allday_row",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "week-grid",
+    "pass_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "artifact_path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+    "instruction": "Surgical rewire per change_plan.md 3.8. Remove lines 48-61 and replace with a single useAllDayGridDraftCreation({ dateCalcs, weekProps }) call. Drop the three now-unused imports. Add the new import. Keep YEAR_MONTH_DAY_FORMAT and the weekProps.query destructure. Change nothing below line 63.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx", "reason": "full current file - the edit is line-addressed" },
+      { "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts", "reason": "the hook being wired in" }
+    ],
+    "acceptance": [
+      "GridEventDraft, draftActions and useAllDayDraftCreation imports removed",
+      "useAllDayGridDraftCreation imported via the @web alias",
+      "YEAR_MONTH_DAY_FORMAT retained (still used at the visibleDates map)",
+      "AllDayRowChildren, AllDayRowCalendar and useAllDayEventsLayer are byte-identical",
+      "no change to any prop type"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2500 },
+    "retry_count": 0,
+    "depends_on": ["tp_p6_week_binding"],
+    "routing_note": "codegen + react_component -> gemini-flash (rule 7). Paired with tp_p6: this packet deletes the import tp_p6's hook replaces, so the two must land together."
+  }
+]

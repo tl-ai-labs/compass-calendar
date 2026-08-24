@@ -35,5 +35,7 @@ test-results/
 tmp/
 
 # SDLC plugin run artifacts and its PostToolUse telemetry hook output
-.sdlc/
 .hook-logs/
+
+# AI-SDLC delegated-worker session caches (binary, ~1MB each)
+.sdlc/runs/*/delegation/_gemini_worker_save/

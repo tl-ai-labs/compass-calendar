@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "status": "accepted",
+  "commit_strategy": "none",
+  "git": {
+    "head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "commits": [],
+    "note": "All changes left uncommitted in the working tree, as instructed."
+  },
+  "gates": {
+    "gate_0_discovery": "approved (pre-run)",
+    "gate_1_requirements": "approved",
+    "gate_2_change_plan": "approved",
+    "gate_3_security": "approved (F-1 consciously deferred)",
+    "gate_4_final": "accepted"
+  },
+  "verification": {
+    "test_command": "bun test:web",
+    "baseline": {
+      "pass": 2298,
+      "fail": 0,
+      "files": 302
+    },
+    "result": {
+      "pass": 2324,
+      "fail": 0,
+      "files": 304
+    },
+    "delta": {
+      "tests_added": 26,
+      "files_added": 2,
+      "new_failures": 0
+    },
+    "type_check": "clean",
+    "biome_changed_files": "clean",
+    "biome_repo_wide": "fails identically at baseline with changes stashed (pre-existing, plus .sdlc/*.json which Biome scans because .gitignore has no .sdlc/ entry)",
+    "ac4_append_only": {
+      "first_110_lines_sha256": "d4ade6b554cea1815bdc6b8d3bcd2cb1f9c2b4576df53f154b1ca6d8e7a40b69",
+      "unchanged": true,
+      "numstat": "383 additions / 0 deletions"
+    },
+    "falsification_checks": [
+      {
+        "guard": "finish() must not stopPropagation()",
+        "injected_defect": "added mouseEvent.stopPropagation() after preventDefault()",
+        "detected": true,
+        "failing_test": "lets the finishing mouseup keep bubbling so useGridMouseUp can open the form"
+      },
+      {
+        "guard": "listener capture-flag symmetry",
+        "injected_defect": "removeEventListener(\"keydown\", handleKeyDown) without capture flag",
+        "detected": true,
+        "failing_tests": 3,
+        "message": "keydown#capture:1 / keydown#bubble:-1"
+      }
+    ]
+  },
+  "files_touched": [
+    {
+      "path": "packages/web/src/interaction/interaction.constants.ts",
+      "change": "edit",
+      "packet": "tp_p1_constants",
+      "tier": "mechanical"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "change": "new",
+      "packet": "tp_p2_math",
+      "tier": "mechanical"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "change": "new",
+      "packet": "tp_p3_math_test",
+      "tier": "mechanical"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "change": "edit",
+      "packet": "tp_p4_hook",
+      "tier": "premium"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "change": "edit (append-only)",
+      "packet": "tp_p5_hook_test + refinements",
+      "tier": "premium"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+      "change": "new",
+      "packet": "tp_p6_week_binding",
+      "tier": "mechanical"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+      "change": "new",
+      "packet": "tp_p7_week_binding_test",
+      "tier": "mechanical"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "change": "edit",
+      "packet": "tp_p8_allday_row",
+      "tier": "mechanical"
+    }
+  ],
+  "allowlisted_but_untouched": [
+    "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayEvents.tsx",
+    "packages/web/src/grid/layout/all-day-draft.position.ts",
+    "packages/web/src/grid/layout/all-day-draft.position.test.ts",
+    "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx",
+    "packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx"
+  ],
+  "cost": {
+    "total_usd": 4.2588,
+    "by_tier": {
+      "premium_opus_estimated": {
+        "model": "claude-opus-5",
+        "events": 9,
+        "input_tokens": 511891,
+        "output_tokens": 62597,
+        "cost_usd": 4.1245,
+        "provenance": "estimated"
+      },
+      "mechanical_flash_vendor": {
+        "model": "gemini-3.7-flash",
+        "events": 7,
+        "input_tokens": 9005,
+        "output_tokens": 13423,
+        "cost_usd": 0.1343,
+        "provenance": "vendor"
+      }
+    },
+    "by_phase": {
+      "change_plan": 1.018,
+      "codegen": 1.0064,
+      "senior_code_review": 0.9909,
+      "security_review": 0.4742,
+      "plan_task_packets": 0.332,
+      "requirements_analysis": 0.253,
+      "test_run": 0.1275,
+      "tests": 0.0568
+    },
+    "pricing_source": "policy opus-plus-flash-v37 pricing block, verified 2026-08-19",
+    "telemetry_file_total_usd": 4.2608,
+    "note": "Run-attributable cost is $4.2588 across 16 events. telemetry.jsonl also holds 2 pre-check smoke events (pass='pre-check-smoke', phase='docs', $0.0019) written before this run began; they make the file total $4.2608."
+  },
+  "reviews": {
+    "senior": {
+      "verdict": "approve-with-nits",
+      "blockers": 0,
+      "refinement_packets": 3,
+      "all_applied": true
+    },
+    "security": {
+      "verdict": "findings-informational",
+      "must_fix": 0,
+      "findings": 3,
+      "actionable_low": "F-1"
+    }
+  },
+  "known_findings": [
+    {
+      "id": "F-1",
+      "severity": "low",
+      "status": "accepted / deferred by user at Gate 3",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "summary": "Escape handler is a window capture-phase listener that stopPropagation()s without consulting shortcuts/escape-ownership.ts isHigherEscapeOwner(), unlike the app's 4 other Escape consumers.",
+      "remediation": "if (isPreviewStarted && !isHigherEscapeOwner()) { keyboardEvent.preventDefault(); keyboardEvent.stopPropagation(); }"
+    }
+  ],
+  "artifacts": {
+    "intent_brief": "intent_brief.md",
+    "requirements": "requirements.md",
+    "change_plan": "change_plan.md",
+    "packets": "packets.json",
+    "security_review": "security_review.md",
+    "telemetry": "telemetry.jsonl",
+    "provenance": "provenance.json",
+    "summary": "SUMMARY.md"
+  },
+  "finalized_at_gate": 4,
+  "untracked_artifacts": [
+    {
+      "path": ".hook-logs/hook.jsonl",
+      "created_during_run": true,
+      "written_by": "SDLC plugin MCP PostToolUse telemetry hook",
+      "attribution_note": "NOT the repo's Cursor/Codex format-after-edit hooks - none of .claude/settings.json, .cursor/hooks.json or .codex/hooks.json references .hook-logs or mcp_tool_postuse. Entry timestamps match this run's MCP dispatches, first at 04:30:27Z alongside the pre-check smoke telemetry event.",
+      "action": "left in place; outside the write contract. Follow-up: add .hook-logs/ to .gitignore."
+    }
+  ],
+  "follow_ups": [
+    "Add .sdlc/ to .gitignore or Biome's ignore list - Biome currently scans run artifacts and fails lint on them.",
+    "Add .hook-logs/ to .gitignore.",
+    "Baseline lint as well as tests in future pre-checks; repo-wide bun lint already failed at HEAD and Gate 0 did not surface it.",
+    "F-1 (low): gate the Escape preventDefault/stopPropagation on !isHigherEscapeOwner()."
+  ]
+}

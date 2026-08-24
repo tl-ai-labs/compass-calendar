@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+  "intent": "feature-extend",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": ".sdlc/runs/20260819-212923-feature-extend-weekbody-multiday-drag/requirements.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:c6e86d59026836695dd9a0dca14c07b9f778abe84a9bc4e927b24cd291dda62d",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "phase1_requirements",
+      "written_at": "2026-08-20T04:46:03.955Z"
+    },
+    {
+      "path": "packages/web/src/interaction/interaction.constants.ts",
+      "existed_before": true,
+      "sha_before": "sha256:f7600560c6a2a09465d2054537f3e240ac7ff3209ecdbdc2c1e78d5be64913bc",
+      "sha_after": "sha256:136c8e95ce325584fe91470c8027bef27e6ca15078ee8089fb4079b8c74eed79",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_p1_constants",
+      "written_at": "2026-08-20T05:05:42.430Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:6e986e3cd6f4a7e34ebb445bd1c0a159d71652ed7af9f3e1a39da31fc58bfac0",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_p2_math",
+      "written_at": "2026-08-20T05:05:42.491Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:9aa1fd6a6f2b1657487d0704db9cea9593521ca509347aa0e9ce3d33920b3f7e",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_p3_math_test",
+      "written_at": "2026-08-20T05:07:01.943Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5b055bd33164b7a1dbcc8a33672e7bfc03d328c3270e0b0c3759cbf41d334891",
+      "sha_after": "sha256:6d6acc25da6efba17976bcd3a7523cec8154660ecc5dd966ca0d20053c9b9867",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_p4_hook",
+      "written_at": "2026-08-20T05:07:45.875Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:236ecb07ec5cb7475e8d67fd3340f9ecc5170e6beb8ed51a76aedc744c7e6df2",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_p6_week_binding",
+      "written_at": "2026-08-20T05:09:18.987Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:12c22de745284749b42fea039f5d9079cedb45c9313497b7daa8f5fb95950058",
+      "sha_after": "sha256:e62b251d45860e41efaf6a2d89d342485ed212361defe30f0e0fcc35845e888e",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_p8_allday_row",
+      "written_at": "2026-08-20T05:13:34.344Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d4ade6b554cea1815bdc6b8d3bcd2cb1f9c2b4576df53f154b1ca6d8e7a40b69",
+      "sha_after": "sha256:672f3db39d545f0170ef3296bbefde9e9d3c0e917101f4d5034c0f19dbd802a4",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_p5_hook_test",
+      "written_at": "2026-08-20T05:13:34.278Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:ac6119a411b062715ddb482298a568536f5d2515f26937cb16e99a3475129f77",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_p7_week_binding_test",
+      "written_at": "2026-08-20T05:14:54.460Z"
+    }
+  ]
+}
