@@ -1,0 +1,160 @@
+{
+  "module": "readme",
+  "phase": "senior_code_review",
+  "mode": "brownfield",
+  "intent": "docs",
+  "pass_id": "20260820-212654-docs-weekly-view-interactions-v3",
+  "verdict": "approved",
+  "blockers": [],
+  "non_blocking_observations": [
+    {
+      "severity": "minor",
+      "file": "README.md",
+      "observation": "\"stretch it across as many days as you need\" is mild hyperbole. All-day edge-resize is the only interaction in the week adapter that does NOT participate in edge navigation: packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts calls updateEdgeNavigation() only for the allDayDrag and timedDrag branches (lines ~375 and ~453), while the allDayResize branch just calls updateAllDayResizeInteractionVisual(). all-day.resize.ts also resolves the new edge via getNearestDayColumn(layout.dayColumns, ...), i.e. only columns currently rendered, and docs/frontend/week-drag-interaction.md states multi-day spans are clamped to the visible window. So one gesture can span at most the days visible in the current week window; longer spans need a second gesture after navigating. The underlying capability (cross-day stretching of an existing all-day event) is genuine, so this is a wording nit, not a false claim.",
+      "suggested_wording": "\"...to stretch it across the days of the week\" or \"...across several days\"."
+    },
+    {
+      "severity": "minor",
+      "file": "README.md",
+      "observation": "\"When you edit or delete one, Compass asks what you actually meant\" implies an up-front scope prompt. Per docs/acceptance/recurring-events.md line 28, the common path is act-then-promote: the change applies to This Event immediately, and a live toast then offers \"1 This and Following\" and \"2 All\". A genuine up-front choice exists only for structural recurrence-rule changes (Scenario 6), where \"This Event\" is not offered. The three scopes named in the prose are exactly right (RecurrenceScopeSchema in packages/core/src/types/event-command.contracts.ts is \"this\" | \"thisAndFollowing\" | \"all\"); only the timing of the prompt is glossed.",
+      "suggested_wording": "\"...Compass applies it to that occurrence and offers to widen it — to this one and everything after it, or the entire series.\""
+    },
+    {
+      "severity": "minor",
+      "file": "README.md",
+      "observation": "The bold lead-in \"Multi-day select\" names a selection gesture, but the blurb describes moving and stretching an existing event; nothing in the product selects a multi-day range. The body sentence (\"an event doesn't have to stay where you first put it\") disambiguates immediately and no create-by-drag claim is made, so FR-2.2 is satisfied — but the label is the one residual place a reader could infer drag-to-select-days. The label is mandated by FR-1.3, so changing it would need a requirements change, not a doc fix. \"Multi-day events\" would carry zero implication risk."
+    },
+    {
+      "severity": "minor",
+      "file": ".sdlc/runs/20260820-212654-docs-weekly-view-interactions-v3/packets.json",
+      "observation": "Stale evidence path in packet tp_docs_001: it cites packages/web/src/views/Calendar/components/Grid/allDay/useAllDayDraftCreation.ts, which does not exist on this branch. The real file is packages/web/src/grid/hooks/useAllDayDraftCreation.ts. The negative evidence itself is correct there (endDate = dayjs(startDate).add(1, \"day\"), a fixed single-day draft), so the FR-2.2 guardrail held; only the citation is wrong. Recorded for provenance hygiene; no artifact change required."
+    },
+    {
+      "severity": "minor",
+      "file": ".sdlc/runs/20260820-212654-docs-weekly-view-interactions-v3/provenance.json",
+      "observation": "Both files_touched entries carry backup_path: null, while NFR-6 promises pre-write backups so /mmo:revert can restore pre-run state. Both files are tracked in git and the diff is trivially revertible via git checkout, so operational risk is nil, but the recorded provenance does not match the stated NFR. Outside this review's write scope."
+    },
+    {
+      "severity": "minor",
+      "file": ".gitignore",
+      "observation": ".hook-logs/ remains untracked and unignored after this run. It pre-dates this run (not this run's output) and ignoring it was not in scope, so no action here — flagged only so it is not mistaken for run output at commit time."
+    },
+    {
+      "severity": "minor",
+      "file": "README.md",
+      "observation": "Bullet style uses an em dash after the bold lead-in (\"- **Multi-day select** — ...\"), while the nearest sibling list uses a colon (\"- **Frontend**: React, ...\"). Internally consistent across all three new bullets and it reads cleanly; noted only as a house-style nit."
+    }
+  ],
+  "verified_claims": [
+    {
+      "claim": "Drag an event to move it to another day.",
+      "verified_against": "packages/web/src/grid/interaction/math/cross-row.drag.ts, packages/web/src/grid/interaction/math/timed.drag.ts, packages/web/src/grid/interaction/math/all-day.drag.ts",
+      "verdict": "accurate",
+      "evidence": "timed.drag.ts and all-day.drag.ts both resolve a new day via resolveDragColumn(...) and write nextColumn.date/index into the visual; cross-row.drag.ts additionally moves an event between the all-day row and the timed grid (getCrossRowTimedPlacement / getCrossRowAllDayPlacement, both keyed off getNearestDayColumn). Covered by cross-row.drag.test.ts and the adapter drag test suites."
+    },
+    {
+      "claim": "Drag the edge of an all-day event along the strip at the top of the week to stretch it across days.",
+      "verified_against": "packages/web/src/grid/interaction/math/all-day.resize.ts, packages/web/src/grid/components/AllDayEventCard.tsx, packages/web/src/views/Week/interaction/adapter/week-interaction.all-day-resize.test.ts",
+      "verdict": "accurate",
+      "evidence": "updateAllDayResizeVisual maps the pointer to a day column and recomputes startDayIndex/endDayIndex via resizeFromStart/resizeFromEnd — the span is expressed purely in whole days. AllDayEventCard.tsx wires real edge handles (onScalerMouseDown with \"startDate\" / \"endDate\", lines 210 and 221). The adapter suite covers right-edge, left-edge-with-flip, and clipped-event cases."
+    },
+    {
+      "claim": "Cross-day stretching is scoped to all-day events only (no overclaim for timed events).",
+      "verified_against": "packages/web/src/grid/interaction/math/timed.resize.ts",
+      "verdict": "accurate",
+      "evidence": "Timed resize operates entirely in minutes within a single day: getStartEdgeResizeTimes/getEndEdgeResizeTimes clamp to [0, MINUTES_PER_DAY] and never touch a day index. The prose says \"the edge of an all-day event\", so the boundary is stated correctly."
+    },
+    {
+      "claim": "No create-by-drag claim (the FR-2.2 regression from the two prior CMP-102 runs).",
+      "verified_against": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "verdict": "accurate",
+      "evidence": "The hook is a mousedown handler that computes endDate = dayjs(startDate).add(1, \"day\") — a fixed single-day draft with no pointer-move span. Its test asserts \"creates a one-day all-day draft\". The README section contains no create/draw/select-empty-space language; the multi-day bullet is anchored on an existing event (\"an event doesn't have to stay where you first put it\"). The regression is not present on this branch."
+    },
+    {
+      "claim": "Edit/delete scopes are just this occurrence, this one and everything after it, or the entire series.",
+      "verified_against": "packages/core/src/types/event-command.contracts.ts, docs/acceptance/recurring-events.md",
+      "verdict": "accurate",
+      "evidence": "RecurrenceScopeSchema enumerates exactly \"this\" | \"thisAndFollowing\" | \"all\" (event-command.contracts.ts line ~31, referenced by both ReplaceEventInputSchema and DeleteEventInputSchema), and its test asserts those three and rejects unknown values. The runbook mirrors them in Scenarios 3/4/5 (edit) and 7/8/9 (delete) as \"This Event\", \"This and Following Events\", \"All Events\"."
+    },
+    {
+      "claim": "Compass asks what you actually meant (scope-choice framing).",
+      "verified_against": "docs/acceptance/recurring-events.md line 28, Scenario 6",
+      "verdict": "overclaimed",
+      "evidence": "Non-blocking framing gloss. The default path applies the edit/delete to This Event immediately and then offers promotion via a live toast; only a recurrence-rule change forces an explicit up-front choice. The three scopes themselves are correct and reachable. See non_blocking_observations."
+    },
+    {
+      "claim": "The recurring events runbook is where that behavior gets verified case by case (framed as verification, not a feature guide).",
+      "verified_against": "docs/acceptance/recurring-events.md",
+      "verdict": "accurate",
+      "evidence": "The file opens \"This runbook covers the recurring event UX in Compass\" and its Scope section reads \"Use this guide to validate: ...\", with a Setup section (start the app, log in) and ten numbered manual scenarios plus Focused Regression Checks. The README frames it as verification and states no scenario count, satisfying FR-3.2 and FR-3.3."
+    },
+    {
+      "claim": "Give a single event its own color from the event form.",
+      "verified_against": "packages/web/src/views/Forms/EventForm/EventForm.tsx, packages/web/src/views/Forms/EventForm/EventColorPicker/EventColorPicker.tsx",
+      "verdict": "accurate",
+      "evidence": "EventForm.tsx imports EventColorPicker (line 59) and mounts it (line ~821) with value={color} and onChange={(next) => patchDraftFields({ color: next })}, where color comes off the draft's own values (line 231). The picker is a per-event radio group, not a calendar-level setting."
+    },
+    {
+      "claim": "It shows up on that event's chip in the grid.",
+      "verified_against": "packages/web/src/grid/components/AllDayEventCard.tsx, packages/web/src/grid/components/TimedEventCard.tsx, packages/web/src/common/styles/theme.util.ts",
+      "verdict": "accurate",
+      "evidence": "Both grid cards call useEventPalette(event.color, event.colorHex) (AllDayEventCard lines 71-72, TimedEventCard lines 142-143) and drive their fill/hover from the returned palette; resolveEventPalette maps a set slot through EVENT_COLOR_SLOT_HEX."
+    },
+    {
+      "claim": "Leave it alone and the event just follows your calendar's usual look.",
+      "verified_against": "packages/web/src/common/styles/theme.util.ts lines 105-115",
+      "verdict": "accurate",
+      "evidence": "resolveEventPalette falls through to EVENT_PALETTES[themeName] when both colorHex and color are undefined, i.e. the unset event renders in the active theme's default event palette. The picker's null swatch clears the slot (onChange(null)), and OptionalNullableEventColorSchema makes null a legal write that clears the tag."
+    },
+    {
+      "claim": "FR-4.4 compliance — no individual color named, no color count stated, no link on the colors bullet.",
+      "verified_against": "packages/core/src/types/event-color.contracts.ts, README.md line 43",
+      "verdict": "accurate",
+      "evidence": "EventColorSlotSchema is the sole source of truth for the slot names; the README bullet contains no slot name, no numeral, and no markdown link. The 11-slots-plus-null-swatch shape stays entirely in code, so no second source of truth is created (FR-4.4, FR-4.5, NFR-4 all satisfied)."
+    },
+    {
+      "claim": "Contract compliance — only README.md and .gitignore modified.",
+      "verified_against": "git status --porcelain, git diff --numstat, .sdlc/local/write-contract.json",
+      "verdict": "accurate",
+      "evidence": "porcelain shows exactly ' M .gitignore' and ' M README.md' plus the pre-existing untracked .hook-logs/. numstat is 1/0 for .gitignore and 8/0 for README.md — nine insertions, zero deletions, so no existing line was modified or reflowed in either file. Nothing under docs/**, packages/**, .hook-logs/** or any AI config was touched."
+    },
+    {
+      "claim": ".gitignore integrity — every pre-existing line byte-identical, exactly one appended line.",
+      "verified_against": "git show HEAD:.gitignore vs working tree",
+      "verdict": "accurate",
+      "evidence": "Zero deletions in numstat and the pre-existing tail (playwright-report/, test-results/, tmp/) is unchanged. '.sdlc/' is appended at the end of the '# DIRS #' block (the file's final block) in that block's own form: trailing slash, no leading slash. FR-5.1, FR-5.2, FR-5.3 satisfied."
+    },
+    {
+      "claim": "README structure — single contiguous insertion at heading level ##, correctly positioned.",
+      "verified_against": "README.md lines 37-43",
+      "verdict": "accurate",
+      "evidence": "One contiguous 8-line block: '## Weekly view interactions' sits after the Features block's 'See your Outlook events' line and before '## Tech stack', at the same heading depth as its siblings (## Features, ## Tech stack). Three bullets in the required order: multi-day select, recurring events, event colors. FR-1.1, FR-1.2, FR-1.3, NFR-5 satisfied."
+    },
+    {
+      "claim": "All relative links resolve on disk.",
+      "verified_against": "docs/frontend/week-drag-interaction.md, docs/acceptance/recurring-events.md",
+      "verdict": "accurate",
+      "evidence": "Both targets exist in the working tree (5359 and 8607 bytes respectively). They are the only two links added by this run; the README's pre-existing ./docs/self-hosting/README.md link is untouched. NFR-3 satisfied."
+    },
+    {
+      "claim": "Tone and register — end-user facing, no file paths, symbol names, or framework nouns in prose.",
+      "verified_against": "README.md lines 37-43",
+      "verdict": "accurate",
+      "evidence": "Second person, short, product-level vocabulary throughout (\"week grid\", \"the strip at the top of the week\", \"event form\", \"chip in the grid\"). No path, identifier, or framework name appears outside the two markdown link targets. Markdown parses cleanly: well-formed list, balanced bold, no trailing-whitespace line breaks. FR-1.4, FR-1.5, NFR-2 satisfied."
+    }
+  ],
+  "acceptance_criteria_status": [
+    { "criterion": "1. Section positioned between ## Features and ## Tech stack", "status": "met" },
+    { "criterion": "2. All three behaviors covered", "status": "met" },
+    { "criterion": "3. Existing-event resize/drag described, no create-by-drag claim", "status": "met" },
+    { "criterion": "4. Links to docs/frontend/week-drag-interaction.md", "status": "met" },
+    { "criterion": "5. Links to docs/acceptance/recurring-events.md as the verification reference", "status": "met" },
+    { "criterion": "6. No color named, no count, no link on the colors bullet", "status": "met" },
+    { "criterion": "7. .gitignore has .sdlc/, all pre-existing lines byte-identical", "status": "met" },
+    { "criterion": "8. Exactly two modified tracked files", "status": "met" },
+    { "criterion": "9. Markdown parses, all relative links resolve", "status": "met" },
+    { "criterion": "10. No secret, credential, or internal-only path leaked", "status": "met" }
+  ],
+  "env_fixture_check": "skipped — intent is docs; no new required env vars and no validating config module touched by this run",
+  "refinement_packets": []
+}

@@ -1,0 +1,108 @@
+[
+  {
+    "id": "tp_docs_001",
+    "phase": "docs",
+    "task_type": "doc_update",
+    "subtype": "readme",
+    "module": "readme",
+    "intent": "docs",
+    "pass_id": "20260820-212654-docs-weekly-view-interactions-v3",
+    "artifact_path": "README.md",
+    "retry_count": 0,
+    "instruction": "Insert one new section titled 'Weekly view interactions' into the root README.md, at heading level ## , positioned after the existing ## Features block (which ends with the 'Things you can't do in Compass (yet)' list) and before ## Tech stack. The section contains exactly three bulleted blurbs in this order: (1) Multi-day select - describe moving an EXISTING event across days by dragging it, and stretching an EXISTING event across several days by dragging its edge; link to ./docs/frontend/week-drag-interaction.md. NEVER state or imply that dragging empty all-day space creates a multi-day event - that capability does not exist on this branch. (2) Recurring events - describe choosing edit/delete scope (this occurrence / this and following / whole series); link to ./docs/acceptance/recurring-events.md framed as how the behavior is verified, not as a feature guide; do not state how many scenarios it contains. (3) Event colors - describe assigning a color to an individual event from the event form and it showing on the event's chip in the grid, and that leaving it unset follows the calendar's default appearance; no link; NEVER name an individual color or state how many colors exist. Match the README's existing end-user tone and its '- **Lead-in** - prose' bullet style. Summarize and link out; keep each blurb to roughly one to three sentences. Change nothing else in the file.",
+    "inputs": [
+      {
+        "path": "README.md",
+        "content": "## Features\n\nCool things you can do with in Compass\n\n- Find the perfect slot for an event with your keyboard: `SHIFT` + `↑` `↓` `←` `→`\n- Do everything from the cmd palette\n- Edit events smoothly\n- Google Calendar sync\n\nThings you can't do in Compass (yet):\n\n- See attendees, reminders, locations, and meeting links\n- See your Outlook events\n\n## Tech stack\n",
+        "reason": "Insertion point and surrounding bullet/tone conventions to match (README.md lines 23-37)."
+      },
+      {
+        "path": "packages/web/src/grid/interaction/math/all-day.resize.ts",
+        "content": "<edge-resize math for all-day events; establishes that an EXISTING all-day event's start/end can be dragged across days>",
+        "reason": "Source of truth for the 'stretch across days' half of blurb 1."
+      },
+      {
+        "path": "packages/web/src/grid/interaction/math/cross-row.drag.ts",
+        "content": "<cross-row drag math; establishes that an EXISTING event can be moved between days and between the all-day row and the timed grid>",
+        "reason": "Source of truth for the 'move across days' half of blurb 1."
+      },
+      {
+        "path": "packages/web/src/views/Calendar/components/Grid/allDay/useAllDayDraftCreation.ts",
+        "content": "const endDate = dayjs(startDate).add(1, \"day\")",
+        "reason": "NEGATIVE evidence. All-day draft creation derives a fixed single-day range, so there is no multi-day drag-to-create on this branch. This slice exists to prevent the FR-2.2 regression that the two prior CMP-102 runs shipped."
+      },
+      {
+        "path": "packages/core/src/types/event-color.contracts.ts",
+        "content": "export const EventColorSlotSchema = z.enum([...11 slots...]);",
+        "reason": "Establishes that color slots are an enumerable value owned by code. Included so the writer knows NOT to restate the names or count in prose (FR-4.4)."
+      },
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventColorPicker/EventColorPicker.tsx",
+        "content": "<radio-group picker rendered inside the event form; renders a null 'no color' swatch plus one swatch per enum slot>",
+        "reason": "Source of truth for blurb 3: where the picker lives (event form) and what unset means."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "section_markdown": {
+          "type": "string",
+          "description": "The complete new section, starting with the '## Weekly view interactions' heading line."
+        },
+        "insert_after_line": {
+          "type": "string",
+          "description": "The exact existing README line the section is inserted after."
+        }
+      },
+      "required": ["section_markdown", "insert_after_line"]
+    },
+    "acceptance": [
+      "Section heading is exactly '## Weekly view interactions' at heading level 2.",
+      "Section sits between the ## Features block and ## Tech stack.",
+      "All three behaviors are covered, in order: multi-day select, recurring events, event colors.",
+      "Multi-day select blurb describes resize/drag of an existing event and contains no create-by-drag claim (FR-2.2).",
+      "Multi-day select blurb links to ./docs/frontend/week-drag-interaction.md.",
+      "Recurring blurb links to ./docs/acceptance/recurring-events.md and frames it as the verification reference.",
+      "Recurring blurb states no scenario count (F-1).",
+      "Event colors blurb names no individual color, states no color count, and carries no link (FR-4.4, FR-4.5).",
+      "Prose contains no file paths, symbol names, or framework nouns outside of link targets (FR-1.4).",
+      "Diff against current README.md is a single contiguous insertion; no existing line is modified (NFR-5)."
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_docs_002",
+    "phase": "docs",
+    "task_type": "doc_update",
+    "subtype": "gitignore",
+    "module": "housekeeping",
+    "intent": "docs",
+    "pass_id": "20260820-212654-docs-weekly-view-interactions-v3",
+    "artifact_path": ".gitignore",
+    "retry_count": 0,
+    "instruction": "Append a single entry '.sdlc/' to the root .gitignore so this plugin's run bookkeeping is not committed. The entry goes at the end of the existing '# DIRS #' block, which is the final block in the file. Write it in the same form as the block's other directory entries: trailing slash, no leading slash, no comment. Do not modify, remove, reorder, or reflow any existing line, and do not restructure the file's comment-banner blocks.",
+    "inputs": [
+      {
+        "path": ".gitignore",
+        "content": "########\n# DIRS #\n########\n.vscode/\nblob-report/\nbuild/\nbuildcache/\nlogs/\nnode_modules/\npackages/backend/logs\npackages/backend/build\npackages/core/build/\npackages/web/node_modules/\npackages/web/build/\nplaywright-report/\ntest-results/\ntmp/\n",
+        "reason": "The trailing DIRS block: the append target and the entry-format convention to match."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "appended_line": { "type": "string" },
+        "position": { "type": "string", "description": "Where in the file the line was appended." }
+      },
+      "required": ["appended_line", "position"]
+    },
+    "acceptance": [
+      ".gitignore contains a '.sdlc/' entry.",
+      "The entry is appended within the trailing # DIRS # block.",
+      "Entry form matches the block's convention: trailing slash, no leading slash.",
+      "Every pre-existing line is byte-identical (FR-5.3).",
+      "The diff is exactly one added line (NFR-5)."
+    ],
+    "budget": { "maxInputTokens": 1000, "maxOutputTokens": 256 }
+  }
+]
