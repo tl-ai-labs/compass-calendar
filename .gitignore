@@ -34,6 +34,8 @@ playwright-report/
 test-results/
 tmp/
 
-# AI-SDLC run artifacts and hook logs (per-run records, not source)
-.sdlc/
+# Hook logs (local diagnostics, not source)
 .hook-logs/
+
+# AI-SDLC delegated-worker session caches (binary, ~1MB each)
+.sdlc/runs/*/delegation/_gemini_worker_save/

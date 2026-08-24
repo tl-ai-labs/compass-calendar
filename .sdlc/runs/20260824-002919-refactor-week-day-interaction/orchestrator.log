@@ -1,0 +1,153 @@
+MMO: 2026-08-24T07:41:48.713Z INFO   run.start run_id=20260824-002919-refactor-week-day-interaction mode=brownfield intent=refactor policy=opus-plus-flash-v37 auth_mode=vendor code_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar output_dir=.sdlc/runs/20260824-002919-refactor-week-day-interaction
+MMO: 2026-08-24T07:42:43.114Z INFO   phase.start run_id=20260824-002919-refactor-week-day-interaction phase=requirements_analysis form=intent-specific
+MMO: 2026-08-24T07:44:47.291Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T07:44:47.291Z INFO   route.decide packet_id=tp_requirements_001 phase=requirements_analysis task_type=delta_requirements_refactor module=web-interaction rule_index=0 rule_reason="Judgment-heavy, low volume" model_id=opus
+MMO: 2026-08-24T07:44:47.291Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T07:44:47.291Z INFO   dispatch.start packet_id=tp_requirements_001 model_id=opus max_out=9000 max_in=40000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T07:48:06.900Z DEBUG  dispatch.attempt packet_id=tp_requirements_001 attempt_number=1 ceiling_used=9000 hit_output_cap=false stop_reason=end_turn
+MMO: 2026-08-24T07:48:06.901Z INFO   dispatch.end packet_id=tp_requirements_001 model_id=opus ok=true terminal_reason=success tokens_in=10916 tokens_out=16315 tokens_cached=19103 cost_usd=0.5265765 latency_ms=199610 attempts=1
+MMO: 2026-08-24T07:48:06.902Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T07:48:06.903Z DEBUG  tool.call.end tool=execute_with_model duration_ms=199613 ok=true
+MMO: 2026-08-24T07:50:02.373Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=requirements_analysis form=intent-specific
+MMO: 2026-08-24T07:50:02.436Z INFO   gate.open run_id=20260824-002919-refactor-week-day-interaction gate=gate-1 title="Requirements (delta) approval"
+MMO: 2026-08-24T08:11:02.097Z INFO   gate.resolved run_id=20260824-002919-refactor-week-day-interaction gate=gate-1 response=approved
+MMO: 2026-08-24T08:11:02.156Z INFO   phase.start run_id=20260824-002919-refactor-week-day-interaction phase=change_plan form=intent-specific
+MMO: 2026-08-24T08:12:48.471Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:12:48.472Z INFO   route.decide packet_id=tp_change_plan_001 phase=change_plan task_type=delta_refactor_plan module=web-interaction rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:12:48.473Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:12:48.473Z INFO   dispatch.start packet_id=tp_change_plan_001 model_id=opus max_out=14000 max_in=40000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:17:46.115Z DEBUG  dispatch.attempt packet_id=tp_change_plan_001 attempt_number=1 ceiling_used=14000 hit_output_cap=false
+MMO: 2026-08-24T08:17:46.116Z ERROR  dispatch.error packet_id=tp_change_plan_001 model_id=opus error_class=DispatchFailed message="claude-cli timeout after 300s"
+MMO: 2026-08-24T08:17:46.130Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:17:46.131Z DEBUG  tool.call.end tool=execute_with_model duration_ms=297660 ok=true
+MMO: 2026-08-24T08:18:54.069Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:18:54.069Z INFO   route.decide packet_id=tp_change_plan_002a phase=change_plan task_type=delta_refactor_plan_decisions module=web-interaction rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:18:54.069Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:18:54.070Z INFO   dispatch.start packet_id=tp_change_plan_002a model_id=opus max_out=7000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:23:49.755Z DEBUG  dispatch.attempt packet_id=tp_change_plan_002a attempt_number=1 ceiling_used=7000 hit_output_cap=false
+MMO: 2026-08-24T08:23:49.757Z ERROR  dispatch.error packet_id=tp_change_plan_002a model_id=opus error_class=DispatchFailed message="claude-cli timeout after 300s"
+MMO: 2026-08-24T08:23:49.757Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:23:49.758Z DEBUG  tool.call.end tool=execute_with_model duration_ms=295689 ok=true
+MMO: 2026-08-24T08:24:09.048Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:24:09.049Z INFO   route.decide packet_id=smoke-opus-1 phase=requirements_analysis task_type=smoke module=smoke rule_index=0 rule_reason="Judgment-heavy, low volume" model_id=opus
+MMO: 2026-08-24T08:24:09.050Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:24:09.050Z INFO   dispatch.start packet_id=smoke-opus-1 model_id=opus max_out=64 max_in=1000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:24:15.466Z DEBUG  dispatch.attempt packet_id=smoke-opus-1 attempt_number=1 ceiling_used=64 hit_output_cap=false stop_reason=end_turn
+MMO: 2026-08-24T08:24:15.467Z INFO   dispatch.end packet_id=smoke-opus-1 model_id=opus ok=true terminal_reason=success tokens_in=6972 tokens_out=11 tokens_cached=19103 cost_usd=0.0795365 latency_ms=6417 attempts=1
+MMO: 2026-08-24T08:24:15.467Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:24:15.468Z DEBUG  tool.call.end tool=execute_with_model duration_ms=6419 ok=true
+MMO: 2026-08-24T08:24:17.392Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:24:17.392Z INFO   route.decide packet_id=smoke-flash-1 phase=docs task_type=smoke module=smoke rule_index=9 rule_reason="Volume work" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T08:24:17.393Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T08:24:17.393Z INFO   dispatch.start packet_id=smoke-flash-1 model_id=flash-completion max_out=64 max_in=1000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:24:17.394Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=64
+MMO: 2026-08-24T08:24:59.934Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=MAX_TOKENS usage="{\"promptTokenCount\":125,\"candidatesTokenCount\":2,\"totalTokenCount\":185,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2}],\"thoughtsTokenCount\":58}" http_status=200
+MMO: 2026-08-24T08:24:59.935Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=128
+MMO: 2026-08-24T08:25:01.971Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":125,\"candidatesTokenCount\":6,\"totalTokenCount\":229,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":6}],\"thoughtsTokenCount\":98}" http_status=200
+MMO: 2026-08-24T08:25:01.972Z DEBUG  dispatch.attempt packet_id=smoke-flash-1 attempt_number=1 ceiling_used=64 hit_output_cap=true stop_reason=MAX_TOKENS
+MMO: 2026-08-24T08:25:01.972Z DEBUG  dispatch.attempt packet_id=smoke-flash-1 attempt_number=2 ceiling_used=128 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T08:25:01.972Z INFO   dispatch.end packet_id=smoke-flash-1 model_id=flash-completion ok=true terminal_reason=success tokens_in=250 tokens_out=164 tokens_cached=0 cost_usd=0.001852 latency_ms=44579 attempts=2
+MMO: 2026-08-24T08:25:01.973Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=2
+MMO: 2026-08-24T08:25:01.973Z DEBUG  tool.call.end tool=execute_with_model duration_ms=44581 ok=true
+MMO: 2026-08-24T08:25:22.496Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:25:22.497Z INFO   route.decide packet_id=smoke-opus-changeplan phase=change_plan task_type=smoke module=smoke rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:25:22.497Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:25:22.497Z INFO   dispatch.start packet_id=smoke-opus-changeplan model_id=opus max_out=64 max_in=1000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:25:31.894Z DEBUG  dispatch.attempt packet_id=smoke-opus-changeplan attempt_number=1 ceiling_used=64 hit_output_cap=false stop_reason=end_turn
+MMO: 2026-08-24T08:25:31.895Z INFO   dispatch.end packet_id=smoke-opus-changeplan model_id=opus ok=true terminal_reason=success tokens_in=6971 tokens_out=11 tokens_cached=19103 cost_usd=0.0795265 latency_ms=9398 attempts=1
+MMO: 2026-08-24T08:25:31.895Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:25:31.896Z DEBUG  tool.call.end tool=execute_with_model duration_ms=9400 ok=true
+MMO: 2026-08-24T08:26:39.630Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:26:39.630Z INFO   route.decide packet_id=tp_change_plan_003 phase=change_plan task_type=delta_refactor_plan_decisions module=web-interaction rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:26:39.630Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:26:39.631Z INFO   dispatch.start packet_id=tp_change_plan_003 model_id=opus max_out=7000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:31:23.806Z DEBUG  dispatch.attempt packet_id=tp_change_plan_003 attempt_number=1 ceiling_used=7000 hit_output_cap=false stop_reason=end_turn
+MMO: 2026-08-24T08:31:23.807Z INFO   dispatch.end packet_id=tp_change_plan_003 model_id=opus ok=true terminal_reason=success tokens_in=24963 tokens_out=22088 tokens_cached=234442 cost_usd=0.9189809999999999 latency_ms=284177 attempts=1
+MMO: 2026-08-24T08:31:23.807Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:31:23.808Z DEBUG  tool.call.end tool=execute_with_model duration_ms=284178 ok=true
+MMO: 2026-08-24T08:33:01.439Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:33:01.439Z INFO   route.decide packet_id=tp_change_plan_004 phase=change_plan task_type=delta_refactor_plan_execution module=web-interaction rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:33:01.440Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:33:01.440Z INFO   dispatch.start packet_id=tp_change_plan_004 model_id=opus max_out=6000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:37:56.766Z DEBUG  dispatch.attempt packet_id=tp_change_plan_004 attempt_number=1 ceiling_used=6000 hit_output_cap=false
+MMO: 2026-08-24T08:37:56.768Z ERROR  dispatch.error packet_id=tp_change_plan_004 model_id=opus error_class=DispatchFailed message="claude-cli timeout after 300s"
+MMO: 2026-08-24T08:37:56.769Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:37:56.769Z DEBUG  tool.call.end tool=execute_with_model duration_ms=295330 ok=true
+MMO: 2026-08-24T08:39:02.855Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:39:02.855Z INFO   route.decide packet_id=tp_change_plan_005 phase=change_plan task_type=delta_refactor_plan_execution module=web-interaction rule_index=6 rule_reason="Judgment: delta design for feature-extend / refactor / deps" model_id=opus
+MMO: 2026-08-24T08:39:02.856Z DEBUG  adapter.construct model_id=opus adapter=claude-cli cache_hit=true
+MMO: 2026-08-24T08:39:02.856Z INFO   dispatch.start packet_id=tp_change_plan_005 model_id=opus max_out=6000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:43:57.614Z DEBUG  dispatch.attempt packet_id=tp_change_plan_005 attempt_number=1 ceiling_used=6000 hit_output_cap=false
+MMO: 2026-08-24T08:43:57.615Z ERROR  dispatch.error packet_id=tp_change_plan_005 model_id=opus error_class=DispatchFailed message="claude-cli timeout after 300s"
+MMO: 2026-08-24T08:43:57.619Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:43:57.620Z DEBUG  tool.call.end tool=execute_with_model duration_ms=294765 ok=true
+MMO: 2026-08-24T08:47:58.210Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=change_plan form=intent-specific
+MMO: 2026-08-24T08:47:58.268Z INFO   gate.open run_id=20260824-002919-refactor-week-day-interaction gate=gate-2 title="Change plan and scope approval"
+MMO: 2026-08-24T08:55:28.171Z INFO   gate.resolved run_id=20260824-002919-refactor-week-day-interaction gate=gate-2 response=approved
+MMO: 2026-08-24T08:55:28.230Z INFO   phase.start run_id=20260824-002919-refactor-week-day-interaction phase=plan_task_packets form=intent-specific
+MMO: 2026-08-24T08:58:04.275Z DEBUG  tool.call.start tool=log_telemetry arg_keys="telemetry_path,event"
+MMO: 2026-08-24T08:58:04.276Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:58:04.277Z DEBUG  tool.call.end tool=log_telemetry duration_ms=2 ok=true
+MMO: 2026-08-24T08:58:51.326Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:58:51.327Z INFO   route.decide packet_id=tp_s1_column_key_types phase=codegen task_type=frontend_util module=grid-interaction-types rule_index=7 rule_reason="Schema-driven boilerplate" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T08:58:51.328Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T08:58:51.328Z INFO   dispatch.start packet_id=tp_s1_column_key_types model_id=flash-completion max_out=1600 max_in=6000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:58:51.329Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=1600
+MMO: 2026-08-24T08:59:00.027Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":1143,\"candidatesTokenCount\":340,\"totalTokenCount\":2396,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1143}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":340}],\"thoughtsTokenCount\":913}" http_status=200
+MMO: 2026-08-24T08:59:00.028Z DEBUG  dispatch.attempt packet_id=tp_s1_column_key_types attempt_number=1 ceiling_used=1600 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T08:59:00.028Z INFO   dispatch.end packet_id=tp_s1_column_key_types model_id=flash-completion ok=true terminal_reason=success tokens_in=1143 tokens_out=1253 tokens_cached=0 cost_usd=0.012992 latency_ms=8700 attempts=1
+MMO: 2026-08-24T08:59:00.028Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T08:59:00.029Z DEBUG  tool.call.end tool=execute_with_model duration_ms=8703 ok=true
+MMO: 2026-08-24T08:59:56.227Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T08:59:56.228Z INFO   route.decide packet_id=tp_s1_column_key_runtime phase=codegen task_type=frontend_util module=grid-interaction-types rule_index=7 rule_reason="Schema-driven boilerplate" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T08:59:56.228Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T08:59:56.228Z INFO   dispatch.start packet_id=tp_s1_column_key_runtime model_id=flash-completion max_out=1800 max_in=8000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T08:59:56.228Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=1800
+MMO: 2026-08-24T09:00:25.595Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":1325,\"candidatesTokenCount\":358,\"totalTokenCount\":2822,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1325}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":358}],\"thoughtsTokenCount\":1139}" http_status=200
+MMO: 2026-08-24T09:00:25.596Z DEBUG  dispatch.attempt packet_id=tp_s1_column_key_runtime attempt_number=1 ceiling_used=1800 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T09:00:25.596Z INFO   dispatch.end packet_id=tp_s1_column_key_runtime model_id=flash-completion ok=true terminal_reason=success tokens_in=1325 tokens_out=1497 tokens_cached=0 cost_usd=0.015461 latency_ms=29368 attempts=1
+MMO: 2026-08-24T09:00:25.597Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T09:00:25.597Z DEBUG  tool.call.end tool=execute_with_model duration_ms=29370 ok=true
+MMO: 2026-08-24T09:01:51.066Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T09:01:51.067Z INFO   route.decide packet_id=tp_s2_thread_visual_types phase=codegen task_type=frontend_util module=grid-interaction-types rule_index=7 rule_reason="Schema-driven boilerplate" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T09:01:51.067Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T09:01:51.067Z INFO   dispatch.start packet_id=tp_s2_thread_visual_types model_id=flash-completion max_out=3000 max_in=10000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T09:01:51.067Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=3000
+MMO: 2026-08-24T09:01:58.844Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":2279,\"candidatesTokenCount\":1167,\"totalTokenCount\":3446,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2279}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1167}]}" http_status=200
+MMO: 2026-08-24T09:01:58.845Z DEBUG  dispatch.attempt packet_id=tp_s2_thread_visual_types attempt_number=1 ceiling_used=3000 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T09:01:58.845Z INFO   dispatch.end packet_id=tp_s2_thread_visual_types model_id=flash-completion ok=true terminal_reason=success tokens_in=2279 tokens_out=1167 tokens_cached=0 cost_usd=0.013922 latency_ms=7778 attempts=1
+MMO: 2026-08-24T09:01:58.846Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T09:01:58.846Z DEBUG  tool.call.end tool=execute_with_model duration_ms=7780 ok=true
+MMO: 2026-08-24T09:04:11.632Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T09:04:11.632Z INFO   route.decide packet_id=tp_s2_thread_layout_cache phase=codegen task_type=frontend_util module=grid-interaction-layout rule_index=7 rule_reason="Schema-driven boilerplate" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T09:04:11.633Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T09:04:11.633Z INFO   dispatch.start packet_id=tp_s2_thread_layout_cache model_id=flash-completion max_out=4000 max_in=12000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T09:04:11.633Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=4000
+MMO: 2026-08-24T09:05:01.839Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":2610,\"candidatesTokenCount\":1984,\"totalTokenCount\":5671,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2610}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1984}],\"thoughtsTokenCount\":1077}" http_status=200
+MMO: 2026-08-24T09:05:01.840Z DEBUG  dispatch.attempt packet_id=tp_s2_thread_layout_cache attempt_number=1 ceiling_used=4000 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T09:05:01.840Z INFO   dispatch.end packet_id=tp_s2_thread_layout_cache model_id=flash-completion ok=true terminal_reason=success tokens_in=2610 tokens_out=3061 tokens_cached=0 cost_usd=0.031464 latency_ms=50207 attempts=1
+MMO: 2026-08-24T09:05:01.841Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T09:05:01.842Z DEBUG  tool.call.end tool=execute_with_model duration_ms=50211 ok=true
+MMO: 2026-08-24T09:14:59.091Z DEBUG  tool.call.start tool=execute_with_model arg_keys="packet,policy_name,project_root,telemetry_path"
+MMO: 2026-08-24T09:14:59.092Z INFO   route.decide packet_id=tp_s2c_crossrow_drag phase=codegen task_type=frontend_util module=grid-interaction-math rule_index=7 rule_reason="Schema-driven boilerplate" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-24T09:14:59.092Z DEBUG  adapter.construct model_id=flash-completion adapter=mcp:model-dispatch cache_hit=true
+MMO: 2026-08-24T09:14:59.092Z INFO   dispatch.start packet_id=tp_s2c_crossrow_drag model_id=flash-completion max_out=4000 max_in=12000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-24T09:14:59.093Z DEBUG  api.gemini.request model_name=gemini-3.7-flash transport=vertex-adc max_output_tokens=4000
+MMO: 2026-08-24T09:15:19.622Z DEBUG  api.gemini.response model_name=gemini-3.7-flash transport=vertex-adc finish_reason=STOP usage="{\"promptTokenCount\":2339,\"candidatesTokenCount\":1701,\"totalTokenCount\":6246,\"trafficType\":\"ON_DEMAND\",\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2339}],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1701}],\"thoughtsTokenCount\":2206}" http_status=200
+MMO: 2026-08-24T09:15:19.622Z DEBUG  dispatch.attempt packet_id=tp_s2c_crossrow_drag attempt_number=1 ceiling_used=4000 hit_output_cap=false stop_reason=STOP
+MMO: 2026-08-24T09:15:19.622Z INFO   dispatch.end packet_id=tp_s2c_crossrow_drag model_id=flash-completion ok=true terminal_reason=success tokens_in=2339 tokens_out=3907 tokens_cached=0 cost_usd=0.038672 latency_ms=20530 attempts=1
+MMO: 2026-08-24T09:15:19.623Z DEBUG  telemetry.append telemetry_path=/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260824-002919-refactor-week-day-interaction/telemetry.jsonl events_written=1
+MMO: 2026-08-24T09:15:19.623Z DEBUG  tool.call.end tool=execute_with_model duration_ms=20532 ok=true
+MMO: 2026-08-24T09:45:19.352Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=plan_task_packets form=intent-specific
+MMO: 2026-08-24T09:45:19.406Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=execute_packets form=intent-specific
+MMO: 2026-08-24T09:45:19.461Z INFO   delegate.subagent.start run_id=20260824-002919-refactor-week-day-interaction phase=senior_code_review subagent=senior-reviewer
+MMO: 2026-08-24T09:45:19.517Z INFO   delegate.subagent.start run_id=20260824-002919-refactor-week-day-interaction phase=security_review subagent=security-reviewer
+MMO: 2026-08-24T09:58:50.085Z INFO   delegate.subagent.end run_id=20260824-002919-refactor-week-day-interaction phase=senior_code_review subagent=senior-reviewer ok=true artifact_path=.sdlc/runs/20260824-002919-refactor-week-day-interaction/senior_review.md
+MMO: 2026-08-24T11:53:46.642Z INFO   delegate.subagent.end run_id=20260824-002919-refactor-week-day-interaction phase=security_review subagent=security-reviewer ok=true artifact_path=.sdlc/runs/20260824-002919-refactor-week-day-interaction/security_review.md
+MMO: 2026-08-24T11:53:46.703Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=security_review form=intent-specific
+MMO: 2026-08-24T11:53:46.769Z INFO   gate.open run_id=20260824-002919-refactor-week-day-interaction gate=gate-3 title="Security review + checkpoint sign-off"
+MMO: 2026-08-24T11:59:41.004Z INFO   phase.start run_id=20260824-002919-refactor-week-day-interaction phase=generate_final_report form=default
+MMO: 2026-08-24T11:59:41.065Z INFO   phase.end run_id=20260824-002919-refactor-week-day-interaction phase=generate_final_report form=default
+MMO: 2026-08-24T11:59:41.117Z INFO   gate.open run_id=20260824-002919-refactor-week-day-interaction gate=gate-4 title="Final acceptance and commit decision"
+MMO: 2026-08-24T12:07:56.334Z INFO   gate.resolved run_id=20260824-002919-refactor-week-day-interaction gate=gate-4 response=approved
+MMO: 2026-08-24T12:07:56.393Z INFO   run.end run_id=20260824-002919-refactor-week-day-interaction outcome=completed total_cost_usd=1.874483

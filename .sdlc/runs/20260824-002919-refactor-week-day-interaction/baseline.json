@@ -1,0 +1,473 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.6.0",
+  "built_at": "2026-08-24T07:32:32Z",
+  "run_id": "20260824-002919-refactor-week-day-interaction",
+  "mode": "refresh",
+  "refresh_decision": "cached",
+  "refresh_reason": "git HEAD unchanged and no stack manifest mtime changed since baseline (built 2026-08-20T04:32:08Z). Generic Tier-1 baseline reused verbatim; a refactor-scoped code survey was layered on top.",
+  "project_baseline_rewritten": false,
+
+  "ab_test_context": {
+    "is_policy_ab_rerun": true,
+    "prior_run_id": "20260822-125447-refactor-week-day-interaction",
+    "prior_run_branch": "CMP-104/flash-agsdk-only",
+    "prior_run_shipped_commit": "62162a95851845ed146f6841723ddd0a315ba037",
+    "prior_run_shipped_subject": "refactor(web): brand Week/Day interaction column-key types",
+    "prior_commit_present_on_this_branch": false,
+    "prior_commit_containment": ["CMP-104/flash-agsdk-only", "origin/CMP-104/flash-agsdk-only"],
+    "branch_base_verified": true,
+    "branch_base_verification": "git merge-base --is-ancestor 62162a95 HEAD => false. HEAD == main == 4189de13. Clean pre-refactor start CONFIRMED.",
+    "duplication_still_present": true
+  },
+
+  "git": {
+    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "branch": "CMP-104/opus-plus-flash-v37",
+    "base": "main @ 4189de13 (identical commit)",
+    "dirty": true,
+    "dirty_detail": "Tracked: .claude/settings.json modified. Untracked: .hook-logs/, .sdlc/",
+    "remotes": [
+      { "name": "origin", "url": "git@github.com:tl-ai-labs/compass-calendar.git" }
+    ],
+    "gitignore_covers_sdlc": false,
+    "tracked_file_count": 1582
+  },
+
+  "topology": {
+    "top_level_dirs": [
+      ".agents", ".claude", ".codex", ".cursor", ".github",
+      "docs", "e2e", "packages", "patches", "self-host"
+    ],
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ],
+    "web_ts_tsx_count": 946
+  },
+
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "node-typescript",
+      "runtime": "bun@1.3.14",
+      "node_engine": ">=24.0.0",
+      "typescript": "7.0.2",
+      "detected_frameworks": ["react-18", "tanstack-react-router", "tanstack-react-query", "zustand", "zod", "tailwind-4", "express", "playwright", "biome"]
+    },
+    { "manifest": "packages/web/package.json", "stack": "node-typescript", "detected_frameworks": ["react-18", "zustand", "tanstack-react-router", "tiptap", "dexie", "zod", "tailwind-4", "testing-library", "msw"] },
+    { "manifest": "packages/backend/package.json", "stack": "node-typescript", "detected_frameworks": ["express", "supertokens", "mongodb"] },
+    { "manifest": "packages/core/package.json", "stack": "node-typescript", "detected_frameworks": ["zod"] },
+    { "manifest": "packages/sync/package.json", "stack": "node-typescript", "detected_frameworks": ["googleapis"] },
+    { "manifest": "packages/scripts/package.json", "stack": "node-typescript", "detected_frameworks": [] }
+  ],
+
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "adaptive_profile_present": true,
+    "adaptive_profile_path": ".sdlc/baseline/stack-profile.md",
+    "adaptive_profile_built_at": "2026-08-22T20:01:00Z",
+    "adaptive_profile_refresh_needed": false,
+    "adaptive_profile_reason": "Stack manifests unchanged since profile was built; refresh decision was 'cached'."
+  },
+
+  "test_command_proposed": "bun run test:web",
+  "test_command_source": "package.json#scripts.test:web + AGENTS.md#Validation-defaults",
+  "test_command_notes": "AGENTS.md: 'Avoid defaulting to bun test; use the focused package test first.' Refactor is confined to packages/web. Prefer 'bun run test:web' over 'bun test:web' so Bun resolves the package script rather than a path.",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun run test:web",
+    "type_check": "bun run type-check",
+    "lint": "bun run lint",
+    "diff_aware": "bun run verify",
+    "interaction_scoped": "bun packages/scripts/src/testing/test-parallel.ts web -- packages/web/src/views/Week/interaction packages/web/src/views/Day/interaction packages/web/src/grid/interaction packages/web/src/interaction"
+  },
+
+  "baseline_test_state": {
+    "web_suite": { "command": "bun run test:web", "pass": 2298, "fail": 0, "files": 302, "exit_code": 0, "source": "caller-supplied cached pre-check at this HEAD" },
+    "interaction_scoped": { "pass": 159, "fail": 0, "files": 24, "duration_s": 7.7, "source": "re-run live during this discovery", "verified": true },
+    "known_noise": "React act(...) warnings from SettingsModal in DayInteractionCoordinator.test.tsx. Pre-existing, not failures, do not fix in this refactor."
+  },
+
+  "refactor_survey": {
+    "scope_roots": [
+      "packages/web/src/interaction",
+      "packages/web/src/grid/interaction",
+      "packages/web/src/views/Week/interaction",
+      "packages/web/src/views/Day/interaction"
+    ],
+    "source_loc": 6321,
+    "test_loc": 6315,
+
+    "layer_status": [
+      {
+        "layer": "registry",
+        "verdict": "already-unified",
+        "agree_with_prior_run": true,
+        "week": { "path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts", "loc": 24 },
+        "day": { "path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts", "loc": 24 },
+        "shared": "packages/web/src/grid/interaction/view-event-registry.ts",
+        "detail": "Both per-view files are pure re-export shims over createViewInteractionRegistry(viewName). Verified line by line: identical modulo the literal \"week\"/\"day\" argument and export identifiers. No logic in either.",
+        "recommendation": "Leave as-is. Collapsing further removes per-view export names for ~40 LOC."
+      },
+      {
+        "layer": "targeting",
+        "verdict": "already-unified",
+        "agree_with_prior_run": true,
+        "week": { "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts", "loc": 35 },
+        "day": { "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts", "loc": 35 },
+        "shared": "packages/web/src/grid/interaction/event.targeting.ts",
+        "detail": "Both are shims over createGridEventTargeting({registry, targetSelector}). Note both WeekGridEventTargetType and DayGridEventTargetType resolve to the SAME type ViewInteractionEventType = \"all-day\" | \"timed\", so the generic parameter buys nothing today. Only real difference is a gratuitous formatting variance in the Day generic call.",
+        "recommendation": "Leave as-is. Optional: drop the redundant type aliases."
+      },
+      {
+        "layer": "adapter-types",
+        "verdict": "genuinely-duplicated",
+        "agree_with_prior_run": true,
+        "week": { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts", "loc": 149 },
+        "day": { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts", "loc": 149 },
+        "normalized_diff_lines": 23,
+        "normalized_total_lines": { "week": 132, "day": 133 },
+        "detail": "Eight interface pairs (AllDayDrag/AllDayResize/TimedDrag/TimedResize x Target/CommitResult) are structurally identical after name normalization. The four commit-result shapes are byte-identical modulo the Week/Day prefix. Genuine divergence is confined to: Options (Day adds getColumnKeys/getVisibleDate and uses shared GridLayoutCacheSources; Week uses its own WeekLayoutCacheSources), Runtime (Week adds getVisibleDays + onRequestWeekNavigation), Adapter (Week adds rebuildLayoutAfterNavigation), and Week-only WeekEdgeNavigableVisual.",
+        "recommendation": "Best first target. A generic ViewInteractionTypes<TColumnKey, TRuntimeExtras> factory collapses ~110 of 149 lines per file with no runtime risk."
+      },
+      {
+        "layer": "adapter",
+        "verdict": "partially-duplicated",
+        "agree_with_prior_run": "partial",
+        "week": { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "loc": 795 },
+        "day": { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "loc": 607 },
+        "normalized_diff_lines": 408,
+        "normalized_total_lines": { "week": 676, "day": 518 },
+        "detail": "Both export a single create*InteractionAdapter factory implementing the same InteractionAdapter contract. Week is decomposed into adapter/interactions/{all-day.drag,all-day.resize,all-day.visible-range,timed.drag,timed.resize}.ts (5 modules, 385 LOC total); Day is monolithic. Roughly 40 percent of the normalized delta is Week-only capability (edge navigation, cross-row drag, layout rebuild), not divergent copies of shared logic.",
+        "divergence_note": "My normalized diff is 408 lines vs the prior run's 448; same ballpark, different normalizer. Both agree the adapter is the bulk of the work and is NOT a clean copy-paste pair.",
+        "recommendation": "Unify toward Week's decomposed shape, not Day's monolith. Sequence this AFTER the type work."
+      },
+      {
+        "layer": "commit",
+        "verdict": "divergent-by-design",
+        "agree_with_prior_run": true,
+        "week": ["packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts (65)", "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts (38)"],
+        "day": ["packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts (67)", "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts (100)"],
+        "detail": "Independently re-derived and CONFIRMED. Two orthogonal differences. (1) Shape: Week exports pure visual->GridEvent transforms and lets the adapter wrap them; Day exports whole commit functions returning a full CommitResult. (2) Semantics: in Week a column is a DAY, in Day a column is a CALENDAR. Week all-day drag applies a day delta to startDate/endDate; Day all-day drag deliberately does NOT touch dates (documented: rewriting to visible date would truncate a multi-day all-day event) and instead sets calendarId. Day timed drag pins dates to visibleDate and moves calendarId.",
+        "recommendation": "Do NOT merge commit bodies. At most unify the CommitResult envelope shape (Day's) and keep per-view transforms."
+      },
+      {
+        "layer": "geometry",
+        "verdict": "convergent-but-not-duplicated",
+        "agree_with_prior_run": false,
+        "week": { "path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts", "loc": 73 },
+        "day": { "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts", "loc": 76 },
+        "normalized_diff_lines": 80,
+        "normalized_total_lines": { "week": 66, "day": 70 },
+        "disagreement": "The prior run filed geometry under 'Genuinely duplicated - the real targets' and described the pair as both wrapping the same builders with the same constants, differing only in edge-threshold source and extra input. I disagree: after name normalization essentially every line differs. They share DEPENDENCIES (same shared builders, same ID_* and GRID_* constants), not STRUCTURE.",
+        "structural_differences": [
+          "Week funnels everything through one weekLayoutCacheOptions(sources) builder then exposes 3 thin wrappers; Day writes two independent option literals that duplicate each other internally.",
+          "Week exposes buildDragWeekLayoutCache (both rows at once, for cross-row drag). Day has NO cross-row builder at all.",
+          "Edge threshold: Week uses WEEK_EDGE_NAVIGATION_THRESHOLD_PX; Day uses INTERACTION_EDGE_THRESHOLD_PX for timed and hardcoded 0 for all-day.",
+          "Day's file additionally hosts adapter concerns: buildDayLayoutCacheForTarget, isAllDayTarget, isDayDragTarget. Week keeps the equivalent predicates private inside its adapter (lines 755-760)."
+        ],
+        "recommendation": "Lower unification value than prior run implied. Real win is smaller: hoist the shared option-literal into one builder and move Day's target predicates out of the geometry file."
+      },
+      {
+        "layer": "coordinator",
+        "verdict": "partially-duplicated",
+        "agree_with_prior_run": true,
+        "week": { "path": "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx", "loc": 217 },
+        "day": { "path": "packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx", "loc": 133 },
+        "detail": "Same mount/attach/detach lifecycle around the engine. Week carries extra edge-navigation and layout-sync wiring (useWeekInteractionLayoutSync, 44 LOC).",
+        "recommendation": "Extract the shared lifecycle into a useViewInteractionCoordinator hook; keep Week's extras as opt-in props."
+      },
+      {
+        "layer": "layout-cache-builders",
+        "verdict": "already-unified",
+        "agree_with_prior_run": true,
+        "shared": "packages/web/src/grid/interaction/layout.cache.ts (218 LOC)",
+        "detail": "buildTimedGridLayoutCache / buildAllDayGridLayoutCache / buildDragGridLayoutCache are shared and consumed by both views."
+      },
+      {
+        "layer": "timed-moved-predicates",
+        "verdict": "already-unified",
+        "agree_with_prior_run": true,
+        "shared": "packages/web/src/grid/interaction/commit/timed-moved.ts (11 LOC)",
+        "detail": "hasTimedDragVisualMoved / hasTimedResizeVisualMoved imported by both views. Safe to share precisely because it compares column keys by EQUALITY only and never parses them."
+      }
+    ],
+
+    "asymmetric_surface": {
+      "week_only": [
+        "adapter/interactions/all-day.drag.ts (95)",
+        "adapter/interactions/all-day.resize.ts (72)",
+        "adapter/interactions/all-day.visible-range.ts (29)",
+        "adapter/interactions/timed.drag.ts (111)",
+        "adapter/interactions/timed.resize.ts (78)",
+        "adapter/edge-navigation.ts (146)",
+        "state/edge-navigation.state.ts (60)",
+        "state/motion.state.ts (18)",
+        "useWeekInteractionLayoutSync.ts (44)",
+        "runtime hooks getVisibleDays() / onRequestWeekNavigation / rebuildLayoutAfterNavigation()",
+        "type WeekEdgeNavigableVisual",
+        "cross-row drag (sole consumer of grid/interaction/commit/cross-row.commit.ts)"
+      ],
+      "day_only": [
+        "day-event.focus.ts (15)",
+        "runtime hooks getColumnKeys() / getVisibleDate()",
+        "geometry-hosted target predicates buildDayLayoutCacheForTarget / isAllDayTarget / isDayDragTarget"
+      ],
+      "cross_row_note": "Day has NO cross-row (all-day <-> timed) drag. Verified: Day's adapter never reads or writes visual.row, and cross-row.commit.ts is imported only by Week's interactions modules. This is a capability gap, not just a code difference."
+    },
+
+    "type_safety_hazards": [
+      {
+        "id": "H1",
+        "severity": "high",
+        "title": "Column-key overload: dayDate/initialDayDate mean different things per view, both typed string",
+        "still_present_on_this_branch": true,
+        "prior_run_flagged": "partially - prior run named only TimedDragVisual.dayDate",
+        "my_characterization": "The overload spans FOUR fields across TWO shared types, not one. All four are plain `string`.",
+        "affected_fields": [
+          "grid/interaction/types/timed-drag.types.ts :: TimedDragVisual.dayDate (line 38)",
+          "grid/interaction/types/timed-drag.types.ts :: TimedDragVisual.initialDayDate (line 44)",
+          "grid/interaction/types/all-day-drag.types.ts :: AllDayDragVisual.dayDate (line 29)",
+          "grid/interaction/types/all-day-drag.types.ts :: AllDayDragVisual.initialDayDate (line 32)"
+        ],
+        "producer": "Week passes YYYY-MM-DD dates. Day passes CALENDAR IDS - see day-interaction.adapter.ts lines 254-282 and 313, where columnKeys come from getColumnKeys() (calendar ids) and initialColumnKey is fed to createTimedDragVisual/createAllDayDragVisual as dayDate. The shared factories at grid/interaction/math/timed.drag.ts:48 and math/all-day.drag.ts:35 then set `initialDayDate: dayDate`, propagating the same overload to the initial field.",
+        "unsafe_consumers": [
+          "views/Week/interaction/adapter/commit/all-day.commit.ts:19-23 - dayjs(visual.dayDate).diff(dayjs(visual.initialDayDate), 'day')",
+          "views/Week/interaction/adapter/commit/timed.commit.ts:15 - dayjs(visual.dayDate).startOf('day')"
+        ],
+        "safe_consumers": [
+          "grid/interaction/commit/timed-moved.ts:5 - equality comparison only",
+          "views/Day/interaction/adapter/commit/all-day.commit.ts:19 - equality comparison only"
+        ],
+        "unchecked_assertion": "views/Day/interaction/adapter/commit/timed.commit.ts:78-83 columnMoveCalendarId does `visual.dayDate as CalendarId` - an unchecked cast that the compiler cannot validate.",
+        "failure_mode": "If a unified engine routes Day visuals through Week's date-parsing commit path, dayjs('<calendarId>') yields Invalid Date, diff() yields NaN, and event dates silently corrupt. TypeScript catches nothing because every field is `string`.",
+        "doc_rot": [
+          "TimedDragVisual.initialDayDate docstring still says 'Local YYYY-MM-DD date of the source column at drag start.' - wrong for Day view.",
+          "AllDayDragVisual.initialDayDate docstring says 'Local YYYY-MM-DD date of the (window-clamped) source column' - wrong for Day view.",
+          "AllDayDragVisual.dayDate carries TWO stacked block comments (lines 15-27); the first describes it as a date and is stale, the second correctly notes the per-view overload. Contradictory docs on one field."
+        ],
+        "mitigation": "Introduce a branded/parameterised column-key type (TColumnKey generic, or DateColumnKey | CalendarColumnKey brands) and thread it through TimedDragVisual/AllDayDragVisual BEFORE merging any commit or adapter logic. This is exactly what the prior run's shipped commit 62162a95 did, and it is the correct first move.",
+        "gate_recommendation": "Treat as a hard sequencing constraint: no commit-layer or adapter-layer merge lands before H1 is fixed."
+      },
+      {
+        "id": "H2",
+        "severity": "medium",
+        "title": "Week-shaped fields on the shared visual types are dead weight in Day",
+        "still_present_on_this_branch": true,
+        "prior_run_flagged": false,
+        "detail": "TimedDragVisual.row, TimedDragVisual.crossRowSize, AllDayDragVisual.row, AllDayDragVisual.crossRowSize and AllDayDragVisual.timedStartMinutes exist on the shared types but only Week ever drives them - Day has no cross-row drag. A naive unification will make Day appear to support cross-row drops because the fields typecheck, while nothing populates them.",
+        "mitigation": "Either make cross-row capability part of the parameterised visual type, or explicitly document Day as opting out."
+      },
+      {
+        "id": "H3",
+        "severity": "low",
+        "title": "Redundant per-view target-type aliases",
+        "detail": "WeekGridEventTargetType and DayGridEventTargetType are both aliases of ViewInteractionEventType ('all-day' | 'timed'). The generic parameter on createGridEventTargeting is unused in practice - both instantiations pass the same type."
+      }
+    ],
+
+    "blast_radius": {
+      "week_importers_count": 19,
+      "day_importers_count": 6,
+      "both_importers_count": 1,
+      "week_importers": [
+        "packages/web/src/__tests__/utils/state/reset-stores.ts",
+        "packages/web/src/common/utils/event/event.util.test.ts",
+        "packages/web/src/components/ContextMenu/contextMenuLayering.test.tsx",
+        "packages/web/src/views/Forms/hooks/useCloseEventForm.test.ts",
+        "packages/web/src/views/Week/WeekView.tsx",
+        "packages/web/src/views/Week/components/Draft/grid/GridDraft.tsx",
+        "packages/web/src/views/Week/components/Event/Grid/GridEvent/GridEvent.tsx",
+        "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayEvents.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/EdgeNavigationIndicators/EdgeNavigationIndicators.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.test.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/MainGridBusyPeriods.test.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/MainGridEvents.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/eventReadOnlyInteraction.test.tsx",
+        "packages/web/src/views/Week/components/Grid/MainGrid/keyboardEditForm.test.tsx",
+        "packages/web/src/views/Week/hooks/grid/useDragEdgeNavigation.ts",
+        "packages/web/src/views/Week/hooks/grid/useGridLayout.ts",
+        "packages/web/src/views/Week/hooks/grid/useVisibleDayCount.ts",
+        "packages/web/src/views/Week/hooks/shortcuts/useWeekShortcutOwner.test.tsx",
+        "packages/web/src/views/Week/hooks/shortcuts/useWeekShortcutOwner.ts"
+      ],
+      "day_importers": [
+        "packages/web/src/components/ContextMenu/contextMenuLayering.test.tsx",
+        "packages/web/src/views/Day/components/Calendar/DayCalendarEventCards.tsx",
+        "packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+        "packages/web/src/views/Day/hooks/shortcuts/useDayEventNudgeShortcuts.test.tsx",
+        "packages/web/src/views/Day/hooks/shortcuts/useDayEventNudgeShortcuts.ts",
+        "packages/web/src/views/Day/view/DayViewContent.tsx"
+      ],
+      "cross_view_importers": ["packages/web/src/components/ContextMenu/contextMenuLayering.test.tsx"],
+      "fragile_public_surface": "grid/interaction/view-event-registry.ts exports CALENDAR_VIEW_INTERACTION_ID_ATTRIBUTES, calendarEventIdElementSelector, calendarEventIdValueSelector and readCalendarEventIdFromElement. These resolve an event id from the DOM without knowing the view and are used by context menus and undo focus-restore. Renaming the data-${view}-interaction-event-* attribute scheme breaks them."
+    },
+
+    "shared_layer_state": {
+      "src_interaction": {
+        "path": "packages/web/src/interaction",
+        "loc": 2208,
+        "role": "View-agnostic pointer-interaction engine. Fully generic already.",
+        "public_surface": [
+          "createInteractionEngine<TTarget, TVisual, TResult>",
+          "InteractionEngine<TTarget, TVisual, TResult>",
+          "InteractionEngineSchedulerOptions",
+          "InteractionCancellationTargets",
+          "InteractionAdapter<TTarget, TVisual, TResult> (interaction.adapter.types.ts)"
+        ],
+        "stops_at": "Knows nothing about grids, columns, dates or calendars. Owns pointer lifecycle, draft-event DOM cloning, cursor lock, source-element visibility and the PointerCaptureBoundary React wrapper.",
+        "contract_note": "updateVisual is documented as MUST BE IDEMPOTENT - the engine re-invokes it at pointerup with the same pointer before commit. Any refactor must preserve this."
+      },
+      "grid_interaction": {
+        "path": "packages/web/src/grid/interaction",
+        "loc": 2721,
+        "role": "Grid-aware but view-agnostic layer.",
+        "already_covers": ["event.registry", "view-event-registry", "event.targeting", "layout.cache", "adapter.helpers", "dom", "date", "use-event-registration-ref", "math/{all-day.drag,all-day.resize,cross-row.drag,drag-column,smart-scroll,snap,timed.drag,timed.resize}", "commit/{cross-row.commit,timed-moved}", "types/{all-day-drag,all-day-resize,timed-drag,timed-resize}"],
+        "stops_at": "It does NOT provide an adapter factory. Each view hand-assembles its own createXInteractionAdapter over the engine. That gap - not the engine - is the actual duplication surface.",
+        "recommended_direction": "Widen grid/interaction/ with a view-parameterised adapter factory (createGridInteractionAdapter<TColumnKey, ...>). Do NOT push Week/Day grid logic down into src/interaction/, which must stay grid-agnostic."
+      }
+    },
+
+    "recommended_sequencing": [
+      "1. Fix H1: brand/parameterise the column key across TimedDragVisual and AllDayDragVisual (all four fields) and correct the three stale docstrings. Type-only, no behavior change.",
+      "2. Unify adapter.types via a generic factory (~110 of 149 lines per file).",
+      "3. Extract the shared coordinator lifecycle hook.",
+      "4. Hoist the geometry option-literal; move Day's target predicates out of the geometry file.",
+      "5. Only then consider an adapter factory in grid/interaction, unifying toward Week's decomposed interactions/ shape.",
+      "NOT recommended: merging commit bodies (divergent by design), collapsing registry/targeting shims (already unified)."
+    ]
+  },
+
+  "docs_present": [
+    { "path": "README.md", "kind": "readme" },
+    { "path": "AGENTS.md", "kind": "agent-instructions" },
+    { "path": "CONTRIBUTING.md", "kind": "contributing" },
+    { "path": "SECURITY.md", "kind": "security" },
+    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
+    { "path": "docs/README.md", "kind": "docs-index" },
+    { "path": "docs/architecture", "kind": "architecture-dir" },
+    { "path": "docs/frontend", "kind": "docs-subdir" },
+    { "path": "docs/features", "kind": "docs-subdir" }
+  ],
+
+  "ai_configs_detected": [
+    { "path": ".claude/settings.json", "type": "claude-code", "note": "MODIFIED in working tree" },
+    { "path": ".claude/settings.local.json", "type": "claude-code" },
+    { "path": ".claude/launch.json", "type": "claude-code" },
+    { "path": ".cursor/rules/", "type": "cursor", "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing" },
+    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    { "path": ".cursor/hooks/format-after-edit.ts", "type": "cursor-hook-script" },
+    { "path": ".codex/config.toml", "type": "codex" },
+    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    { "path": ".agents/skills/", "type": "shared-agent-skills" },
+    { "path": "AGENTS.md", "type": "agent-instructions" }
+  ],
+  "ai_configs_absent": [".mcp.json", "CLAUDE.md", ".cursorrules", ".aider.conf.yml", ".continue/", ".github/copilot-instructions.md", ".roo/", "routing-policy.yaml"],
+
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template. .gitignore carries a repo-wide '*.env*' rule.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL", "COMPASS_BUILD_REF", "GOOGLE_CLIENT_ID",
+    "NODE_ENV", "PORT", "POSTHOG_HOST", "POSTHOG_KEY", "TZ"
+  ],
+
+  "monorepo": {
+    "type": "lerna+bun-workspaces",
+    "workspace_globs": ["packages/*"],
+    "packages": [
+      { "name": "@compass/web", "root": "packages/web", "test_command": "bun run test:web" },
+      { "name": "@compass/backend", "root": "packages/backend", "test_command": "bun run test:backend" },
+      { "name": "@compass/core", "root": "packages/core", "test_command": "bun run test:core" },
+      { "name": "@compass/sync", "root": "packages/sync", "test_command": "bun run test:sync" },
+      { "name": "@compass/scripts", "root": "packages/scripts", "test_command": "bun run test:scripts" }
+    ],
+    "path_aliases": {
+      "@web/*": "packages/web/src/*",
+      "@core/*": "packages/core/src/*"
+    }
+  },
+
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+
+  "infra_hints": {
+    "dockerfile": false,
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "gitlab_ci": false,
+    "circleci": false,
+    "jenkins": false
+  },
+
+  "off_limits_proposed": [
+    ".git/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".agents/**",
+    "AGENTS.md",
+    ".mcp.json",
+    ".hook-logs/**",
+    ".sdlc/**",
+    "compass.yaml",
+    ".playwright-compass.yaml",
+    "*.env*",
+    ".env",
+    ".env.*",
+    "node_modules/**",
+    "build/**",
+    "buildcache/**",
+    "packages/*/build/**",
+    "packages/*/node_modules/**",
+    "bun.lock",
+    "patches/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".github/workflows/**",
+    "packages/backend/**",
+    "packages/sync/**",
+    "packages/scripts/**",
+    "packages/core/**",
+    "e2e/**",
+    "self-host/**"
+  ],
+  "off_limits_note": "The last block (packages/backend, sync, scripts, core, e2e, self-host) is run-specific: this refactor is confined to packages/web/src/{interaction,grid/interaction,views/Week/interaction,views/Day/interaction}. Note packages/core is read-only-imported by the scope (@core/util/date/dayjs, @core/types/domain-primitives) but must not be modified.",
+
+  "regulated_repo_signals": [
+    { "kind": "security-policy", "path": "SECURITY.md" }
+  ],
+  "regulated_repo_warning_required": false,
+
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) - untouched by default, but they encode conventions codegen must match.",
+    "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
+    ".gitignore does NOT cover .sdlc/ or .hook-logs/ - both untracked but visible to git add -A.",
+    ".gitignore contains repo-wide '*.mjs' and '*.env*' rules - any .mjs emitted into user source would be silently untracked.",
+    ".claude/settings.json is MODIFIED in the working tree and is on the off-limits list; do not let the run commit it incidentally.",
+    "No .mcp.json, no repo-local routing-policy.yaml - shipped policy applies."
+  ],
+
+  "repo_state_risks": [
+    { "kind": "gitignore_missing_sdlc", "severity": "medium", "detail": ".sdlc/ and .hook-logs/ untracked but visible to git add -A. A refactor run writes backups/<file> under .sdlc/ echoing source content of every touched file." },
+    { "kind": "dirty_tree", "severity": "low", "detail": ".claude/settings.json modified before the run started. Pre-existing, unrelated to this ticket, and off-limits." },
+    { "kind": "aggressive_gitignore", "severity": "medium", "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs." },
+    { "kind": "external_format_hooks", "severity": "low", "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output." },
+    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use." },
+    { "kind": "submodules", "severity": "none", "detail": "No submodules." }
+  ],
+
+  "intent_scope": {
+    "hint": "refactor",
+    "job": "unify the duplicated Week and Day interaction adapter/commit/targeting/registry layers on top of the shared interaction engine",
+    "primary_package": "packages/web",
+    "scope_correction": "Two of the four layers named in the job description (targeting, registry) are ALREADY unified and should be dropped from scope. Commit is divergent by design and should also be dropped. The real targets are adapter-types, adapter, coordinator, and (to a lesser degree than the prior run claimed) geometry.",
+    "likely_touched_files": { "source": 12, "test": 14 }
+  }
+}
