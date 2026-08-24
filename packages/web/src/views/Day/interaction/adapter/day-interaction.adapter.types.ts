@@ -6,6 +6,10 @@ import {
   type AllDayResizeEdge,
   type AllDayResizeVisual,
 } from "@web/grid/interaction/types/all-day-resize.types";
+import {
+  type CalendarColumnKey,
+  type DayColumnKey,
+} from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import {
   type TimedResizeEdge,
@@ -31,7 +35,7 @@ export interface DayInteractionAdapterOptions {
    * column (no calendar columns rendered), which disables cross-column
    * movement.
    */
-  getColumnKeys?: () => string[];
+  getColumnKeys?: () => CalendarColumnKey[];
   getLayoutSources?: () => GridLayoutCacheSources;
   getVisibleDate?: () => Dayjs;
   runtime?: () => DayInteractionRuntime;
@@ -119,9 +123,9 @@ export type DayInteractionTarget =
   | DayTimedResizeTarget;
 
 export type DayInteractionVisual =
-  | AllDayDragVisual
+  | AllDayDragVisual<DayColumnKey>
   | AllDayResizeVisual
-  | TimedDragVisual
+  | TimedDragVisual<DayColumnKey>
   | TimedResizeVisual;
 
 export type DayInteractionCommitResult =

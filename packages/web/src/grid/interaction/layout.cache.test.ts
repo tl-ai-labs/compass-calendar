@@ -1,7 +1,12 @@
 import { buildDayColumns } from "./layout.cache";
+import {
+  asDateColumnKey,
+  asDateColumnKeys,
+} from "./types/column-key.test-util";
+import { type DateColumnKey } from "./types/column-key.types";
 import { describe, expect, it } from "bun:test";
 
-const weekDates = [
+const weekDates = asDateColumnKeys([
   "2026-06-28",
   "2026-06-29",
   "2026-06-30",
@@ -9,7 +14,7 @@ const weekDates = [
   "2026-07-02",
   "2026-07-03",
   "2026-07-04",
-];
+]);
 
 describe("layout cache", () => {
   it("builds seven columns for Week, each carrying its date", () => {
@@ -42,14 +47,18 @@ describe("layout cache", () => {
   });
 
   it("builds one column for Day", () => {
-    const columns = buildDayColumns({ left: 20, width: 320 }, ["2026-07-04"]);
+    const columns = buildDayColumns({ left: 20, width: 320 }, [
+      asDateColumnKey("2026-07-04"),
+    ]);
 
     expect(columns).toEqual([
-      { date: "2026-07-04", index: 0, left: 20, width: 320 },
+      { date: asDateColumnKey("2026-07-04"), index: 0, left: 20, width: 320 },
     ]);
   });
 
   it("builds no columns without dates", () => {
-    expect(buildDayColumns({ left: 0, width: 700 }, [])).toEqual([]);
+    expect(buildDayColumns<DateColumnKey>({ left: 0, width: 700 }, [])).toEqual(
+      [],
+    );
   });
 });

@@ -1,4 +1,5 @@
 import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
+import { type GridColumnKey } from "../types/column-key.types";
 import { type VisualPoint, type VisualRect } from "../types/timed-drag.types";
 import {
   type TimedResizeEdge,
@@ -17,8 +18,8 @@ interface CreateTimedResizeVisualInput {
   startMinutes: number;
 }
 
-interface UpdateTimedResizeVisualInput {
-  layout: GridLayoutCache;
+interface UpdateTimedResizeVisualInput<TColumnKey extends GridColumnKey> {
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
   scrollDeltaPx?: number;
 }
@@ -45,9 +46,13 @@ export const createTimedResizeVisual = ({
   type: "timedResize",
 });
 
-export const updateTimedResizeVisual = (
+export const updateTimedResizeVisual = <TColumnKey extends GridColumnKey>(
   visual: TimedResizeVisual,
-  { layout, pointer, scrollDeltaPx = 0 }: UpdateTimedResizeVisualInput,
+  {
+    layout,
+    pointer,
+    scrollDeltaPx = 0,
+  }: UpdateTimedResizeVisualInput<TColumnKey>,
 ): TimedResizeVisual => {
   const deltaY = pointer.y - visual.pointerStart.y;
   const deltaMinutes = snapToStep(

@@ -1,4 +1,5 @@
 import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
+import { type GridColumnKey } from "../types/column-key.types";
 import {
   type TimedDragVisual,
   type VisualPoint,
@@ -14,8 +15,8 @@ import { clamp, snapToStep } from "./snap";
 
 const MINUTES_PER_DAY = 24 * 60;
 
-interface CreateTimedDragVisualInput {
-  dayDate: string;
+interface CreateTimedDragVisualInput<TColumnKey extends GridColumnKey> {
+  dayDate: TColumnKey;
   dayIndex: number;
   endMinutes: number;
   eventId: string;
@@ -24,13 +25,13 @@ interface CreateTimedDragVisualInput {
   startMinutes: number;
 }
 
-interface UpdateTimedDragVisualInput {
-  layout: GridLayoutCache;
+interface UpdateTimedDragVisualInput<TColumnKey extends GridColumnKey> {
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
   scrollDeltaPx?: number;
 }
 
-export const createTimedDragVisual = ({
+export const createTimedDragVisual = <TColumnKey extends GridColumnKey>({
   dayDate,
   dayIndex,
   endMinutes,
@@ -38,7 +39,7 @@ export const createTimedDragVisual = ({
   pointerStart,
   sourceRect,
   startMinutes,
-}: CreateTimedDragVisualInput): TimedDragVisual => ({
+}: CreateTimedDragVisualInput<TColumnKey>): TimedDragVisual<TColumnKey> => ({
   crossRowSize: null,
   dayDate,
   dayIndex,
@@ -57,10 +58,14 @@ export const createTimedDragVisual = ({
   type: "timedDrag",
 });
 
-export const updateTimedDragVisual = (
-  visual: TimedDragVisual,
-  { layout, pointer, scrollDeltaPx = 0 }: UpdateTimedDragVisualInput,
-): TimedDragVisual => {
+export const updateTimedDragVisual = <TColumnKey extends GridColumnKey>(
+  visual: TimedDragVisual<TColumnKey>,
+  {
+    layout,
+    pointer,
+    scrollDeltaPx = 0,
+  }: UpdateTimedDragVisualInput<TColumnKey>,
+): TimedDragVisual<TColumnKey> => {
   const { allDay, timed } = getDragRowLayouts(layout, "timed");
   const row = resolveDragRow({
     allDay,
@@ -124,16 +129,16 @@ export const updateTimedDragVisual = (
   };
 };
 
-const getBoundedVerticalPlacement = ({
+const getBoundedVerticalPlacement = <TColumnKey extends GridColumnKey>({
   candidateStartMinutes,
   layout,
   scrollDeltaPx,
   visual,
 }: {
   candidateStartMinutes: number;
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TColumnKey>;
   scrollDeltaPx: number;
-  visual: TimedDragVisual;
+  visual: TimedDragVisual<TColumnKey>;
 }) => {
   const currentScrollTop = getCurrentScrollTop(layout, scrollDeltaPx);
   const visibleStartMinutes = currentScrollTop / layout.pixelsPerMinute;
@@ -191,5 +196,7 @@ const getBoundedVerticalPlacement = ({
   };
 };
 
-const getCurrentScrollTop = (layout: GridLayoutCache, scrollDeltaPx: number) =>
-  (layout.smartScroll?.initialScrollTop ?? 0) + scrollDeltaPx;
+const getCurrentScrollTop = <TColumnKey extends GridColumnKey>(
+  layout: GridLayoutCache<TColumnKey>,
+  scrollDeltaPx: number,
+) => (layout.smartScroll?.initialScrollTop ?? 0) + scrollDeltaPx;

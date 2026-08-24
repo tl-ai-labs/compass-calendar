@@ -2,6 +2,7 @@ import {
   type GridLayoutCache,
   getNearestDayColumn,
 } from "@web/grid/interaction/layout.cache";
+import { type GridColumnKey } from "../types/column-key.types";
 import { type VisualRect } from "../types/timed-drag.types";
 
 /**
@@ -11,7 +12,7 @@ import { type VisualRect } from "../types/timed-drag.types";
  * next column is whichever is nearest to the source center shifted by the
  * pointer's horizontal delta.
  */
-export const resolveDragColumn = ({
+export const resolveDragColumn = <TColumnKey extends GridColumnKey>({
   deltaX,
   initialDayIndex,
   layout,
@@ -19,7 +20,7 @@ export const resolveDragColumn = ({
 }: {
   deltaX: number;
   initialDayIndex: number;
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TColumnKey>;
   sourceRect: VisualRect;
 }) => {
   const initialColumn = layout.dayColumns.find(

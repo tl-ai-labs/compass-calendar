@@ -3,6 +3,8 @@ import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { gridEventDefaultPosition } from "@web/common/utils/event/event.util";
+import { asCalendarColumnKey } from "@web/grid/interaction/types/column-key.test-util";
+import { type CalendarColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { dayEventRegistry } from "../registry/day-event.registry";
 import {
   createDayInteractionAdapter,
@@ -28,12 +30,13 @@ const allDaySourceRect = {
   width: 320,
 };
 
-const CALENDAR_A = "aaaaaaaaaaaaaaaaaaaaaaaa";
-const CALENDAR_B = "bbbbbbbbbbbbbbbbbbbbbbbb";
+const CALENDAR_A = asCalendarColumnKey("aaaaaaaaaaaaaaaaaaaaaaaa");
+const CALENDAR_B = asCalendarColumnKey("bbbbbbbbbbbbbbbbbbbbbbbb");
+const CALENDAR_ORPHAN = asCalendarColumnKey("cccccccccccccccccccccccc");
 
 const timedEvent: GridEvent = {
   _id: "timed-event",
-  calendarId: CALENDAR_A as never,
+  calendarId: CALENDAR_A,
   endDate: "2026-05-18T10:00:00.000",
   isAllDay: false,
   origin: Origin.COMPASS,
@@ -45,7 +48,7 @@ const timedEvent: GridEvent = {
 
 const allDayEvent: GridEvent = {
   _id: "all-day-event",
-  calendarId: CALENDAR_A as never,
+  calendarId: CALENDAR_A,
   endDate: "2026-05-21",
   isAllDay: true,
   origin: Origin.COMPASS,
@@ -124,7 +127,7 @@ const createAdapter = ({
   onTimedDrag,
   onTimedResize,
 }: {
-  columnKeys?: string[];
+  columnKeys?: CalendarColumnKey[];
   extraTimedEvents?: GridEvent[];
   mainGridScrollTop?: number;
   onAllDayDrag?: (result: DayAllDayDragCommitResult) => void;
@@ -416,7 +419,7 @@ describe("DayInteractionAdapter", () => {
     });
 
     expect(result.hasMoved).toBe(true);
-    expect(result.event.calendarId).toBe(CALENDAR_B as never);
+    expect(result.event.calendarId).toBe(CALENDAR_B);
     expect(dayjs(result.event.startDate).isSame(visibleDate, "day")).toBe(true);
   });
 
@@ -427,7 +430,7 @@ describe("DayInteractionAdapter", () => {
     });
 
     expect(result.hasMoved).toBe(true);
-    expect(result.event.calendarId).toBe(CALENDAR_A as never);
+    expect(result.event.calendarId).toBe(CALENDAR_A);
   });
 
   it("moves an all-day event to the other calendar when dropped on its column", () => {
@@ -436,7 +439,7 @@ describe("DayInteractionAdapter", () => {
     });
 
     expect(result.hasMoved).toBe(true);
-    expect(result.event.calendarId).toBe(CALENDAR_B as never);
+    expect(result.event.calendarId).toBe(CALENDAR_B);
     expect(result.event.startDate).toBe(allDayEvent.startDate);
     expect(result.event.endDate).toBe(allDayEvent.endDate);
   });
@@ -449,7 +452,7 @@ describe("DayInteractionAdapter", () => {
     );
 
     expect(result.hasMoved).toBe(true);
-    expect(result.event.calendarId).toBe(CALENDAR_B as never);
+    expect(result.event.calendarId).toBe(CALENDAR_B);
     expect(result.event.startDate).toBe(multiDayAllDayEvent.startDate);
     expect(result.event.endDate).toBe(multiDayAllDayEvent.endDate);
   });
@@ -458,7 +461,7 @@ describe("DayInteractionAdapter", () => {
     const orphan: GridEvent = {
       ...timedEvent,
       _id: "orphan-timed-event",
-      calendarId: "cccccccccccccccccccccccc" as never,
+      calendarId: CALENDAR_ORPHAN,
     };
     const result = dragEventAcrossCalendarColumns(orphan, "timed", {
       toX: 240,
@@ -468,6 +471,27 @@ describe("DayInteractionAdapter", () => {
     // no time change, so the commit reports no movement at all.
     expect(result.hasMoved).toBe(false);
     expect(result.event.calendarId).toBe(orphan.calendarId!);
+  });
+
+  // INV-11. The column-key lookup used to be
+  // `calendarColumnKeys.indexOf(event.calendarId ?? "")`, which relied on the
+  // empty-string sentinel never matching a real calendar id. Branding the
+  // column key made that `?? ""` a type error, so it became an explicit
+  // "skip the lookup when there is no calendarId" guard. The outcome must be
+  // identical: no calendar column matches, so the drag falls back to the
+  // single date column and commits no calendar move.
+  it("falls back to the single date column for an event with no calendarId", () => {
+    const noCalendar: GridEvent = {
+      ...timedEvent,
+      _id: "no-calendar-timed-event",
+      calendarId: undefined,
+    };
+    const result = dragEventAcrossCalendarColumns(noCalendar, "timed", {
+      toX: 240,
+    });
+
+    expect(result.hasMoved).toBe(false);
+    expect(result.event.calendarId).toBeUndefined();
   });
 
   it("keeps timed resize timed with a valid time range", () => {

@@ -1,5 +1,10 @@
 import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
+  asDateColumnKey,
+  asDateColumnKeys,
+} from "@web/grid/interaction/types/column-key.test-util";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
+import {
   CROSS_ROW_TIMED_DURATION_MIN,
   getCrossRowAllDayPlacement,
   getCrossRowTimedPlacement,
@@ -9,15 +14,17 @@ import {
 import { describe, expect, it } from "bun:test";
 
 const dayColumns = (left: number, width: number) =>
-  ["2026-05-11", "2026-05-12", "2026-05-13"].map((date, index) => ({
-    date,
-    index,
-    left: left + width * index,
-    width,
-  }));
+  asDateColumnKeys(["2026-05-11", "2026-05-12", "2026-05-13"]).map(
+    (date, index) => ({
+      date,
+      index,
+      left: left + width * index,
+      width,
+    }),
+  );
 
 // All-day row: y 20..60. Timed grid: y 100..1400, 13 visible hours.
-const allDayLayout: GridLayoutCache = {
+const allDayLayout: GridLayoutCache<DateColumnKey> = {
   dayColumns: dayColumns(100, 100),
   edgeNavigation: {
     bottom: 60,
@@ -30,7 +37,7 @@ const allDayLayout: GridLayoutCache = {
   snapMinutes: 15,
 };
 
-const timedLayout: GridLayoutCache = {
+const timedLayout: GridLayoutCache<DateColumnKey> = {
   dayColumns: dayColumns(100, 100),
   edgeNavigation: {
     bottom: 1400,
@@ -123,7 +130,7 @@ describe("getCrossRowTimedPlacement", () => {
 
     // 220px below the grid top at 1px/min, snapped up to the 15-min step.
     expect(placement.startMinutes).toBe(225);
-    expect(placement.column?.date).toBe("2026-05-11");
+    expect(placement.column?.date).toBe(asDateColumnKey("2026-05-11"));
     expect(placement.height).toBe(CROSS_ROW_TIMED_DURATION_MIN);
     expect(placement.width).toBe(100);
   });
@@ -147,7 +154,7 @@ describe("getCrossRowTimedPlacement", () => {
       sourceRect,
     });
 
-    expect(placement.column?.date).toBe("2026-05-13");
+    expect(placement.column?.date).toBe(asDateColumnKey("2026-05-13"));
     expect(placement.transform.x).toBe(300 - sourceRect.left);
   });
 
@@ -195,7 +202,7 @@ describe("getCrossRowAllDayPlacement", () => {
       sourceRect: { height: 60, left: 100, top: 900, width: 90 },
     });
 
-    expect(placement.column?.date).toBe("2026-05-12");
+    expect(placement.column?.date).toBe(asDateColumnKey("2026-05-12"));
     expect(placement.height).toBe(20);
     expect(placement.width).toBe(100);
     expect(placement.transform).toEqual({ x: 100, y: 20 - 900 });

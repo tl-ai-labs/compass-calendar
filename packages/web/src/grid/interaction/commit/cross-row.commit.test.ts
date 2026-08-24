@@ -1,5 +1,7 @@
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
+import { asDateColumnKey } from "@web/grid/interaction/types/column-key.test-util";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import {
   allDayDragVisualToTimedGridEvent,
@@ -26,13 +28,13 @@ const timedEvent = {
 } as GridEvent;
 
 const allDayDragVisual = (
-  overrides: Partial<AllDayDragVisual> = {},
-): AllDayDragVisual => ({
+  overrides: Partial<AllDayDragVisual<DateColumnKey>> = {},
+): AllDayDragVisual<DateColumnKey> => ({
   crossRowSize: null,
-  dayDate: "2026-05-13",
+  dayDate: asDateColumnKey("2026-05-13"),
   dayIndex: 3,
   eventId: "all-day-event",
-  initialDayDate: "2026-05-13",
+  initialDayDate: asDateColumnKey("2026-05-13"),
   initialDayIndex: 3,
   pointerStart: { x: 0, y: 0 },
   row: "timed",
@@ -44,15 +46,15 @@ const allDayDragVisual = (
 });
 
 const timedDragVisual = (
-  overrides: Partial<TimedDragVisual> = {},
-): TimedDragVisual => ({
+  overrides: Partial<TimedDragVisual<DateColumnKey>> = {},
+): TimedDragVisual<DateColumnKey> => ({
   crossRowSize: null,
-  dayDate: "2026-05-19",
+  dayDate: asDateColumnKey("2026-05-19"),
   dayIndex: 2,
   durationMinutes: 60,
   endMinutes: 600,
   eventId: "timed-event",
-  initialDayDate: "2026-05-19",
+  initialDayDate: asDateColumnKey("2026-05-19"),
   initialDayIndex: 2,
   initialEndMinutes: 600,
   initialStartMinutes: 540,
@@ -69,7 +71,10 @@ describe("allDayDragVisualToTimedGridEvent", () => {
   it("invents a default-length block at the dropped start time on the drop column", () => {
     const result = allDayDragVisualToTimedGridEvent(
       allDayEvent,
-      allDayDragVisual({ dayDate: "2026-05-15", timedStartMinutes: 600 }),
+      allDayDragVisual({
+        dayDate: asDateColumnKey("2026-05-15"),
+        timedStartMinutes: 600,
+      }),
     );
 
     expect(result.isAllDay).toBe(false);
@@ -84,8 +89,8 @@ describe("allDayDragVisualToTimedGridEvent", () => {
     const result = allDayDragVisualToTimedGridEvent(
       multiDay,
       allDayDragVisual({
-        dayDate: "2026-05-16",
-        initialDayDate: "2026-05-13",
+        dayDate: asDateColumnKey("2026-05-16"),
+        initialDayDate: asDateColumnKey("2026-05-13"),
         timedStartMinutes: 0,
       }),
     );
@@ -112,7 +117,7 @@ describe("timedDragVisualToAllDayGridEvent", () => {
   it("discards the time of day and ends on the following date", () => {
     const result = timedDragVisualToAllDayGridEvent(
       timedEvent,
-      timedDragVisual({ dayDate: "2026-05-21" }),
+      timedDragVisual({ dayDate: asDateColumnKey("2026-05-21") }),
     );
 
     expect(result.isAllDay).toBe(true);
@@ -123,7 +128,7 @@ describe("timedDragVisualToAllDayGridEvent", () => {
   it("keeps a same-day drop as a one-day all-day event", () => {
     const result = timedDragVisualToAllDayGridEvent(
       timedEvent,
-      timedDragVisual({ dayDate: "2026-05-19" }),
+      timedDragVisual({ dayDate: asDateColumnKey("2026-05-19") }),
     );
 
     expect(result.startDate).toBe("2026-05-19");
@@ -134,7 +139,7 @@ describe("timedDragVisualToAllDayGridEvent", () => {
     const result = timedDragVisualToAllDayGridEvent(
       timedEvent,
       timedDragVisual({
-        dayDate: "2026-05-21",
+        dayDate: asDateColumnKey("2026-05-21"),
         endMinutes: 1350,
         startMinutes: 1290,
       }),

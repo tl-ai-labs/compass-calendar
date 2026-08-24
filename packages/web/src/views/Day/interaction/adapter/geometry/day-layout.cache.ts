@@ -14,6 +14,7 @@ import {
   type GridLayoutCache,
   type GridLayoutCacheSources,
 } from "@web/grid/interaction/layout.cache";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { INTERACTION_EDGE_THRESHOLD_PX } from "@web/interaction/interaction.constants";
 import {
   type DayAllDayDragTarget,
@@ -22,12 +23,12 @@ import {
   type DayTimedDragTarget,
 } from "../day-interaction.adapter.types";
 
-export type DayLayoutCache = GridLayoutCache;
+export type DayLayoutCache = GridLayoutCache<DayColumnKey>;
 export type DayLayoutCacheSources = GridLayoutCacheSources;
 
 export const buildDayTimedLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: DayColumnKey[],
 ) =>
   buildTimedGridLayoutCache({
     ...sources,
@@ -45,7 +46,7 @@ export const buildDayTimedLayoutCache = (
 
 export const buildDayAllDayLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: DayColumnKey[],
 ) =>
   buildAllDayGridLayoutCache({
     ...sources,
@@ -64,7 +65,7 @@ const isAllDayTarget = (
 export const buildDayLayoutCacheForTarget = (
   target: DayInteractionTarget,
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: DayColumnKey[],
 ) =>
   isAllDayTarget(target)
     ? buildDayAllDayLayoutCache(sources, visibleDates)

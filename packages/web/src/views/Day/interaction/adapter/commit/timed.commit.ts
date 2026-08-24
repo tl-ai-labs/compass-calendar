@@ -5,6 +5,8 @@ import {
   hasTimedDragVisualMoved,
   hasTimedResizeVisualMoved,
 } from "@web/grid/interaction/commit/timed-moved";
+import { isCalendarColumnKey } from "@web/grid/interaction/types/column-key";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
 import {
@@ -16,7 +18,7 @@ import {
 
 export const commitTimedDragInteraction = (
   target: DayTimedDragTarget,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DayColumnKey>,
   visibleDate: Dayjs,
 ): DayTimedDragCommitResult => {
   const hasMoved = hasTimedDragVisualMoved(visual);
@@ -52,7 +54,7 @@ export const commitTimedResizeInteraction = (
 
 export const timedDragVisualToDayGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DayColumnKey>,
   visibleDate: Dayjs,
 ): GridEvent => ({
   ...event,
@@ -73,14 +75,27 @@ export const timedDragVisualToDayGridEvent = (
  * on a different column is a cross-calendar move. Same-column drops (and the
  * single-column fallback, whose one key is a date string that never changes)
  * keep the event's own calendarId.
+ *
+ * The key is a `DayColumnKey` union, so the calendar-id case is established by
+ * a validating guard rather than the unchecked `as CalendarId` cast this
+ * replaced. The guard is not expected to fail in practice: `createVisual`
+ * gives `columnKeys` either the calendar keys or a single-element date array,
+ * and a single-element array can never produce `dayDate !== initialDayDate`.
+ * If it ever did, falling through to the event's own calendarId is the same
+ * conservative answer the same-column branch already returns.
  */
 export const columnMoveCalendarId = (
-  visual: Pick<TimedDragVisual, "dayDate" | "initialDayDate">,
+  visual: Pick<TimedDragVisual<DayColumnKey>, "dayDate" | "initialDayDate">,
   event: GridEvent,
-): CalendarId | undefined =>
-  visual.dayDate !== visual.initialDayDate
-    ? (visual.dayDate as CalendarId)
+): CalendarId | undefined => {
+  if (visual.dayDate === visual.initialDayDate) {
+    return event.calendarId;
+  }
+
+  return isCalendarColumnKey(visual.dayDate)
+    ? visual.dayDate
     : event.calendarId;
+};
 
 export const timedResizeVisualToDayGridEvent = (
   event: GridEvent,

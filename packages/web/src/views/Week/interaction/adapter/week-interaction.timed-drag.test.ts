@@ -3,6 +3,8 @@ import {
   ID_GRID_MAIN,
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
+import { asDateColumnKeys } from "@web/grid/interaction/types/column-key.test-util";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
 import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import {
@@ -104,7 +106,7 @@ const expectSourceRestored = (source: HTMLElement) => {
 
 // The default harness renders the full week of Sun 2026-05-17 as 7 columns of
 // 100px starting at x=100 (the event on Tue 2026-05-19 sits in column 2).
-const FULL_WEEK_DAYS = [
+const FULL_WEEK_DAYS = asDateColumnKeys([
   "2026-05-17",
   "2026-05-18",
   "2026-05-19",
@@ -112,7 +114,7 @@ const FULL_WEEK_DAYS = [
   "2026-05-21",
   "2026-05-22",
   "2026-05-23",
-];
+]);
 
 const createHarness = ({
   columnsWidth = 700,
@@ -130,7 +132,7 @@ const createHarness = ({
   event?: Partial<GridEvent>;
   mainGridScrollTop?: number;
   sourceRect?: Pick<DOMRect, "height" | "left" | "top" | "width">;
-  visibleDays?: string[];
+  visibleDays?: DateColumnKey[];
 } = {}) => {
   document.body.innerHTML = "";
   weekEventRegistry.clear();
@@ -211,7 +213,7 @@ const createHarness = ({
     }),
   });
 
-  const setVisibleDays = (nextVisibleDays: string[]) => {
+  const setVisibleDays = (nextVisibleDays: DateColumnKey[]) => {
     currentVisibleDays = nextVisibleDays;
   };
 
@@ -605,14 +607,14 @@ describe("WeekInteractionAdapter timed drag", () => {
         startDate: "2026-05-22T09:00:00.000",
       },
       sourceRect: { height: 100, left: 500, top: 1000, width: 90 },
-      visibleDays: [
+      visibleDays: asDateColumnKeys([
         "2026-05-18",
         "2026-05-19",
         "2026-05-20",
         "2026-05-21",
         "2026-05-22",
         "2026-05-23",
-      ],
+      ]),
     });
 
     adapter.handlePointerDown(
@@ -650,14 +652,14 @@ describe("WeekInteractionAdapter timed drag", () => {
     } = createHarness({
       columnsWidth: 600,
       sourceRect: { height: 100, left: 300, top: 1000, width: 90 },
-      visibleDays: [
+      visibleDays: asDateColumnKeys([
         "2026-05-17",
         "2026-05-18",
         "2026-05-19",
         "2026-05-20",
         "2026-05-21",
         "2026-05-22",
-      ],
+      ]),
     });
 
     adapter.handlePointerDown(
@@ -673,14 +675,16 @@ describe("WeekInteractionAdapter timed drag", () => {
     expect(onRequestWeekNavigation).toHaveBeenCalledWith("next");
 
     // React re-renders the window paged by one day and rebuilds the layout
-    setVisibleDays([
-      "2026-05-18",
-      "2026-05-19",
-      "2026-05-20",
-      "2026-05-21",
-      "2026-05-22",
-      "2026-05-23",
-    ]);
+    setVisibleDays(
+      asDateColumnKeys([
+        "2026-05-18",
+        "2026-05-19",
+        "2026-05-20",
+        "2026-05-21",
+        "2026-05-22",
+        "2026-05-23",
+      ]),
+    );
     adapter.rebuildLayoutAfterNavigation();
 
     // Release over column 1, which now renders 2026-05-19
@@ -711,14 +715,14 @@ describe("WeekInteractionAdapter timed drag", () => {
     } = createHarness({
       columnsWidth: 600,
       sourceRect: { height: 100, left: 200, top: 1000, width: 90 },
-      visibleDays: [
+      visibleDays: asDateColumnKeys([
         "2026-05-18",
         "2026-05-19",
         "2026-05-20",
         "2026-05-21",
         "2026-05-22",
         "2026-05-23",
-      ],
+      ]),
     });
 
     adapter.handlePointerDown(
@@ -732,14 +736,16 @@ describe("WeekInteractionAdapter timed drag", () => {
 
     expect(onRequestWeekNavigation).toHaveBeenCalledWith("next");
 
-    setVisibleDays([
-      "2026-05-24",
-      "2026-05-25",
-      "2026-05-26",
-      "2026-05-27",
-      "2026-05-28",
-      "2026-05-29",
-    ]);
+    setVisibleDays(
+      asDateColumnKeys([
+        "2026-05-24",
+        "2026-05-25",
+        "2026-05-26",
+        "2026-05-27",
+        "2026-05-28",
+        "2026-05-29",
+      ]),
+    );
     adapter.rebuildLayoutAfterNavigation();
 
     // Release over column 2, which now renders 2026-05-26

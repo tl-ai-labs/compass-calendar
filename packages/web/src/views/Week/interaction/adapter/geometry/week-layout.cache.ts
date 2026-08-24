@@ -18,6 +18,7 @@ import {
   getNearestDayColumn,
   type SmartScrollCache,
 } from "@web/grid/interaction/layout.cache";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type DragRow } from "@web/grid/interaction/types/timed-drag.types";
 import { WEEK_EDGE_NAVIGATION_THRESHOLD_PX } from "../edge-navigation";
 
@@ -31,16 +32,16 @@ export type WeekLayoutCacheSources = GridLayoutCacheSources;
  */
 export interface WeekLayoutCacheInput extends GridLayoutCacheSources {
   /** Local YYYY-MM-DD dates of the rendered day columns, in window order. */
-  visibleDays: string[];
+  visibleDays: DateColumnKey[];
 }
 
-export type WeekLayoutCache = GridLayoutCache;
+export type WeekLayoutCache = GridLayoutCache<DateColumnKey>;
 export type { SmartScrollCache };
 export { getNearestDayColumn };
 
 const weekLayoutCacheOptions = (
   sources: WeekLayoutCacheInput,
-): GridLayoutCacheOptions & WeekLayoutCacheSources => ({
+): GridLayoutCacheOptions<DateColumnKey> & WeekLayoutCacheSources => ({
   ...sources,
   allDayColumnsElementId: ID_ALLDAY_COLUMNS,
   edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX,

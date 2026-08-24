@@ -2,10 +2,11 @@ import {
   type GridLayoutCache,
   getNearestDayColumn,
 } from "@web/grid/interaction/layout.cache";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type VisualRect } from "@web/grid/interaction/types/timed-drag.types";
 
 export const getVisibleAllDayRange = (
-  layout: GridLayoutCache,
+  layout: GridLayoutCache<DateColumnKey>,
   sourceRect: VisualRect,
 ) => {
   const startColumn = getNearestDayColumn(

@@ -1,4 +1,6 @@
 import { type GridLayoutCache } from "../layout.cache";
+import { asDateColumnKey } from "../types/column-key.test-util";
+import { type DateColumnKey } from "../types/column-key.types";
 import { createTimedDragVisual, updateTimedDragVisual } from "./timed.drag";
 import {
   createTimedResizeVisual,
@@ -6,10 +8,10 @@ import {
 } from "./timed.resize";
 import { describe, expect, it } from "bun:test";
 
-const layout: GridLayoutCache = {
+const layout: GridLayoutCache<DateColumnKey> = {
   dayColumns: [
-    { date: "2026-07-16", index: 0, left: 0, width: 100 },
-    { date: "2026-07-17", index: 1, left: 100, width: 100 },
+    { date: asDateColumnKey("2026-07-16"), index: 0, left: 0, width: 100 },
+    { date: asDateColumnKey("2026-07-17"), index: 1, left: 100, width: 100 },
   ],
   edgeNavigation: {
     bottom: 600,
@@ -27,7 +29,7 @@ const sourceRect = { height: 60, left: 0, top: 60, width: 100 };
 describe("timed interaction math", () => {
   it("snaps a drag across time and day columns", () => {
     const visual = createTimedDragVisual({
-      dayDate: "2026-07-16",
+      dayDate: asDateColumnKey("2026-07-16"),
       dayIndex: 0,
       endMinutes: 120,
       eventId: "event-1",
@@ -52,7 +54,7 @@ describe("timed interaction math", () => {
 
   it("keeps a drag inside the visible grid", () => {
     const visual = createTimedDragVisual({
-      dayDate: "2026-07-16",
+      dayDate: asDateColumnKey("2026-07-16"),
       dayIndex: 0,
       endMinutes: 120,
       eventId: "event-1",

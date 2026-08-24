@@ -1,4 +1,3 @@
-import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import {
   applySmartScroll as applySmartScrollFrame,
@@ -29,6 +28,8 @@ import {
   createTimedResizeVisual,
   updateTimedResizeVisual,
 } from "@web/grid/interaction/math/timed.resize";
+import { toDateColumnKey } from "@web/grid/interaction/types/column-key";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type VisualPoint } from "@web/grid/interaction/types/timed-drag.types";
 import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
 import {
@@ -92,7 +93,7 @@ export const createDayInteractionAdapter = ({
   getVisibleDate = () => dayjs(),
   runtime = () => inertRuntime,
 }: DayInteractionAdapterOptions = {}): DayInteractionAdapter => {
-  let layout: GridLayoutCache | null = null;
+  let layout: GridLayoutCache<DayColumnKey> | null = null;
   let scrollTop: number | null = null;
 
   const engine: InteractionEngine<
@@ -242,7 +243,7 @@ export const createDayInteractionAdapter = ({
         return result;
       },
       createVisual: ({ pointerStart, sourceElement, target }) => {
-        const visibleDateKey = getVisibleDate().format(YEAR_MONTH_DAY_FORMAT);
+        const visibleDateKey = toDateColumnKey(getVisibleDate());
         // The Day view renders one column per calendar, all sharing one date,
         // so drag column keys are CALENDAR IDS (not dates like the Week
         // view) — a column change is a cross-calendar move. Resizes stay
@@ -254,10 +255,16 @@ export const createDayInteractionAdapter = ({
         const calendarColumnKeys = isDayDragTarget(target)
           ? getColumnKeys()
           : [];
-        const eventColumnIndex = calendarColumnKeys.indexOf(
-          target.event.calendarId ?? "",
-        );
-        const columnKeys =
+        // An event with no calendarId can never match a rendered calendar
+        // column, so skip the lookup entirely rather than searching for a
+        // sentinel. `indexOf("")` could only ever return -1, so this preserves
+        // the existing `>= 0` outcome exactly while keeping the key branded.
+        const eventColumnIndex = target.event.calendarId
+          ? calendarColumnKeys.indexOf(target.event.calendarId)
+          : -1;
+        // Genuinely a union: the calendar-column keys are CalendarColumnKey,
+        // the fallback is a DateColumnKey. See DayColumnKey.
+        const columnKeys: DayColumnKey[] =
           eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey];
         const initialColumnIndex = Math.max(0, eventColumnIndex);
         const initialColumnKey = columnKeys[initialColumnIndex]!;

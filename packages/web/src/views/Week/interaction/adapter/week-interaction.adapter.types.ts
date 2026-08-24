@@ -4,6 +4,7 @@ import {
   type AllDayResizeEdge,
   type AllDayResizeVisual,
 } from "@web/grid/interaction/types/all-day-resize.types";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import {
   type TimedResizeEdge,
@@ -35,7 +36,7 @@ export interface WeekInteractionRuntime {
    * Sourced from the same React render that painted the columns so drag
    * geometry and drop dates always agree with what is on screen.
    */
-  getVisibleDays(): string[];
+  getVisibleDays(): DateColumnKey[];
   isFormOpen?: () => boolean;
   onClickAllDayEvent?: (event: GridEvent) => void;
   onClickTimedEvent: (event: GridEvent) => void;
@@ -116,9 +117,9 @@ export type WeekInteractionTarget =
   | WeekTimedResizeTarget;
 
 export type WeekInteractionVisual =
-  | AllDayDragVisual
+  | AllDayDragVisual<DateColumnKey>
   | AllDayResizeVisual
-  | TimedDragVisual
+  | TimedDragVisual<DateColumnKey>
   | TimedResizeVisual;
 
 export type WeekInteractionCommitResult =
@@ -127,7 +128,9 @@ export type WeekInteractionCommitResult =
   | WeekTimedDragCommitResult
   | WeekTimedResizeCommitResult;
 
-export type WeekEdgeNavigableVisual = AllDayDragVisual | TimedDragVisual;
+export type WeekEdgeNavigableVisual =
+  | AllDayDragVisual<DateColumnKey>
+  | TimedDragVisual<DateColumnKey>;
 
 export type WeekResolvedEventTarget = {
   event: GridEvent;

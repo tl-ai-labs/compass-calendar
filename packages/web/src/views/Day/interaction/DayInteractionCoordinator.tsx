@@ -8,6 +8,7 @@ import {
   useDraftStore,
 } from "@web/events/stores/draft.store";
 import { type GridLayoutCacheSources } from "@web/grid/interaction/layout.cache";
+import { type CalendarColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { PointerCaptureBoundary } from "@web/interaction/react/PointerCaptureBoundary";
 import {
   createDayInteractionAdapter,
@@ -21,7 +22,7 @@ import {
 interface Props extends PropsWithChildren {
   allDayEvents?: GridEvent[];
   /** Ordered calendar ids of the rendered per-calendar columns. */
-  calendarColumnKeys?: string[];
+  calendarColumnKeys?: CalendarColumnKey[];
   dateInView: Dayjs;
   getLayoutSources: () => GridLayoutCacheSources;
   onOpenEvent: (event: GridEvent) => void;
@@ -29,7 +30,7 @@ interface Props extends PropsWithChildren {
 }
 
 const EMPTY_GRID_EVENTS: GridEvent[] = [];
-const EMPTY_COLUMN_KEYS: string[] = [];
+const EMPTY_COLUMN_KEYS: CalendarColumnKey[] = [];
 
 export const DayInteractionCoordinator: FC<Props> = ({
   allDayEvents = EMPTY_GRID_EVENTS,

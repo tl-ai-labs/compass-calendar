@@ -3,6 +3,7 @@ import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { CROSS_ROW_TIMED_DURATION_MIN } from "../math/cross-row.drag";
 import { type AllDayDragVisual } from "../types/all-day-drag.types";
+import { type DateColumnKey } from "../types/column-key.types";
 import { type TimedDragVisual } from "../types/timed-drag.types";
 
 /**
@@ -14,10 +15,16 @@ import { type TimedDragVisual } from "../types/timed-drag.types";
  *
  * `isAllDay` flips here; the coordinator reads it to pick the allDay/timed
  * schedule kind, so the whole conversion rides the normal mutation path.
+ *
+ * Pinned to `DateColumnKey`: the `dayjs(visual.dayDate)` parse below is only
+ * meaningful for a date-typed column key. This file lives in the shared layer
+ * and was correct until now only because Week happened to be its sole importer
+ * — an invariant held by import topology, which unification would destroy. The
+ * parameter states the constraint so the compiler enforces it instead.
  */
 export const allDayDragVisualToTimedGridEvent = (
   event: GridEvent,
-  visual: AllDayDragVisual,
+  visual: AllDayDragVisual<DateColumnKey>,
 ): GridEvent => {
   const day = dayjs(visual.dayDate).startOf("day");
   const startMinutes = visual.timedStartMinutes ?? 0;
@@ -37,10 +44,14 @@ export const allDayDragVisualToTimedGridEvent = (
  * all-day event on the column it was dropped on (absolute, matching the timed
  * drag's own day semantics). All-day dates are date-only with an *exclusive*
  * end, so a single day ends on the following date - see assign.row.ts.
+ *
+ * Pinned to `DateColumnKey` for the same reason as the all-day -> timed
+ * direction above: the `dayjs(visual.dayDate)` parse is only valid for a
+ * date-typed key.
  */
 export const timedDragVisualToAllDayGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DateColumnKey>,
 ): GridEvent => {
   const day = dayjs(visual.dayDate);
 

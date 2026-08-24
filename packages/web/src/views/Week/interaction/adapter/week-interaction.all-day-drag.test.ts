@@ -3,6 +3,7 @@ import {
   ID_GRID_MAIN,
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
+import { asDateColumnKeys } from "@web/grid/interaction/types/column-key.test-util";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
 import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import { resetWeekInteractionEdgeNavigationState } from "@web/views/Week/interaction/state/edge-navigation.state";
@@ -180,15 +181,16 @@ const createHarness = ({
     runtime: () => ({
       getAllDayEventById: (eventId) => (eventId === event._id ? event : null),
       getTimedEventById: () => null,
-      getVisibleDays: () => [
-        "2026-05-10",
-        "2026-05-11",
-        "2026-05-12",
-        "2026-05-13",
-        "2026-05-14",
-        "2026-05-15",
-        "2026-05-16",
-      ],
+      getVisibleDays: () =>
+        asDateColumnKeys([
+          "2026-05-10",
+          "2026-05-11",
+          "2026-05-12",
+          "2026-05-13",
+          "2026-05-14",
+          "2026-05-15",
+          "2026-05-16",
+        ]),
       onClickAllDayEvent,
       onClickTimedEvent: () => undefined,
       onCommitAllDayDrag,

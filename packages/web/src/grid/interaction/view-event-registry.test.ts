@@ -3,6 +3,7 @@ import {
   calendarEventIdValueSelector,
   createViewInteractionRegistry,
   readCalendarEventIdFromElement,
+  viewInteractionAttributeNames,
 } from "./view-event-registry";
 import { afterEach, describe, expect, it } from "bun:test";
 
@@ -97,5 +98,37 @@ describe("createViewInteractionRegistry", () => {
 
     expect(isolated.resolve("isolated", "timed")).toBe(el);
     expect(day.registry.resolve("isolated", "timed")).toBeNull();
+  });
+
+  // INV-6. Context menus and undo focus-restore read event ids through this
+  // resolver without knowing which view rendered the card. If resolution ever
+  // became view-specific — or an attribute were renamed, or moved to a
+  // different element — those features would break at runtime with no
+  // compile error, so the view-agnostic contract is asserted directly here
+  // for BOTH views rather than left implied by the Week-only cases above.
+  // The attribute names are written out in full rather than derived from
+  // `viewInteractionAttributeNames`. Deriving them would make this vacuous:
+  // the selector under test is built from that same function, so a rename
+  // would move both sides together and the assertion could never fail.
+  it.each([
+    ["week", "data-week-interaction-event-id"],
+    ["day", "data-day-interaction-event-id"],
+  ])("resolves an event id view-agnostically from the %s attribute scheme", (viewName, idAttribute) => {
+    // Belt-and-braces: the literal above must also be what the generator
+    // produces, so a rename fails here instead of silently passing.
+    expect(viewInteractionAttributeNames(viewName).idAttribute).toBe(
+      idAttribute,
+    );
+    const card = document.body.appendChild(document.createElement("div"));
+    const descendant = card.appendChild(document.createElement("span"));
+
+    card.setAttribute(idAttribute, "event-42");
+
+    // Resolves from the element itself and from a nested descendant, since
+    // real callers hand in whatever the pointer/focus landed on.
+    expect(readCalendarEventIdFromElement(card)).toBe("event-42");
+    expect(readCalendarEventIdFromElement(descendant)).toBe("event-42");
+    expect(card.matches(calendarEventIdElementSelector())).toBe(true);
+    expect(card.matches(calendarEventIdValueSelector("event-42"))).toBe(true);
   });
 });

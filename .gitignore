@@ -33,3 +33,7 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+
+# AI-SDLC run artifacts and hook logs (per-run records, not source)
+.sdlc/
+.hook-logs/

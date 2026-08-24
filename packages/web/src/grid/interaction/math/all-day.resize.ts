@@ -7,6 +7,7 @@ import {
   type AllDayResizeEdge,
   type AllDayResizeVisual,
 } from "../types/all-day-resize.types";
+import { type GridColumnKey } from "../types/column-key.types";
 import { type VisualPoint, type VisualRect } from "../types/timed-drag.types";
 
 interface CreateAllDayResizeVisualInput {
@@ -18,8 +19,8 @@ interface CreateAllDayResizeVisualInput {
   startDayIndex: number;
 }
 
-interface UpdateAllDayResizeVisualInput {
-  layout: GridLayoutCache;
+interface UpdateAllDayResizeVisualInput<TColumnKey extends GridColumnKey> {
+  layout: GridLayoutCache<TColumnKey>;
   pointer: VisualPoint;
 }
 
@@ -44,9 +45,9 @@ export const createAllDayResizeVisual = ({
   width: sourceRect.width,
 });
 
-export const updateAllDayResizeVisual = (
+export const updateAllDayResizeVisual = <TColumnKey extends GridColumnKey>(
   visual: AllDayResizeVisual,
-  { layout, pointer }: UpdateAllDayResizeVisualInput,
+  { layout, pointer }: UpdateAllDayResizeVisualInput<TColumnKey>,
 ): AllDayResizeVisual => {
   const pointerColumn = getNearestDayColumn(layout.dayColumns, pointer.x);
   const pointerDayIndex = pointerColumn?.index ?? visual.initialStartDayIndex;
@@ -114,11 +115,13 @@ const resizeFromEnd = (visual: AllDayResizeVisual, pointerDayIndex: number) => {
   };
 };
 
-const getColumn = (columns: DayColumnCache[], dayIndex: number) =>
-  columns.find((column) => column.index === dayIndex);
+const getColumn = <TColumnKey extends GridColumnKey>(
+  columns: DayColumnCache<TColumnKey>[],
+  dayIndex: number,
+) => columns.find((column) => column.index === dayIndex);
 
-const getSpanWidth = (
-  columns: DayColumnCache[],
+const getSpanWidth = <TColumnKey extends GridColumnKey>(
+  columns: DayColumnCache<TColumnKey>[],
   startDayIndex: number,
   endDayIndex: number,
 ) =>

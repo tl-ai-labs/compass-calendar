@@ -1,3 +1,4 @@
+import { type GridColumnKey } from "./column-key.types";
 import {
   type CrossRowSize,
   type DragRow,
@@ -11,25 +12,21 @@ import {
  * frozen while an interaction is in motion. Day *dates* come from the layout
  * cache columns, so they track mid-drag week navigation automatically.
  */
-export interface AllDayDragVisual {
+export interface AllDayDragVisual<TColumnKey extends GridColumnKey> {
   crossRowSize: CrossRowSize;
   /**
-   * Local YYYY-MM-DD date of the column the ghost is snapped to. How the commit
-   * reads it depends on `row`: an all-day drop applies it as a *delta* from
-   * `initialDayDate` (the span may be window-clamped, so the initial column is
-   * not necessarily the event's own start), while a timed drop applies it
-   * absolutely, because the converted block lands on the column it was dropped
-   * on and has no meaningful offset from where the span started.
+   * View-parameterized key of the column the ghost is snapped to. How the
+   * commit reads it depends on `row`: an all-day drop applies it as a *delta*
+   * from `initialDayDate` (the span may be window-clamped, so the initial
+   * column is not necessarily the event's own start), while a timed drop
+   * applies it absolutely, because the converted block lands on the column it
+   * was dropped on and has no meaningful offset from where the span started.
    */
-  /**
-   * Column key semantics match TimedDragVisual.dayDate: a date in the Week
-   * view, a calendar id in the Day view.
-   */
-  dayDate: string;
+  dayDate: TColumnKey;
   dayIndex: number;
   eventId: string;
-  /** Local YYYY-MM-DD date of the (window-clamped) source column at drag start. */
-  initialDayDate: string;
+  /** Key of the (window-clamped) source column at drag start, same kind as `dayDate`. */
+  initialDayDate: TColumnKey;
   initialDayIndex: number;
   pointerStart: VisualPoint;
   /**

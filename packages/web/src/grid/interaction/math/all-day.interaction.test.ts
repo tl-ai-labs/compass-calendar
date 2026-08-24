@@ -1,4 +1,6 @@
 import { type GridLayoutCache } from "../layout.cache";
+import { asDateColumnKey } from "../types/column-key.test-util";
+import { type DateColumnKey } from "../types/column-key.types";
 import { createAllDayDragVisual, updateAllDayDragVisual } from "./all-day.drag";
 import {
   createAllDayResizeVisual,
@@ -6,11 +8,11 @@ import {
 } from "./all-day.resize";
 import { describe, expect, it } from "bun:test";
 
-const layout: GridLayoutCache = {
+const layout: GridLayoutCache<DateColumnKey> = {
   dayColumns: [
-    { date: "2026-07-16", index: 0, left: 0, width: 100 },
-    { date: "2026-07-17", index: 1, left: 100, width: 100 },
-    { date: "2026-07-18", index: 2, left: 200, width: 100 },
+    { date: asDateColumnKey("2026-07-16"), index: 0, left: 0, width: 100 },
+    { date: asDateColumnKey("2026-07-17"), index: 1, left: 100, width: 100 },
+    { date: asDateColumnKey("2026-07-18"), index: 2, left: 200, width: 100 },
   ],
   edgeNavigation: {
     bottom: 40,
@@ -26,7 +28,7 @@ const layout: GridLayoutCache = {
 describe("all-day interaction math", () => {
   it("moves a drag by whole day columns", () => {
     const visual = createAllDayDragVisual({
-      dayDate: "2026-07-17",
+      dayDate: asDateColumnKey("2026-07-17"),
       dayIndex: 1,
       eventId: "event-1",
       pointerStart: { x: 150, y: 20 },

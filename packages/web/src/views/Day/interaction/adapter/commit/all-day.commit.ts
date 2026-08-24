@@ -3,6 +3,7 @@ import { type Dayjs } from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
 import { type AllDayResizeVisual } from "@web/grid/interaction/types/all-day-resize.types";
+import { type DayColumnKey } from "@web/grid/interaction/types/column-key.types";
 import {
   type DayAllDayDragCommitResult,
   type DayAllDayDragTarget,
@@ -13,10 +14,12 @@ import { columnMoveCalendarId } from "./timed.commit";
 
 export const commitAllDayDragInteraction = (
   target: DayAllDayDragTarget,
-  visual: AllDayDragVisual,
+  visual: AllDayDragVisual<DayColumnKey>,
 ): DayAllDayDragCommitResult => {
-  const hasMoved =
-    "dayDate" in visual ? visual.dayDate !== visual.initialDayDate : false;
+  // Raw key inequality, deliberately: no parsing or normalisation, so which
+  // drags count as moves is unchanged. The former `"dayDate" in visual` guard
+  // tested a field the type declares non-optional and could never be false.
+  const hasMoved = visual.dayDate !== visual.initialDayDate;
 
   // In the Day view every column shares the visible date, so an all-day drag
   // that "moved" can only have changed COLUMN, i.e. calendar. Keep the

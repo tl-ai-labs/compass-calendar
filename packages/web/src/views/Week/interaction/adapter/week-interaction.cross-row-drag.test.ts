@@ -4,6 +4,7 @@ import {
   ID_GRID_MAIN,
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
+import { asDateColumnKeys } from "@web/grid/interaction/types/column-key.test-util";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
 import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import { resetWeekInteractionEdgeNavigationState } from "@web/views/Week/interaction/state/edge-navigation.state";
@@ -14,7 +15,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 //   timed grid   y 100..1400, 13 visible hours -> 5/3 px per minute
 //   day columns  x 100..800, 100px each, 2026-05-10 (col 0) .. 2026-05-16 (col 6)
 // Both rows' columns are aligned, as they are on screen.
-const VISIBLE_DAYS = [
+const VISIBLE_DAYS = asDateColumnKeys([
   "2026-05-10",
   "2026-05-11",
   "2026-05-12",
@@ -22,7 +23,7 @@ const VISIBLE_DAYS = [
   "2026-05-14",
   "2026-05-15",
   "2026-05-16",
-];
+]);
 
 const PIXELS_PER_MINUTE = 1300 / (13 * 60);
 

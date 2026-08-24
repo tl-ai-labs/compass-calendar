@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo } from "react";
-import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
+import { toDateColumnKey } from "@web/grid/interaction/types/column-key";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
 
 interface RebuildableAdapter {
@@ -17,12 +18,9 @@ interface RebuildableAdapter {
 export function useWeekInteractionLayoutSync(
   adapter: RebuildableAdapter,
   weekProps: WeekProps,
-): string[] {
+): DateColumnKey[] {
   const visibleDayKeys = useMemo(
-    () =>
-      weekProps.component.weekDays.map((day) =>
-        day.format(YEAR_MONTH_DAY_FORMAT),
-      ),
+    () => weekProps.component.weekDays.map(toDateColumnKey),
     [weekProps.component.weekDays],
   );
   const lastNavigationSource = weekProps.util.getLastNavigationSource();
