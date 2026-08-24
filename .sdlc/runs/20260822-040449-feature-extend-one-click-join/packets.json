@@ -1,0 +1,180 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-event-cards",
+    "pass_id": "20260822-040449-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "instruction": "Create EventJoinIcon.tsx exporting EventJoinIcon and isSafeConferenceUrl. EventJoinIconProps has url (string), title (string optional), baseColor (string), and className (string optional). Export pure boolean function isSafeConferenceUrl(url: unknown): url is string validating non-empty string and protocol === 'http:' or 'https:'. EventJoinIcon renders an anchor <a> with href=url, target='_blank', rel='noopener noreferrer', aria-label (title ? `Join meeting: ${title}` : 'Join meeting'), and className cn('ph-no-capture absolute bottom-0.5 z-10 flex items-center justify-center rounded-xs p-0.5 hover:opacity-80 focus-visible:outline-1 focus-visible:outline-(--event-focus-color)', className ?? 'right-1'). Call e.stopPropagation() on onClick, onMouseDown, and onKeyDown for Enter/Space. Render VideoCameraIcon directly imported from '@phosphor-icons/react' with aria-hidden='true', color=darken(baseColor, 30), size=10, weight='bold'. Do not create or import any intermediate icon wrapper.",
+    "inputs": [],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "summary": { "type": "string" }
+      },
+      "required": ["files_written", "summary"]
+    },
+    "acceptance": [
+      "EventJoinIcon.tsx exports EventJoinIcon and isSafeConferenceUrl",
+      "isSafeConferenceUrl returns true only for valid http: and https: string URLs",
+      "VideoCameraIcon is imported directly from '@phosphor-icons/react'",
+      "Anchor element has rel='noopener noreferrer', target='_blank', and class 'ph-no-capture'",
+      "onClick, onMouseDown, and onKeyDown (Enter/Space) call stopPropagation",
+      "VideoCameraIcon uses darken(baseColor, 30), size 10, and bold weight"
+    ],
+    "budget": {
+      "maxInputTokens": 10000,
+      "maxOutputTokens": 3000
+    },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-event-cards",
+    "pass_id": "20260822-040449-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Integrate EventJoinIcon into TimedEventCard.tsx. Import EventJoinIcon and isSafeConferenceUrl from './EventJoinIcon'. Compute showJoinIcon = isSafeConferenceUrl(event.conference?.url) && !isPlaceholder && durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES && position.width >= REPEAT_ICON_MIN_WIDTH. When showJoinIcon is true, render EventJoinIcon with baseColor=bgColor, className=(showRepeatIcon ? 'right-4.5' : 'right-1'), title=event.title, and url=event.conference!.url before showRepeatIcon rendering. Preserve existing REPEAT_ICON_MIN_WIDTH = 40 and all other props, handlers, and styles.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "reason": "Target file to edit"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+        "reason": "Component and helper imported by TimedEventCard"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "summary": { "type": "string" }
+      },
+      "required": ["files_written", "summary"]
+    },
+    "acceptance": [
+      "TimedEventCard imports EventJoinIcon and isSafeConferenceUrl from ./EventJoinIcon",
+      "showJoinIcon is gated on isSafeConferenceUrl, !isPlaceholder, durationMinutes >= 15, and width >= 40",
+      "When showRepeatIcon is true, EventJoinIcon receives className='right-4.5'; otherwise 'right-1'",
+      "EventJoinIcon renders with event.conference.url, event.title, and baseColor=bgColor",
+      "No other existing behaviors, resize handles, or event handlers are modified"
+    ],
+    "budget": {
+      "maxInputTokens": 15000,
+      "maxOutputTokens": 4000
+    },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_003",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-event-cards",
+    "pass_id": "20260822-040449-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Integrate EventJoinIcon into AllDayEventCard.tsx. Import EventJoinIcon and isSafeConferenceUrl from './EventJoinIcon'. Compute showJoinIcon = isSafeConferenceUrl(event.conference?.url) && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH (keeping REPEAT_ICON_MIN_WIDTH = 60). Update title container className to dynamically apply 'pr-7' when showRepeatIcon && showJoinIcon, or 'pr-3.5' when (showRepeatIcon && !showJoinIcon) || (!showRepeatIcon && showJoinIcon). Render EventJoinIcon with baseColor=bgColor, className=(showRepeatIcon ? 'right-4.5' : 'right-1'), title=event.title, and url=event.conference!.url when showJoinIcon is true. Preserve all other props and handlers.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "reason": "Target file to edit"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+        "reason": "Component and helper imported by AllDayEventCard"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "summary": { "type": "string" }
+      },
+      "required": ["files_written", "summary"]
+    },
+    "acceptance": [
+      "AllDayEventCard imports EventJoinIcon and isSafeConferenceUrl from ./EventJoinIcon",
+      "showJoinIcon is gated on isSafeConferenceUrl, !isPlaceholder, and width >= 60",
+      "Title container applies 'pr-7' for both icons, 'pr-3.5' for single icon, and no padding class for neither",
+      "EventJoinIcon receives className='right-4.5' when showRepeatIcon is true, else 'right-1'",
+      "EventJoinIcon renders with event.conference.url, event.title, and baseColor=bgColor"
+    ],
+    "budget": {
+      "maxInputTokens": 15000,
+      "maxOutputTokens": 4000
+    },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_test_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-event-cards",
+    "pass_id": "20260822-040449-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Extend EventCard.test.tsx to add unit tests covering AC-1 through AC-11 for EventJoinIcon in TimedEventCard and AllDayEventCard. Test cases must cover: (AC-1) render valid link with href and aria-label for timed and all-day cards; (AC-2) reject hostile URL schemes (javascript:, data:, vbscript:, file:) while rendering valid positive control; (AC-3) suppress icon when conference is undefined, null, or empty url; (AC-4) hide icon on timed card when duration < 15 min; (AC-5) hide icon on timed card when width < 40; (AC-6) verify coexistence of repeat icon ('right-1') and join icon ('right-4.5') on recurring timed events; (AC-7) verify title container padding permutations (none, pr-3.5, pr-7) on all-day cards; (AC-8) verify mouseDown and click on join link stop propagation and do not invoke card callbacks; (AC-9) verify Enter/Space keyDown on join link stops propagation; (AC-10) verify join link attributes target='_blank', rel='noopener noreferrer', and class 'ph-no-capture'; (AC-11) verify descriptive accessible label on join link. Use bun:test and @testing-library/react.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "reason": "Existing test suite to extend"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+        "reason": "Component under test"
+      },
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "reason": "Card under test"
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "reason": "Card under test"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "summary": { "type": "string" }
+      },
+      "required": ["files_written", "summary"]
+    },
+    "acceptance": [
+      "AC-1: Valid conference URLs render join affordance link on TimedEventCard and AllDayEventCard",
+      "AC-2: Hostile schemes (javascript:, data:, vbscript:, file:) are rejected while positive control https: renders",
+      "AC-3: Null, undefined, or empty conference URLs do not render join affordance",
+      "AC-4: Timed card with duration under 15 minutes hides join affordance",
+      "AC-5: Timed card with width under 40px hides join affordance",
+      "AC-6: Recurring timed events with conference render both repeat icon (right-1) and join icon (right-4.5) without collision",
+      "AC-7: All-day cards apply dynamic title padding for all 4 permutations (none, repeat-only pr-3.5, join-only pr-3.5, both pr-7)",
+      "AC-8: MouseDown and click on join icon stop propagation and do not trigger card selection or scaler resize",
+      "AC-9: Enter and Space keyDown on join icon stop propagation and do not trigger card keyboard activation or parent listeners",
+      "AC-10: Join link has target='_blank', rel='noopener noreferrer', and class 'ph-no-capture'",
+      "AC-11: Join link has descriptive aria-label including event title"
+    ],
+    "budget": {
+      "maxInputTokens": 25000,
+      "maxOutputTokens": 6000
+    },
+    "retry_count": 0
+  }
+]

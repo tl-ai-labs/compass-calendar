@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "run_id": "20260822-040449-feature-extend-one-click-join",
+  "intent": "feature-extend",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "53f057e46ab1011a8c43634fcf9d5cf7320b3f46",
+  "commits": [
+    "53f057e46ab1011a8c43634fcf9d5cf7320b3f46"
+  ],
+  "files_touched": [
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:18f676aed45c1bfe91c52c7ce0f5faa8c429659e9b2b25e3ee7f4aaba247cb10",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_cg_001",
+      "written_at": "2026-08-22T04:53:22.832Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:9defb9858065c275ccde77f33c1f545b570a25cdf50795e140ba747c2bbd0043",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-08-22T04:59:17.103Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:06cdd43df1dbdcb80f493dc436eea75eec4b2364183e2565af4bf327e332c078",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_003",
+      "written_at": "2026-08-22T05:02:36.160Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:65108187cb0ce6f193f043c80cdd22ae9248f15cb9fcae78a7f7f60cbc4200a8",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_test_001",
+      "written_at": "2026-08-22T05:07:04.507Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:18f676aed45c1bfe91c52c7ce0f5faa8c429659e9b2b25e3ee7f4aaba247cb10",
+      "sha_after": "sha256:6f2681c8148dd55294c862e4d407075207af78e9bb94e30693ac9a627d99ff3b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_refine_001",
+      "written_at": "2026-08-22T05:14:17.937Z"
+    }
+  ]
+}
