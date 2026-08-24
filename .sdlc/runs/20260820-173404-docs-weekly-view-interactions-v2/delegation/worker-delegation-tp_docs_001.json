@@ -1,0 +1,171 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_docs_001",
+  "phase": "docs",
+  "task_type": "doc_addition",
+  "module": "readme",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-20T17:52:06.697Z",
+  "duration_ms": 79418,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.185548,
+  "tokens": {
+    "input": 58471,
+    "input_cached": 258499,
+    "output": 6563,
+    "output_reasoning": 5453
+  },
+  "tool_calls": {
+    "count": 13,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bun lint",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/package.json",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/package.json",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/biome.json",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/biome.json",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git status",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git diff README.md",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/README.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git status",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check README.md",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bun packages/scripts/src/testing/check-semantic-colors.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "README.md"
+    ],
+    "removed": [],
+    "unchanged": 1583,
+    "scanned": 1584,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_docs_001.md",
+    "usage": "worker-usage-tp_docs_001.json"
+  }
+}

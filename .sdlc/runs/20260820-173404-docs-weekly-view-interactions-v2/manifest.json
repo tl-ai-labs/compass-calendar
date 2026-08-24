@@ -1,0 +1,273 @@
+{
+  "pass": "20260820-173404-docs-weekly-view-interactions-v2",
+  "policy_name": "flash-agsdk-only",
+  "mode": "brownfield",
+  "intent": "docs",
+  "auth_mode": "estimated",
+  "started_at": "2026-08-20T17:45:33.280Z",
+  "ended_at": "2026-08-20T17:57:08.702Z",
+  "duration_sec": 695,
+  "total_cost_usd": 0.806587,
+  "total_input_tokens": 297418,
+  "total_input_tokens_cached": 683347,
+  "total_output_tokens": 28662,
+  "model_breakdown": {
+    "gemini-3.7-flash": {
+      "calls": 4,
+      "cost_usd": 0.806587,
+      "input_tokens": 297418,
+      "output_tokens": 28662
+    },
+    "none": {
+      "calls": 2,
+      "cost_usd": 0,
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  },
+  "phase_breakdown": {
+    "requirements_analysis": {
+      "calls": 1,
+      "cost_usd": 0.161181,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 57834,
+      "input_tokens_cached": 94377,
+      "output_tokens": 6697,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.161181,
+          "input_tokens": 57834,
+          "input_tokens_cached": 94377,
+          "output_tokens": 6697
+        }
+      }
+    },
+    "architecture_design": {
+      "calls": 1,
+      "cost_usd": 0,
+      "models": [
+        "none"
+      ],
+      "input_tokens": 0,
+      "input_tokens_cached": 0,
+      "output_tokens": 0,
+      "by_model": {
+        "none": {
+          "calls": 1,
+          "cost_usd": 0,
+          "input_tokens": 0,
+          "input_tokens_cached": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    "plan_task_packets": {
+      "calls": 1,
+      "cost_usd": 0.255749,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 89038,
+      "input_tokens_cached": 263515,
+      "output_tokens": 9185,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.255749,
+          "input_tokens": 89038,
+          "input_tokens_cached": 263515,
+          "output_tokens": 9185
+        }
+      }
+    },
+    "docs": {
+      "calls": 1,
+      "cost_usd": 0.185548,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 58471,
+      "input_tokens_cached": 258499,
+      "output_tokens": 6563,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.185548,
+          "input_tokens": 58471,
+          "input_tokens_cached": 258499,
+          "output_tokens": 6563
+        }
+      }
+    },
+    "senior_code_review": {
+      "calls": 1,
+      "cost_usd": 0,
+      "models": [
+        "none"
+      ],
+      "input_tokens": 0,
+      "input_tokens_cached": 0,
+      "output_tokens": 0,
+      "by_model": {
+        "none": {
+          "calls": 1,
+          "cost_usd": 0,
+          "input_tokens": 0,
+          "input_tokens_cached": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    "security_review": {
+      "calls": 1,
+      "cost_usd": 0.204109,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 92075,
+      "input_tokens_cached": 66956,
+      "output_tokens": 6217,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.204109,
+          "input_tokens": 92075,
+          "input_tokens_cached": 66956,
+          "output_tokens": 6217
+        }
+      }
+    }
+  },
+  "module_breakdown": {
+    "readme": {
+      "calls": 5,
+      "cost_usd": 0.602478
+    },
+    "cross": {
+      "calls": 1,
+      "cost_usd": 0.204109
+    }
+  },
+  "task_type_breakdown": {
+    "docs_requirements": {
+      "calls": 1,
+      "cost_usd": 0.161181
+    },
+    "skipped": {
+      "calls": 2,
+      "cost_usd": 0
+    },
+    "decomposition": {
+      "calls": 1,
+      "cost_usd": 0.255749
+    },
+    "doc_addition": {
+      "calls": 1,
+      "cost_usd": 0.185548
+    },
+    "scoped_security_review": {
+      "calls": 1,
+      "cost_usd": 0.204109
+    }
+  },
+  "artifacts": {
+    "files": 2,
+    "loc": 8,
+    "tests": 1,
+    "test_pass_rate": 1
+  },
+  "files_changed": [
+    {
+      "path": "README.md",
+      "insertions": 7,
+      "deletions": 0,
+      "packet_id": "tp_docs_001",
+      "note": "New '## Weekly view interactions' section between '## Features' and '## Tech stack'."
+    },
+    {
+      "path": ".gitignore",
+      "insertions": 1,
+      "deletions": 0,
+      "packet_id": "gate0-approved-sdlc-ignore",
+      "note": "Appended '.sdlc/' to the DIRS block; approved at Gate 0."
+    }
+  ],
+  "phases_skipped": [
+    {
+      "phase": "architecture_design",
+      "reason": "Intent matrix: docs row SKIPs architecture; Gate 2 skipped with it."
+    },
+    {
+      "phase": "senior_code_review",
+      "reason": "Omitted from the Gate 0 run plan; docs-only run with zero code change."
+    }
+  ],
+  "gates": [
+    {
+      "gate": "gate-0",
+      "title": "Discovery Confirmation",
+      "response": "approved"
+    },
+    {
+      "gate": "gate-1",
+      "title": "Requirements Approval",
+      "response": "approved"
+    },
+    {
+      "gate": "gate-2",
+      "title": "Architecture Approval",
+      "response": "skipped (phase skipped per intent matrix)"
+    },
+    {
+      "gate": "gate-3",
+      "title": "Security Review + deferred diff preview",
+      "response": "approved"
+    },
+    {
+      "gate": "gate-4",
+      "title": "Final Acceptance",
+      "response": "accept"
+    }
+  ],
+  "validation": {
+    "command": "bun lint",
+    "scope": "doc-lint only per intent matrix; bun test:web deliberately not run (README-only change)",
+    "exit_code": 0,
+    "before_gitignore_fix": "39 errors, 10 warnings — all 39 from untracked .sdlc/ run artifacts, zero from README.md",
+    "after_gitignore_fix": "0 errors, 10 warnings (pre-existing, in packages/ test files, unrelated to this run)",
+    "mechanism": "biome.json sets vcs.useIgnoreFile=true, so the Gate 0-approved .sdlc/ entry removed the artifacts from biome's file set",
+    "readme_lintable": false,
+    "readme_lint_note": "biome does not lint markdown; README.md is reported as 'provided but ignored'"
+  },
+  "security_review": {
+    "verdict": "PASS",
+    "finding_count": 5,
+    "highest_severity": "info",
+    "path": ".sdlc/runs/20260820-173404-docs-weekly-view-interactions-v2/security_review.md",
+    "scope": "changed files only (README.md, .gitignore)"
+  },
+  "provenance": {
+    "path": ".sdlc/runs/20260820-173404-docs-weekly-view-interactions-v2/provenance.json",
+    "files_touched": 2,
+    "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "commits": 0,
+    "revertible": true,
+    "note": "Both files git-tracked and clean pre-run; no backups needed."
+  },
+  "run_notes": [
+    "artifacts.tests=1 counts the single validation command (bun lint), which passed. No unit/integration tests were run: the intent matrix scopes a docs run to doc-lint only.",
+    "Every billed dispatch went to gemini-3.7-flash via the Antigravity agent adapter (adapter: antigravity-worker). auth_mode=estimated affects only direct-tier calls, and this policy has no direct tier — so every cost here is vendor-metered, none estimated.",
+    "Cost exceeded the prior mixed-policy run on the same intent ($0.8066 vs $0.622) because the agent adapter performs its own repo exploration per session, spending 58k-92k input tokens per dispatch regardless of packet size.",
+    "The two zero-cost 'skipped' events are bookkeeping, not model calls; they keep phase rollups complete.",
+    "SUMMARY.md intentionally absent — the harness prohibits this orchestrator from authoring summary markdown. The rollup lives here; the narrative was returned to the operator as text. Same precedent as run 20260820-164209."
+  ],
+  "status": "accepted",
+  "outcome": "completed",
+  "terminal": true,
+  "accepted_at": "2026-08-20T18:08:54.850Z",
+  "committed": false,
+  "commit_note": "Accepted at Gate 4 but NOT committed. The 8 insertions live in the working tree; committing is the user's call. git HEAD unchanged at 4189de13."
+}

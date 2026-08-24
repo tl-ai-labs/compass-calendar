@@ -1,0 +1,56 @@
+[
+  {
+    "id": "tp_docs_001",
+    "phase": "docs",
+    "task_type": "doc_addition",
+    "module": "readme",
+    "pass_id": "20260820-173404-docs-weekly-view-interactions-v2",
+    "intent": "docs",
+    "artifact_path": "README.md",
+    "retry_count": 0,
+    "budget": {
+      "maxInputTokens": 4000,
+      "maxOutputTokens": 3000
+    },
+    "instruction": "Insert one new '## Weekly view interactions' section into README.md strictly between the existing '## Features' section and the '## Tech stack' heading. The edit must be strictly additive, leaving all pre-existing lines unmodified. The section must cover ONLY two topics: (1) recurring events (Day, Week, Month, and Year frequencies, and editing or deleting a single occurrence versus the whole series); and (2) event colors (11 fixed options). Include a relative link to docs/frontend/week-drag-interaction.md without duplicating or editing that file. Write in plain, user-facing language matching the README voice, with no internal file, component, or function names. Do NOT mention multi-day drag-select or creation, do NOT mention hourly, minutely, or secondly recurrence, and do NOT mention custom or arbitrary hex colors.",
+    "inputs": [
+      {
+        "path": "README.md",
+        "reason": "Insertion context and house style sample between '## Features' and '## Tech stack'. Pre-existing lines must not be modified.",
+        "content": "## Features\n\nCool things you can do with in Compass\n\n- Find the perfect slot for an event with your keyboard: `SHIFT` + `↑` `↓` `←` `→`\n- Do everything from the cmd palette\n- Edit events smoothly\n- Google Calendar sync\n\nThings you can't do in Compass (yet):\n\n- See attendees, reminders, locations, and meeting links\n- See your Outlook events\n\n## Tech stack\n\n- **Frontend**: React, Zustand, TanStack, Tailwind\n- **Backend**: Node, Express, MongoDB\n- **Testing**: Bun, React Testing Library, Playwright"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of file paths written or modified."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Summary of the changes made."
+        }
+      },
+      "required": [
+        "files_written",
+        "summary"
+      ]
+    },
+    "acceptance": [
+      "File README.md contains a single new ## Weekly view interactions section positioned between ## Features and ## Tech stack.",
+      "The section covers recurring events with Day/Week/Month/Year frequencies and single instance vs. whole series edit/delete choices.",
+      "The section covers event colors with 11 fixed color options.",
+      "The section contains a working markdown link to docs/frontend/week-drag-interaction.md.",
+      "The section makes no mention of multi-day drag-select or creation.",
+      "The section makes no claim of hourly/minutely recurrence or custom hex colors.",
+      "The copy contains no internal component, function, or source code file names.",
+      "Pre-existing lines in README.md are completely unmodified.",
+      "bun lint passes without errors.",
+      "No files outside README.md are modified during the doc addition."
+    ]
+  }
+]
