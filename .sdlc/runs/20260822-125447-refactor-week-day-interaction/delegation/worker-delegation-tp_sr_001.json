@@ -1,0 +1,57 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_sr_001",
+  "phase": "senior_code_review",
+  "task_type": "changed_files_review",
+  "module": "week-day-interaction",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T13:36:09.311Z",
+  "duration_ms": 46922,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.138204,
+  "tokens": {
+    "input": 46074,
+    "input_cached": 0,
+    "output": 7677,
+    "output_reasoning": 3282
+  },
+  "tool_calls": {
+    "count": 1,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1588,
+    "scanned": 1588,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_sr_001.md",
+    "usage": "worker-usage-tp_sr_001.json"
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "pass": "20260822-125447-refactor-week-day-interaction",
+  "policy_name": "flash-agsdk-only",
+  "started_at": "2026-08-23T06:14:24.858Z",
+  "ended_at": "2026-08-23T13:36:56.238Z",
+  "duration_sec": 26551,
+  "total_cost_usd": 4.942951,
+  "total_input_tokens": 1708008,
+  "total_input_tokens_cached": 2758963,
+  "total_output_tokens": 218566,
+  "model_breakdown": {
+    "gemini-3.7-flash": {
+      "calls": 30,
+      "cost_usd": 4.942951,
+      "input_tokens": 1708008,
+      "output_tokens": 218566
+    }
+  },
+  "phase_breakdown": {
+    "requirements_analysis": {
+      "calls": 1,
+      "cost_usd": 0.085454,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 14237,
+      "input_tokens_cached": 0,
+      "output_tokens": 7122,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.085454,
+          "input_tokens": 14237,
+          "input_tokens_cached": 0,
+          "output_tokens": 7122
+        }
+      }
+    },
+    "architecture_design": {
+      "calls": 2,
+      "cost_usd": 0.454172,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 101545,
+      "input_tokens_cached": 249743,
+      "output_tokens": 29377,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 2,
+          "cost_usd": 0.454172,
+          "input_tokens": 101545,
+          "input_tokens_cached": 249743,
+          "output_tokens": 29377
+        }
+      }
+    },
+    "plan_task_packets": {
+      "calls": 1,
+      "cost_usd": 0.161032,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 19949,
+      "input_tokens_cached": 11255,
+      "output_tokens": 14380,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.161032,
+          "input_tokens": 19949,
+          "input_tokens_cached": 11255,
+          "output_tokens": 14380
+        }
+      }
+    },
+    "codegen": {
+      "calls": 23,
+      "cost_usd": 3.797879,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 1436838,
+      "input_tokens_cached": 2486493,
+      "output_tokens": 141072,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 23,
+          "cost_usd": 3.797879,
+          "input_tokens": 1436838,
+          "input_tokens_cached": 2486493,
+          "output_tokens": 141072
+        }
+      }
+    },
+    "tests": {
+      "calls": 1,
+      "cost_usd": 0.167421,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 60721,
+      "input_tokens_cached": 11472,
+      "output_tokens": 8291,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.167421,
+          "input_tokens": 60721,
+          "input_tokens_cached": 11472,
+          "output_tokens": 8291
+        }
+      }
+    },
+    "security_review": {
+      "calls": 1,
+      "cost_usd": 0.138789,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 28644,
+      "input_tokens_cached": 0,
+      "output_tokens": 10647,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.138789,
+          "input_tokens": 28644,
+          "input_tokens_cached": 0,
+          "output_tokens": 10647
+        }
+      }
+    },
+    "senior_code_review": {
+      "calls": 1,
+      "cost_usd": 0.138204,
+      "models": [
+        "gemini-3.7-flash"
+      ],
+      "input_tokens": 46074,
+      "input_tokens_cached": 0,
+      "output_tokens": 7677,
+      "by_model": {
+        "gemini-3.7-flash": {
+          "calls": 1,
+          "cost_usd": 0.138204,
+          "input_tokens": 46074,
+          "input_tokens_cached": 0,
+          "output_tokens": 7677
+        }
+      }
+    }
+  },
+  "module_breakdown": {
+    "week-day-interaction": {
+      "calls": 6,
+      "cost_usd": 0.977651
+    },
+    "types": {
+      "calls": 6,
+      "cost_usd": 0.937663
+    },
+    "layout": {
+      "calls": 1,
+      "cost_usd": 0.844018
+    },
+    "math": {
+      "calls": 4,
+      "cost_usd": 0.55612
+    },
+    "commit": {
+      "calls": 7,
+      "cost_usd": 0.739207
+    },
+    "geometry": {
+      "calls": 2,
+      "cost_usd": 0.151464
+    },
+    "adapter": {
+      "calls": 3,
+      "cost_usd": 0.660785
+    },
+    "config": {
+      "calls": 1,
+      "cost_usd": 0.076043
+    }
+  },
+  "task_type_breakdown": {
+    "delta_requirements": {
+      "calls": 1,
+      "cost_usd": 0.085454
+    },
+    "delta_refactor_plan": {
+      "calls": 2,
+      "cost_usd": 0.454172
+    },
+    "decomposition": {
+      "calls": 1,
+      "cost_usd": 0.161032
+    },
+    "new_file_add": {
+      "calls": 2,
+      "cost_usd": 0.377633
+    },
+    "existing_file_edit": {
+      "calls": 22,
+      "cost_usd": 3.587667
+    },
+    "changed_files_review": {
+      "calls": 2,
+      "cost_usd": 0.276993
+    }
+  },
+  "artifacts": {
+    "files": 24,
+    "loc": 708,
+    "tests": 2298,
+    "test_pass_rate": 1
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 101947,
+    "cached_content_token_count": 41055,
+    "candidates_token_count": 1922,
+    "thoughts_token_count": 2975,
+    "total_token_count": 106844,
+    "service_tier": null
+  },
+  "tool_call_count": 5,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/math/all-day.drag.ts\",\n  \"content\": \"import { type GridLayoutCache } from \\\"@web/grid/interaction/layout.cache\\\";\\nimport { type AllDayDragVisual } from \\\"../types/all-day-drag.types\\\";\\nimport { type VisualPoint, type VisualRect } from \\\"../types/timed-drag.types\\\";\\nimport {\\n  getCrossRowTimedPlacement,\\n  getDragRowLayouts,\\n  resolveDragRow,\\n} from \\\"./cross-row.drag\\\";\\nimport { resolveDragColumn } from \\\"./drag-column\\\";\\n\\ninterface CreateAllDayDragVisualInput<TColumnKey = string> {\\n  dayDate: TColumnKey;\\n  dayIndex: number;\\n  eventId: string;\\n  pointerStart: VisualPoint;\\n  sourceRect: VisualRect;\\n}\\n\\ninterface UpdateAllDayDragVisualInput<TColumnKey = string> {\\n  layout: GridLayoutCache<TColumnKey>;\\n  pointer: VisualPoint;\\n}\\n\\nexport const createAllDayDragVisual = <TColumnKey = string>({\\n  dayDate,\\n  dayIndex,\\n  eventId,\\n  pointerStart,\\n  sourceRect,\\n}: CreateAllDayDragVisualInput<TColumnKey>): AllDayDragVisual<TColumnKey> => ({\\n  crossRowSize: null,\\n  dayDate,\\n  dayIndex,\\n  eventId,\\n  initialDayDate: dayDate,\\n  initialDayIndex: dayIndex,\\n  pointerStart,\\n  row: \\\"allDay\\\",\\n  sourceRect,\\n  timedStartMinutes: null,\\n  transform: { x: 0, y: 0 },\\n  type: \\\"allDayDrag\\\",\\n});\\n\\nexport const updateAllDayDragVisual = <TColumnKey = string>(\\n  visual: AllDayDragVisual<TColumnKey>,\\n  { layout, pointer }: UpdateAllDayDragVisualInput<TColumnKey>,\\n): AllDayDragVisual<TColumnKey> => {\\n  const { allDay, timed } = getDragRowLayouts(layout, \\\"allDay\\\");\\n  const row = resolveDragRow({\\n    allDay,\\n    pointerY: pointer.y,\\n    sourceRow: \\\"allDay\\\",\\n    timed,\\n  });\\n\\n  // Over the timed grid the drag is no longer horizontally locked: the ghost\\n  // becomes a default-length block placed at the pointer, previewing the timed\\n  // event this drop would create.\\n  if (row === \\\"timed\\\" && timed) {\\n    const placement = getCrossRowTimedPlacement({\\n      layout: timed,\\n      pointer,\\n      sourceRect: visual.sourceRect,\\n    });\\n\\n    return {\\n      ...visual,\\n      crossRowSize: { height: placement.height, width: placement.width },\\n      dayDate: placement.column?.date ?? visual.dayDate,\\n      dayIndex: placement.column?.index ?? visual.dayIndex,\\n      row: \\\"timed\\\",\\n      timedStartMinutes: placement.startMinutes,\\n      transform: placement.transform,\\n    };\\n  }\\n\\n  const { nextColumn, transformX } = resolveDragColumn({\\n    deltaX: pointer.x - visual.pointerStart.x,\\n    initialDayIndex: visual.initialDayIndex,\\n    layout: allDay ?? layout,\\n    sourceRect: visual.sourceRect,\\n  });\\n\\n  return {\\n    ...visual,\\n    crossRowSize: null,\\n    dayDate: nextColumn?.date ?? visual.dayDate,\\n    dayIndex: nextColumn?.index ?? visual.initialDayIndex,\\n    row: \\\"allDay\\\",\\n    timedStartMinutes: null,\\n    transform: {\\n      x: transformX,\\n      y: 0,\\n    },\\n  };\\n};\\n\"\n}"
+}

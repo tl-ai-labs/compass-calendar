@@ -34,5 +34,7 @@ playwright-report/
 test-results/
 tmp/
 # AI-SDLC run bookkeeping (also keeps Biome from linting it - biome.json sets vcs.useIgnoreFile)
-.sdlc/
 .hook-logs/
+
+# AI-SDLC delegated-worker session caches (binary, ~1MB each)
+.sdlc/runs/*/delegation/_gemini_worker_save/

@@ -1,0 +1,77 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_cg_023",
+  "phase": "codegen",
+  "task_type": "existing_file_edit",
+  "module": "config",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T08:42:51.273Z",
+  "duration_ms": 30857,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.076043,
+  "tokens": {
+    "input": 29479,
+    "input_cached": 21901,
+    "output": 3171,
+    "output_reasoning": 2648
+  },
+  "tool_calls": {
+    "count": 3,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      ".gitignore"
+    ],
+    "removed": [],
+    "unchanged": 1586,
+    "scanned": 1587,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_cg_023.md",
+    "usage": "worker-usage-tp_cg_023.json"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_cg_008",
+  "phase": "codegen",
+  "task_type": "existing_file_edit",
+  "module": "commit",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T08:02:56.960Z",
+  "duration_ms": 37051,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.086365,
+  "tokens": {
+    "input": 25185,
+    "input_cached": 47919,
+    "output": 4600,
+    "output_reasoning": 2875
+  },
+  "tool_calls": {
+    "count": 4,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "packages/web/src/grid/interaction/commit/cross-row.commit.ts"
+    ],
+    "removed": [],
+    "unchanged": 1585,
+    "scanned": 1586,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_cg_008.md",
+    "usage": "worker-usage-tp_cg_008.json"
+  }
+}

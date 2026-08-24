@@ -1,0 +1,143 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 262636,
+    "cached_content_token_count": 178442,
+    "candidates_token_count": 1505,
+    "thoughts_token_count": 3340,
+    "total_token_count": 267481,
+    "service_tier": null
+  },
+  "tool_call_count": 13,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "list_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "from \"@core/types/domain-primitives\"",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/event-draft.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/event-draft.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/biome.json",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/biome.json",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-resize.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-resize.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "pnpm biome check packages/web/src/grid/interaction/types/column-key.types.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x biome check packages/web/src/grid/interaction/types/column-key.types.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun run typecheck",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x tsc --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/types/column-key.types.ts\",\n  \"content\": \"import { type CalendarId, type DateOnly } from \\\"@core/types/domain-primitives\\\";\\n\\n/**\\n * Week grid columns are dates.\\n */\\nexport type DateColumnKey = DateOnly;\\n\\n/**\\n * Day grid columns are calendar ids, except the single-column fallback whose\\n * one key is a date.\\n */\\nexport type DayColumnKey = CalendarId | DateOnly;\\n\\n/**\\n * DELIBERATELY UNCHECKED casts: the callers have already established these\\n * are the rendered column keys, and running a validating parse here would put\\n * Zod on the mid-drag hot path and throw on input that is silently tolerated\\n * today, which would be a behavior change.\\n */\\nexport const asDateColumnKeys = (keys: string[]): DateColumnKey[] =>\\n  keys as DateColumnKey[];\\n\\nexport const asDayColumnKeys = (keys: string[]): DayColumnKey[] =>\\n  keys as DayColumnKey[];\\n\"\n}"
+}

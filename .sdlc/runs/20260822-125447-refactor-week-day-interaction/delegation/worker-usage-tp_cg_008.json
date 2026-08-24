@@ -1,0 +1,57 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 73104,
+    "cached_content_token_count": 47919,
+    "candidates_token_count": 1725,
+    "thoughts_token_count": 2875,
+    "total_token_count": 77704,
+    "service_tier": null
+  },
+  "tool_call_count": 4,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/commit/cross-row.commit.ts\",\n  \"content\": \"import { YEAR_MONTH_DAY_FORMAT } from \\\"@core/constants/date.constants\\\";\\nimport dayjs from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { CROSS_ROW_TIMED_DURATION_MIN } from \\\"../math/cross-row.drag\\\";\\nimport { type AllDayDragVisual } from \\\"../types/all-day-drag.types\\\";\\nimport { type DateColumnKey } from \\\"../types/column-key.types\\\";\\nimport { type TimedDragVisual } from \\\"../types/timed-drag.types\\\";\\n\\n/**\\n * All-day -> timed. Lossy in reverse: an all-day event has no time of day, so\\n * the start comes from where it was dropped (snapped to the grid's step) and\\n * the length from a fixed default. A multi-day span collapses to that single\\n * block on the drop column - there is no honest way to keep a 5-day span as a\\n * timed event, and the pointer is the only signal for which day was meant.\\n *\\n * `isAllDay` flips here; the coordinator reads it to pick the allDay/timed\\n * schedule kind, so the whole conversion rides the normal mutation path.\\n */\\nexport const allDayDragVisualToTimedGridEvent = (\\n  event: GridEvent,\\n  visual: AllDayDragVisual<DateColumnKey>,\\n): GridEvent => {\\n  const day = dayjs(visual.dayDate).startOf(\\\"day\\\");\\n  const startMinutes = visual.timedStartMinutes ?? 0;\\n\\n  return {\\n    ...event,\\n    endDate: day\\n      .add(startMinutes + CROSS_ROW_TIMED_DURATION_MIN, \\\"minutes\\\")\\n      .format(),\\n    isAllDay: false,\\n    startDate: day.add(startMinutes, \\\"minutes\\\").format(),\\n  };\\n};\\n\\n/**\\n * Timed -> all-day. Time of day is discarded and the event becomes a one-day\\n * all-day event on the column it was dropped on (absolute, matching the timed\\n * drag's own day semantics). All-day dates are date-only with an *exclusive*\\n * end, so a single day ends on the following date - see assign.row.ts.\\n */\\nexport const timedDragVisualToAllDayGridEvent = (\\n  event: GridEvent,\\n  visual: TimedDragVisual<DateColumnKey>,\\n): GridEvent => {\\n  const day = dayjs(visual.dayDate);\\n\\n  return {\\n    ...event,\\n    endDate: day.add(1, \\\"day\\\").format(YEAR_MONTH_DAY_FORMAT),\\n    isAllDay: true,\\n    startDate: day.format(YEAR_MONTH_DAY_FORMAT),\\n  };\\n};\\n\"\n}"
+}

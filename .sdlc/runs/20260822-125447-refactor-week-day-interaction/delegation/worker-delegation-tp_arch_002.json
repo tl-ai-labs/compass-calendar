@@ -1,0 +1,46 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_arch_002",
+  "phase": "architecture_design",
+  "task_type": "delta_refactor_plan",
+  "module": "week-day-interaction",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T06:24:14.070Z",
+  "duration_ms": 67303,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.141866,
+  "tokens": {
+    "input": 20340,
+    "input_cached": 11275,
+    "output": 12185,
+    "output_reasoning": 4020
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1585,
+    "scanned": 1585,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_arch_002.md",
+    "usage": "worker-usage-tp_arch_002.json"
+  }
+}

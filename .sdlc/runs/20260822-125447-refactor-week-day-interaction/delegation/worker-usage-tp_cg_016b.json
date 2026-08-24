@@ -1,0 +1,65 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 88712,
+    "cached_content_token_count": 47632,
+    "candidates_token_count": 1663,
+    "thoughts_token_count": 2389,
+    "total_token_count": 92764,
+    "service_tier": null
+  },
+  "tool_call_count": 5,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_written\":\"packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts\",\"content\":\"import { allDayDragVisualToTimedGridEvent } from \\\"@web/grid/interaction/commit/cross-row.commit\\\";\\nimport {\\n  createAllDayDragVisual,\\n  updateAllDayDragVisual,\\n} from \\\"@web/grid/interaction/math/all-day.drag\\\";\\nimport { type AllDayDragVisual } from \\\"@web/grid/interaction/types/all-day-drag.types\\\";\\nimport { type DateColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport {\\n  type VisualPoint,\\n  type VisualRect,\\n} from \\\"@web/grid/interaction/types/timed-drag.types\\\";\\nimport { type InteractionPoint } from \\\"@web/interaction/interaction.types\\\";\\nimport {\\n  allDayDragVisualToGridEvent,\\n  hasAllDayDragVisualMoved,\\n} from \\\"../commit/all-day.commit\\\";\\nimport { type WeekLayoutCache } from \\\"../geometry/week-layout.cache\\\";\\nimport {\\n  type WeekAllDayDragCommitResult,\\n  type WeekAllDayDragTarget,\\n} from \\\"../week-interaction.adapter.types\\\";\\nimport { getVisibleAllDayRange } from \\\"./all-day.visible-range\\\";\\n\\nexport const createAllDayDragInteractionVisual = ({\\n  layout,\\n  pointerStart,\\n  sourceRect,\\n  target,\\n}: {\\n  layout: WeekLayoutCache;\\n  pointerStart: InteractionPoint;\\n  sourceRect: VisualRect;\\n  target: WeekAllDayDragTarget;\\n}) => {\\n  const visibleRange = getVisibleAllDayRange(layout, sourceRect);\\n  const sourceColumn = layout.dayColumns[visibleRange.startDayIndex];\\n\\n  if (!sourceColumn) {\\n    return null;\\n  }\\n\\n  return createAllDayDragVisual({\\n    dayDate: sourceColumn.date,\\n    dayIndex: sourceColumn.index,\\n    eventId: target.event._id!,\\n    pointerStart,\\n    sourceRect,\\n  });\\n};\\n\\nexport const updateAllDayDragInteractionVisual = ({\\n  layout,\\n  pointer,\\n  target,\\n  visual,\\n}: {\\n  layout: WeekLayoutCache;\\n  pointer: VisualPoint;\\n  target: WeekAllDayDragTarget;\\n  visual: AllDayDragVisual<DateColumnKey>;\\n}) => {\\n  const nextVisual = updateAllDayDragVisual(visual, {\\n    layout,\\n    pointer,\\n  });\\n\\n  return {\\n    // Only the timed row has times worth previewing on the ghost; an all-day\\n    // ghost stays label-less, as it was before cross-row drops existed.\\n    event:\\n      nextVisual.row === \\\"timed\\\"\\n        ? allDayDragVisualToTimedGridEvent(target.event, nextVisual)\\n        : null,\\n    visual: nextVisual,\\n  };\\n};\\n\\nexport const commitAllDayDragInteraction = (\\n  target: WeekAllDayDragTarget,\\n  visual: AllDayDragVisual<DateColumnKey>,\\n): WeekAllDayDragCommitResult => {\\n  // A drop in the timed grid is always a change, even onto the same day: the\\n  // event gains a time of day it never had.\\n  const isCrossRow = visual.row === \\\"timed\\\";\\n  const movedEvent = isCrossRow\\n    ? allDayDragVisualToTimedGridEvent(target.event, visual)\\n    : allDayDragVisualToGridEvent(target.event, visual);\\n\\n  return {\\n    event: movedEvent,\\n    eventId: target.event._id!,\\n    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,\\n    hasMoved: isCrossRow || hasAllDayDragVisualMoved(visual),\\n    type: \\\"allDayDragEnd\\\",\\n  };\\n};\\n\"}"
+}

@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 51380,
+    "cached_content_token_count": 21901,
+    "candidates_token_count": 523,
+    "thoughts_token_count": 2648,
+    "total_token_count": 54551,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.gitignore",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_written\":\".gitignore\",\"content\":\"#########\\n# FILES #\\n#########\\n*.env*\\n*.log\\n*.mjs\\n*.mongodb\\n*.tsbuildinfo\\n.DS_Store\\n.eslintcache\\nbuild.zip\\ncompass.yaml\\n!compass.example.yaml\\n.mcp.json\\n.playwright-compass.yaml\\n**/.claude/settings.local.json\\n\\n########\\n# DIRS #\\n########\\n.vscode/\\nblob-report/\\nbuild/\\nbuildcache/\\nlogs/\\nnode_modules/\\npackages/backend/logs\\npackages/backend/build\\npackages/backend/node_modules\\npackages/core/build/\\npackages/web/node_modules/\\npackages/web/build/\\nplaywright-report/\\ntest-results/\\ntmp/\\n# AI-SDLC run bookkeeping (also keeps Biome from linting it - biome.json sets vcs.useIgnoreFile)\\n.sdlc/\\n.hook-logs/\\n\"}"
+}

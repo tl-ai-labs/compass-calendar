@@ -1,0 +1,59 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 73190,
+    "cached_content_token_count": 36791,
+    "candidates_token_count": 1416,
+    "thoughts_token_count": 3119,
+    "total_token_count": 77725,
+    "service_tier": null
+  },
+  "tool_call_count": 4,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_written\":\"packages/web/src/grid/interaction/types/all-day-drag.types.ts\",\"content\":\"import {\\n  type CrossRowSize,\\n  type DragRow,\\n  type VisualPoint,\\n  type VisualRect,\\n} from \\\"./timed-drag.types\\\";\\n\\n/**\\n * Day indices are window-relative (0..N-1 over the rendered columns) and stay\\n * valid across mid-drag layout rebuilds because the visible day count is\\n * frozen while an interaction is in motion. Day *dates* come from the layout\\n * cache columns, so they track mid-drag week navigation automatically.\\n */\\nexport interface AllDayDragVisual<TColumnKey = string> {\\n  crossRowSize: CrossRowSize;\\n  /**\\n   * Local YYYY-MM-DD date of the column the ghost is snapped to. How the commit\\n   * reads it depends on `row`: an all-day drop applies it as a *delta* from\\n   * `initialDayDate` (the span may be window-clamped, so the initial column is\\n   * not necessarily the event's own start), while a timed drop applies it\\n   * absolutely, because the converted block lands on the column it was dropped\\n   * on and has no meaningful offset from where the span started.\\n   */\\n  /**\\n   * Key of the column currently under the drag, view-parameterized (Week uses\\n   * DateColumnKey, Day uses DayColumnKey).\\n   */\\n  dayDate: TColumnKey;\\n  dayIndex: number;\\n  eventId: string;\\n  /** Key of the (window-clamped) source column at drag start. */\\n  initialDayDate: TColumnKey;\\n  initialDayIndex: number;\\n  pointerStart: VisualPoint;\\n  /**\\n   * Row the pointer is over, re-resolved every frame. \\\"timed\\\" means releasing\\n   * here converts the event to a timed one.\\n   */\\n  row: DragRow;\\n  sourceRect: VisualRect;\\n  /** Snapped start-of-day minutes for the converted block; null unless `row` is \\\"timed\\\". */\\n  timedStartMinutes: number | null;\\n  transform: VisualPoint;\\n  type: \\\"allDayDrag\\\";\\n}\\n\"}"
+}

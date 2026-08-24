@@ -1,0 +1,78 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 119913,
+    "cached_content_token_count": 78898,
+    "candidates_token_count": 1058,
+    "thoughts_token_count": 3344,
+    "total_token_count": 124315,
+    "service_tier": null
+  },
+  "tool_call_count": 6,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+        "query": "*.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/cross-row.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/cross-row.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/drag-column.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/math/drag-column.ts\",\n  \"content\": \"import {\\n  type GridLayoutCache,\\n  getNearestDayColumn,\\n} from \\\"@web/grid/interaction/layout.cache\\\";\\nimport { type VisualRect } from \\\"../types/timed-drag.types\\\";\\n\\n/**\\n * Resolves which day column a horizontal drag is over, relative to the\\n * dragged event's own column: the initial column is looked up by its\\n * window-relative index (stable across mid-drag layout rebuilds), and the\\n * next column is whichever is nearest to the source center shifted by the\\n * pointer's horizontal delta.\\n */\\nexport const resolveDragColumn = <TColumnKey = string>({\\n  deltaX,\\n  initialDayIndex,\\n  layout,\\n  sourceRect,\\n}: {\\n  deltaX: number;\\n  initialDayIndex: number;\\n  layout: GridLayoutCache<TColumnKey>;\\n  sourceRect: VisualRect;\\n}) => {\\n  const initialColumn = layout.dayColumns.find(\\n    (column) => column.index === initialDayIndex,\\n  );\\n  const initialColumnLeft = initialColumn?.left ?? sourceRect.left;\\n  const sourceCenterX =\\n    initialColumnLeft + (initialColumn?.width ?? sourceRect.width) / 2;\\n  const nextColumn = getNearestDayColumn(\\n    layout.dayColumns,\\n    sourceCenterX + deltaX,\\n  );\\n\\n  return {\\n    nextColumn,\\n    transformX: (nextColumn?.left ?? initialColumnLeft) - initialColumnLeft,\\n  };\\n};\\n\"\n}"
+}

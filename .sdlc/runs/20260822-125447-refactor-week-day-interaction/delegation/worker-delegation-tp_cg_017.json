@@ -1,0 +1,77 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_cg_017",
+  "phase": "codegen",
+  "task_type": "existing_file_edit",
+  "module": "types",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T08:15:55.471Z",
+  "duration_ms": 95088,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.12541,
+  "tokens": {
+    "input": 28531,
+    "input_cached": 82514,
+    "output": 7804,
+    "output_reasoning": 5409
+  },
+  "tool_calls": {
+    "count": 3,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts"
+    ],
+    "removed": [],
+    "unchanged": 1586,
+    "scanned": 1587,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_cg_017.md",
+    "usage": "worker-usage-tp_cg_017.json"
+  }
+}

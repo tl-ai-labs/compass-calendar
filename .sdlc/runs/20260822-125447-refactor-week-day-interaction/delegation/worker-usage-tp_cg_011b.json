@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 56116,
+    "cached_content_token_count": 21022,
+    "candidates_token_count": 1458,
+    "thoughts_token_count": 2508,
+    "total_token_count": 60082,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts\",\n  \"content\": \"import { YEAR_MONTH_DAY_FORMAT } from \\\"@core/constants/date.constants\\\";\\nimport { type Dayjs } from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { type AllDayDragVisual } from \\\"@web/grid/interaction/types/all-day-drag.types\\\";\\nimport { type AllDayResizeVisual } from \\\"@web/grid/interaction/types/all-day-resize.types\\\";\\nimport { type DayColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport {\\n  type DayAllDayDragCommitResult,\\n  type DayAllDayDragTarget,\\n  type DayAllDayResizeCommitResult,\\n  type DayAllDayResizeTarget,\\n} from \\\"../day-interaction.adapter.types\\\";\\nimport { columnMoveCalendarId } from \\\"./timed.commit\\\";\\n\\nexport const commitAllDayDragInteraction = (\\n  target: DayAllDayDragTarget,\\n  visual: AllDayDragVisual<DayColumnKey>,\\n): DayAllDayDragCommitResult => {\\n  const hasMoved =\\n    \\\"dayDate\\\" in visual ? visual.dayDate !== visual.initialDayDate : false;\\n\\n  // In the Day view every column shares the visible date, so an all-day drag\\n  // that \\\"moved\\\" can only have changed COLUMN, i.e. calendar. Keep the\\n  // event's own dates: rewriting them to the visible date would truncate a\\n  // multi-day all-day event to a single day.\\n  return {\\n    event: hasMoved\\n      ? {\\n          ...target.event,\\n          calendarId: columnMoveCalendarId(visual, target.event),\\n        }\\n      : target.event,\\n    eventId: target.event._id!,\\n    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,\\n    hasMoved,\\n    type: \\\"allDayDragEnd\\\",\\n  };\\n};\\n\\nexport const commitAllDayResizeInteraction = (\\n  target: DayAllDayResizeTarget,\\n  visual: AllDayResizeVisual,\\n  visibleDate: Dayjs,\\n): DayAllDayResizeCommitResult => {\\n  const hasMoved =\\n    visual.startDayIndex !== visual.initialStartDayIndex ||\\n    visual.endDayIndex !== visual.initialEndDayIndex;\\n\\n  return {\\n    event: hasMoved\\n      ? allDayVisualToDayGridEvent(target.event, visibleDate)\\n      : target.event,\\n    eventId: target.event._id!,\\n    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,\\n    hasMoved,\\n    type: \\\"allDayResizeEnd\\\",\\n  };\\n};\\n\\nconst allDayVisualToDayGridEvent = (\\n  event: GridEvent,\\n  visibleDate: Dayjs,\\n): GridEvent => ({\\n  ...event,\\n  isAllDay: true,\\n  endDate: visibleDate.add(1, \\\"day\\\").format(YEAR_MONTH_DAY_FORMAT),\\n  startDate: visibleDate.format(YEAR_MONTH_DAY_FORMAT),\\n});\\n\"\n}"
+}

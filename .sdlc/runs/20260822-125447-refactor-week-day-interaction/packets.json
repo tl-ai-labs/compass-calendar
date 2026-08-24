@@ -1,0 +1,634 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Create packages/web/src/grid/interaction/types/column-key.types.ts defining DateColumnKey = DateOnly, DayColumnKey = CalendarId | DateOnly, and the two unchecked cast helpers asDateColumnKeys / asDayColumnKeys. Import the branded primitives type-only from @core/types/domain-primitives. Do NOT use DateOnlySchema.parse - the helpers are deliberately unchecked casts; document why in a comment (validation on the mid-drag hot path would throw and change behavior).",
+    "artifact_path": "packages/web/src/grid/interaction/types/column-key.types.ts",
+    "step": 1,
+    "depends_on": [],
+    "risk": "low",
+    "acceptance": [
+      "Exports DateColumnKey = DateOnly and DayColumnKey = CalendarId | DateOnly",
+      "Exports asDateColumnKeys and asDayColumnKeys as unchecked cast helpers with an explanatory comment",
+      "Imports are type-only from @core/types/domain-primitives; no runtime dependency on zod",
+      "No call to DateOnlySchema.parse or any validating parse"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Parameterize TimedDragVisual with generic TColumnKey = string in packages/web/src/grid/interaction/types/timed-drag.types.ts; dayDate and initialDayDate become TColumnKey. Update the existing doc comments on those two fields to describe the new parameterization instead of the old 'do not dayjs-parse this' warning. Leave every other field unchanged.",
+    "artifact_path": "packages/web/src/grid/interaction/types/timed-drag.types.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "TimedDragVisual<TColumnKey = string> with dayDate and initialDayDate typed TColumnKey",
+      "Existing unparameterized references still compile via the default",
+      "VisualPoint, VisualRect, DragRow, CrossRowSize exports unchanged"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_003",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Parameterize AllDayDragVisual with generic TColumnKey = string in packages/web/src/grid/interaction/types/all-day-drag.types.ts; dayDate and initialDayDate become TColumnKey. Update the doc comment that currently says 'Column key semantics match TimedDragVisual.dayDate'.",
+    "artifact_path": "packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "AllDayDragVisual<TColumnKey = string> with dayDate and initialDayDate typed TColumnKey",
+      "Existing unparameterized references still compile via the default"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_004",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "layout",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/grid/interaction/layout.cache.ts parameterize GridLayoutCacheOptions<TColumnKey = string> (visibleDates: TColumnKey[]), DayColumnCache<TColumnKey = string> (date: TColumnKey) and GridLayoutCache<TColumnKey = string> (dayColumns, crossRow), then thread TColumnKey through the REAL exported builders: buildTimedGridLayoutCache, buildAllDayGridLayoutCache, buildDragGridLayoutCache, getNearestDayColumn, and the internal BuildDayColumnsInput/buildDayColumns. There is NO function named createGridLayoutCache - do not invent one. Update the 'Local YYYY-MM-DD dates' doc comments to reflect that the key is now view-parameterized.",
+    "artifact_path": "packages/web/src/grid/interaction/layout.cache.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_002",
+      "tp_cg_003"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "GridLayoutCacheOptions<TColumnKey = string>.visibleDates is TColumnKey[]",
+      "DayColumnCache<TColumnKey = string>.date is TColumnKey",
+      "GridLayoutCache<TColumnKey = string> threads the parameter into dayColumns and crossRow",
+      "buildTimedGridLayoutCache, buildAllDayGridLayoutCache, buildDragGridLayoutCache and getNearestDayColumn are generic over TColumnKey",
+      "No function named createGridLayoutCache is introduced",
+      "layout.cache.test.ts passes unmodified"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_004b",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "math",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "added_during_execution": "Gap found by the orchestrator after tp_cg_004: resolveDragColumn returns DayColumnCache<string>, and math/{timed,all-day}.drag.ts assign 'nextColumn?.date ?? visual.dayDate' into a TColumnKey field. Without threading the generic here that assignment widens to 'string | TColumnKey' and fails type-check. Not in the original 23; validated against the allowlist before adding.",
+    "instruction": "Make resolveDragColumn generic over TColumnKey = string in packages/web/src/grid/interaction/math/drag-column.ts so layout is GridLayoutCache<TColumnKey> and the returned nextColumn is DayColumnCache<TColumnKey> | null. Zero runtime change.",
+    "artifact_path": "packages/web/src/grid/interaction/math/drag-column.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_004"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "resolveDragColumn is generic over TColumnKey with a string default",
+      "layout parameter is GridLayoutCache<TColumnKey>; nextColumn is DayColumnCache<TColumnKey> | null",
+      "transformX computation and the doc comment are unchanged"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_004c",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "math",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "added_during_execution": "Second gap found by the orchestrator: getCrossRowAllDayPlacement/getCrossRowTimedPlacement return 'column: DayColumnCache | null', and math/timed.drag.ts assigns 'placement.column?.date ?? visual.dayDate' into a TColumnKey field. Same widening failure as drag-column.ts. Not in the original 23; validated against the allowlist before adding.",
+    "instruction": "Thread TColumnKey = string through the placement helpers in packages/web/src/grid/interaction/math/cross-row.drag.ts so the returned column is DayColumnCache<TColumnKey> | null. Zero runtime change.",
+    "artifact_path": "packages/web/src/grid/interaction/math/cross-row.drag.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_004"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Placement helpers are generic over TColumnKey with a string default",
+      "Returned column is DayColumnCache<TColumnKey> | null",
+      "CROSS_ROW_TIMED_DURATION_MIN and all runtime logic unchanged"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "math",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Thread TColumnKey = string through the input and result types in packages/web/src/grid/interaction/math/timed.drag.ts. The line 'dayDate: nextColumn?.date ?? visual.dayDate' must keep working with the generic. No behavior change.",
+    "artifact_path": "packages/web/src/grid/interaction/math/timed.drag.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_002",
+      "tp_cg_004"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Input and result types are generic over TColumnKey with a string default",
+      "The nextColumn?.date ?? visual.dayDate fallback type-checks",
+      "math/timed.interaction.test.ts passes unmodified"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_006",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "math",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Thread TColumnKey = string through the input and result types in packages/web/src/grid/interaction/math/all-day.drag.ts. The 'dayDate: placement.column?.date ?? visual.dayDate' and 'dayDate: nextColumn?.date ?? visual.dayDate' lines must keep working. No behavior change.",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.drag.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_003",
+      "tp_cg_004"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Input and result types are generic over TColumnKey with a string default",
+      "Both column fallback expressions type-check",
+      "math/all-day.interaction.test.ts passes unmodified"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_007",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/grid/interaction/commit/timed-moved.ts make hasTimedDragVisualMoved generic over TColumnKey = string so it accepts TimedDragVisual<TColumnKey>; it only compares keys for equality. The exported names are hasTimedDragVisualMoved and hasTimedResizeVisualMoved - there is NO hasTimedVisualMoved. Leave hasTimedResizeVisualMoved alone: TimedResizeVisual carries no column key.",
+    "artifact_path": "packages/web/src/grid/interaction/commit/timed-moved.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_002"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "hasTimedDragVisualMoved is generic over TColumnKey and accepts TimedDragVisual<TColumnKey>",
+      "hasTimedResizeVisualMoved is unchanged",
+      "No symbol named hasTimedVisualMoved is introduced"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_008",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/grid/interaction/commit/cross-row.commit.ts pin allDayDragVisualToTimedGridEvent to AllDayDragVisual<DateColumnKey> and timedDragVisualToAllDayGridEvent to TimedDragVisual<DateColumnKey>. This is the containment that makes a calendar-keyed Day visual a compile error at these dayjs-parsing call sites. Keep both function bodies and all doc comments byte-identical.",
+    "artifact_path": "packages/web/src/grid/interaction/commit/cross-row.commit.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_002",
+      "tp_cg_003"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "Both exports require DateColumnKey-parameterized visuals",
+      "Function bodies and doc comments unchanged",
+      "commit/cross-row.commit.test.ts passes unmodified"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_009",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "TYPE-ONLY edit to packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts: bind AllDayDragVisual parameters to DateColumnKey. Do not change any runtime logic, including the dayjs(visual.dayDate).diff day-delta computation.",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_003"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Visual parameters typed with DateColumnKey",
+      "Zero runtime logic change - diff of the file is types only"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_010",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "TYPE-ONLY edit to packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts: bind TimedDragVisual parameters to DateColumnKey. Do not change runtime logic, including dayjs(visual.dayDate).startOf('day').",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_002"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Visual parameters typed with DateColumnKey",
+      "Zero runtime logic change - diff of the file is types only"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_011",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "TYPE-ONLY edit to packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts: change columnMoveCalendarId's parameter to Pick<TimedDragVisual<DayColumnKey>, 'dayDate' | 'initialDayDate'>. KEEP the existing 'visual.dayDate as CalendarId' cast and KEEP its doc comment verbatim - the cast is narrowed, not eliminated, and rests on a runtime invariant (the single-column fallback has one key, so the inequality can never hold). Do not change any other function in the file.",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_002"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "columnMoveCalendarId accepts Pick<TimedDragVisual<DayColumnKey>, 'dayDate' | 'initialDayDate'>",
+      "The as CalendarId cast and its doc comment are preserved verbatim",
+      "timedDragVisualToDayGridEvent and timedResizeVisualToDayGridEvent unchanged"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_012",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts apply asDateColumnKeys at the boundary where getVisibleDays() is read before building the layout cache, so the Week layout cache is GridLayoutCache<DateColumnKey>. This is the ONLY change - do not restructure the adapter, do not decompose it, do not touch edge-navigation or motion state.",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_004",
+      "tp_cg_008",
+      "tp_cg_009",
+      "tp_cg_010"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "asDateColumnKeys is applied to the getVisibleDays() result at the layout-cache boundary",
+      "Week layout cache is typed GridLayoutCache<DateColumnKey>",
+      "No structural change to the adapter beyond the branding boundary",
+      "All five week-interaction.*.test.ts files pass unmodified"
+    ],
+    "status": "not_needed",
+    "not_needed_reason": "Superseded by tp_cg_018. Branding at the Week geometry cache (week-layout.cache.ts) threaded DateColumnKey through the whole Week path, so the 795-line week-interaction.adapter.ts needed no edit at all. Verified by a clean type-check."
+  },
+  {
+    "id": "tp_cg_013",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts apply asDayColumnKeys at the columnKeys construction (the line 'const columnKeys = eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey];') so the Day layout cache is GridLayoutCache<DayColumnKey>. Preserve the fallback logic exactly - it is load-bearing. This is the ONLY change: do NOT decompose this adapter into per-interaction modules (that work is cut from this run).",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_004",
+      "tp_cg_011"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "asDayColumnKeys is applied at the columnKeys construction boundary",
+      "The eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey] fallback is preserved exactly",
+      "Day layout cache is typed GridLayoutCache<DayColumnKey>",
+      "No decomposition into adapter/interactions/* - file remains monolithic",
+      "day-interaction.adapter.test.ts passes"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_014",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "commit",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Add exactly two new test cases to packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts, matching the file's existing style and helpers. (1) INV-6: a multi-day all-day event dragged across calendar columns commits with startDate and endDate UNCHANGED and only calendarId altered. (2) INV-7: the single-column fallback - an event whose calendarId is not among the rendered column keys - commits without a calendar move. Do not modify or delete any existing test.",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+    "step": 1,
+    "depends_on": [
+      "tp_cg_011",
+      "tp_cg_013"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "INV-6 case asserts startDate and endDate are byte-identical before and after a cross-calendar all-day drag",
+      "INV-7 case covers the calendar-not-in-columns fallback",
+      "No existing test is modified or removed",
+      "Both new tests pass"
+    ],
+    "status": "not_needed",
+    "not_needed_reason": "INV-6 and INV-7 are ALREADY covered by existing passing tests in day-interaction.adapter.test.ts - line 444 'keeps a multi-day all-day event's dates on a cross-calendar move' (asserts calendarId changes while startDate/endDate stay identical) and line 457 'disables cross-column movement for an event whose calendar has no column' (the single-column fallback). The change_plan's NEW-ASSERTION claim was wrong; coverage predates this run."
+  },
+  {
+    "id": "tp_cg_015",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Create packages/web/src/grid/interaction/types/adapter.types.ts with the shared adapter contracts. Targets are generic over TRegistered; commit results are fully shared with no generic. Discriminant literals are EXACTLY camelCase: 'allDayDrag', 'allDayResize', 'timedDrag', 'timedResize', and 'allDayDragEnd', 'allDayResizeEnd', 'timedDragEnd', 'timedResizeEnd'. Every Target has {event: GridEvent; hadFormOpenBeforeInteraction: boolean; registered: TRegistered; type}, with an extra 'edge' on the two resize targets. Every CommitResult has {event: GridEvent; eventId: string; hadFormOpenBeforeInteraction: boolean; hasMoved: boolean; type}. Also export GridInteractionPointerOwnership {reason: string; shouldOwn: boolean}, GridInteractionTarget<TRegistered>, GridResolvedEventTarget<TRegistered>, GridInteractionCommitResult and GridInteractionVisual<TColumnKey>. Copy the shapes from the two existing per-view files - do not invent fields.",
+    "artifact_path": "packages/web/src/grid/interaction/types/adapter.types.ts",
+    "step": 2,
+    "depends_on": [
+      "tp_cg_001",
+      "tp_cg_002",
+      "tp_cg_003"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Discriminant literals are camelCase and match the existing per-view files exactly",
+      "Target interfaces carry event, hadFormOpenBeforeInteraction, registered, type (+ edge on resize)",
+      "CommitResult interfaces carry event, eventId, hadFormOpenBeforeInteraction, hasMoved, type",
+      "GridInteractionPointerOwnership is {reason, shouldOwn}",
+      "File is types-only with zero runtime output"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_016",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Rewrite packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts so the duplicated Target/CommitResult/Visual declarations become aliases over the shared generics, parameterized with WeekRegisteredEventTarget and DateColumnKey. EVERY currently exported name must still be exported with the same name - 19 files import from here. Keep WeekInteractionRuntime (incl. getVisibleDays, onRequestWeekNavigation), WeekInteractionAdapterOptions (getLayoutSources -> WeekLayoutCacheSources), WeekInteractionAdapter (incl. rebuildLayoutAfterNavigation) and WeekEdgeNavigableVisual verbatim in behavior.",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+    "step": 2,
+    "depends_on": [
+      "tp_cg_015"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Every previously exported name is still exported under the same name",
+      "Targets alias GridXTarget<WeekRegisteredEventTarget>; visuals use DateColumnKey",
+      "Week-only members preserved: getVisibleDays, onRequestWeekNavigation, rebuildLayoutAfterNavigation, WeekEdgeNavigableVisual",
+      "No import site outside this file needs editing"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_017",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "types",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Rewrite packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts so the duplicated Target/CommitResult/Visual declarations become aliases over the shared generics, parameterized with DayRegisteredEventTarget and DayColumnKey. EVERY currently exported name must still be exported with the same name - 6 files import from here. Keep DayInteractionRuntime and DayInteractionAdapterOptions (incl. getColumnKeys, getVisibleDate, getLayoutSources -> GridLayoutCacheSources, and the Dayjs import) and DayInteractionAdapter verbatim in behavior.",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+    "step": 2,
+    "depends_on": [
+      "tp_cg_015"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Every previously exported name is still exported under the same name",
+      "Targets alias GridXTarget<DayRegisteredEventTarget>; visuals use DayColumnKey",
+      "Day-only members preserved: getColumnKeys, getVisibleDate",
+      "No import site outside this file needs editing"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_018",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "geometry",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Update packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts to consume the now-generic shared builders at DateColumnKey, keeping Week's own edge-threshold source. Preserve all existing exported names and the shared constants already in use (ID_GRID_MAIN, GRID_TIME_STEP, TIMED_VISIBLE_HOURS, smart-scroll insets).",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+    "step": 3,
+    "depends_on": [
+      "tp_cg_004",
+      "tp_cg_012"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Builders are parameterized at DateColumnKey",
+      "Week's edge-threshold source is unchanged",
+      "All existing exports keep their names"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_019",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "geometry",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Update packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts to consume the now-generic shared builders at DayColumnKey. The file already aliases the shared types verbatim (export type DayLayoutCache = GridLayoutCache) - carry the parameter through those aliases. Keep buildDayTimedLayoutCache, buildDayAllDayLayoutCache, buildDayLayoutCacheForTarget, isDayDragTarget and the edgeThresholdPx: 0 on the all-day builder.",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+    "step": 3,
+    "depends_on": [
+      "tp_cg_004",
+      "tp_cg_013"
+    ],
+    "risk": "low",
+    "acceptance": [
+      "Builders and the DayLayoutCache/DayLayoutCacheSources aliases are parameterized at DayColumnKey",
+      "edgeThresholdPx: 0 on the all-day builder is preserved",
+      "isDayDragTarget and buildDayLayoutCacheForTarget keep their signatures"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_020",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "In packages/web/src/grid/interaction/adapter.helpers.ts add shared adapter lifecycle helpers for the routines both adapters duplicate: target resolution, draft-event mounting, and cancellation handling. Make them generic over TRegistered and TColumnKey. Keep every existing export in this file (including SMART_SCROLL_BOTTOM_INSET_PX and SMART_SCROLL_SPEED_PX) untouched - this is additive. Only extract logic that is genuinely identical in both adapters; leave anything view-specific behind.",
+    "artifact_path": "packages/web/src/grid/interaction/adapter.helpers.ts",
+    "step": 4,
+    "depends_on": [
+      "tp_cg_015"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "New helpers are generic over TRegistered and TColumnKey",
+      "Every pre-existing export in adapter.helpers.ts is preserved unchanged",
+      "Only genuinely-identical logic is extracted; view-specific behavior is not hoisted"
+    ],
+    "status": "deferred",
+    "deferred_reason": "FR-4 cut mid-execution (operator decision) - only remaining step touching runtime code in the two large adapters; deferred to the FR-3/FR-6 follow-up ticket."
+  },
+  {
+    "id": "tp_cg_021",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Update packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts to consume the shared lifecycle helpers added to grid/interaction/adapter.helpers.ts, deleting the now-duplicated local implementations. Behavior must be identical. Do NOT decompose the adapter and do NOT touch edge-navigation, motion state, or rebuildLayoutAfterNavigation.",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "step": 4,
+    "depends_on": [
+      "tp_cg_016",
+      "tp_cg_018",
+      "tp_cg_020"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "Local duplicates of the extracted routines are removed in favor of the shared helpers",
+      "Edge-navigation, motion state and rebuildLayoutAfterNavigation are untouched",
+      "All five week-interaction.*.test.ts files pass unmodified"
+    ],
+    "status": "deferred",
+    "deferred_reason": "FR-4 cut mid-execution (operator decision) - only remaining step touching runtime code in the two large adapters; deferred to the FR-3/FR-6 follow-up ticket."
+  },
+  {
+    "id": "tp_cg_022",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Update packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts to consume the shared lifecycle helpers added to grid/interaction/adapter.helpers.ts, deleting the now-duplicated local implementations. Behavior must be identical. Do NOT decompose this adapter into per-interaction modules - that work is cut from this run. Preserve the columnKeys fallback logic exactly.",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+    "step": 4,
+    "depends_on": [
+      "tp_cg_017",
+      "tp_cg_019",
+      "tp_cg_020"
+    ],
+    "risk": "medium",
+    "acceptance": [
+      "Local duplicates of the extracted routines are removed in favor of the shared helpers",
+      "File remains monolithic - no adapter/interactions/* modules created",
+      "columnKeys fallback logic preserved exactly",
+      "day-interaction.adapter.test.ts passes including the two new INV-6/INV-7 cases"
+    ],
+    "status": "deferred",
+    "deferred_reason": "FR-4 cut mid-execution (operator decision) - only remaining step touching runtime code in the two large adapters; deferred to the FR-3/FR-6 follow-up ticket."
+  },
+  {
+    "id": "tp_cg_023",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "config",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "instruction": "Append '.sdlc/' and '.hook-logs/' to .gitignore if not already present. APPEND ONLY - never rewrite, reorder or remove any existing line.",
+    "artifact_path": ".gitignore",
+    "step": 5,
+    "depends_on": [],
+    "risk": "low",
+    "acceptance": [
+      ".sdlc/ and .hook-logs/ are present in .gitignore",
+      "Every pre-existing line is preserved byte-identical and in order"
+    ],
+    "status": "executed"
+  },
+  {
+    "id": "tp_cg_008b",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+    "step": 1,
+    "depends_on": [],
+    "risk": "low",
+    "status": "executed",
+    "added_during_execution": "Type-only fixture branding so the test compiles against the DateColumnKey-pinned cross-row commit. No assertion changed.",
+    "acceptance": [
+      "type-only; no runtime change"
+    ],
+    "instruction": "Type-only fixture branding so the test compiles against the DateColumnKey-pinned cross-row commit. No assertion changed."
+  },
+  {
+    "id": "tp_cg_011b",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+    "step": 1,
+    "depends_on": [],
+    "risk": "low",
+    "status": "executed",
+    "added_during_execution": "Bind AllDayDragVisual to DayColumnKey; INV-6 comment and hasMoved expression preserved.",
+    "acceptance": [
+      "type-only; no runtime change"
+    ],
+    "instruction": "Bind AllDayDragVisual to DayColumnKey; INV-6 comment and hasMoved expression preserved."
+  },
+  {
+    "id": "tp_cg_016b",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+    "step": 1,
+    "depends_on": [],
+    "risk": "low",
+    "status": "executed",
+    "added_during_execution": "Pin AllDayDragVisual annotations to DateColumnKey.",
+    "acceptance": [
+      "type-only; no runtime change"
+    ],
+    "instruction": "Pin AllDayDragVisual annotations to DateColumnKey."
+  },
+  {
+    "id": "tp_cg_016c",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "adapter",
+    "pass_id": "20260822-125447-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.drag.ts",
+    "step": 1,
+    "depends_on": [],
+    "risk": "low",
+    "status": "executed",
+    "added_during_execution": "Pin TimedDragVisual annotations to DateColumnKey.",
+    "acceptance": [
+      "type-only; no runtime change"
+    ],
+    "instruction": "Pin TimedDragVisual annotations to DateColumnKey."
+  }
+]

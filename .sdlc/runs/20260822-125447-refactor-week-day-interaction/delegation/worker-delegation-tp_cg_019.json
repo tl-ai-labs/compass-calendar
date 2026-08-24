@@ -1,0 +1,48 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_cg_019",
+  "phase": "codegen",
+  "task_type": "existing_file_edit",
+  "module": "geometry",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": null,
+    "sdk_version": null,
+    "vertex_project": null,
+    "vertex_location": null,
+    "thinking": null
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-23T08:22:53.635Z",
+  "duration_ms": 73151,
+  "success": false,
+  "error": "The agent worker exited 1. WARNING:root:System step error (HTTP 429): Encountered retryable error from model provider: Agent execution terminated due to error. (\"request failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\")\nWARNING:root:System step error (HTTP 429): Encountered retryable error from model provider: Agent execution terminated due to error. (\"request failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\")\nWARNING:root:System step error (HTTP 429): Encountered retryable error from model provider: Agent execution terminated due to error. (\"request failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\")\nWARNING:root:System step error (HTTP 429): Agent execution terminated due to error. (\"request failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\")\ngemini_worker failed: AntigravityExecutionError: model unreachable: Error 429, Message: Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details., Status: RESOURCE_EXHAUSTED, Details: []\nrequest failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.: Error 429, Message: Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details., Status: RESOURCE_EXHAUSTED, Details: []\nrequest failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+  "cost_usd": 0,
+  "tokens": {
+    "input": 0,
+    "input_cached": 0,
+    "output": 0,
+    "output_reasoning": 0
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts"
+    ],
+    "removed": [],
+    "unchanged": 1586,
+    "scanned": 1587,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_cg_019.md",
+    "usage": "worker-usage-tp_cg_019.json"
+  }
+}

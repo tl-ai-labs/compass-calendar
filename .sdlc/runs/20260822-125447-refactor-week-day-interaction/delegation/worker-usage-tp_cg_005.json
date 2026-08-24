@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 72675,
+    "cached_content_token_count": 11402,
+    "candidates_token_count": 4943,
+    "thoughts_token_count": 3278,
+    "total_token_count": 80896,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/timed.drag.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/math/timed.drag.ts\",\n  \"content\": \"import { type GridLayoutCache } from \\\"@web/grid/interaction/layout.cache\\\";\\nimport {\\n  type TimedDragVisual,\\n  type VisualPoint,\\n  type VisualRect,\\n} from \\\"../types/timed-drag.types\\\";\\nimport {\\n  getCrossRowAllDayPlacement,\\n  getDragRowLayouts,\\n  resolveDragRow,\\n} from \\\"./cross-row.drag\\\";\\nimport { resolveDragColumn } from \\\"./drag-column\\\";\\nimport { clamp, snapToStep } from \\\"./snap\\\";\\n\\nconst MINUTES_PER_DAY = 24 * 60;\\n\\ninterface CreateTimedDragVisualInput<TColumnKey = string> {\\n  dayDate: TColumnKey;\\n  dayIndex: number;\\n  endMinutes: number;\\n  eventId: string;\\n  pointerStart: VisualPoint;\\n  sourceRect: VisualRect;\\n  startMinutes: number;\\n}\\n\\ninterface UpdateTimedDragVisualInput<TColumnKey = string> {\\n  layout: GridLayoutCache<TColumnKey>;\\n  pointer: VisualPoint;\\n  scrollDeltaPx?: number;\\n}\\n\\nexport const createTimedDragVisual = <TColumnKey = string>({\\n  dayDate,\\n  dayIndex,\\n  endMinutes,\\n  eventId,\\n  pointerStart,\\n  sourceRect,\\n  startMinutes,\\n}: CreateTimedDragVisualInput<TColumnKey>): TimedDragVisual<TColumnKey> => ({\\n  crossRowSize: null,\\n  dayDate,\\n  dayIndex,\\n  durationMinutes: endMinutes - startMinutes,\\n  endMinutes,\\n  eventId,\\n  initialDayDate: dayDate,\\n  initialDayIndex: dayIndex,\\n  initialEndMinutes: endMinutes,\\n  initialStartMinutes: startMinutes,\\n  pointerStart,\\n  row: \\\"timed\\\",\\n  sourceRect,\\n  startMinutes,\\n  transform: { x: 0, y: 0 },\\n  type: \\\"timedDrag\\\",\\n});\\n\\nexport const updateTimedDragVisual = <TColumnKey = string>(\\n  visual: TimedDragVisual<TColumnKey>,\\n  { layout, pointer, scrollDeltaPx = 0 }: UpdateTimedDragVisualInput<TColumnKey>,\\n): TimedDragVisual<TColumnKey> => {\\n  const { allDay, timed } = getDragRowLayouts(layout, \\\"timed\\\");\\n  const row = resolveDragRow({\\n    allDay,\\n    pointerY: pointer.y,\\n    sourceRow: \\\"timed\\\",\\n    timed,\\n  });\\n\\n  // Over the all-day row the ghost becomes an all-day chip on the drop column.\\n  // startMinutes/endMinutes keep their last in-grid values and are ignored by\\n  // the commit, which reads `row` and discards the time of day.\\n  if (row === \\\"allDay\\\" && allDay) {\\n    const placement = getCrossRowAllDayPlacement({\\n      layout: allDay,\\n      pointer,\\n      sourceRect: visual.sourceRect,\\n    });\\n\\n    return {\\n      ...visual,\\n      crossRowSize: { height: placement.height, width: placement.width },\\n      dayDate: placement.column?.date ?? visual.dayDate,\\n      dayIndex: placement.column?.index ?? visual.dayIndex,\\n      row: \\\"allDay\\\",\\n      transform: placement.transform,\\n    };\\n  }\\n\\n  const deltaX = pointer.x - visual.pointerStart.x;\\n  const deltaY = pointer.y - visual.pointerStart.y;\\n  const deltaMinutes = snapToStep(\\n    (deltaY + scrollDeltaPx) / layout.pixelsPerMinute,\\n    layout.snapMinutes,\\n  );\\n  const candidateStartMinutes = visual.initialStartMinutes + deltaMinutes;\\n  const verticalPlacement = getBoundedVerticalPlacement({\\n    candidateStartMinutes,\\n    layout,\\n    scrollDeltaPx,\\n    visual,\\n  });\\n  const { nextColumn, transformX } = resolveDragColumn({\\n    deltaX,\\n    initialDayIndex: visual.initialDayIndex,\\n    layout,\\n    sourceRect: visual.sourceRect,\\n  });\\n\\n  return {\\n    ...visual,\\n    crossRowSize: null,\\n    dayDate: nextColumn?.date ?? visual.dayDate,\\n    dayIndex: nextColumn?.index ?? visual.initialDayIndex,\\n    endMinutes: verticalPlacement.startMinutes + visual.durationMinutes,\\n    row: \\\"timed\\\",\\n    startMinutes: verticalPlacement.startMinutes,\\n    transform: {\\n      x: transformX,\\n      y: verticalPlacement.transformY,\\n    },\\n  };\\n};\\n\\nconst getBoundedVerticalPlacement = <TColumnKey = string>({\\n  candidateStartMinutes,\\n  layout,\\n  scrollDeltaPx,\\n  visual,\\n}: {\\n  candidateStartMinutes: number;\\n  layout: GridLayoutCache<TColumnKey>;\\n  scrollDeltaPx: number;\\n  visual: TimedDragVisual<TColumnKey>;\\n}) => {\\n  const currentScrollTop = getCurrentScrollTop(layout, scrollDeltaPx);\\n  const visibleStartMinutes = currentScrollTop / layout.pixelsPerMinute;\\n  const visibleDurationMinutes =\\n    (layout.edgeNavigation.bottom - layout.edgeNavigation.top) /\\n    layout.pixelsPerMinute;\\n  const latestDayStartMinutes = MINUTES_PER_DAY - visual.durationMinutes;\\n  const earliestVisibleStartMinutes =\\n    Math.ceil(visibleStartMinutes / layout.snapMinutes) * layout.snapMinutes;\\n  const latestVisibleStartMinutes =\\n    Math.floor(\\n      (visibleStartMinutes + visibleDurationMinutes - visual.durationMinutes) /\\n        layout.snapMinutes,\\n    ) * layout.snapMinutes;\\n  const earliestStartMinutes = clamp(\\n    earliestVisibleStartMinutes,\\n    0,\\n    latestDayStartMinutes,\\n  );\\n  const latestStartMinutes = Math.max(\\n    earliestStartMinutes,\\n    clamp(latestVisibleStartMinutes, 0, latestDayStartMinutes),\\n  );\\n  const earliestTransformY = layout.edgeNavigation.top - visual.sourceRect.top;\\n  const latestTransformY = Math.max(\\n    earliestTransformY,\\n    layout.edgeNavigation.bottom -\\n      visual.sourceRect.height -\\n      visual.sourceRect.top,\\n  );\\n\\n  if (candidateStartMinutes < earliestStartMinutes) {\\n    return {\\n      startMinutes: earliestStartMinutes,\\n      transformY: earliestTransformY,\\n    };\\n  }\\n\\n  if (candidateStartMinutes > latestStartMinutes) {\\n    return {\\n      startMinutes: latestStartMinutes,\\n      transformY: latestTransformY,\\n    };\\n  }\\n\\n  const timeTransformY =\\n    layout.edgeNavigation.top +\\n    candidateStartMinutes * layout.pixelsPerMinute -\\n    currentScrollTop -\\n    visual.sourceRect.top;\\n\\n  return {\\n    startMinutes: candidateStartMinutes,\\n    transformY: clamp(timeTransformY, earliestTransformY, latestTransformY),\\n  };\\n};\\n\\nconst getCurrentScrollTop = <TColumnKey = string>(\\n  layout: GridLayoutCache<TColumnKey>,\\n  scrollDeltaPx: number,\\n) =>\\n  (layout.smartScroll?.initialScrollTop ?? 0) + scrollDeltaPx;\\n\"\n}"
+}

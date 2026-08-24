@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 111045,
+    "cached_content_token_count": 82514,
+    "candidates_token_count": 2395,
+    "thoughts_token_count": 5409,
+    "total_token_count": 118849,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web{\"file_written\":\"packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts\",\"content\":\"import { type Dayjs } from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { type GridLayoutCacheSources } from \\\"@web/grid/interaction/layout.cache\\\";\\nimport {\\n  type GridAllDayDragCommitResult,\\n  type GridAllDayDragTarget,\\n  type GridAllDayResizeCommitResult,\\n  type GridAllDayResizeTarget,\\n  type GridInteractionCommitResult,\\n  type GridInteractionPointerOwnership,\\n  type GridInteractionTarget,\\n  type GridInteractionVisual,\\n  type GridResolvedEventTarget,\\n  type GridTimedDragCommitResult,\\n  type GridTimedDragTarget,\\n  type GridTimedResizeCommitResult,\\n  type GridTimedResizeTarget,\\n} from \\\"@web/grid/interaction/types/adapter.types\\\";\\nimport { type DayColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport {\\n  type InteractionCancellationTargets,\\n  type InteractionEngineSchedulerOptions,\\n} from \\\"@web/interaction/interaction.engine\\\";\\nimport { type DayRegisteredEventTarget } from \\\"../registry/day-event.registry\\\";\\n\\nexport type DayInteractionPointerOwnership = GridInteractionPointerOwnership;\\n\\nexport interface DayInteractionAdapterOptions {\\n  engineOptions?: InteractionEngineSchedulerOptions;\\n  /**\\n   * Ordered keys of the rendered per-calendar columns (calendar ids, one per\\n   * displayed calendar). Drags hit-test against these so an event can be\\n   * dropped on another calendar's column; empty means a single dateless\\n   * column (no calendar columns rendered), which disables cross-column\\n   * movement.\\n   */\\n  getColumnKeys?: () => string[];\\n  getLayoutSources?: () => GridLayoutCacheSources;\\n  getVisibleDate?: () => Dayjs;\\n  runtime?: () => DayInteractionRuntime;\\n}\\n\\nexport interface DayInteractionRuntime {\\n  getAllDayEventById?: (eventId: string) => GridEvent | null;\\n  getTimedEventById(eventId: string): GridEvent | null;\\n  isFormOpen?: () => boolean;\\n  onClickAllDayEvent?: (event: GridEvent) => void;\\n  onClickTimedEvent: (event: GridEvent) => void;\\n  onCommitAllDayDrag?: (result: DayAllDayDragCommitResult) => void;\\n  onCommitAllDayResize?: (result: DayAllDayResizeCommitResult) => void;\\n  onCommitTimedDrag: (result: DayTimedDragCommitResult) => void;\\n  onCommitTimedResize?: (result: DayTimedResizeCommitResult) => void;\\n  onMotionActivation?: (target: DayInteractionTarget) => void;\\n}\\n\\nexport type DayAllDayDragCommitResult = GridAllDayDragCommitResult;\\n\\nexport type DayAllDayDragTarget =\\n  GridAllDayDragTarget<DayRegisteredEventTarget>;\\n\\nexport type DayAllDayResizeCommitResult = GridAllDayResizeCommitResult;\\n\\nexport type DayAllDayResizeTarget =\\n  GridAllDayResizeTarget<DayRegisteredEventTarget>;\\n\\nexport type DayTimedDragCommitResult = GridTimedDragCommitResult;\\n\\nexport type DayTimedDragTarget = GridTimedDragTarget<DayRegisteredEventTarget>;\\n\\nexport type DayTimedResizeCommitResult = GridTimedResizeCommitResult;\\n\\nexport type DayTimedResizeTarget =\\n  GridTimedResizeTarget<DayRegisteredEventTarget>;\\n\\nexport type DayInteractionTarget =\\n  GridInteractionTarget<DayRegisteredEventTarget>;\\n\\nexport type DayInteractionVisual = GridInteractionVisual<DayColumnKey>;\\n\\nexport type DayInteractionCommitResult = GridInteractionCommitResult;\\n\\nexport type DayResolvedEventTarget =\\n  GridResolvedEventTarget<DayRegisteredEventTarget>;\\n\\nexport interface DayInteractionAdapter {\\n  cancel(): void;\\n  connectCancellationEvents(\\n    targets?: InteractionCancellationTargets,\\n  ): () => void;\\n  handlePointerCancel(event: PointerEvent): boolean;\\n  handlePointerDown(event: PointerEvent): DayInteractionPointerOwnership;\\n  handlePointerMove(event: PointerEvent): boolean;\\n  handlePointerUp(event: PointerEvent): boolean;\\n  ownsPointer(event: Pick<PointerEvent, \\\"pointerId\\\">): boolean;\\n}\\n\"}"
+}

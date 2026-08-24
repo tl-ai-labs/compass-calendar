@@ -1,0 +1,178 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 395052,
+    "cached_content_token_count": 264544,
+    "candidates_token_count": 4599,
+    "thoughts_token_count": 6317,
+    "total_token_count": 405968,
+    "service_tier": null
+  },
+  "tool_call_count": 16,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "DateColumnKey",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+        "start_line": "0",
+        "end_line": "19"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "39"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "adapter.types",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "*day-interaction*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "start_line": "0",
+        "end_line": "39"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "start_line": "39",
+        "end_line": "59"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "start_line": "59",
+        "end_line": "79"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "start_line": "79",
+        "end_line": "84"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts\",\n  \"content\": \"import { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport {\\n  type GridAllDayDragCommitResult,\\n  type GridAllDayDragTarget,\\n  type GridAllDayResizeCommitResult,\\n  type GridAllDayResizeTarget,\\n  type GridInteractionCommitResult,\\n  type GridInteractionPointerOwnership,\\n  type GridInteractionTarget,\\n  type GridInteractionVisual,\\n  type GridResolvedEventTarget,\\n  type GridTimedDragCommitResult,\\n  type GridTimedDragTarget,\\n  type GridTimedResizeCommitResult,\\n  type GridTimedResizeTarget,\\n} from \\\"@web/grid/interaction/types/adapter.types\\\";\\nimport { type AllDayDragVisual } from \\\"@web/grid/interaction/types/all-day-drag.types\\\";\\nimport { type DateColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport { type TimedDragVisual } from \\\"@web/grid/interaction/types/timed-drag.types\\\";\\nimport {\\n  type InteractionCancellationTargets,\\n  type InteractionEngineSchedulerOptions,\\n} from \\\"@web/interaction/interaction.engine\\\";\\nimport { type WeekRegisteredEventTarget } from \\\"../registry/week-event.registry\\\";\\nimport { type WeekLayoutCacheSources } from \\\"./geometry/week-layout.cache\\\";\\n\\nexport type WeekInteractionPointerOwnership = GridInteractionPointerOwnership;\\n\\nexport interface WeekInteractionAdapterOptions {\\n  engineOptions?: InteractionEngineSchedulerOptions;\\n  getLayoutSources?: () => WeekLayoutCacheSources;\\n  runtime?: () => WeekInteractionRuntime;\\n}\\n\\nexport interface WeekInteractionRuntime {\\n  getAllDayEventById?: (eventId: string) => GridEvent | null;\\n  getTimedEventById(eventId: string): GridEvent | null;\\n  /**\\n   * Local YYYY-MM-DD dates of the rendered day columns, in window order.\\n   * Sourced from the same React render that painted the columns so drag\\n   * geometry and drop dates always agree with what is on screen.\\n   */\\n  getVisibleDays(): string[];\\n  isFormOpen?: () => boolean;\\n  onClickAllDayEvent?: (event: GridEvent) => void;\\n  onClickTimedEvent: (event: GridEvent) => void;\\n  onCommitAllDayDrag?: (result: WeekAllDayDragCommitResult) => void;\\n  onCommitAllDayResize?: (result: WeekAllDayResizeCommitResult) => void;\\n  onCommitTimedDrag: (result: WeekTimedDragCommitResult) => void;\\n  onCommitTimedResize?: (result: WeekTimedResizeCommitResult) => void;\\n  onMotionActivation?: (target: WeekInteractionTarget) => void;\\n  onRequestWeekNavigation?: (direction: \\\"next\\\" | \\\"prev\\\") => void;\\n}\\n\\nexport type WeekAllDayDragCommitResult = GridAllDayDragCommitResult;\\n\\nexport type WeekAllDayDragTarget =\\n  GridAllDayDragTarget<WeekRegisteredEventTarget>;\\n\\nexport type WeekAllDayResizeCommitResult = GridAllDayResizeCommitResult;\\n\\nexport type WeekAllDayResizeTarget =\\n  GridAllDayResizeTarget<WeekRegisteredEventTarget>;\\n\\nexport type WeekTimedDragCommitResult = GridTimedDragCommitResult;\\n\\nexport type WeekTimedDragTarget = GridTimedDragTarget<WeekRegisteredEventTarget>;\\n\\nexport type WeekTimedResizeCommitResult = GridTimedResizeCommitResult;\\n\\nexport type WeekTimedResizeTarget =\\n  GridTimedResizeTarget<WeekRegisteredEventTarget>;\\n\\nexport type WeekInteractionTarget =\\n  GridInteractionTarget<WeekRegisteredEventTarget>;\\n\\nexport type WeekInteractionVisual = GridInteractionVisual<DateColumnKey>;\\n\\nexport type WeekInteractionCommitResult = GridInteractionCommitResult;\\n\\nexport type WeekEdgeNavigableVisual =\\n  | AllDayDragVisual<DateColumnKey>\\n  | TimedDragVisual<DateColumnKey>;\\n\\nexport type WeekResolvedEventTarget =\\n  GridResolvedEventTarget<WeekRegisteredEventTarget>;\\n\\nexport interface WeekInteractionAdapter {\\n  cancel(): void;\\n  connectCancellationEvents(\\n    targets?: InteractionCancellationTargets,\\n  ): () => void;\\n  handlePointerCancel(event: PointerEvent): boolean;\\n  handlePointerDown(event: PointerEvent): WeekInteractionPointerOwnership;\\n  handlePointerMove(event: PointerEvent): boolean;\\n  handlePointerUp(event: PointerEvent): boolean;\\n  ownsPointer(event: Pick<PointerEvent, \\\"pointerId\\\">): boolean;\\n  rebuildLayoutAfterNavigation(): void;\\n}\\n\"\n}"
+}

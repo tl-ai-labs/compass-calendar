@@ -1,0 +1,98 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 149818,
+    "cached_content_token_count": 102739,
+    "candidates_token_count": 1501,
+    "thoughts_token_count": 3238,
+    "total_token_count": 154557,
+    "service_tier": null
+  },
+  "tool_call_count": 8,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "*column-key*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "column-key.types",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_written\": \"packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts\", \"content\": \"import dayjs from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport {\\n  hasTimedDragVisualMoved,\\n  hasTimedResizeVisualMoved,\\n} from \\\"@web/grid/interaction/commit/timed-moved\\\";\\nimport { type DateColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport { type TimedDragVisual } from \\\"@web/grid/interaction/types/timed-drag.types\\\";\\nimport { type TimedResizeVisual } from \\\"@web/grid/interaction/types/timed-resize.types\\\";\\n\\nexport { hasTimedDragVisualMoved, hasTimedResizeVisualMoved };\\n\\nexport const timedDragVisualToGridEvent = (\\n  event: GridEvent,\\n  visual: TimedDragVisual<DateColumnKey>,\\n): GridEvent => {\\n  // The column under the drag knows its own date, so the target day is\\n  // assigned absolutely; time-of-day rides on the visual's minutes.\\n  const movedDay = dayjs(visual.dayDate).startOf(\\\"day\\\");\\n\\n  return {\\n    ...event,\\n    endDate: movedDay.add(visual.endMinutes, \\\"minutes\\\").format(),\\n    startDate: movedDay.add(visual.startMinutes, \\\"minutes\\\").format(),\\n  };\\n};\\n\\nexport const timedResizeVisualToGridEvent = (\\n  event: GridEvent,\\n  visual: TimedResizeVisual,\\n): GridEvent => {\\n  const resizedDay = dayjs(event.startDate).startOf(\\\"day\\\");\\n\\n  return {\\n    ...event,\\n    endDate: resizedDay.add(visual.endMinutes, \\\"minutes\\\").format(),\\n    startDate: resizedDay.add(visual.startMinutes, \\\"minutes\\\").format(),\\n  };\\n};\\n\"}"
+}

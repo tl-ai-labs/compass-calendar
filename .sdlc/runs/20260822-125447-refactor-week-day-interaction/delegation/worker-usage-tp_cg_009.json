@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 55089,
+    "cached_content_token_count": 22113,
+    "candidates_token_count": 1502,
+    "thoughts_token_count": 1820,
+    "total_token_count": 58411,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts\",\n  \"content\": \"import { YEAR_MONTH_DAY_FORMAT } from \\\"@core/constants/date.constants\\\";\\nimport dayjs from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { type AllDayDragVisual } from \\\"@web/grid/interaction/types/all-day-drag.types\\\";\\nimport { type AllDayResizeVisual } from \\\"@web/grid/interaction/types/all-day-resize.types\\\";\\nimport { type DateColumnKey } from \\\"@web/grid/interaction/types/column-key.types\\\";\\n\\nexport const hasAllDayDragVisualMoved = (\\n  visual: AllDayDragVisual<DateColumnKey>,\\n) => visual.dayDate !== visual.initialDayDate;\\n\\nexport const allDayDragVisualToGridEvent = (\\n  event: GridEvent,\\n  visual: AllDayDragVisual<DateColumnKey>,\\n): GridEvent => {\\n  // Delta (not absolute) semantics: multi-day spans are clamped to the\\n  // rendered window, so the initial column date is the clamped visible start,\\n  // not necessarily the event's own start date. The date diff also absorbs\\n  // mid-drag week navigation of any shift size.\\n  const dayDelta = dayjs(visual.dayDate).diff(\\n    dayjs(visual.initialDayDate),\\n    \\\"day\\\",\\n  );\\n\\n  return {\\n    ...event,\\n    endDate: dayjs(event.endDate)\\n      .add(dayDelta, \\\"day\\\")\\n      .format(YEAR_MONTH_DAY_FORMAT),\\n    startDate: dayjs(event.startDate)\\n      .add(dayDelta, \\\"day\\\")\\n      .format(YEAR_MONTH_DAY_FORMAT),\\n  };\\n};\\n\\nexport const hasAllDayResizeVisualChanged = (visual: AllDayResizeVisual) =>\\n  visual.startDayIndex !== visual.initialStartDayIndex ||\\n  visual.endDayIndex !== visual.initialEndDayIndex;\\n\\nexport const allDayResizeVisualToGridEvent = (\\n  event: GridEvent,\\n  visual: AllDayResizeVisual,\\n): GridEvent => {\\n  if (!hasAllDayResizeVisualChanged(visual)) {\\n    return event;\\n  }\\n\\n  const startDayDelta = visual.startDayIndex - visual.initialStartDayIndex;\\n  const endDayDelta = visual.endDayIndex - visual.initialEndDayIndex;\\n  const startDate = dayjs(event.startDate).add(startDayDelta, \\\"day\\\");\\n  const baseEndDate = getExclusiveEndDateBaseline(event);\\n\\n  return {\\n    ...event,\\n    endDate: baseEndDate.add(endDayDelta, \\\"day\\\").format(YEAR_MONTH_DAY_FORMAT),\\n    startDate: startDate.format(YEAR_MONTH_DAY_FORMAT),\\n  };\\n};\\n\\nconst getExclusiveEndDateBaseline = (event: GridEvent) => {\\n  const startDate = dayjs(event.startDate).startOf(\\\"day\\\");\\n  const endDate = dayjs(event.endDate).startOf(\\\"day\\\");\\n\\n  return endDate.diff(startDate, \\\"day\\\") <= 0\\n    ? startDate.add(1, \\\"day\\\")\\n    : endDate;\\n};\\n\"\n}"
+}

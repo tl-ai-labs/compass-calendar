@@ -1,0 +1,107 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 166457,
+    "cached_content_token_count": 89053,
+    "candidates_token_count": 2304,
+    "thoughts_token_count": 3419,
+    "total_token_count": 172180,
+    "service_tier": null
+  },
+  "tool_call_count": 9,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "list_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-resize.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/all-day-resize.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-resize.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-resize.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/adapter.types.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_written\":\"packages/web/src/grid/interaction/types/adapter.types.ts\",\"content\":\"/**\\n * Shared adapter contracts previously duplicated across Week and Day view adapters.\\n * This is now the single source of truth for grid interaction types.\\n */\\n\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { type AllDayDragVisual } from \\\"./all-day-drag.types\\\";\\nimport {\\n  type AllDayResizeEdge,\\n  type AllDayResizeVisual,\\n} from \\\"./all-day-resize.types\\\";\\nimport { type TimedDragVisual } from \\\"./timed-drag.types\\\";\\nimport {\\n  type TimedResizeEdge,\\n  type TimedResizeVisual,\\n} from \\\"./timed-resize.types\\\";\\n\\nexport interface GridInteractionPointerOwnership {\\n  reason: string;\\n  shouldOwn: boolean;\\n}\\n\\nexport interface GridAllDayDragTarget<TRegistered> {\\n  event: GridEvent;\\n  hadFormOpenBeforeInteraction: boolean;\\n  registered: TRegistered;\\n  type: \\\"allDayDrag\\\";\\n}\\n\\nexport interface GridAllDayResizeTarget<TRegistered> {\\n  edge: AllDayResizeEdge;\\n  event: GridEvent;\\n  hadFormOpenBeforeInteraction: boolean;\\n  registered: TRegistered;\\n  type: \\\"allDayResize\\\";\\n}\\n\\nexport interface GridTimedDragTarget<TRegistered> {\\n  event: GridEvent;\\n  hadFormOpenBeforeInteraction: boolean;\\n  registered: TRegistered;\\n  type: \\\"timedDrag\\\";\\n}\\n\\nexport interface GridTimedResizeTarget<TRegistered> {\\n  edge: TimedResizeEdge;\\n  event: GridEvent;\\n  hadFormOpenBeforeInteraction: boolean;\\n  registered: TRegistered;\\n  type: \\\"timedResize\\\";\\n}\\n\\nexport type GridInteractionTarget<TRegistered> =\\n  | GridAllDayDragTarget<TRegistered>\\n  | GridAllDayResizeTarget<TRegistered>\\n  | GridTimedDragTarget<TRegistered>\\n  | GridTimedResizeTarget<TRegistered>;\\n\\nexport type GridResolvedEventTarget<TRegistered> = {\\n  event: GridEvent;\\n  hadFormOpenBeforeInteraction: boolean;\\n  registered: TRegistered;\\n};\\n\\nexport interface GridAllDayDragCommitResult {\\n  event: GridEvent;\\n  eventId: string;\\n  hadFormOpenBeforeInteraction: boolean;\\n  hasMoved: boolean;\\n  type: \\\"allDayDragEnd\\\";\\n}\\n\\nexport interface GridAllDayResizeCommitResult {\\n  event: GridEvent;\\n  eventId: string;\\n  hadFormOpenBeforeInteraction: boolean;\\n  hasMoved: boolean;\\n  type: \\\"allDayResizeEnd\\\";\\n}\\n\\nexport interface GridTimedDragCommitResult {\\n  event: GridEvent;\\n  eventId: string;\\n  hadFormOpenBeforeInteraction: boolean;\\n  hasMoved: boolean;\\n  type: \\\"timedDragEnd\\\";\\n}\\n\\nexport interface GridTimedResizeCommitResult {\\n  event: GridEvent;\\n  eventId: string;\\n  hadFormOpenBeforeInteraction: boolean;\\n  hasMoved: boolean;\\n  type: \\\"timedResizeEnd\\\";\\n}\\n\\nexport type GridInteractionCommitResult =\\n  | GridAllDayDragCommitResult\\n  | GridAllDayResizeCommitResult\\n  | GridTimedDragCommitResult\\n  | GridTimedResizeCommitResult;\\n\\nexport type GridInteractionVisual<TColumnKey = string> =\\n  | AllDayDragVisual<TColumnKey>\\n  | AllDayResizeVisual\\n  | TimedDragVisual<TColumnKey>\\n  | TimedResizeVisual;\\n\"}"
+}

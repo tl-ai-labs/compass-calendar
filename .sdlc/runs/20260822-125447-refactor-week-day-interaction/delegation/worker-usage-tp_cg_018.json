@@ -1,0 +1,98 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 144889,
+    "cached_content_token_count": 92699,
+    "candidates_token_count": 2543,
+    "thoughts_token_count": 4043,
+    "total_token_count": 151475,
+    "service_tier": null
+  },
+  "tool_call_count": 8,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+        "query": "column-key.types",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+        "start_line": "0",
+        "end_line": "19"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+        "query": "*layout.cache*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+        "start_line": "0",
+        "end_line": "59"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts\",\n  \"content\": \"import {\\n  ID_ALLDAY_COLUMNS,\\n  ID_GRID_COLUMNS_TIMED,\\n  ID_GRID_MAIN,\\n} from \\\"@web/common/constants/web.constants\\\";\\nimport { GRID_TIME_STEP, TIMED_VISIBLE_HOURS } from \\\"@web/grid/grid.constants\\\";\\nimport {\\n  SMART_SCROLL_BOTTOM_INSET_PX,\\n  SMART_SCROLL_SPEED_PX,\\n} from \\\"@web/grid/interaction/adapter.helpers\\\";\\nimport {\\n  buildAllDayGridLayoutCache,\\n  buildDragGridLayoutCache,\\n  buildTimedGridLayoutCache,\\n  type GridLayoutCache,\\n  type GridLayoutCacheOptions,\\n  type GridLayoutCacheSources,\\n  getNearestDayColumn,\\n  type SmartScrollCache,\\n} from \\\"@web/grid/interaction/layout.cache\\\";\\nimport {\\n  asDateColumnKeys,\\n  type DateColumnKey,\\n} from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport { type DragRow } from \\\"@web/grid/interaction/types/timed-drag.types\\\";\\nimport { WEEK_EDGE_NAVIGATION_THRESHOLD_PX } from \\\"../edge-navigation\\\";\\n\\nexport type WeekLayoutCacheSources = GridLayoutCacheSources;\\n\\n/**\\n * The week renders a dynamic window of 1-7 day columns. The columns' dates\\n * come from the same React render that painted them (weekProps weekDays via\\n * the interaction runtime), so drag geometry and drop dates always agree\\n * with what is on screen.\\n */\\nexport interface WeekLayoutCacheInput extends GridLayoutCacheSources {\\n  /** Local YYYY-MM-DD dates of the rendered day columns, in window order. */\\n  visibleDays: string[];\\n}\\n\\nexport type WeekLayoutCache = GridLayoutCache<DateColumnKey>;\\nexport type { SmartScrollCache };\\nexport { getNearestDayColumn };\\n\\nconst weekLayoutCacheOptions = (\\n  sources: WeekLayoutCacheInput,\\n): GridLayoutCacheOptions<DateColumnKey> & WeekLayoutCacheSources => ({\\n  ...sources,\\n  allDayColumnsElementId: ID_ALLDAY_COLUMNS,\\n  edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX,\\n  mainGridElementId: ID_GRID_MAIN,\\n  smartScroll: {\\n    bottomInsetPx: SMART_SCROLL_BOTTOM_INSET_PX,\\n    speedPx: SMART_SCROLL_SPEED_PX,\\n  },\\n  snapMinutes: GRID_TIME_STEP,\\n  timedColumnsElementId: ID_GRID_COLUMNS_TIMED,\\n  timedVisibleHours: TIMED_VISIBLE_HOURS,\\n  // Branding boundary: the runtime supplies plain strings and they are\\n  // branded once here rather than validated per-frame on the drag path.\\n  visibleDates: asDateColumnKeys(sources.visibleDays),\\n});\\n\\nexport const buildTimedWeekLayoutCache = (\\n  sources: WeekLayoutCacheInput,\\n): WeekLayoutCache | null =>\\n  buildTimedGridLayoutCache(weekLayoutCacheOptions(sources));\\n\\nexport const buildAllDayWeekLayoutCache = (\\n  sources: WeekLayoutCacheInput,\\n): WeekLayoutCache | null =>\\n  buildAllDayGridLayoutCache(weekLayoutCacheOptions(sources));\\n\\n/** Both rows at once, so a drag can be dropped across them. */\\nexport const buildDragWeekLayoutCache = (\\n  sources: WeekLayoutCacheInput,\\n  sourceRow: DragRow,\\n): WeekLayoutCache | null =>\\n  buildDragGridLayoutCache(weekLayoutCacheOptions(sources), sourceRow);\\n\"\n}"
+}

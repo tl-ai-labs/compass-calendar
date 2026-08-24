@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.5.0",
+  "built_at": "2026-08-22T19:59:29.676Z",
+  "run_id": "20260822-125447-refactor-week-day-interaction",
+  "mode": "first-time",
+  "git": {
+    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "branch": "CMP-104/flash-agsdk-only",
+    "dirty": false,
+    "untracked_only": [
+      ".hook-logs/",
+      ".sdlc/"
+    ],
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "git@github.com:tl-ai-labs/compass-calendar.git"
+      }
+    ],
+    "gitignore_covers_sdlc": false
+  },
+  "topology": {
+    "top_level_dirs": [
+      ".agents",
+      ".claude",
+      ".codex",
+      ".cursor",
+      ".github",
+      "docs",
+      "e2e",
+      "packages",
+      "patches",
+      "self-host"
+    ],
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ]
+  },
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "bun-typescript-react",
+      "detected_frameworks": [
+        "react",
+        "bun",
+        "lerna-workspaces",
+        "biome"
+      ]
+    }
+  ],
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
+    "adaptive_profile_recommended": true
+  },
+  "test_command_proposed": "bun run test:web",
+  "test_command_source": "package.json#scripts.test:web",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun test:web",
+    "core": "bun test:core",
+    "type_check": "bun type-check",
+    "lint": "bun lint",
+    "e2e": "bun test:e2e",
+    "diff_aware": "bun run verify"
+  },
+  "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
+  "docs_present": [
+    {
+      "path": "README.md",
+      "kind": "readme"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "agent-instructions"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "kind": "contributing"
+    },
+    {
+      "path": "SECURITY.md",
+      "kind": "security"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "kind": "code-of-conduct"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "docs-index"
+    },
+    {
+      "path": "docs/architecture",
+      "kind": "architecture-dir"
+    },
+    {
+      "path": "docs/frontend",
+      "kind": "docs-subdir"
+    },
+    {
+      "path": "docs/features",
+      "kind": "docs-subdir"
+    }
+  ],
+  "ai_configs_detected": [
+    {
+      "path": ".claude/settings.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".claude/settings.local.json",
+      "type": "claude-code-local"
+    },
+    {
+      "path": ".claude/launch.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".cursor/rules/",
+      "type": "cursor-rules"
+    },
+    {
+      "path": ".cursor/hooks.json",
+      "type": "cursor-hooks"
+    },
+    {
+      "path": ".cursor/hooks/format-after-edit.ts",
+      "type": "cursor-format-on-save-hook"
+    },
+    {
+      "path": "AGENTS.md",
+      "type": "agents-md"
+    }
+  ],
+  "ai_configs_absent": [
+    ".mcp.json (gitignored, not present on disk)",
+    "CLAUDE.md",
+    ".cursorrules",
+    ".aider.conf.yml",
+    ".continue/",
+    ".github/copilot-instructions.md",
+    ".roo/",
+    "routing-policy.yaml"
+  ],
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL",
+    "COMPASS_BUILD_REF",
+    "GOOGLE_CLIENT_ID",
+    "NODE_ENV",
+    "PORT",
+    "POSTHOG_HOST",
+    "POSTHOG_KEY",
+    "TZ"
+  ],
+  "monorepo": {
+    "type": "bun-workspaces+lerna",
+    "packages": [
+      {
+        "name": "backend",
+        "root": "packages/backend"
+      },
+      {
+        "name": "core",
+        "root": "packages/core"
+      },
+      {
+        "name": "scripts",
+        "root": "packages/scripts"
+      },
+      {
+        "name": "sync",
+        "root": "packages/sync"
+      },
+      {
+        "name": "web",
+        "root": "packages/web"
+      }
+    ]
+  },
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+  "infra_hints": {
+    "dockerfile": false,
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "gitlab_ci": false
+  },
+  "off_limits_proposed": [
+    ".env",
+    ".env.*",
+    ".mcp.json",
+    ".cursor/**",
+    ".claude/**",
+    ".sdlc/**",
+    ".git/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".hook-logs/**"
+  ],
+  "regulated_repo_signals": [
+    {
+      "kind": "SECURITY.md",
+      "path": "SECURITY.md"
+    }
+  ],
+  "regulated_repo_warning_required": false,
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (4 .mdc files) plus a format-after-edit hook at .cursor/hooks/format-after-edit.ts - if Cursor is running, edits may be auto-reformatted after we write.",
+    "No .mcp.json, no aider/continue/roo config.",
+    ".gitignore does not cover .sdlc/ or .hook-logs/ - both are untracked and visible to git add -A.",
+    "Paused prior run 20260822-062945-feature-extend-one-click-join has no state.json; its branch CMP-103/opus-only-v5 (491169d2) is intact locally and on origin, but we are now on CMP-104/flash-agsdk-only."
+  ],
+  "repo_state_risks": [
+    {
+      "kind": "gitignore_missing_sdlc",
+      "severity": "medium",
+      "detail": ".sdlc/ untracked but visible to git add -A."
+    },
+    {
+      "kind": "aggressive_gitignore",
+      "severity": "medium",
+      "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs."
+    },
+    {
+      "kind": "external_format_hooks",
+      "severity": "low",
+      "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
+    },
+    {
+      "kind": "lfs",
+      "severity": "none",
+      "detail": "No Git-LFS in use."
+    },
+    {
+      "kind": "submodules",
+      "severity": "none",
+      "detail": "No submodules."
+    },
+    {
+      "kind": "dirty_tree",
+      "severity": "none",
+      "detail": "Clean apart from untracked .sdlc/."
+    }
+  ],
+  "intent_scope": {
+    "hint": "feature-extend-weekbody-multiday-drag",
+    "primary_package": "packages/web",
+    "weekbody_component_exists": false,
+    "weekbody_note": "No component named WeekBody exists. The week-view body is composed by Grid.tsx via AllDayRow > MainGrid > EventGrid.",
+    "key_gap": "All-day row creation is click-only (useAllDayDraftCreation creates a fixed 1-day draft on mousedown). The timed grid has true drag-create via useTimedDraftCreation. Multi-day drag-create in the all-day row does not exist."
+  },
+  "refresh": {
+    "decision": "cached",
+    "reason": "git HEAD unchanged (4189de13) and no stack manifest mtime changed since baseline built 2026-08-20T04:32:08Z",
+    "baseline_age_commits": 0,
+    "branch_changed": {
+      "from": "main",
+      "to": "CMP-104/flash-agsdk-only"
+    }
+  },
+  "test_command_full": "bun test",
+  "test_baseline": {
+    "scope": "packages/web",
+    "result": "pass",
+    "tests": 2298,
+    "files": 302,
+    "failures": 0,
+    "duration_s": 86.5,
+    "captured_at": "2026-08-22T19:59:29.677Z"
+  },
+  "test_baseline_scoped": {
+    "scope": "interaction dirs",
+    "result": "pass",
+    "tests": 159,
+    "files": 83,
+    "failures": 0,
+    "duration_s": 3.6
+  },
+  "repo_size": {
+    "tracked_files": 1582,
+    "web_ts_files": 939,
+    "refactor_scope_src_loc": 6321,
+    "refactor_scope_test_loc": 6315
+  },
+  "refactor_scope": {
+    "intent": "unify duplicated Week and Day interaction adapter/commit/targeting/registry layers onto a shared interaction engine",
+    "already_unified": [
+      {
+        "path": "packages/web/src/grid/interaction/view-event-registry.ts",
+        "note": "createViewInteractionRegistry factory; per-view registries are 24-line re-export shims"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/event.targeting.ts",
+        "note": "createGridEventTargeting factory; per-view targeting are 35-line re-export shims"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/layout.cache.ts",
+        "note": "shared buildTimed/AllDay/Drag layout cache builders, consumed by both views"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/timed-moved.ts",
+        "note": "shared hasTimedDrag/ResizeVisualMoved predicates"
+      }
+    ],
+    "genuinely_duplicated": [
+      {
+        "week": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "day": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+        "week_loc": 795,
+        "day_loc": 607
+      },
+      {
+        "week": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "day": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "week_loc": 149,
+        "day_loc": 149,
+        "note": "near-identical: 24 differing lines after name normalization"
+      },
+      {
+        "week": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+        "day": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+        "week_loc": 73,
+        "day_loc": 76
+      },
+      {
+        "week": "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx",
+        "day": "packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx",
+        "week_loc": 217,
+        "day_loc": 133
+      }
+    ],
+    "divergent_not_duplicated": [
+      {
+        "week": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+        "day": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+        "note": "different shape AND different semantics"
+      },
+      {
+        "week": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+        "day": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+        "note": "different shape AND different semantics"
+      }
+    ],
+    "week_only": [
+      "adapter/interactions/*.ts (5 files)",
+      "adapter/edge-navigation.ts",
+      "state/edge-navigation.state.ts",
+      "state/motion.state.ts",
+      "useWeekInteractionLayoutSync.ts"
+    ],
+    "day_only": [
+      "day-event.focus.ts"
+    ],
+    "shared_engine": {
+      "path": "packages/web/src/interaction/interaction.engine.ts",
+      "api": [
+        "createInteractionEngine<TTarget,TVisual,TResult>",
+        "InteractionEngine",
+        "InteractionEngineSchedulerOptions",
+        "InteractionCancellationTargets"
+      ],
+      "contract": "packages/web/src/interaction/interaction.adapter.types.ts#InteractionAdapter<TTarget,TVisual,TResult>"
+    },
+    "critical_risk": "Day view overloads TimedDragVisual.dayDate to carry a calendarId (column key = calendar), while Week carries a YYYY-MM-DD date (column key = day). Same field, different meaning. Naive unification of the commit layer breaks Day cross-calendar drag."
+  }
+}

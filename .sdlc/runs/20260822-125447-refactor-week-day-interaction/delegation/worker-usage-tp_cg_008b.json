@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 72193,
+    "cached_content_token_count": 11472,
+    "candidates_token_count": 5703,
+    "thoughts_token_count": 2588,
+    "total_token_count": 80484,
+    "service_tier": null
+  },
+  "tool_call_count": 3,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/commit/cross-row.commit.test.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"file_written\": \"packages/web/src/grid/interaction/commit/cross-row.commit.test.ts\",\n  \"content\": \"import { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { type AllDayDragVisual } from \\\"@web/grid/interaction/types/all-day-drag.types\\\";\\nimport {\\n  asDateColumnKeys,\\n  type DateColumnKey,\\n} from \\\"@web/grid/interaction/types/column-key.types\\\";\\nimport { type TimedDragVisual } from \\\"@web/grid/interaction/types/timed-drag.types\\\";\\nimport {\\n  allDayDragVisualToTimedGridEvent,\\n  timedDragVisualToAllDayGridEvent,\\n} from \\\"./cross-row.commit\\\";\\nimport { describe, expect, it } from \\\"bun:test\\\";\\n\\n// All-day dates are date-only with an exclusive end, so this single-day event\\n// on the 13th ends on the 14th.\\nconst allDayEvent = {\\n  _id: \\\"all-day-event\\\",\\n  endDate: \\\"2026-05-14\\\",\\n  isAllDay: true,\\n  startDate: \\\"2026-05-13\\\",\\n  title: \\\"All-day event\\\",\\n} as GridEvent;\\n\\nconst timedEvent = {\\n  _id: \\\"timed-event\\\",\\n  endDate: \\\"2026-05-19T10:00:00.000\\\",\\n  isAllDay: false,\\n  startDate: \\\"2026-05-19T09:00:00.000\\\",\\n  title: \\\"Timed event\\\",\\n} as GridEvent;\\n\\n// The Week-side cross-row commit takes date-keyed columns so test fixtures brand their dates the same way production does.\\nconst columnKey = (date: string): DateColumnKey => asDateColumnKeys([date])[0]!;\\n\\nconst allDayDragVisual = (\\n  overrides: Partial<AllDayDragVisual<DateColumnKey>> = {},\\n): AllDayDragVisual<DateColumnKey> => ({\\n  crossRowSize: null,\\n  dayDate: columnKey(\\\"2026-05-13\\\"),\\n  dayIndex: 3,\\n  eventId: \\\"all-day-event\\\",\\n  initialDayDate: columnKey(\\\"2026-05-13\\\"),\\n  initialDayIndex: 3,\\n  pointerStart: { x: 0, y: 0 },\\n  row: \\\"timed\\\",\\n  sourceRect: { height: 20, left: 0, top: 0, width: 90 },\\n  timedStartMinutes: null,\\n  transform: { x: 0, y: 0 },\\n  type: \\\"allDayDrag\\\",\\n  ...overrides,\\n});\\n\\nconst timedDragVisual = (\\n  overrides: Partial<TimedDragVisual<DateColumnKey>> = {},\\n): TimedDragVisual<DateColumnKey> => ({\\n  crossRowSize: null,\\n  dayDate: columnKey(\\\"2026-05-19\\\"),\\n  dayIndex: 2,\\n  durationMinutes: 60,\\n  endMinutes: 600,\\n  eventId: \\\"timed-event\\\",\\n  initialDayDate: columnKey(\\\"2026-05-19\\\"),\\n  initialDayIndex: 2,\\n  initialEndMinutes: 600,\\n  initialStartMinutes: 540,\\n  pointerStart: { x: 0, y: 0 },\\n  row: \\\"allDay\\\",\\n  sourceRect: { height: 60, left: 0, top: 0, width: 90 },\\n  startMinutes: 540,\\n  transform: { x: 0, y: 0 },\\n  type: \\\"timedDrag\\\",\\n  ...overrides,\\n});\\n\\ndescribe(\\\"allDayDragVisualToTimedGridEvent\\\", () => {\\n  it(\\\"invents a default-length block at the dropped start time on the drop column\\\", () => {\\n    const result = allDayDragVisualToTimedGridEvent(\\n      allDayEvent,\\n      allDayDragVisual({ dayDate: columnKey(\\\"2026-05-15\\\"), timedStartMinutes: 600 }),\\n    );\\n\\n    expect(result.isAllDay).toBe(false);\\n    expect(result.startDate).toContain(\\\"2026-05-15\\\");\\n    expect(result.startDate).toContain(\\\"10:00\\\");\\n    expect(result.endDate).toContain(\\\"2026-05-15\\\");\\n    expect(result.endDate).toContain(\\\"11:00\\\");\\n  });\\n\\n  it(\\\"assigns the day absolutely, so a window-clamped multi-day span lands where it was dropped\\\", () => {\\n    const multiDay = { ...allDayEvent, endDate: \\\"2026-05-18\\\" };\\n    const result = allDayDragVisualToTimedGridEvent(\\n      multiDay,\\n      allDayDragVisual({\\n        dayDate: columnKey(\\\"2026-05-16\\\"),\\n        initialDayDate: columnKey(\\\"2026-05-13\\\"),\\n        timedStartMinutes: 0,\\n      }),\\n    );\\n\\n    // The 5-day span collapses onto the drop column rather than shifting by the\\n    // 3-day delta an all-day drop would have applied.\\n    expect(result.startDate).toContain(\\\"2026-05-16\\\");\\n    expect(result.startDate).toContain(\\\"00:00\\\");\\n    expect(result.endDate).toContain(\\\"01:00\\\");\\n  });\\n\\n  it(\\\"preserves the event's identity and title\\\", () => {\\n    const result = allDayDragVisualToTimedGridEvent(\\n      allDayEvent,\\n      allDayDragVisual({ timedStartMinutes: 60 }),\\n    );\\n\\n    expect(result._id).toBe(\\\"all-day-event\\\");\\n    expect(result.title).toBe(\\\"All-day event\\\");\\n  });\\n});\\n\\ndescribe(\\\"timedDragVisualToAllDayGridEvent\\\", () => {\\n  it(\\\"discards the time of day and ends on the following date\\\", () => {\\n    const result = timedDragVisualToAllDayGridEvent(\\n      timedEvent,\\n      timedDragVisual({ dayDate: columnKey(\\\"2026-05-21\\\") }),\\n    );\\n\\n    expect(result.isAllDay).toBe(true);\\n    expect(result.startDate).toBe(\\\"2026-05-21\\\");\\n    expect(result.endDate).toBe(\\\"2026-05-22\\\");\\n  });\\n\\n  it(\\\"keeps a same-day drop as a one-day all-day event\\\", () => {\\n    const result = timedDragVisualToAllDayGridEvent(\\n      timedEvent,\\n      timedDragVisual({ dayDate: columnKey(\\\"2026-05-19\\\") }),\\n    );\\n\\n    expect(result.startDate).toBe(\\\"2026-05-19\\\");\\n    expect(result.endDate).toBe(\\\"2026-05-20\\\");\\n  });\\n\\n  it(\\\"ignores the minutes the visual carried over from the timed grid\\\", () => {\\n    const result = timedDragVisualToAllDayGridEvent(\\n      timedEvent,\\n      timedDragVisual({\\n        dayDate: columnKey(\\\"2026-05-21\\\"),\\n        endMinutes: 1350,\\n        startMinutes: 1290,\\n      }),\\n    );\\n\\n    expect(result.startDate).toBe(\\\"2026-05-21\\\");\\n    expect(result.endDate).toBe(\\\"2026-05-22\\\");\\n  });\\n});\\n\"\n}"
+}
