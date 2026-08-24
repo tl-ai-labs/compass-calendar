@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "run_id": "20260820-004405-feature-extend-allday-multiday-drag",
+  "intent": "feature-extend",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:de60bdd8f53bd92214c8e72fd82bb7d52e6459ee223b5c9665248d71dfdce64b",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_code_001",
+      "written_at": "2026-08-20T08:24:18.981Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:851281a01bf8d73d45e452e47c0ed7bc98bbf6ae704336943f11782360090367",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_code_001",
+      "written_at": "2026-08-20T08:24:19.060Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5b055bd33164b7a1dbcc8a33672e7bfc03d328c3270e0b0c3759cbf41d334891",
+      "sha_after": "sha256:5434e6a72474de79dd60f082a4cc1a6651a72e06b75dceb53ffd292fa9c418a3",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_code_002",
+      "written_at": "2026-08-20T08:28:35.857Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d4ade6b554cea1815bdc6b8d3bcd2cb1f9c2b4576df53f154b1ca6d8e7a40b69",
+      "sha_after": "sha256:62c5165fbc412f5393c5698ca194e2a1509cfb55eb40a7b0fd958e9f984ee888",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_code_002",
+      "written_at": "2026-08-20T08:28:35.928Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:6227eebaa5e298a4a05ca0fde4eaae3ab5703b4f90db5eff097b56727e25398f",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_code_003",
+      "written_at": "2026-08-20T08:33:15.910Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:2297228d92041ca4f676111d89e0e9f9ce8df092060c1b183acb548879382548",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_code_003",
+      "written_at": "2026-08-20T08:33:15.975Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:12c22de745284749b42fea039f5d9079cedb45c9313497b7daa8f5fb95950058",
+      "sha_after": "sha256:e62b251d45860e41efaf6a2d89d342485ed212361defe30f0e0fcc35845e888e",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_code_003",
+      "written_at": "2026-08-20T08:33:16.041Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:c67c1aca267613cff94ebcff9a5c83494de2c99749a4be333044832a0fb47c12",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_code_003",
+      "written_at": "2026-08-20T08:33:16.107Z"
+    },
+    {
+      "path": "docs/frontend/week-drag-interaction.md",
+      "existed_before": true,
+      "sha_before": "sha256:c95d1001521d4470e9177a88347e5f723e7ca9ec622af2e0a770440c37964e7e",
+      "sha_after": "sha256:cd195234d33886454d25a3e5785043087aa32ff632b1aba59ca17b485b50fdd8",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_docs_001",
+      "written_at": "2026-08-20T08:35:19.108Z"
+    }
+  ],
+  "outcome": "accepted",
+  "gate4_response": "accept",
+  "accepted_at": "2026-08-20T08:51:31.745Z",
+  "committed": false
+}

@@ -1,0 +1,156 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_code_002",
+  "phase": "codegen",
+  "task_type": "existing_file_edit",
+  "module": "allday-hook",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-20T08:25:05.464Z",
+  "duration_ms": 181028,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.525815,
+  "tokens": {
+    "input": 151418,
+    "input_cached": 357751,
+    "output": 27225,
+    "output_reasoning": 20916
+  },
+  "tool_calls": {
+    "count": 11,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.create.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.create.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/grid-event-draft.adapter.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/grid-event-draft.adapter.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/stores/draft.store.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/stores/draft.store.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "packages/web/src/grid/hooks/useAllDayDraftCreation.ts"
+    ],
+    "removed": [],
+    "unchanged": 1584,
+    "scanned": 1586,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_code_002.md",
+    "usage": "worker-usage-tp_code_002.json"
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "run_id": "20260820-004405-feature-extend-allday-multiday-drag",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "flash-agsdk-only",
+  "auth_mode": "estimated",
+  "outcome": "accepted",
+  "git": {
+    "branch": "CMP-101/flash-agsdk-only",
+    "head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "committed": false
+  },
+  "gates": {
+    "gate-0": "approved",
+    "gate-1": "approved",
+    "gate-2": "approved",
+    "gate-3": "approved",
+    "gate-4": "accepted"
+  },
+  "totals": {
+    "dispatched_packets": 8,
+    "telemetry_events": 9,
+    "cost_usd_dispatched_flash_only": 4.0678,
+    "input_tokens": 1455969,
+    "input_tokens_cached": 4399210,
+    "output_tokens": 145115,
+    "output_tokens_reasoning": 82223,
+    "dispatch_latency_s": 1232
+  },
+  "cost_disclosure": {
+    "covers": "dispatched Flash (gemini-3.7-flash via Antigravity SDK agent) calls only",
+    "excluded": "the orchestrator's own Claude session turns, including the tp_plan_001 packet-decomposition phase (logged at cost_usd 0, provenance estimated)",
+    "reason": "flash-agsdk-only is strictly single-model and carries no Claude pricing block; pricing is sourced only from the policy YAML",
+    "not_comparable_to": "the $4.26 opus-plus-flash-v37 figure, which prices its Opus spend"
+  },
+  "phase_breakdown": {
+    "requirements_analysis": {
+      "events": 1,
+      "cost_usd": 0.284154,
+      "input_tokens": 78211,
+      "input_tokens_cached": 164847,
+      "output_tokens": 15790,
+      "latency_ms": 114024,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    },
+    "architecture_design": {
+      "events": 1,
+      "cost_usd": 0.75661,
+      "input_tokens": 268209,
+      "input_tokens_cached": 1094234,
+      "output_tokens": 21129,
+      "latency_ms": 229028,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    },
+    "plan_task_packets": {
+      "events": 1,
+      "cost_usd": 0,
+      "input_tokens": 23158,
+      "input_tokens_cached": 0,
+      "output_tokens": 5263,
+      "latency_ms": 0,
+      "models": [
+        "claude-opus-5[1m]"
+      ]
+    },
+    "codegen": {
+      "events": 3,
+      "cost_usd": 1.783732,
+      "input_tokens": 605160,
+      "input_tokens_cached": 1805903,
+      "output_tokens": 67234,
+      "latency_ms": 515983,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    },
+    "docs": {
+      "events": 1,
+      "cost_usd": 0.211808,
+      "input_tokens": 77629,
+      "input_tokens_cached": 159304,
+      "output_tokens": 7941,
+      "latency_ms": 81349,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    },
+    "senior_code_review": {
+      "events": 1,
+      "cost_usd": 0.660371,
+      "input_tokens": 244385,
+      "input_tokens_cached": 787065,
+      "output_tokens": 19526,
+      "latency_ms": 170598,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    },
+    "security_review": {
+      "events": 1,
+      "cost_usd": 0.371092,
+      "input_tokens": 159217,
+      "input_tokens_cached": 387857,
+      "output_tokens": 8232,
+      "latency_ms": 121086,
+      "models": [
+        "gemini-3.7-flash"
+      ]
+    }
+  },
+  "model_breakdown": {
+    "gemini-3.7-flash": {
+      "events": 8,
+      "cost_usd": 4.067767,
+      "input_tokens": 1432811,
+      "input_tokens_cached": 4399210,
+      "output_tokens": 139852,
+      "priced": true
+    },
+    "claude-opus-5[1m]": {
+      "events": 1,
+      "cost_usd": 0,
+      "input_tokens": 23158,
+      "input_tokens_cached": 0,
+      "output_tokens": 5263,
+      "priced": false
+    }
+  },
+  "tests": {
+    "command": "bun test:web",
+    "baseline": {
+      "pass": 2298,
+      "fail": 0,
+      "files": 302,
+      "at": "4189de1"
+    },
+    "final": {
+      "pass": 2327,
+      "fail": 0,
+      "files": 305,
+      "seconds": 79.63,
+      "exit_code": 0
+    },
+    "delta": "+29 tests, +3 files, 0 failures",
+    "verified_independently_by_main_session": true
+  },
+  "reviews": {
+    "senior": "approve_with_comments (1 minor, adjudicated not-fixed)",
+    "security": "PASS (no follow-ups)"
+  },
+  "files_changed": {
+    "modified": [
+      "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "docs/frontend/week-drag-interaction.md"
+    ],
+    "added": [
+      "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+      "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx",
+      "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx"
+    ],
+    "all_within_allowlist": true,
+    "untracked_run_additions": [
+      ".sdlc/",
+      ".hook-logs/"
+    ]
+  },
+  "artifacts": {
+    "intent_brief": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/intent_brief.md",
+    "requirements": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/requirements.md",
+    "change_plan": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md",
+    "packets": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/packets.json",
+    "review": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/review.json",
+    "security_review": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/security_review.md",
+    "summary": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/SUMMARY.md",
+    "telemetry": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/telemetry.jsonl",
+    "provenance": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/provenance.json",
+    "delegation_evidence": ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/delegation/"
+  },
+  "follow_ups": [
+    "Modifier-click eligibility on all-day draft creation (senior review Q1-MODIFIER-ELIGIBILITY) - pre-existing, deliberately not fixed here; see review.json orchestrator_adjudication"
+  ],
+  "finalized": true,
+  "finalized_at": "2026-08-20T08:51:31.745Z",
+  "close_out": {
+    "owner": "main session",
+    "note": "ledger.md, ledger.json, CLAUDE-SDLC.md and local/write-contract.json are written by the main session, not by the orchestrator; this manifest does not track their state."
+  }
+}

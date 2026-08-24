@@ -1,0 +1,109 @@
+{
+  "verdict": "approve_with_comments",
+  "summary": "The multi-day drag-to-select implementation for the Week all-day row is well-architected and adheres closely to requirements and change plan specifications (sections 10 & 11). Date math is pure and robust, the opt-out path preserves 100% behavioral compatibility with Day view, listener lifecycles and cancellations are handled cleanly without leaks, and the test suite thoroughly covers boundary conditions. One minor finding was identified: the mousedown handler checks only isRightClick rather than isEligibleInteractionPointerDown, allowing modifier clicks (such as macOS Ctrl+Click) to trigger draft creation instead of being ignored.",
+  "scope_compliance": {
+    "day_view_unmodified": true,
+    "timed_hook_unmodified": true,
+    "maingrid_test_unmodified": true,
+    "evidence": "git status --porcelain and git diff against HEAD confirm zero modifications in packages/web/src/views/Day/**, packages/web/src/grid/hooks/useTimedDraftCreation.ts, packages/web/src/grid/hooks/useTimedGridDraftCreation.ts, and packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.test.tsx."
+  },
+  "findings": [
+    {
+      "id": "Q1-MODIFIER-ELIGIBILITY",
+      "title": "Missing isEligibleInteractionPointerDown pointer validation on mousedown",
+      "severity": "minor",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "line": 63,
+      "what_is_wrong": "useAllDayDraftCreation only checks `if (isRightClick(event)) return;` (button === 2) instead of calling `isEligibleInteractionPointerDown({ altKey: event.altKey, button: event.button, ctrlKey: event.ctrlKey, isPrimary: true, metaKey: event.metaKey, shiftKey: event.shiftKey })` as done in useTimedDraftCreation and specified in FR-2 / change_plan.md.",
+      "why_it_matters": "Modifier clicks such as Alt+Click, Shift+Click, Meta/Cmd+Click, or auxiliary buttons (e.g. middle click button 1) initiate a drag gesture and call preventDefault/stopPropagation. Crucially, on macOS, Ctrl+Left-Click is the standard convention for secondary click / context menu: with only `isRightClick(event)` checking `button === 2`, macOS Ctrl+Click (button 0 + ctrlKey) is not ignored, hijacking native context menus and erroneously starting a draft gesture.",
+      "suggested_fix": "Import `isEligibleInteractionPointerDown` from `@web/interaction/interaction.pointer` and add `if (!isEligibleInteractionPointerDown({ altKey: event.altKey, button: event.button, ctrlKey: event.ctrlKey, isPrimary: true, metaKey: event.metaKey, shiftKey: event.shiftKey })) { return; }` before preventDefault."
+    },
+    {
+      "id": "Q2-LISTENER-LIFECYCLE",
+      "title": "Listener lifecycle and teardown are fully managed across all paths",
+      "severity": "none",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "line": 118,
+      "what_is_wrong": "None. The cleanup function removes window capture listeners for mousemove, mouseup, blur, and keydown, and resets gestureRef.current to null. All exit paths (finish, cancel, unmount useEffect cleanup, and gestureRef.current?.cancel() on subsequent mousedown) reliably trigger cleanup.",
+      "why_it_matters": "Ensures no event listener leaks on window and guarantees gesture state cannot be left orphaned after unmount or early termination.",
+      "suggested_fix": "No change required. Evidence verified in useAllDayDraftCreation.ts lines 53-57, 118-124, 132, 150, and 96."
+    },
+    {
+      "id": "Q3-STALE-CLOSURE-ANALYSIS",
+      "title": "Store subscriptions and gesture closures handle re-renders correctly",
+      "severity": "none",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "line": 50,
+      "what_is_wrong": "None. When a draft is started on mousedown, useDraftStore(selectIsDrafting) updates and triggers a re-render. Active gestures capture state in their own execution scope and mutate closure variables/store directly, while subsequent mousedowns correctly read `isDrafting === true` from the re-rendered state and execute `draftActions.discard()`.",
+      "why_it_matters": "Confirms second clicks dismiss existing drafts as expected in Compass without stale-state race conditions or corrupted closures.",
+      "suggested_fix": "No change required. Verified via state tracing and tests in useAllDayDraftCreation.test.tsx lines 131-144 and AllDayRow.test.tsx lines 197-211."
+    },
+    {
+      "id": "Q4-OPT-OUT-PATH-PARITY",
+      "title": "Opt-out path is line-by-line identical to baseline implementation",
+      "severity": "none",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "line": 75,
+      "what_is_wrong": "None. When visibleBounds is omitted (as in Day view), lines 75-94 execute the exact original logic: synchronous start/end calculation (+1 day), createGridEventDraft, and immediate invocation of onCreateGridDraft/onCreateDraft on mousedown without attaching any window event listeners.",
+      "why_it_matters": "Preserves the critical Day-view invariant where DayCalendarGrid captures calendar columns synchronously at mousedown instant.",
+      "suggested_fix": "No change required. Verified by line-by-line git diff against commit 5bb2dc21 and useAllDayDraftCreation.test.tsx lines 310-332."
+    },
+    {
+      "id": "Q5-EXCLUSIVE-END-DATE-CONVENTION",
+      "title": "Exclusive end-date convention is applied consistently with zero off-by-one errors",
+      "severity": "none",
+      "file": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "line": 49,
+      "what_is_wrong": "None. `toExclusiveAllDayEndDate` consistently adds 1 day to the inclusive end day (`dayjs(lastInclusiveDate).add(1, 'day')`). Single-day spans (e.g. 2026-05-18 to 2026-05-18) yield `2026-05-18` to `2026-05-19`, and multi-day spans (e.g. 2026-05-18 to 2026-05-20) yield `2026-05-18` to `2026-05-21` across math, hook, adapter, and test assertions.",
+      "why_it_matters": "All-day schedules in Compass require exclusive end dates `[start, end)` for correct grid layout and duration parsing.",
+      "suggested_fix": "No change required. Verified in all-day.create.ts, all-day.create.test.ts, and useAllDayDraftCreation.test.tsx."
+    },
+    {
+      "id": "Q6-ESCAPE-BLUR-DISCARD-SAFETY",
+      "title": "Cancellation safely discards gesture drafts without affecting unrelated state",
+      "severity": "none",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "line": 144,
+      "what_is_wrong": "None. When a gesture starts in the opted-in path, it publishes a draft with activity 'creating' at line 116. Escape, blur, or gesture cancellation correctly runs `draftActions.discard()`, which safely resets the draft store to initialDraftState. If an unrelated draft is open prior to mousedown, line 70 discards it before any gesture listeners are attached.",
+      "why_it_matters": "Prevents draft leaks or unintended state mutations when cancelling in-progress gestures.",
+      "suggested_fix": "No change required. Verified in useAllDayDraftCreation.test.tsx lines 235-277 and AllDayRow.test.tsx lines 183-195."
+    },
+    {
+      "id": "Q7-TEST-SUITE-VALIDITY",
+      "title": "New unit and integration tests genuinely exercise gestures, RTL drags, and clamping",
+      "severity": "none",
+      "file": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "line": 203,
+      "what_is_wrong": "None. The right-to-left test explicitly starts at clientX 300 (2026-05-20) and moves left to clientX 100 (2026-05-18), asserting normalization. The clamp test passes clientX 50 (resolving to 2026-05-10 < minDate) and clientX 800 (resolving to 2026-05-30 > maxDate), verifying clamping on both boundaries. The mousedown-only timing test pins the activity: 'creating' behavior before mouseup.",
+      "why_it_matters": "Confirms tests are non-vacuous, will fail on regression, and accurately validate all functional requirements.",
+      "suggested_fix": "No change required. Verified in all-day.create.test.ts, useAllDayDraftCreation.test.tsx, useAllDayGridDraftCreation.test.tsx, and AllDayRow.test.tsx."
+    },
+    {
+      "id": "Q8-SCOPE-COMPLIANCE-CHECK",
+      "title": "Protected files and out-of-scope modules remain completely unmodified",
+      "severity": "none",
+      "file": "packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+      "line": 1,
+      "what_is_wrong": "None. git status and git diff confirm that packages/web/src/views/Day/**, useTimedDraftCreation.ts, useTimedGridDraftCreation.ts, and MainGrid.test.tsx have 0 changes.",
+      "why_it_matters": "Ensures adherence to scope boundaries, protecting Day view invariants and timed grid creation gestures from unintended regressions.",
+      "suggested_fix": "No change required. Scope compliance confirmed via git inspection."
+    }
+  ],
+  "orchestrator_adjudication": {
+    "finding": "Q1-MODIFIER-ELIGIBILITY",
+    "decision": "accepted as valid, deliberately NOT fixed in this run",
+    "reasoning": [
+      "Not a regression. packages/web/src/common/utils/mouse/mouse.util.ts defines isRightClick as `e.button === 2` only, and the PRE-CHANGE hook guarded on isRightClick alone. Alt/Ctrl/Meta/Shift + left-press already created an all-day draft on both Week and Day before this change. The shipped code applies the identical guard, so modifier-click behaviour is unchanged by this run.",
+      "The suggested_fix is unsafe as written: it places the isEligibleInteractionPointerDown guard before preventDefault, i.e. on the SHARED entry path. That would change Day view click-to-create for modifier clicks, violating Gate 0 constraint 1 (click-to-create unregressed) and constraint 2 (Day proven unchanged, never edited).",
+      "Applying the guard only inside the opt-in branch would instead create a Week/Day asymmetry - ctrl-click doing nothing in the Week all-day row but still creating a draft in Day - which no gate approved.",
+      "Correct home is a separate follow-up ticket fixing modifier-click handling consistently across both surfaces, with its own Gate 0 scope."
+    ],
+    "residual_risk": "On macOS, ctrl+left-click on the Week all-day row now begins a drag gesture rather than committing immediately. Both before and after, it produces a draft rather than a context menu. Severity unchanged from baseline."
+  },
+  "test_evidence": {
+    "command": "bun test:web",
+    "result": "2327 pass / 0 fail / 305 files",
+    "baseline": "2298 pass / 0 fail / 302 files at 4189de1",
+    "delta": "+29 tests, +3 files, 0 failures"
+  }
+}

@@ -1,0 +1,193 @@
+[
+  {
+    "pass_id": "20260820-004405-feature-extend-allday-multiday-drag",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "id": "tp_code_001",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-math",
+    "artifact_path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+    "instruction": "Create the pure day-range math module and its unit test for the Week all-day multi-day drag feature.\n\nRead .sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md FIRST. Sections 10 and 11 are orchestrator corrections that OVERRIDE section 4 — obey them. Do not read other .sdlc files. Section 3 gives the exact signatures and full reference bodies for normalizeDayRange, clampDayToVisibleBounds, toExclusiveAllDayEndDate and calculateAllDayCreateSchedule — implement exactly those names and shapes. Section 7 item 1 gives the required test cases.\n\nWRITE EXACTLY TWO FILES:\n1. packages/web/src/grid/interaction/math/all-day.create.ts\n2. packages/web/src/grid/interaction/math/all-day.create.test.ts\n\nAll four functions must be pure: YYYY-MM-DD strings in, YYYY-MM-DD strings out, no React, no store, no Date objects in signatures. dayjs and YEAR_MONTH_DAY_FORMAT may be used internally for the +1-day arithmetic only (import dayjs from \"@core/util/date/dayjs\" and YEAR_MONTH_DAY_FORMAT from \"@core/constants/date.constants\"). Remember the end date is EXCLUSIVE: an inclusive span whose last day is 2026-05-20 yields endDate 2026-05-21. Look at a sibling test under packages/web/src/grid/interaction/math/ for the house test style before writing.\n\nHARD LIMITS: write ONLY the files listed below. Do not touch packages/web/src/views/Day/**, packages/web/src/grid/hooks/useTimedDraftCreation.ts, packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts, MainGrid.test.tsx, or anything under packages/backend|sync|core|scripts. Do not run the test suite (the orchestrator runs it). Match the surrounding code style exactly: bun:test, named exports, import aliases (@core, @web), and the repo's alphabetised import order.",
+    "inputs": [],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deviations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "files_written",
+        "summary"
+      ]
+    },
+    "acceptance": [
+      "all-day.create.ts exports normalizeDayRange, clampDayToVisibleBounds, toExclusiveAllDayEndDate, calculateAllDayCreateSchedule",
+      "Every exported function is pure and takes/returns YYYY-MM-DD strings",
+      "Test covers: left-to-right and right-to-left drags produce identical normalized ranges; clamp below minDate and above maxDate; single-day (anchor === current) produces a 1-day exclusive span; multi-day clamped span",
+      "Tests use bun:test (import { describe, expect, it } from \"bun:test\")",
+      "Exactly two files created; no other file in the repo modified"
+    ],
+    "budget": {
+      "maxInputTokens": 30000,
+      "maxOutputTokens": 4000
+    }
+  },
+  {
+    "pass_id": "20260820-004405-feature-extend-allday-multiday-drag",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "id": "tp_code_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "allday-hook",
+    "artifact_path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+    "instruction": "Extend the shared all-day draft-creation hook with an OPT-IN multi-day drag gesture.\n\nRead .sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md FIRST. Sections 10 and 11 are orchestrator corrections that OVERRIDE section 4 — obey them. Do not read other .sdlc files. Section 2 gives the exact option/return types, section 4 the lifecycle, section 5 the preview/commit calls, section 10 the CORRECTED commit timing, section 11 the approved click-timing consequence and its required test case. Mirror the gesture mechanics in packages/web/src/grid/hooks/useTimedDraftCreation.ts (read it; do NOT edit it).\n\nWRITE EXACTLY TWO FILES:\n1. packages/web/src/grid/hooks/useAllDayDraftCreation.ts (edit)\n2. packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx (edit — keep all three existing tests passing unchanged in intent)\n\nTHE CONTRACT, precisely:\n- Add optional visibleBounds?: { minDate: string; maxDate: string } to the options. The hook still RETURNS the same bare handler (event, calendarId?) => void. Do not change the return shape — both call sites destructure nothing.\n- WITHOUT visibleBounds: run the current body verbatim (right-click ignore, preventDefault/stopPropagation, isDrafting discard, resolve one date, +1 day, createGridEventDraft, onCreateGridDraft ?? onCreateDraft) and return. Attach NO window listeners. This is Day view's path and must be byte-for-byte behaviourally identical to today.\n- WITH visibleBounds (Week): on mousedown publish the single-day draft immediately via draftActions.startGridDraft({ activity: \"creating\", draft }) — per section 10 this is what keeps the existing mousedown-only assertion in MainGrid.test.tsx green — then attach window mousemove/mouseup/blur/keydown listeners (capture where useTimedDraftCreation uses capture). Past TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX (4px), recompute via calculateAllDayCreateSchedule from @web/grid/interaction/math/all-day.create and draftActions.setGridDraft(replaceGridDraftSchedule(...)). On mouseup call onCreateGridDraft(finalDraft) exactly once. On Escape keydown or window blur call draftActions.discard() and commit nothing. Clean up every listener on finish, cancel and unmount (useEffect cleanup + gestureRef, as the timed hook does).\n\nNEW TEST CASES REQUIRED (section 7 item 2 plus section 11): sub-threshold click; left-to-right drag; right-to-left drag normalizing to the same span; Escape cancels with no commit; blur cancels with no commit; opt-out path commits on mousedown and attaches no listeners; and the section-11 case — opted-in mousedown with NO mouseup leaves the store draft at activity \"creating\", then mouseup fires onCreateGridDraft exactly once.\n\nHARD LIMITS: write ONLY the files listed below. Do not touch packages/web/src/views/Day/**, packages/web/src/grid/hooks/useTimedDraftCreation.ts, packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts, MainGrid.test.tsx, or anything under packages/backend|sync|core|scripts. Do not run the test suite (the orchestrator runs it). Match the surrounding code style exactly: bun:test, named exports, import aliases (@core, @web), and the repo's alphabetised import order.",
+    "inputs": [],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deviations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "files_written",
+        "summary"
+      ]
+    },
+    "acceptance": [
+      "visibleBounds is optional; omitting it runs the pre-existing synchronous mousedown-commit body and attaches no window listeners",
+      "Hook still returns the bare (event, calendarId?) => void handler — no change to the return shape",
+      "Opted-in mousedown publishes the single-day draft with activity 'creating' before any mouseup",
+      "onCreateGridDraft is called exactly once per gesture, on mouseup",
+      "Escape keydown and window blur both discard without committing",
+      "All listeners removed on finish, cancel and unmount",
+      "The three pre-existing tests in useAllDayDraftCreation.test.tsx still pass unmodified in intent",
+      "New cases cover: sub-threshold click, LTR drag, RTL drag normalization, Escape, blur, opt-out path, and the activity-'creating'-on-mousedown case",
+      "Exactly two files modified"
+    ],
+    "budget": {
+      "maxInputTokens": 40000,
+      "maxOutputTokens": 6000
+    }
+  },
+  {
+    "pass_id": "20260820-004405-feature-extend-allday-multiday-drag",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "id": "tp_code_003",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "week-wiring",
+    "artifact_path": "packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+    "instruction": "Wire the opt-in all-day drag gesture into the Week view — the ONLY call site that opts in.\n\nRead .sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md FIRST. Sections 10 and 11 are orchestrator corrections that OVERRIDE section 4 — obey them. Do not read other .sdlc files. Section 5 gives the bounds derivation, section 6 the file table, section 7 items 3-4 the test cases. Mirror packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts for shape (read it; do NOT edit it).\n\nWRITE EXACTLY FOUR FILES:\n1. packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts (new) — composes useAllDayDraftCreation with getStartDate from dateCalcs.getDateStrByXY(x, y, startOfView, YEAR_MONTH_DAY_FORMAT), visibleBounds derived from weekProps.component.weekDays (minDate = weekDays[0], maxDate = weekDays[weekDays.length - 1], both formatted YEAR_MONTH_DAY_FORMAT), and onCreateGridDraft calling draftActions.startGridDraft({ activity: \"gridClick\", draft }).\n2. packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx (new)\n3. packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx (edit) — replace the inline useAllDayDraftCreation call at lines ~48-61 with the new binding hook. Change NOTHING else in this file: the props, the two render branches (AllDayRowChildren / AllDayRowCalendar), useAllDayEventsLayer and the AllDayGridRow wiring all stay exactly as they are.\n4. packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx (new)\n\nGuard the empty-week case: if weekDays is empty, pass no visibleBounds (falls back to click-only) rather than reading index -1.\n\nCRITICAL: packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.test.tsx is REGRESSION PROOF and is NOT in your write scope — do not edit it. Read it (around lines 261 and 519-534) to see the mousedown-only assertion your wiring must keep green.\n\nHARD LIMITS: write ONLY the files listed below. Do not touch packages/web/src/views/Day/**, packages/web/src/grid/hooks/useTimedDraftCreation.ts, packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts, MainGrid.test.tsx, or anything under packages/backend|sync|core|scripts. Do not run the test suite (the orchestrator runs it). Match the surrounding code style exactly: bun:test, named exports, import aliases (@core, @web), and the repo's alphabetised import order.",
+    "inputs": [],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deviations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "files_written",
+        "summary"
+      ]
+    },
+    "acceptance": [
+      "useAllDayGridDraftCreation returns the handler AllDayRow binds to onMouseDown, mirroring useTimedGridDraftCreation's shape",
+      "visibleBounds comes from weekDays first/last formatted YEAR_MONTH_DAY_FORMAT; empty weekDays passes no bounds",
+      "AllDayRow.tsx changes only the hook call; props, both render branches and AllDayGridRow wiring untouched",
+      "MainGrid.test.tsx is not modified",
+      "Exactly four files written (2 new hooks/tests, 1 edited component, 1 new component test)"
+    ],
+    "budget": {
+      "maxInputTokens": 40000,
+      "maxOutputTokens": 5000
+    }
+  },
+  {
+    "pass_id": "20260820-004405-feature-extend-allday-multiday-drag",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "id": "tp_docs_001",
+    "phase": "docs",
+    "task_type": "doc_update",
+    "module": "docs",
+    "artifact_path": "docs/frontend/week-drag-interaction.md",
+    "instruction": "Document the new Week all-day multi-day drag-to-select gesture in docs/frontend/week-drag-interaction.md.\n\nRead .sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/change_plan.md FIRST. Sections 10 and 11 are orchestrator corrections that OVERRIDE section 4 — obey them. Do not read other .sdlc files. Read the existing doc first and match its structure, heading depth and voice — this is an ADDITION alongside the gestures already described, not a rewrite. Read the shipped implementation (packages/web/src/grid/hooks/useAllDayDraftCreation.ts, packages/web/src/grid/interaction/math/all-day.create.ts, packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts) and describe what the code ACTUALLY does.\n\nCover: the mousedown/threshold/preview/mouseup lifecycle; the 4px TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX reuse; right-to-left normalization; clamping to the visible week; the EXCLUSIVE end date (inclusive N-day drag commits end = last day + 1); Escape/blur cancellation; and that the gesture is opt-in via visibleBounds so Day view — whose x-axis selects a calendar, not a day — keeps its synchronous mousedown path.\n\nREQUIRED (change_plan.md section 11): state as a deliberate, approved consequence that on the Week all-day row the form now opens on RELEASE rather than on press, because a gesture cannot be classified as a click until the pointer is released. The committed draft value is unchanged; only the instant the form opens moves.\n\nWRITE EXACTLY ONE FILE: docs/frontend/week-drag-interaction.md. HARD LIMITS: write ONLY the files listed below. Do not touch packages/web/src/views/Day/**, packages/web/src/grid/hooks/useTimedDraftCreation.ts, packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts, MainGrid.test.tsx, or anything under packages/backend|sync|core|scripts. Do not run the test suite (the orchestrator runs it). Match the surrounding code style exactly: bun:test, named exports, import aliases (@core, @web), and the repo's alphabetised import order.",
+    "inputs": [],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "files_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deviations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "files_written",
+        "summary"
+      ]
+    },
+    "acceptance": [
+      "Existing content preserved; the new gesture is added alongside, in the doc's existing structure and voice",
+      "Documents threshold, RTL normalization, clamping, exclusive end date, Escape/blur cancel, and the visibleBounds opt-in with the Day-view rationale",
+      "States the form-opens-on-release consequence as deliberate and approved",
+      "Exactly one file modified"
+    ],
+    "budget": {
+      "maxInputTokens": 30000,
+      "maxOutputTokens": 4000
+    }
+  }
+]

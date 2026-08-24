@@ -1,0 +1,287 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 1362443,
+    "cached_content_token_count": 1094234,
+    "candidates_token_count": 13160,
+    "thoughts_token_count": 7969,
+    "total_token_count": 1383572,
+    "service_tier": null
+  },
+  "tool_call_count": 27,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc",
+        "query": "*.md"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/requirements.md",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/requirements.md",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/intent_brief.md",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag/intent_brief.md",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useDateCalcs.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useDateCalcs.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/grid-event-draft.adapter.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/grid-event-draft.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/stores/draft.store.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/stores/draft.store.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/layout/all-day-draft.position.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/layout/all-day-draft.position.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayGridRow.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayGridRow.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+        "start_line": "319",
+        "end_line": "369"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "useDayCalendarColumns",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/useDayCalendarColumns.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/useDayCalendarColumns.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/interaction/interaction.constants.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/interaction/interaction.constants.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/interaction/interaction.pointer.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/interaction/interaction.pointer.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "*useAllDayDraftCreation*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "*Timed*Draft*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "query": "useTimedDraftCreation",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+        "query": "Escape",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/shortcuts/useGlobalShortcuts.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/shortcuts/useGlobalShortcuts.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math",
+        "query": "*.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.drag.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.resize.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.resize.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useGridCoordinates.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useGridCoordinates.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "# DELTA Change Plan: Multi-Day Drag-to-Select in Week All-Day Row\n\n## 1. Summary\n\nThis change plan extends the Week all-day row (`AllDayRow.tsx`) to support multi-day drag-to-select creation of spanning all-day events. Currently, `useAllDayDraftCreation.ts` is click-only: on `mousedown`, it resolves a single start date, hardcodes an end date one day later, and immediately commits a 1-day draft.\n\nThe target behavior mirrors the gesture lifecycle in `useTimedDraftCreation.ts`:\n1. `mousedown` on an empty all-day slot anchors the gesture.\n2. `mousemove` past `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4px) initiates a live multi-day spanning draft preview in `useDraftStore`.\n3. `mouseup` commits the spanning draft across the inclusive dragged day range and opens the event creation form.\n4. Sub-threshold clicks retain existing single-day draft creation.\n5. Cancellation via `Escape`, window `blur`, or pointer leave cleanly discards the preview and tears down listeners.\n\nAll changes are strictly additive and opt-in, guaranteeing zero regression to Day view and non-all-day surfaces.\n\n---\n\n## 2. Option-Shape Decision & Backwards Compatibility\n\n### Exclusive End-Date Convention\n`allDayGridSchedule(start, end)` expects an **exclusive** end date (`[startDate, endDate)`). Today's single-day click path calculates `endDate = dayjs(startDate).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT)`. An inclusive N-day drag from `startDay` to `endDayInclusive` commits with `startDate = min(startDay, endDayInclusive)` and `endDate = dayjs(max(startDay, endDayInclusive)).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT)`. For example, dragging across Monday (`2026-05-18`) through Wednesday (`2026-05-20`) produces `{ startDate: \"2026-05-18\", endDate: \"2026-05-21\" }`.\n\n### The Day Invariant (Verbatim)\n> Day view builds one column PER CALENDAR at the same date (`useDayCalendarColumns.ts:34-39` -> `{date: dateInView, key: calendar.id}`), and its x-axis selects a CALENDAR, not a day (`DayCalendarGrid.tsx:341-342` `getCalendarAtX` via `getVisibleDateIndexByX`; read at mousedown, line ~353). Therefore the invariant is NOT merely 'the date range collapses to one day' \u2014 it is: Day's all-day creation MUST still commit on MOUSEDOWN through the existing single-day path, with the calendar resolved at the same instant it is today. Any always-on threshold/preview/commit-on-mouseup path would change WHEN the draft opens and WHICH calendar is captured (anchor column vs release column).\n\n### TypeScript Option & Return Types\n\n```typescript\nexport interface AllDayVisibleBounds {\n  minDate: string; // \"YYYY-MM-DD\"\n  maxDate: string; // \"YYYY-MM-DD\"\n}\n\nexport interface UseAllDayDraftCreationOptions {\n  getStartDate: (clientX: number, clientY: number) => string;\n  onCreateDraft?: (event: CompassEvent) => void;\n  onCreateGridDraft?: (draft: GridEventDraft) => void;\n  /**\n   * Optional visible boundary configuration.\n   * When provided, enables the multi-day drag-to-select gesture lifecycle.\n   * When omitted (e.g. Day view), the hook retains the synchronous mousedown-commit path.\n   */\n  visibleBounds?: AllDayVisibleBounds;\n}\n\nexport type AllDayDraftCreationHandler = (\n  event: ReactMouseEvent<HTMLElement>,\n  calendarId?: CalendarId | null,\n) => void;\n```\n\n### ADR: Option Shape Selection\n- **Options Considered:**\n  1. *Always-on gesture:* Activate pointer drag lifecycle unconditionally for all callers.\n  2. *Discriminated union / separate hook:* Split into `useAllDayClickDraftCreation` and `useAllDayDragDraftCreation`.\n  3. *Optional `visibleBounds` configuration (Chosen):* Pass optional `visibleBounds: { minDate: string; maxDate: string }` into `UseAllDayDraftCreationOptions`.\n- **Choice:** Option 3.\n- **Rationale & Backwards Compatibility:**\n  - **Structural Impossibility of Day Regression:** In `useAllDayDraftCreation`, `if (!visibleBounds)` immediately executes the literal synchronous mousedown handler:\n    ```typescript\n    if (!visibleBounds) {\n      const startDate = getStartDate(event.clientX, event.clientY);\n      const endDate = dayjs(startDate).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT);\n      const draft = createGridEventDraft(allDayGridSchedule(startDate, endDate), undefined, calendarId);\n      if (onCreateGridDraft) { onCreateGridDraft(draft); return; }\n      onCreateDraft?.(gridEventDraftToSchemaEvent(draft));\n      return;\n    }\n    ```\n    `DayCalendarGrid.tsx` passes `{ getStartDate: getAllDayDraftStartDate, onCreateGridDraft: openGridDraftForm }` without `visibleBounds`. It never registers window listeners, never enters threshold detection, never delays execution to `mouseup`, and continues capturing `calendar.id` on `mousedown` synchronously.\n  - **Week Opt-In:** Week view (`useAllDayGridDraftCreation.ts`) provides `visibleBounds: { minDate, maxDate }` derived from `weekDays`, opting into the drag gesture.\n\n---\n\n## 3. Pure Math Module\n\nNew file: `packages/web/src/grid/interaction/math/all-day.create.ts`\n\n```typescript\nexport interface NormalizedDayRange {\n  startDay: string; // \"YYYY-MM-DD\"\n  endDay: string;   // \"YYYY-MM-DD\" (inclusive)\n}\n\nexport interface ClampedAllDayCreateRangeInput {\n  anchorDate: string;\n  currentDate: string;\n  minDate: string;\n  maxDate: string;\n}\n\nexport interface AllDayScheduleDates {\n  startDate: string; // \"YYYY-MM-DD\"\n  endDate: string;   // \"YYYY-MM-DD\" (exclusive, i.e. endDay + 1 day)\n}\n\n/**\n * Normalizes two YYYY-MM-DD date strings so startDay <= endDay lexicographically/chronologically.\n */\nexport function normalizeDayRange(dateA: string, dateB: string): NormalizedDayRange;\n\n/**\n * Clamps a YYYY-MM-DD date string within [minDate, maxDate].\n */\nexport function clampDayToVisibleBounds(\n  date: string,\n  minDate: string,\n  maxDate: string,\n): string;\n\n/**\n * Converts the last inclusive date string of a multi-day span into an exclusive endDate (+1 day).\n */\nexport function toExclusiveAllDayEndDate(lastInclusiveDate: string): string;\n\n/**\n * Pure calculation resolving normalized, clamped inclusive span and exclusive schedule dates.\n */\nexport function calculateAllDayCreateSchedule({\n  anchorDate,\n  currentDate,\n  minDate,\n  maxDate,\n}: ClampedAllDayCreateRangeInput): AllDayScheduleDates;\n```\n\n---\n\n## 4. Gesture Lifecycle\n\n```\n[MOUSEDOWN]\n  \u2502\n  \u251c\u2500\u2500 isRightClick / !isEligibleInteractionPointerDown? \u2500\u2500> Ignore\n  \u251c\u2500\u2500 isDrafting? \u2500\u2500> draftActions.discard(); return\n  \u251c\u2500\u2500 !visibleBounds? \u2500\u2500> [Commit 1-day immediately on mousedown] (Day View path)\n  \u2502\n  \u2514\u2500\u2500 visibleBounds present \u2500\u2500> Initialize gesture state:\n         - pointerStart = { x: clientX, y: clientY }\n         - anchorDate = clamp(getStartDate(clientX, clientY), minDate, maxDate)\n         - Attach window listeners: mousemove (capture), mouseup (capture), blur, keydown (capture)\n         \u2502\n         \u251c\u2500\u2500 [MOUSEMOVE]\n         \u2502     \u251c\u2500\u2500 mouseEvent.buttons !== 1? \u2500\u2500> finish(mouseEvent)\n         \u2502     \u251c\u2500\u2500 !hasMoved & displacement <= TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX (4px)? \u2500\u2500> return\n         \u2502     \u2514\u2500\u2500 displacement > 4px:\n         \u2502           - hasMoved = true\n         \u2502           - currentDate = clamp(getStartDate(clientX, clientY), minDate, maxDate)\n         \u2502           - dates = calculateAllDayCreateSchedule({ anchorDate, currentDate, minDate, maxDate })\n         \u2502           - !isPreviewStarted?\n         \u2502               draftActions.startGridDraft({ activity: \"creating\", draft })\n         \u2502             : draftActions.setGridDraft(replaceGridDraftSchedule(draft, schedule))\n         \u2502\n         \u251c\u2500\u2500 [MOUSEUP]\n         \u2502     \u251c\u2500\u2500 cleanup listeners\n         \u2502     \u251c\u2500\u2500 !hasMoved? \u2500\u2500> Fallback: commit 1-day draft for anchorDate via onCreateGridDraft\n         \u2502     \u2514\u2500\u2500 hasMoved?  \u2500\u2500> Commit spanning draft via onCreateGridDraft\n         \u2502\n         \u2514\u2500\u2500 [ESCAPE / BLUR / CANCEL]\n               \u251c\u2500\u2500 cleanup listeners\n               \u2514\u2500\u2500 isPreviewStarted? \u2500\u2500> draftActions.discard()\n```\n\n### Listeners and Targets\n- Handled on component container: `onMouseDown`.\n- Attached to `window` during gesture:\n  - `window.addEventListener(\"mousemove\", handleMouseMove, true)`\n  - `window.addEventListener(\"mouseup\", handleMouseUp, true)`\n  - `window.addEventListener(\"blur\", handleWindowBlur)`\n  - `window.addEventListener(\"keydown\", handleKeyDown, true)`\n\n### Threshold Constant Decision\n- **Choice:** Reuse `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4px) from `packages/web/src/interaction/interaction.constants.ts`.\n- **Justification:** As defined in `interaction.constants.ts`, 4px is specifically designed for distinguishing click-to-create from drag-creation on empty grid cells. Reusing it ensures behavioral consistency between timed grid drag-creation and all-day drag-creation.\n\n### Escape Handling Status\n- **Current Timed Hook:** `useTimedDraftCreation.ts` does **not** attach a `keydown` listener for Escape (it only listens to `mousemove`, `mouseup`, `blur`).\n- **All-Day Extension:** `useAllDayDraftCreation.ts` explicitly registers a `keydown` listener on `window` during the active gesture:\n  ```typescript\n  const handleKeyDown = (event: KeyboardEvent) => {\n    if (event.key === \"Escape\") {\n      event.preventDefault();\n      event.stopPropagation();\n      cancel();\n    }\n  };\n  ```\n  This fully satisfies FR-6 and AC-5.\n\n### Cleanup on Unmount\n- `gestureRef.current` stores the active `{ cancel }` handle.\n- An unmount effect `useEffect(() => () => gestureRef.current?.cancel(), [])` tears down any in-flight listeners and discards uncommitted drafts (NFR-4).\n\n---\n\n## 5. Preview + Commit Flow\n\n1. **Source of Clamping Bounds:**\n   - In `AllDayRow.tsx` / `useAllDayGridDraftCreation.ts`:\n     - `minDate = weekDays[0].format(YEAR_MONTH_DAY_FORMAT)`\n     - `maxDate = weekDays[weekDays.length - 1].format(YEAR_MONTH_DAY_FORMAT)`\n2. **Preview Updates:**\n   - First move exceeding 4px:\n     ```typescript\n     draftActions.startGridDraft({\n       activity: \"creating\",\n       draft: createGridEventDraft(allDayGridSchedule(startDate, endDate), undefined, calendarId),\n     });\n     ```\n   - Subsequent moves:\n     ```typescript\n     draftActions.setGridDraft(\n       replaceGridDraftSchedule(draftEvent, allDayGridSchedule(startDate, endDate)),\n     );\n     ```\n   - `AllDayEvents.tsx` renders `positionAllDayDraftEvent` reactively from `useDraftStore(selectGridDraft)`.\n3. **Commit on Release:**\n   - Invokes `onCreateGridDraft(finalDraft)`, triggering `draftActions.startGridDraft({ activity: \"gridClick\", draft: finalDraft })` which opens the event details form.\n\n---\n\n## 6. File-by-File Change Table\n\n| Path | New / Edit | Summary of Changes | Satisfied Requirements |\n|---|---|---|---|\n| `packages/web/src/grid/interaction/math/all-day.create.ts` | **New** | Pure day-range math: `normalizeDayRange`, `clampDayToVisibleBounds`, `toExclusiveAllDayEndDate`, `calculateAllDayCreateSchedule`. | FR-1 |\n| `packages/web/src/grid/interaction/math/all-day.create.test.ts` | **New** | Unit tests for pure math functions (normalization, bounds clamping, single-day, multi-day exclusive end conversion). | FR-1 |\n| `packages/web/src/grid/hooks/useAllDayDraftCreation.ts` | **Edit** | Add `visibleBounds` to options; implement drag lifecycle (threshold, mousemove preview, mouseup commit, blur/escape cancel); preserve synchronous path when `visibleBounds` is undefined. | FR-2, FR-3, FR-4, FR-5, FR-6, NFR-1, NFR-2, NFR-4 |\n| `packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx` | **Edit** | Test drag lifecycle: LTR drag, RTL drag, sub-threshold click, Escape/blur cancellation, and opt-out synchronous Day path. | FR-2, FR-4, FR-5, FR-6, NFR-1 |\n| `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts` | **New** | Hook binding `useAllDayDraftCreation` with `dateCalcs` and `weekDays` visible bounds, mirroring `useTimedGridDraftCreation.ts`. | FR-7 |\n| `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx` | **New** | Unit tests for Week all-day draft creation hook binding. | FR-7 |\n| `packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.# DELTA Change Plan: Multi-Day Drag-to-Select in Week All-Day Row\n\n## 1. Summary\n\nThis plan extends the Week all-day row (`AllDayRow.tsx`) to support multi-day drag-to-select draft creation. Today, `useAllDayDraftCreation.ts` is click-only: on `mousedown`, it resolves one date, adds 1 day, and commits a 1-day draft immediately.\n\nThe target behavior mirrors the gesture lifecycle in `useTimedDraftCreation.ts`:\n1. `mousedown` on an empty all-day slot anchors the gesture.\n2. `mousemove` past `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4px) streams live multi-day previews to `useDraftStore`.\n3. `mouseup` commits the spanning draft across the inclusive day range and opens the event creation form.\n4. Sub-threshold clicks retain the single-day click-to-create fallback.\n5. `Escape`, window `blur`, or pointer release cancels the gesture and cleans up listeners.\n\nThe gesture is opt-in via a `visibleBounds` option. Day view passes no bounds and retains its synchronous mousedown commit path verbatim.\n\n---\n\n## 2. Option-Shape Decision & Backwards Compatibility\n\n### End-Date Exclusivity Convention\n`allDayGridSchedule(start, end)` takes an **exclusive** end date (`[startDate, endDate)`). Today's single-day click path calculates `endDate = dayjs(startDate).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT)`. An inclusive N-day drag from `startDay` to `endDayInclusive` commits with `startDate = min(startDay, endDayInclusive)` and `endDate = dayjs(max(startDay, endDayInclusive)).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT)`. For example, a drag from `2026-05-18` (Mon) to `2026-05-20` (Wed) commits `{ startDate: \"2026-05-18\", endDate: \"2026-05-21\" }`.\n\n### Day Invariant (Verbatim)\n> Day view builds one column PER CALENDAR at the same date (useDayCalendarColumns.ts:34-39 -> {date: dateInView, key: calendar.id}), and its x-axis selects a CALENDAR, not a day (DayCalendarGrid.tsx:341-342 getCalendarAtX via getVisibleDateIndexByX; read at mousedown, line ~353). Therefore the invariant is NOT merely 'the date range collapses to one day' \u2014 it is: Day's all-day creation MUST still commit on MOUSEDOWN through the existing single-day path, with the calendar resolved at the same instant it is today. Any always-on threshold/preview/commit-on-mouseup path would change WHEN the draft opens and WHICH calendar is captured (anchor column vs release column).\n\n### TypeScript Option & Return Types\n\n```typescript\nexport interface AllDayVisibleBounds {\n  minDate: string; // \"YYYY-MM-DD\"\n  maxDate: string; // \"YYYY-MM-DD\"\n}\n\nexport interface UseAllDayDraftCreationOptions {\n  getStartDate: (clientX: number, clientY: number) => string;\n  onCreateDraft?: (event: CompassEvent) => void;\n  onCreateGridDraft?: (draft: GridEventDraft) => void;\n  visibleBounds?: AllDayVisibleBounds;\n}\n\nexport type AllDayDraftCreationHandler = (\n  event: ReactMouseEvent<HTMLElement>,\n  calendarId?: CalendarId | null,\n) => void;\n```\n\n### ADR: Option Shape Decision\n- **Options Considered:**\n  1. *Unconditional gesture:* Run drag threshold/preview on all callers.\n  2. *Separate hook:* Create `useAllDayDragDraftCreation` exclusively for Week.\n  3. *Opt-in `visibleBounds` option (Chosen):* Pass optional `visibleBounds` in `UseAllDayDraftCreationOptions`.\n- **Choice:** Option 3.\n- **Why & Structural Impossibility of Day Regression:**\n  Inside `useAllDayDraftCreation.ts`, an explicit guard checks `visibleBounds`:\n  ```typescript\n  if (!visibleBounds) {\n    const startDate = getStartDate(event.clientX, event.clientY);\n    const endDate = dayjs(startDate).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT);\n    const draft = createGridEventDraft(allDayGridSchedule(startDate, endDate), undefined, calendarId);\n    if (onCreateGridDraft) { onCreateGridDraft(draft); return; }\n    onCreateDraft?.(gridEventDraftToSchemaEvent(draft));\n    return;\n  }\n  ```\n  `DayCalendarGrid.tsx` passes `{ getStartDate, onCreateGridDraft }` without `visibleBounds`. It never registers window listeners, never enters threshold detection, and never delays execution to mouseup. The calendar is captured and committed synchronously on `mousedown` exactly as it is today.\n\n---\n\n## 3. Pure Math Module\n\nPath: `packages/web/src/grid/interaction/math/all-day.create.ts`\n\n```typescript\nexport interface NormalizedDayRange {\n  startDay: string; // \"YYYY-MM-DD\"\n  endDay: string;   // \"YYYY-MM-DD\" (inclusive)\n}\n\nexport interface ClampedAllDayCreateRangeInput {\n  anchorDate: string;  // \"YYYY-MM-DD\"\n  currentDate: string; // \"YYYY-MM-DD\"\n  minDate: string;     // \"YYYY-MM-DD\"\n  maxDate: string;     // \"YYYY-MM-DD\"\n}\n\nexport interface AllDayScheduleDates {\n  startDate: string; // \"YYYY-MM-DD\"\n  endDate: string;   // \"YYYY-MM-DD\" (exclusive: endDay + 1 day)\n}\n\n/**\n * Normalizes two YYYY-MM-DD date strings so startDay <= endDay lexicographically.\n */\nexport function normalizeDayRange(dateA: string, dateB: string): NormalizedDayRange {\n  return dateA <= dateB\n    ? { startDay: dateA, endDay: dateB }\n    : { startDay: dateB, endDay: dateA };\n}\n\n/**\n * Clamps a YYYY-MM-DD date string within [minDate, maxDate].\n */\nexport function clampDayToVisibleBounds(\n  date: string,\n  minDate: string,\n  maxDate: string,\n): string {\n  if (date < minDate) return minDate;\n  if (date > maxDate) return maxDate;\n  return date;\n}\n\n/**\n * Converts inclusive last day into an exclusive schedule endDate (+1 day).\n */\nexport function toExclusiveAllDayEndDate(lastInclusiveDate: string): string {\n  return dayjs(lastInclusiveDate).add(1, \"day\").format(YEAR_MONTH_DAY_FORMAT);\n}\n\n/**\n * Resolves normalized, clamped start and exclusive end dates for all-day draft schedule.\n */\nexport function calculateAllDayCreateSchedule({\n  anchorDate,\n  currentDate,\n  minDate,\n  maxDate,\n}: ClampedAllDayCreateRangeInput): AllDayScheduleDates {\n  const clampedAnchor = clampDayToVisibleBounds(anchorDate, minDate, maxDate);\n  const clampedCurrent = clampDayToVisibleBounds(currentDate, minDate, maxDate);\n  const { startDay, endDay } = normalizeDayRange(clampedAnchor, clampedCurrent);\n  return {\n    startDate: startDay,\n    endDate: toExclusiveAllDayEndDate(endDay),\n  };\n}\n```\n\n---\n\n## 4. Gesture Lifecycle\n\n### State Machine\n- **`mousedown`**:\n  - Validates `!isRightClick(event)` and `isEligibleInteractionPointerDown(event)`.\n  - If already drafting, discards draft and exits.\n  - If `!visibleBounds`, runs synchronous 1-day commit and exits.\n  - If `visibleBounds` provided: records `pointerStart = { x: clientX, y: clientY }`, `anchorDate`, sets `hasMoved = false`, `isFinished = false`, `isCancelled = false`, `isPreviewStarted = false`, attaches window listeners, and records `gestureRef.current = { cancel }`.\n- **`mousemove` (window capture)**:\n  - If `mouseEvent.buttons !== 1`, calls `finish(mouseEvent)`.\n  - If `!hasMoved`: checks `hasExceededInteractionMoveThreshold(point, pointerStart, TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX)`. Returns early if below 4px.\n  - Once exceeded, sets `hasMoved = true`.\n  - Calculates `currentDate`, derives `{ startDate, endDate }` via `calculateAllDayCreateSchedule`.\n  - Updates preview: on first move calls `draftActions.startGridDraft({ activity: \"creating\", draft })`; on subsequent moves calls `draftActions.setGridDraft(nextDraft)`.\n- **`mouseup` (window capture)**:\n  - Invokes `finish(mouseEvent)`: cleans up listeners.\n  - If `!hasMoved`: commits single-day draft for `anchorDate`.\n  - If `hasMoved`: commits spanning draft for `{ startDate, endDate }`.\n  - Dispatches to `onCreateGridDraft` (or `onCreateDraft`).\n- **`blur` / pointer leave**:\n  - Calls `cancel()`: cleans up listeners. If `isPreviewStarted`, calls `draftActions.discard()`.\n- **`Escape` (window capture)**:\n  - Handled via `keydown` listener on `window` during gesture. Calls `cancel()` and prevents default.\n\n### Target Listeners\n- Container element: `onMouseDown`.\n- Attached to `window` during drag gesture: `mousemove` (capture), `mouseup` (capture), `blur`, `keydown` (capture).\n\n### Threshold Constant\n- **Choice:** Reuse `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4px) from `packages/web/src/interaction/interaction.constants.ts`.\n- **Justification:** Distinguishes click-to-create from drag-creation on empty grid cells across all grid surfaces.\n\n### Escape Handling: Timed Hook vs All-Day Hook\n- `useTimedDraftCreation.ts` does **not** handle Escape (only listens to `mousemove`, `mouseup`, and `blur`).\n- `useAllDayDraftCreation.ts` adds a `keydown` listener during active drag:\n  ```typescript\n  const handleKeyDown = (e: KeyboardEvent) => {\n    if (e.key === \"Escape\") {\n      e.preventDefault();\n      e.stopPropagation();\n      cancel();\n    }\n  };\n  ```\n\n### Teardown\n- Cleanup removes all 4 window listeners and clears `gestureRef.current`.\n- Unmount effect `useEffect(() => () => gestureRef.current?.cancel(), [])` guarantees clean teardown on component unmount.\n\n---\n\n## 5. Preview + Commit\n\n### Bounds & Integration\n- `weekProps.component.weekDays` provides the ordered visible columns:\n  - `minDate = weekDays[0].format(YEAR_MONTH_DAY_FORMAT)`\n  - `maxDate = weekDays[weekDays.length - 1].format(YEAR_MONTH_DAY_FORMAT)`\n- `useAllDayGridDraftCreation.ts` wraps `useAllDayDraftCreation` with `getStartDate` and `visibleBounds: { minDate, maxDate }`.\n\n### Preview Actions\n- First move past 4px: `draftActions.startGridDraft({ activity: \"creating\", draft })`.\n- Subsequent moves: `draftActions.setGridDraft(replaceGridDraftSchedule(draft, allDayGridSchedule(startDate, endDate)))`.\n- `AllDayEvents.tsx` renders `positionAllDayDraftEvent` reactively from the draft store.\n\n### Commit Action\n- Mouseup invokes `onCreateGridDraft(finalDraft)`, triggering `draftActions.startGridDraft({ activity: \"gridClick\", draft: finalDraft })`, which opens the event details form.\n\n---\n\n## 6. File-by-File Change Table\n\n| Path | New / Edit | Summary of Changes | Satisfied Requirements |\n|---|---|---|---|\n| `packages/web/src/grid/interaction/math/all-day.create.ts` | **New** | Pure functions: `normalizeDayRange`, `clampDayToVisibleBounds`, `toExclusiveAllDayEndDate`, `calculateAllDayCreateSchedule`. | FR-1 |\n| `packages/web/src/grid/interaction/math/all-day.create.test.ts` | **New** | Pure math unit tests (LTR, RTL, clamping, single-day, exclusive conversion). | FR-1 |\n| `packages/web/src/grid/hooks/useAllDayDraftCreation.ts` | **Edit** | Add `visibleBounds` to options; implement drag lifecycle (threshold, mousemove preview, mouseup commit, blur/escape cancel); preserve synchronous path when `visibleBounds` is omitted. | FR-2, FR-3, FR-4, FR-5, FR-6, NFR-1, NFR-2, NFR-4 |\n| `packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx` | **Edit** | Unit tests for hook: LTR drag, RTL drag, sub-threshold click, Escape/blur cancel, and synchronous Day path. | FR-2, FR-4, FR-5, FR-6, NFR-1 |\n| `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts` | **New** | Week binding hook composing `useAllDayDraftCreation` with `dateCalcs` and `weekDays` bounds. | FR-7 |\n| `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx` | **New** | Unit tests for Week all-day draft creation hook binding. | FR-7 |\n| `packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx` | **Edit** | Use `useAllDayGridDraftCreation` to wire drag creation to `AllDayGridRow`. | FR-4, FR-7 |\n| `packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx` | **New** | Component integration test for Week all-day row drag creation. | FR-7 |\n| `docs/frontend/week-drag-interaction.md` | **Edit** | Document multi-day all-day drag-to-select gesture, coordinate resolution, and lifecycle. | FR-7 |\n\n---\n\n## 7. Test Plan per Test File\n\n1. `packages/web/src/grid/interaction/math/all-day.create.test.ts`:\n   - `normalizeDayRange`: LTR (`2026-05-18` to `2026-05-20`) and RTL (`2026-05-20` to `2026-05-18`) produce identical `{ startDay: \"2026-05-18\", endDay: \"2026-05-20\" }`.\n   - `clampDayToVisibleBounds`: Dates before `minDate` clamp to `minDate`; dates after `maxDate` clamp to `maxDate`.\n   - `toExclusiveAllDayEndDate`: Returns `2026-05-21` for `2026-05-20`.\n   - `calculateAllDayCreateSchedule`: Single-day produces 1-day exclusive span; multi-day clamped span produces accurate `{ startDate, endDate }`.\n\n2. `packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx`:\n   - **Sub-threshold click:** `mousedown` + `mouseup` with displacement < 4px creates a 1-day draft.\n   - **Multi-day LTR drag:** `mousedown` at Day 1, `mousemove` past 4px to Day 3, `mouseup` commits 3-day draft.\n   - **Multi-day RTL drag:** `mousedown` at Day 4, `mousemove` to Day 2, `mouseup` commits normalized 3-day draft (`Day 2` to `Day 5` exclusive).\n   - **Escape cancellation:** `keydown` `Escape` mid-drag discards draft; `onCreateGridDraft` is not called.\n   - **Blur cancellation:** Window `blur` mid-drag discards draft without commit.\n   - **Day view no-op proof:** When `visibleBounds` is undefined, `mousedown` commits immediately on mousedown without attaching window listeners.\n\n3. `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.test.tsx`:\n   - Verifies `visibleBounds` derived from `weekDays[0]` and `weekDays[weekDays.length - 1]`.\n   - Verifies `getStartDate` passes correct `clientX`/`clientY` to `dateCalcs.getDateStrByXY`.\n\n4. `packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx`:\n   - Mounts `AllDayRow` within test harness and verifies drag gesture triggers `draftActions.startGridDraft`.\n\n5. **Regression Verification:**\n   - Run `bun test:web` and verify 100% pass (>= 2298 tests passing, 0 failing).\n   - Verify `packages/web/src/views/Day/components/Calendar/DayCalendarGrid.test.tsx` passes untouched.\n\n---\n\n## 8. Risks and Rejected Alternatives\n\n- **Risk: Day View Calendar Selection Corruption:**\n  - *Mitigation:* Prevented structurally by the `visibleBounds` opt-in gate. Day view executes synchronously on `mousedown` before any pointer movement can occur.\n- **Risk: Left-of-Grid / Right-of-Grid Overshoot:**\n  - *Mitigation:* `clampDayToVisibleBounds` prevents out-of-range dates from entering the draft store.\n- **Rejected Alternative 1: Pointer Capture on Target Element:**\n  - Standard DOM pointer capture can fail if child elements rerender during live preview. Window capture listeners (`mousemove`/`mouseup`) provide consistent drag tracking.\n- **Rejected Alternative 2: Mutating Existing Events Math:**\n  - Reusing `all-day.resize.ts` was rejected to avoid coupling event-resizing rules with brand-new draft creation.\n\n---\n\n## 9. Sequencing\n\n1. **Phase 1 (Pure Math):**\n   - Create `packages/web/src/grid/interaction/math/all-day.create.ts` and `packages/web/src/grid/interaction/math/all-day.create.test.ts`.\n2. **Phase 2 (Core Hook Extension):**\n   - Update `packages/web/src/grid/hooks/useAllDayDraftCreation.ts`.\n   - Update `packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx`.\n3. **Phase 3 (Week View Wiring):**\n   - Create `packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts` and test.\n   - Update `packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx` and test.\n4. **Phase 4 (Documentation & Validation):**\n   - Update `docs/frontend/week-drag-interaction.md`.\n   - Run full test suite: `bun test:web`.\n\n*Parallel Safety:* Phase 1 (Pure math) and Phase 3 hook boilerplate can be authored concurrently before integrating into `useAllDayDraftCreation.ts`."
+}

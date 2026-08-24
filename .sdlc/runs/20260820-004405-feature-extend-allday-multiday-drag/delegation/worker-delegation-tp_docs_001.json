@@ -1,0 +1,145 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_docs_001",
+  "phase": "docs",
+  "task_type": "doc_update",
+  "module": "docs",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-20T08:33:49.173Z",
+  "duration_ms": 81349,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.211808,
+  "tokens": {
+    "input": 77629,
+    "input_cached": 159304,
+    "output": 7941,
+    "output_reasoning": 5565
+  },
+  "tool_calls": {
+    "count": 10,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.create.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/math/all-day.create.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Week/hooks/grid/useAllDayGridDraftCreation.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "search_directory",
+        "args": {
+          "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+          "query": "useAllDayDraftCreation",
+          "num_results": "0"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+          "start_line": "324",
+          "end_line": "344"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/components/Calendar/DayCalendarGrid.tsx",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git status --short",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git diff docs/frontend/week-drag-interaction.md",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "docs/frontend/week-drag-interaction.md"
+    ],
+    "removed": [],
+    "unchanged": 1588,
+    "scanned": 1589,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_docs_001.md",
+    "usage": "worker-usage-tp_docs_001.json"
+  }
+}
