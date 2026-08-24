@@ -1,0 +1,176 @@
+[
+  {
+    "id": "P1",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-components",
+    "pass_id": "20260822-062945-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "instruction": "Create EventJoinIcon.tsx exactly as specified in design.md §2.1-§2.4. Export two names: `isSafeConferenceUrl` (a `url is string` type predicate parsing with `new URL()`, admitting only http:/https:) and `EventJoinIcon` (a presentational native <button type=\"button\">). The button carries aria-label `Join <providerLabel>` / `Join video call`, className `c-focus-ring absolute bottom-0.5 inline-flex items-center justify-center rounded-xs ph-no-capture` plus `right-4` when offsetForRepeatIcon else `right-1`, and exactly four handlers: onClick (stopPropagation then window.open(url,'_blank','noopener,noreferrer')), onKeyDown (stopPropagation for Enter/Space only, NO preventDefault), onMouseDown (stopPropagation), onPointerDown (stopPropagation). Inner VideoCameraIcon imported directly from @phosphor-icons/react, aria-hidden, color darken(baseColor,30), size 12, weight bold. No pointer-events-none, no padding on the button.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/design.md",
+        "content": "§2.1 guard, §2.2 props, §2.3 accessible name, §2.4 full component shape, ADR-1, ADR-4, ADR-5",
+        "reason": "Binding spec for the component under construction"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "content": "Sibling icon precedent: darken(baseColor, 30), absolute right-1 bottom-0.5, weight bold",
+        "reason": "Tint and positioning convention the join icon must match"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exports both `EventJoinIcon` and `isSafeConferenceUrl`",
+      "isSafeConferenceUrl returns false for javascript:, data:, padded javascript:, empty, and unparseable input; true for http/https",
+      "isSafeConferenceUrl is a type predicate (`url is string`), enabling narrowing without non-null assertion",
+      "button has type=\"button\" and all four propagation handlers (pointerdown, mousedown, click, keydown)",
+      "onKeyDown does NOT call preventDefault (would cancel Space activation)",
+      "className contains ph-no-capture and c-focus-ring; no pointer-events-none",
+      "URL never appears in any rendered DOM attribute",
+      "No `any`, no non-null assertion (NFR-2)"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "P2a",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "grid-components",
+    "pass_id": "20260822-062945-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Apply the four hunks from design.md §3.1 to TimedEventCard.tsx: (1) import { EventJoinIcon, isSafeConferenceUrl } from './EventJoinIcon' immediately above the EventRepeatIcon import; (2) three constants JOIN_ICON_MIN_DURATION_MINUTES=15, JOIN_ICON_MIN_WIDTH=40, JOIN_WITH_REPEAT_MIN_WIDTH=64 with their comments, after REPEAT_ICON_MIN_WIDTH; (3) conferenceUrl/joinUrl/showJoinIcon derived consts immediately after the showRepeatIcon assignment; (4) the {showJoinIcon && joinUrl && <EventJoinIcon .../>} JSX block immediately after the existing showRepeatIcon JSX, as last child of the root div. Change nothing else — no reformatting of untouched lines.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "content": "Existing 369-line card; anchors at lines 49 (import), 58 (constants), 120 (showRepeatIcon), 363 (repeat JSX)",
+        "reason": "The file being patched; anchors must match exactly"
+      },
+      {
+        "path": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/design.md",
+        "content": "§3.1 exact integration points, §3.3 constant justifications",
+        "reason": "Binding spec for each hunk"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exactly four hunks applied; no other line changed",
+      "showJoinIcon gates on joinUrl !== null, !isPlaceholder, duration >= 15, and the width ladder (64 with repeat, else 40)",
+      "JSX keeps both `showJoinIcon && joinUrl &&` operands in that order (TS narrowing)",
+      "offsetForRepeatIcon={showRepeatIcon} is passed",
+      "label={event.conference?.label ?? null}",
+      "Events without conference render an identical tree to before (FR-14)"
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "P2b",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "grid-components",
+    "pass_id": "20260822-062945-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Apply the five hunks from design.md §3.2 to AllDayEventCard.tsx: (1) import { EventJoinIcon, isSafeConferenceUrl } above the EventRepeatIcon import; (2) constants JOIN_ICON_MIN_WIDTH=60, JOIN_WITH_REPEAT_MIN_WIDTH=84 after REPEAT_ICON_MIN_WIDTH; (3) conferenceUrl/joinUrl/showJoinIcon after the showRepeatIcon assignment (NO duration gate on this card); (4) replace the title-row cn() with the three-rung padding ladder pr-3.5 / pr-4 / pr-7 keyed on showRepeatIcon && !showJoinIcon, showJoinIcon && !showRepeatIcon, both; (5) the EventJoinIcon JSX immediately after the repeat JSX and before the two resize handles.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "content": "Existing 229-line card; anchors at lines 30 (import), 32 (REPEAT_ICON_MIN_WIDTH), 77 (showRepeatIcon), 188-191 (title cn), 201 (repeat JSX)",
+        "reason": "The file being patched; anchors must match exactly"
+      },
+      {
+        "path": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/design.md",
+        "content": "§3.2 exact integration points, §3.3 padding-ladder geometry",
+        "reason": "Binding spec for each hunk"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exactly five hunks applied; no other line changed",
+      "No duration gate on the all-day card (it has no meaningful minute duration)",
+      "Padding ladder keeps the literal string pr-3.5 on the repeat-only branch (FR-14 provability)",
+      "A plain event's title row className stays exactly 'flex min-w-0 items-center'",
+      "Join JSX sits after the repeat icon and before both resize handles"
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "P3",
+    "phase": "tests",
+    "task_type": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260822-062945-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "APPEND-ONLY edit of the existing 575-line EventCard.test.tsx. Per design.md §6: add the userEvent import after line 1; add CONFERENCE, originalWindowOpen and stubWindowOpen below the existing `position` object; extend (do not replace) the existing afterEach with `window.open = originalWindowOpen;`; then append the 21 cases T-1..T-21 from §6.3 inside the existing describe('EventCard'), after the last existing test. Every one of the 575 existing lines must survive verbatim apart from those import/afterEach edits. Query joins via getByRole('button', { name: /join/i }). Cast window.open as `as unknown as typeof window.open`, never `as any`. A diff-preview mini-gate runs before this write.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "content": "Existing 575-line suite: createEvent factory (line 20), position (line 40), afterEach (48-50), 20 existing tests",
+        "reason": "Must be preserved verbatim; the file is appended to, never rewritten (R-3)"
+      },
+      {
+        "path": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/design.md",
+        "content": "§6.1 header edits, §6.2 query strategy, §6.3 the 21-case table, §6.4 what is deliberately not covered",
+        "reason": "Binding test plan"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "All 20 pre-existing tests present and unmodified (AC-7)",
+      "Exactly 21 new cases appended, covering T-1..T-21",
+      "Diff shows additions plus the userEvent import line and the one afterEach line only",
+      "T-5 asserts window.open called exactly once with url, '_blank', and a features string containing both noopener and noreferrer (NFR-4 is load-bearing here)",
+      "T-14 covers javascript:, padded javascript:, and data: URLs",
+      "T-20 asserts container.innerHTML does not contain the conference URL",
+      "No `as any` cast anywhere (NFR-2)"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 9000 }
+  },
+  {
+    "id": "P4",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "repo-config",
+    "pass_id": "20260822-062945-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "artifact_path": ".gitignore",
+    "instruction": "Append `.sdlc/` to the `# DIRS #` block of .gitignore, after the existing `test-results/` entry, preserving alphabetical placement where the block already has it. Remove nothing, reorder nothing (AC-10).",
+    "inputs": [
+      {
+        "path": ".gitignore",
+        "content": "# DIRS # block ending with test-results/ and tmp/",
+        "reason": "Append target; existing entries must not move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "`.sdlc/` present in the # DIRS # block",
+      "Every pre-existing line unchanged and in its original order (AC-10)",
+      "git status no longer reports .sdlc/ as untracked"
+    ],
+    "budget": { "maxInputTokens": 3000, "maxOutputTokens": 600 }
+  }
+]

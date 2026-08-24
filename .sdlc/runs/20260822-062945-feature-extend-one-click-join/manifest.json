@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "run_id": "20260822-062945-feature-extend-one-click-join",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-only-v5",
+  "policy_version": 1,
+  "auth_mode": "estimated",
+  "provenance": "estimated",
+  "ticket": "CMP-103",
+  "branch": "CMP-103/opus-only-v5",
+  "anchor_commit": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "started_at": "2026-08-22T06:50:20.067Z",
+  "finished_at": "2026-08-22T18:06:13.393Z",
+  "outcome": "completed",
+  "manifest_note": "Written at CLOSE-OUT (2026-08-22T18:06Z), not during generate_final_report as the pipeline intends. The generate_final_report phase wrote final_report.md but never wrote manifest.json, so this run had no rollup on disk while every prior run in .sdlc/runs/ did. Rebuilt here strictly from the 19 events in telemetry.jsonl plus state.json's verified fields — no figure is reconstructed from memory. This is the SAME artifact/telemetry non-atomicity already recorded for security_review in final_report.md section 9; it has now bitten twice in one run.",
+  "totals": {
+    "dispatches": 19,
+    "cost_usd": 5.324725,
+    "input_tokens": 727400,
+    "input_tokens_cached": 0,
+    "output_tokens": 67509,
+    "latency_ms": null,
+    "failures": 0
+  },
+  "totals_note": "All 19 events carry provenance:'estimated'. Token counts are the char/3.8 heuristic, NOT vendor-reported — opus-only-v5 under auth_mode:estimated runs every phase in-session, so nothing was metered through the MCP server. latency_ms is null on all 19 events (never measured, per the pipeline rule forbidding invented clocks), so no run-duration rollup is derivable from telemetry; started_at/finished_at come from orchestrator.log instead. input_tokens_cached is 0 throughout because no dispatch path existed to report caching.",
+  "phase_breakdown": {
+    "requirements_analysis": { "dispatches": 1, "cost_usd": 0.2035, "input_tokens": 23700, "input_tokens_cached": 0, "output_tokens": 3400 },
+    "architecture_design": { "dispatches": 1, "cost_usd": 0.86275, "input_tokens": 112000, "input_tokens_cached": 0, "output_tokens": 12110 },
+    "plan_task_packets": { "dispatches": 1, "cost_usd": 0.235, "input_tokens": 31000, "input_tokens_cached": 0, "output_tokens": 3200 },
+    "codegen": { "dispatches": 6, "cost_usd": 0.745, "input_tokens": 108000, "input_tokens_cached": 0, "output_tokens": 8200 },
+    "tests": { "dispatches": 2, "cost_usd": 0.45, "input_tokens": 55000, "input_tokens_cached": 0, "output_tokens": 7000 },
+    "debug": { "dispatches": 4, "cost_usd": 0.14875, "input_tokens": 24000, "input_tokens_cached": 0, "output_tokens": 1150 },
+    "senior_code_review": { "dispatches": 2, "cost_usd": 1.533725, "input_tokens": 223000, "input_tokens_cached": 0, "output_tokens": 16749 },
+    "security_review": { "dispatches": 1, "cost_usd": 0.7535, "input_tokens": 104700, "input_tokens_cached": 0, "output_tokens": 9200 },
+    "generate_final_report": { "dispatches": 1, "cost_usd": 0.3925, "input_tokens": 46000, "input_tokens_cached": 0, "output_tokens": 6500 }
+  },
+  "phase_key_note": "The telemetry events use phase:'generate_final_report'. The Phase union in mcp/model-dispatch/src/types.ts spells this leaf 'final_report'. Preserved as-written rather than silently renamed; recorded as schema drift worth reconciling upstream.",
+  "model_breakdown": {
+    "claude-opus-5": {
+      "dispatches": 19,
+      "cost_usd": 5.324725,
+      "pricing_source": "opus-only-v5 policy pricing block ($5/M input, $25/M output)",
+      "auth": "claude-cli (Pro login, no ANTHROPIC_API_KEY)"
+    }
+  },
+  "orchestrator_tier_note": "opus-only-v5 is single-tier: claude-opus-5 carried every phase, including all six codegen packets and all four debug packets. Nothing was delegated to a mechanical tier, so there is no cheap-tier split to report and no delegated-agent shell was ever spawned — the antigravity-worker write-contract gap recorded against sibling run 20260822-040449 is structurally out of reach for this run.",
+  "files_changed": [
+    { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "change": "added", "packets": ["P1", "P1-debug-1", "P1-debug-2", "P5-B1-wire", "P7-comment-accuracy", "P9-D5-host-disclosure", "P10-format-fix"] },
+    { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "change": "modified", "packets": ["P2a"] },
+    { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "change": "modified", "packets": ["P2b"] },
+    { "path": "packages/web/src/grid/components/EventCard.test.tsx", "change": "modified", "packets": ["P3", "P3-debug-1", "P6-B1-regression-card", "P6-debug-imports", "P9-D5-host-disclosure-tests", "P10-format-fix"] },
+    { "path": "packages/web/src/grid/interaction/event.registry.ts", "change": "modified", "packets": ["P5-B1-fix", "P8-D6-attr-value-match"], "note": "In scope only via amendment-1, which reopened Gate 2 Q-B." },
+    { "path": "packages/web/src/grid/interaction/event.registry.test.ts", "change": "modified", "packets": ["P6-B1-regression", "P8-D6-attr-value-match-test", "P10-format-fix"], "note": "Added to the allowlist by amendment-1 alongside the source file, flagged explicitly rather than assumed." },
+    { "path": ".gitignore", "change": "modified", "packets": ["P4"], "note": "+1 line ignoring .sdlc/ (AC-10)." }
+  ],
+  "files_changed_summary": "7 paths (1 new, 6 modified), 771 insertions, 3 deletions. All 7 inside the write-contract allowlist as amended.",
+  "verification": {
+    "test_command": "bun test:web",
+    "baseline_tests": 2298,
+    "tests_passed": 2326,
+    "tests_failed": 0,
+    "tests_added": 28,
+    "type_check": "clean (exit 0)",
+    "lint": "exit 0, 10 pre-existing warnings, none in the delta",
+    "regressions": 0,
+    "mutation_check": "Disabling the ignore check failed exactly 3 tests (2 registry + 1 e2e); the unrelated-ancestor test correctly still passed.",
+    "caveat_lint": "Lint went RED first — 3 Biome formatter errors introduced by the D5/D6 edits — and was fixed by P10 with `bunx biome format --write` scoped to exactly the 3 affected files. The repo's own lint:fix (`biome check --write .`) was deliberately not used because it would have auto-fixed 10 pre-existing warnings in files outside the allowlist.",
+    "caveat_expect_count": "Two consecutive runs of an unchanged tree reported 5824 then 5822 expect() calls at an identical 2326 pass / 0 fail. 5824 is the accounted-for figure (baseline 5819 + the 5 assertions added). The 2-assertion wobble is mild non-determinism elsewhere in the suite, not in this delta. Flagged, not chased."
+  },
+  "manual_verification": {
+    "id": "R-1",
+    "status": "performed",
+    "performed_at": "2026-08-22",
+    "performed_by": "human's operator — NOT the pipeline, NOT the orchestrator",
+    "environment": "real headless-Chromium browser session against `bun run dev:web` with COMPASS_CONFIG_FILE=e2e/compass.playwright.yaml",
+    "fixture": "app's built-in demo-data-seed migration event 'Morning standup' (today, 09:00-09:30 UTC, real conferenceUrl https://meet.google.com/abc-defg-hij)",
+    "checks": [
+      {
+        "id": "R-1.1",
+        "origin": "B-1 regression",
+        "result": "PASS",
+        "detail": "Clicking the join icon opened exactly one new tab at https://meet.google.com/abc-defg-hij and did NOT open the event detail form. Total open tabs after click: 2 (main + the one popup). Confirmed programmatically (popup event captured, form role checked not visible) AND via screenshot.",
+        "significance": "This is the only check that could confirm the SYMPTOM is gone; the automated suite asserts the mechanism (registry ownership) only."
+      },
+      {
+        "id": "R-1.3",
+        "origin": "D5 / SEC-01 destination disclosure",
+        "result": "PASS",
+        "detail": "The join button's aria-label and title both read exactly 'Join Google Meet (meet.google.com)' — host only, no path, no token."
+      },
+      {
+        "id": "R-1.2",
+        "origin": "D3 resize-handle overlap",
+        "result": "INCONCLUSIVE",
+        "detail": "A click 1px above the button's bottom edge missed the button's actual hit target and landed on the card underneath, opening the event form — neither a resize nor a join. A precision limit of the automated click, not new evidence in either direction.",
+        "disposition": "D3 stands exactly as Gate 3 decided it: noted in the R-1 manual-check text, unresolved by code, NOT a merge blocker. Remains the one open manual-check item."
+      }
+    ],
+    "merge_effect": "Both merge-gating checks (B-1, D5) PASS. Nothing in the R-1 check blocks merge."
+  },
+  "gates": {
+    "gate-0": "approved (pre-run; write contract frozen)",
+    "gate-1": "approved 2026-08-22T06:55Z",
+    "gate-2": "approved 2026-08-22T09:43Z",
+    "gate-p3-diff-preview": "approved 2026-08-22T09:54Z",
+    "gate-senior-blocker": "approved 2026-08-22T10:15Z — option (a): amendment-1",
+    "gate-3": "approved-with-conditions 2026-08-22T16:56Z — D5 + D6, both applied and verified green",
+    "gate-4": "approved 2026-08-22T18:06Z — plain, unconditional"
+  },
+  "closed_out_at": "2026-08-22T18:06:13Z",
+  "close_out": {
+    "ledger_json": "appended (row 9)",
+    "ledger_md": "row + narrative appended",
+    "final_report_md": "section 7 rewritten from 'BLOCKING, not performed' to the performed R-1 result; header status line, section 8 D3 follow-up, and the Gate 4 footer updated",
+    "state_json": "status: complete",
+    "manifest_json": "written at close-out (see manifest_note)",
+    "write_contract": "left active:true — deliberately NOT flipped to false, because the delta is uncommitted and the contract is the only written record of what this run was scoped to touch",
+    "committed": false,
+    "commit_strategy": "NONE. Nothing committed, nothing pushed — explicit operator instruction. The full 7-path delta stays as uncommitted working-tree changes for the human to review and commit.",
+    "uncommitted_at_close": [
+      "packages/web/src/grid/components/EventJoinIcon.tsx (new, untracked)",
+      "packages/web/src/grid/components/TimedEventCard.tsx",
+      "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "packages/web/src/grid/components/EventCard.test.tsx",
+      "packages/web/src/grid/interaction/event.registry.ts",
+      "packages/web/src/grid/interaction/event.registry.test.ts",
+      ".gitignore"
+    ]
+  },
+  "artifacts": [
+    "discovery.md",
+    "baseline.json",
+    "intent_brief.md",
+    "requirements.md",
+    "design.md",
+    "packets.json",
+    "senior_review.md",
+    "senior_review_round2.md",
+    "security_review.md",
+    "security_review_prior_unlogged.md",
+    "final_report.md",
+    "telemetry.jsonl",
+    "provenance.json",
+    "orchestrator.log",
+    "manifest.json"
+  ],
+  "incidents": [
+    {
+      "id": "PROC-01",
+      "severity": "HIGH",
+      "detail": "The write-contract PreToolUse hook was never mechanically registered for this run. The ONLY enforcement was manual `git status` after every write.",
+      "status": "accepted-risk, operator-confirmed",
+      "outcome": "Zero deviations across all 16 writes; git status returned exactly the allowlisted paths every time. Amendment-1's two paths were added to the allowlist BEFORE they were written, not retroactively.",
+      "structural_point": "Discipline is not a control. This is the same class of gap as sibling run 20260822-040449's SEC-CTL-001, reached by a different route."
+    },
+    {
+      "id": "PROC-02",
+      "severity": "HIGH",
+      "detail": "Artifact writes and telemetry/gate writes are not atomic. A complete 552-line security_review.md was written at 03:44 but its telemetry event was never emitted and its gates entry never updated, so state.json recorded Gate 3 as 'not reached' and every downstream reader concluded it had not happened.",
+      "status": "worked-around, root cause NOT fixed",
+      "response": "Preserved on disk as security_review_prior_unlogged.md; a fresh, independent security review was run with the reviewer explicitly forbidden from reading it.",
+      "value_of_rerun": "Non-trivial. Both passes agreed on the verdict but DISAGREED on D1, and the fresh pass additionally surfaced SEC-03, PRE-01 (High, pre-existing) and CFG-02.",
+      "recurrence": "The same non-atomicity swallowed manifest.json at generate_final_report — see manifest_note. Twice in one run."
+    },
+    {
+      "id": "PROC-03",
+      "severity": "INFO",
+      "detail": "The pre-crash state.json claimed 17 telemetry events when only 16 were on disk. The recorded cost total was nonetheless correct, being the sum of those 16.",
+      "status": "reconciled at close-out — 19 events on disk, 19 counted, $5.324725 summed from the file"
+    },
+    {
+      "id": "PROC-04",
+      "severity": "INFO",
+      "detail": "Both reviewer subagents reported Glob/Grep missing from their tool surface and fell back to Bash for all enumeration, citing each command inline. Checks that could not run — notably `npm audit --omit=dev`, which fails ENOLOCK in this bun repo — are reported as unverified, never as passes.",
+      "status": "noted"
+    },
+    {
+      "id": "PROC-05",
+      "severity": "MEDIUM",
+      "detail": "The write contract lists `.sdlc/**` under off_limits with strict:true, and write-contract-check.mjs has NO carve-out for `.sdlc/runs/<run-id>/` despite the orchestrator contract stating that path is auto-allowlisted. Had the hook actually been registered, it would have denied every write to this run's own bookkeeping — state.json, telemetry.jsonl, final_report.md, this manifest.",
+      "status": "latent — masked this run only because PROC-01 meant the hook never fired",
+      "structural_point": "PROC-01 and PROC-05 currently cancel each other out. Fixing the hook registration WITHOUT adding the .sdlc/runs/<run-id>/ carve-out would deadlock the pipeline on its own record-keeping."
+    }
+  ],
+  "provenance_record": {
+    "file": "provenance.json",
+    "files_touched_entries": 21,
+    "distinct_paths": 7,
+    "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "commits_during_run": [],
+    "backups_present": true,
+    "known_gap": "The three P10-format-fix entries have sha_after:null and written_at:null — the --before call was made, the --after call never was. Left as-is at close-out rather than back-stamped with a close-out timestamp, which would put a false time into a forensic record. Effect is narrow: /mmo:revert can still restore those three paths from backups/ and sha_before; only the 'did a later run touch this file' staleness check is unavailable for them."
+  },
+  "followups_open": [
+    { "id": "D1", "severity": "major", "status": "spun into its own follow-up ticket", "summary": "Make the busy/conference invariant type-enforced rather than emergent. Senior and security reviewers reached OPPOSITE recommendations; escalated to the human rather than silently resolved. A .refine() would not satisfy this — z.infer of a refined object is unchanged, so the TypeScript type stays exactly as emergent. A real fix restructures GridEventSchema into a discriminated union whose busy arm has no conference. Blast radius: 96 non-test files reference GridEvent, but only 9 non-test sites read .conference. No leak exists today." },
+    { "id": "D2", "severity": "minor", "status": "deferred", "summary": "getFocusedGridEventTarget (event.targeting.ts:51) shares resolveFromTarget, so it now returns null while the join button holds focus, silently no-opping ~10 keyboard-shortcut call sites while useIsAnyCalendarEventFocused.ts:22 still reports focused. A real side effect introduced by the B-1 fix; a proper fix needs event.targeting.ts, outside the allowlist." },
+    { "id": "D3", "severity": "minor", "status": "open manual-check item", "summary": "Timed endDate resize handle overlaps the bottom ~2.25px of the 12px join button. R-1's browser probe was INCONCLUSIVE (the click missed the hit target entirely), so the overlap is still neither confirmed nor refuted. Non-blocking, unchanged from the Gate 3 decision. A human pressing the glyph's bottom edge by hand remains the only way to settle it." },
+    { "id": "D7/PRE-01", "severity": "high-but-pre-existing", "status": "separate ticket", "summary": "z.url() empirically accepts javascript:, data: and vbscript:, and three sinks open conference.url unguarded: EventDetailsSection.tsx:48, UpNextCard.tsx:89, UpNextBanner.tsx:32 (React 18.3.1 is warn-only for javascript: hrefs). This delta is NOT the cause and already contains the correct fix pattern to copy — isSafeConferenceUrl. Highest-severity item the run surfaced." },
+    { "id": "SEC-02", "severity": "low", "status": "not applied — not one of the two approved conditions", "summary": "conference.label (256 chars, provider-controlled) is interpolated into the accessible name behind only a !label.includes('/') heuristic. That tests for URL shape, not for secret, so slash-free capability material such as 'Zoom Meeting 812 3456 7890 Passcode 4f2a' still reaches the DOM. A positive allowlist of known provider names was recommended." },
+    { "id": "CFG-02", "severity": "info", "status": "open", "summary": ".hook-logs/ is untracked AND unignored, so `git add -A` would sweep it into a commit. Relevant right now, because this run closes with an uncommitted delta the human is about to stage by hand." }
+  ],
+  "summary_note": "No SUMMARY.md written. final_report.md is this run's narrative artifact and now carries the performed R-1 result; a second prose summary would be a duplicate record able to drift from the first."
+}
