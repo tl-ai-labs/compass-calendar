@@ -1,0 +1,32 @@
+MMO: 2026-08-20T16:50:08.959Z INFO   run.start run_id=20260820-164209-docs-weekly-view-interactions mode=brownfield intent=docs policy=opus-plus-flash-v37 auth_mode=estimated code_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar output_dir=.sdlc/runs/20260820-164209-docs-weekly-view-interactions
+MMO: 2026-08-20T16:50:09.114Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=requirements_analysis form=intent-specific
+MMO: 2026-08-20T16:52:45.872Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=requirements_analysis form=intent-specific
+MMO: 2026-08-20T16:52:45.936Z INFO   phase.skip run_id=20260820-164209-docs-weekly-view-interactions phase=architecture_design reason=docs-skips-architecture
+MMO: 2026-08-20T16:52:46.001Z INFO   gate.open run_id=20260820-164209-docs-weekly-view-interactions gate=gate-1 title="Requirements Approval"
+MMO: 2026-08-20T16:56:07.261Z INFO   gate.resolved run_id=20260820-164209-docs-weekly-view-interactions gate=gate-1 response=approved
+MMO: 2026-08-20T16:56:07.331Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=plan_task_packets form=intent-specific
+MMO: 2026-08-20T16:57:01.695Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=plan_task_packets form=intent-specific
+MMO: 2026-08-20T16:57:08.785Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=execute_packets form=intent-specific
+MMO: 2026-08-20T16:57:40.486Z INFO   route.decide packet_id=tp_docs_001 phase=docs intent=docs task_type=doc_update module=readme rule_index=9 rule_reason="Volume work" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-20T16:57:40.487Z INFO   dispatch.start packet_id=tp_docs_001 model_id=flash-completion max_out=3000 max_in=4000 cache_context=docs:weekly-view-interactions work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-20T16:58:17.180Z ERROR  dispatch.error packet_id=tp_docs_001 model_id=flash-completion error_class=DispatchFailed message="{\"error\":{\"code\":429,\"message\":\"Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\",\"status\":\"RESOURCE_EXHAUSTED\"}}"
+MMO: 2026-08-20T16:58:57.290Z INFO   route.decide packet_id=tp_docs_001_r1 phase=docs intent=docs task_type=doc_update module=readme rule_index=9 rule_reason="Volume work" model_id=flash-completion select_slot=gemini-flash select_chosen=flash-completion select_overridden=false
+MMO: 2026-08-20T16:58:57.290Z INFO   dispatch.start packet_id=tp_docs_001_r1 model_id=flash-completion max_out=3000 max_in=4000 cache_context=docs:weekly-view-interactions work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-20T16:59:10.133Z INFO   dispatch.end packet_id=tp_docs_001_r1 model_id=flash-completion ok=true terminal_reason=success tokens_in=1710 tokens_out=1331 tokens_cached=0 cost_usd=0.014544 latency_ms=12843 attempts=1
+MMO: 2026-08-20T17:00:01.034Z INFO   gate.open run_id=20260820-164209-docs-weekly-view-interactions gate=mini-gate-diff-preview title="README.md diff preview (tp_docs_001_r1)"
+MMO: 2026-08-20T17:01:54.404Z INFO   gate.resolved run_id=20260820-164209-docs-weekly-view-interactions gate=mini-gate-diff-preview response=approved
+MMO: 2026-08-20T17:01:54.460Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=execute_packets form=intent-specific
+MMO: 2026-08-20T17:02:10.635Z INFO   phase.skip run_id=20260820-164209-docs-weekly-view-interactions phase=senior_code_review reason=docs-run-no-source-change-gate0-plan
+MMO: 2026-08-20T17:02:10.690Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=test_run form=intent-specific
+MMO: 2026-08-20T17:02:42.151Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=test_run form=intent-specific
+MMO: 2026-08-20T17:02:53.387Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=security_review form=intent-specific
+MMO: 2026-08-20T17:02:53.454Z INFO   delegate.subagent.start run_id=20260820-164209-docs-weekly-view-interactions phase=security_review subagent=security-reviewer
+MMO: 2026-08-20T17:06:01.434Z INFO   delegate.subagent.end run_id=20260820-164209-docs-weekly-view-interactions phase=security_review subagent=security-reviewer ok=true artifact_path=.sdlc/runs/20260820-164209-docs-weekly-view-interactions/security_review.md
+MMO: 2026-08-20T17:06:01.501Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=security_review form=intent-specific
+MMO: 2026-08-20T17:06:01.566Z INFO   gate.open run_id=20260820-164209-docs-weekly-view-interactions gate=gate-3 title="Security Review"
+MMO: 2026-08-20T17:07:19.684Z INFO   gate.resolved run_id=20260820-164209-docs-weekly-view-interactions gate=gate-3 response=approved
+MMO: 2026-08-20T17:07:19.750Z INFO   phase.start run_id=20260820-164209-docs-weekly-view-interactions phase=generate_final_report form=default
+MMO: 2026-08-20T17:09:15.394Z INFO   phase.end run_id=20260820-164209-docs-weekly-view-interactions phase=generate_final_report form=default
+MMO: 2026-08-20T17:09:15.462Z INFO   gate.open run_id=20260820-164209-docs-weekly-view-interactions gate=gate-4 title="Final Acceptance"
+MMO: 2026-08-20T17:09:38.314Z INFO   run.end run_id=20260820-164209-docs-weekly-view-interactions outcome=completed total_cost_usd=0.622
+MMO: 2026-08-20T17:12:25.303Z INFO   gate.resolved run_id=20260820-164209-docs-weekly-view-interactions gate=gate-4 response=approved

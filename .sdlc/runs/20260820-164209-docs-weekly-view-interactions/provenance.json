@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "run_id": "20260820-164209-docs-weekly-view-interactions",
+  "intent": "docs",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": ".sdlc/runs/20260820-164209-docs-weekly-view-interactions/requirements.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:b346cfb142b962450c16579fcc75c076f521d8c243f06d396411bbd438b415ae",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-tier-requirements",
+      "written_at": "2026-08-20T16:52:23.059Z"
+    },
+    {
+      "path": ".sdlc/runs/20260820-164209-docs-weekly-view-interactions/packets.json",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:36ea05b11e055be94d08b7984b15afd0a6739433acf712212ab3d1741342494c",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-tier-planning",
+      "written_at": "2026-08-20T16:57:01.620Z"
+    },
+    {
+      "path": "README.md",
+      "existed_before": true,
+      "sha_before": "sha256:1ec462bb4c3bb475844e7c00e14039b61382582779eb679effaf53b1a0f92f35",
+      "sha_after": "sha256:477ce026c822246bd6a163a4b1250f3ea3341382d7a6ff2e7034a15ebc1efb8d",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_docs_001_r1",
+      "written_at": "2026-08-20T17:01:54.342Z"
+    },
+    {
+      "path": ".sdlc/runs/20260820-164209-docs-weekly-view-interactions/manifest.json",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:2bbb478904c4e0f1af7ea64c3ea354f3ee986318b67f35ce9ff27e4c6333e69b",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-tier-report",
+      "written_at": "2026-08-20T17:09:15.255Z"
+    },
+    {
+      "path": ".sdlc/runs/20260820-164209-docs-weekly-view-interactions/SUMMARY.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": null,
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-tier-report",
+      "written_at": null
+    }
+  ]
+}

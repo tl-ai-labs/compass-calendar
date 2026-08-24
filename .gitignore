@@ -33,3 +33,6 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+
+# AI-SDLC delegated-worker session caches (binary, ~1MB each)
+.sdlc/runs/*/delegation/_gemini_worker_save/

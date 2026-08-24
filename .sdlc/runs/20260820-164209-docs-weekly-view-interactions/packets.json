@@ -1,0 +1,67 @@
+[
+  {
+    "id": "tp_docs_001",
+    "phase": "docs",
+    "task_type": "doc_update",
+    "module": "readme",
+    "intent": "docs",
+    "pass_id": "20260820-164209-docs-weekly-view-interactions",
+    "artifact_path": "README.md",
+    "retry_count": 0,
+    "instruction": "Write ONE new README section for the Compass Calendar project README, titled exactly '## Weekly view interactions'. Return only that section's Markdown in `section_markdown` — do NOT return the whole README, do not repeat surrounding sections. It will be inserted verbatim between the existing '## Features' and '## Tech stack' sections.\n\nThe section covers three shipped behaviors, in this order, each a SHORT end-user blurb (1-3 sentences or one bullet each). Whole section must be under 200 words. Match the README's terse, second-person, benefit-first voice (see the tone sample input). Style is summarize + link out: never copy runbook steps, file paths, component names, or internals from the linked docs.\n\n1. Dragging events across days — moving an event to another day by dragging it across the week grid's day columns, and stretching an all-day event to span several days. Link to ./docs/frontend/week-drag-interaction.md for how it works. You may mention that dragging to the grid's edge pages to the adjacent week mid-drag.\n2. Recurring events — creating a repeating event, and the scope choice when editing/deleting one occurrence. Link to ./docs/acceptance/recurring-events.md for the full walkthrough.\n3. Event colors — no link exists; write fresh from the facts given in the inputs.\n\nObey every constraint in the acceptance list, especially the must-NOT-claim items.",
+    "inputs": [
+      {
+        "path": "README.md",
+        "reason": "Tone sample and insertion point — the new section goes between these two headings. Match this voice; do not modify these lines.",
+        "content": "## Features\n\nCool things you can do with in Compass\n\n- Find the perfect slot for an event with your keyboard: `SHIFT` + `↑` `↓` `←` `→`\n- Do everything from the cmd palette\n- Edit events smoothly\n- Google Calendar sync\n\nThings you can't do in Compass (yet):\n\n- See attendees, reminders, locations, and meeting links\n- See your Outlook events\n\n## Tech stack\n\n- **Frontend**: React, Zustand, TanStack, Tailwind\n\n(Relative-link convention used elsewhere in this README: `[the self-hosting guide](./docs/self-hosting/README.md)`)"
+      },
+      {
+        "path": "docs/frontend/week-drag-interaction.md",
+        "reason": "Ground truth for blurb 1. User-visible behavior only; the rest of this doc is implementation detail that must NOT appear in the blurb.",
+        "content": "Dragging a saved event on the week grid resolves the day column it lands on. Timed events assign the target day absolutely (a timed event always renders in the column matching its own start date). All-day events use a date-diff delta, because multi-day spans are clamped to the visible window. The week view renders a window of 1-7 day columns, not always a full week. Dragging into the edge zone triggers week navigation, paging the window by the visible day count (NOT always 7) while the drag continues; the drop still resolves against the freshest rendered columns. Resizing an event's edge is also supported (timed.resize / all-day.resize)."
+      },
+      {
+        "path": "docs/acceptance/recurring-events.md",
+        "reason": "Ground truth for blurb 2. The scope UX is an after-the-fact toast, NOT an up-front modal — getting this wrong is the single most likely error.",
+        "content": "Editing or deleting an occurrence applies to **This Event** immediately. A live, non-blocking toast then offers **1 This and Following** and **2 All**; both options are clickable. The scope keys work only while that toast is visible and never while typing in a form field. Changing the recurrence rule itself (for example removing recurrence entirely) remains an explicit scope choice — 'This Event' is not offered for that structural change. Supported: weekly recurrence, daily recurrence with an end date, duplicating a series with Cmd+D. Recurring events synced with Google Calendar push scope changes back to Google automatically."
+      },
+      {
+        "path": "packages/core/src/types/event-color.contracts.ts",
+        "reason": "Ground truth for blurb 3 — the exact number of color slots. There is no docs/ page for event colors, so this blurb is written fresh from source.",
+        "content": "// Compass-owned event color slots. Maps 1:1 onto Google's legacy 11 event\n// colors; providers adapt to/from these names at the boundary.\nexport const EventColorSlotSchema = z.enum([\n  \"lavender\", \"mint\", \"plum\", \"coral\", \"gold\", \"orange\",\n  \"blue\", \"slate\", \"indigo\", \"green\", \"red\",\n]);\n// colorHex: a provider-assigned custom color. READ-ONLY: Compass's own color\n// picker only ever writes a named slot, never an arbitrary hex."
+      },
+      {
+        "path": "packages/web/src/common/styles/theme.util.ts",
+        "reason": "Ground truth for blurb 3 — the no-color option's user-facing label, and the fact that the chosen color paints the event's card in the grid.",
+        "content": "export const eventColorLabel = (color: EventColorSlot | null): string =>\n  color === null ? \"Calendar default\" : EVENT_COLOR_SLOT_LABEL[color];\n// EventColorPicker sits in the event form; onChange patches the draft's `color`\n// field, which is saved on the event. TimedEventCard and AllDayEventCard both\n// resolve their fill via useEventPalette(color), so the chosen color paints the\n// event's card on the grid. The backend sync service forwards `color` to and\n// from Google Calendar in both directions."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "section_markdown": {
+          "type": "string",
+          "description": "The complete Markdown for the new section, starting with the line '## Weekly view interactions'. No surrounding README content."
+        }
+      },
+      "required": ["section_markdown"],
+      "additionalProperties": false
+    },
+    "acceptance": [
+      "section_markdown starts with the exact line '## Weekly view interactions' and contains no other level-2 heading",
+      "Covers all three behaviors in order: dragging events across days, recurring events, event colors",
+      "Contains a relative Markdown link to ./docs/frontend/week-drag-interaction.md in the drag blurb",
+      "Contains a relative Markdown link to ./docs/acceptance/recurring-events.md in the recurring blurb",
+      "The event colors blurb contains NO link (no docs page exists for it)",
+      "Recurring blurb describes the scope choice as an after-the-fact toast offering 'This and Following' and 'All', NOT an up-front three-way modal or dialog",
+      "Event colors blurb states 11 named colors plus a 'Calendar default' (no color) option, that the color is saved on the event, and that it shows on the event's card in the grid",
+      "Event colors blurb does NOT name the individual colors (keep it to '11 colors')",
+      "Event colors blurb does NOT claim: custom/arbitrary hex colors, per-calendar default colors set in Compass, color-based filtering or search, or a keyboard shortcut for color",
+      "Does NOT describe mid-drag edge paging as always shifting by a full week (the window is 1-7 columns wide)",
+      "Whole section is under 200 words",
+      "No file paths, component names, or implementation internals from the linked docs appear in the prose",
+      "Valid Markdown: blank line after the heading, blank line before and after any list, no trailing whitespace on any line"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 3000 }
+  }
+]
