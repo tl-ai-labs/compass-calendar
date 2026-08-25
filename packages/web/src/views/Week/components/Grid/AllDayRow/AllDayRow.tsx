@@ -57,6 +57,7 @@ export const AllDayRow: FC<Props> = ({
   };
   const onMouseDown = useAllDayDraftCreation({
     getStartDate: getAllDayDraftStartDate,
+    isMultiDayDragEnabled: true,
     onCreateGridDraft: openAllDayDraft,
   });
 

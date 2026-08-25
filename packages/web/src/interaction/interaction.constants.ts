@@ -9,6 +9,10 @@
  *
  * `INTERACTION_EDGE_THRESHOLD_PX` is the shared proximity band for Day/Week
  * smart-scroll and Week edge-navigation — same distance, different axes.
+ *
+ * `ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX` gates the horizontal all-day
+ * drag-to-create gesture and is deliberately not unified with
+ * `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX`.
  */
 export const INTERACTION_HOLD_DELAY_MS = 750;
 export const INTERACTION_MOVE_THRESHOLD_PX = 25;
@@ -18,3 +22,4 @@ export const INTERACTION_MOVE_THRESHOLD_PX = 25;
 export const INTERACTION_COMMIT_TEARDOWN_DEADLINE_MS = 500;
 export const INTERACTION_EDGE_THRESHOLD_PX = 50;
 export const TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX = 4;
+export const ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX = 4;

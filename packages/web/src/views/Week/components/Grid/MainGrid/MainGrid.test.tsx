@@ -524,6 +524,8 @@ describe("Week calendar accessibility", () => {
       { button: 0, clientX: 100, clientY: 0 },
     );
 
+    fireEvent.mouseUp(window, { clientX: 100, clientY: 0 });
+
     await waitFor(() => {
       const draft = selectGridDraft(useDraftStore.getState());
 
