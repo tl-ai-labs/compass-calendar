@@ -34,6 +34,20 @@ Things you can't do in Compass (yet):
 - See attendees, reminders, locations, and meeting links
 - See your Outlook events
 
+## Weekly view interactions
+
+The weekly view gives you several ways to work with events directly on the grid.
+
+- **Multi-day events** stretch when you drag the grab handle at either end to a new day.
+- Press `TAB` to move focus from a whole event to its start date, then its end date.
+- `SHIFT` + `←` `→` shifts a whole event by a day, or moves an all-day event's focused end.
+- The **topmost all-day event** on a day tints that day column in a faint wash of its color.
+- The **repeat symbol** in the corner of a card shows an event is part of a recurring series.
+- **Editing or deleting** one occurrence asks you to pick a scope: this event, this and following, or all.
+- You choose an **event color** individually from eleven named options in the event form.
+- When you have more than one calendar, a **stripe** on a card's left edge shows which one it belongs to.
+- Your **event color** syncs two ways with the matching color in Google Calendar.
+
 ## Tech stack
 
 - **Frontend**: React, Zustand, TanStack, Tailwind
