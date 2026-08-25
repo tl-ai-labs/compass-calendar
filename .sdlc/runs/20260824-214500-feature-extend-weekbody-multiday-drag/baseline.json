@@ -1,0 +1,484 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.5.0",
+  "built_at": "2026-08-20T04:32:08Z",
+  "run_id": "20260824-214500-feature-extend-weekbody-multiday-drag",
+  "mode": "refresh",
+  "git": {
+    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "branch": "CMP-101/opus-plus-sonnet",
+    "dirty": true,
+    "dirty_note": "Tracked: .claude/settings.json modified. Untracked: .sdlc/, .hook-logs/. No tracked source under packages/ modified.",
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "git@github.com:tl-ai-labs/compass-calendar.git"
+      }
+    ],
+    "gitignore_covers_sdlc": false,
+    "tracked_file_count": 1582,
+    "branch_delta_vs_main": {
+      "commits_ahead": 0,
+      "source_diff_vs_main": "none",
+      "note": "Branch cut from main at 4189de13; identical tree."
+    }
+  },
+  "topology": {
+    "top_level_dirs": [
+      ".agents",
+      ".claude",
+      ".codex",
+      ".cursor",
+      ".github",
+      "docs",
+      "e2e",
+      "packages",
+      "patches",
+      "self-host"
+    ],
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ]
+  },
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "node-typescript",
+      "runtime": "bun@1.3.14",
+      "node_engine": ">=24.0.0",
+      "typescript": "7.0.2",
+      "detected_frameworks": [
+        "react-18",
+        "tanstack-react-router",
+        "tanstack-react-query",
+        "zustand",
+        "zod",
+        "tailwind-4",
+        "express",
+        "playwright",
+        "biome"
+      ]
+    },
+    {
+      "manifest": "packages/web/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": [
+        "react-18",
+        "zustand",
+        "tanstack-react-router",
+        "tiptap",
+        "dexie",
+        "zod",
+        "tailwind-4",
+        "testing-library",
+        "msw"
+      ]
+    },
+    {
+      "manifest": "packages/backend/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["express", "supertokens", "mongodb"]
+    },
+    {
+      "manifest": "packages/core/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["zod"]
+    },
+    {
+      "manifest": "packages/sync/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["googleapis"]
+    },
+    {
+      "manifest": "packages/scripts/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": []
+    }
+  ],
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
+    "adaptive_profile_recommended": true
+  },
+  "test_command_proposed": "bun test:web",
+  "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun test:web",
+    "core": "bun test:core",
+    "type_check": "bun type-check",
+    "lint": "bun lint",
+    "e2e": "bun test:e2e",
+    "diff_aware": "bun run verify"
+  },
+  "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
+  "docs_present": [
+    {
+      "path": "README.md",
+      "kind": "readme"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "agent-instructions"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "kind": "contributing"
+    },
+    {
+      "path": "SECURITY.md",
+      "kind": "security"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "kind": "code-of-conduct"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "docs-index"
+    },
+    {
+      "path": "docs/architecture",
+      "kind": "architecture-dir"
+    },
+    {
+      "path": "docs/frontend",
+      "kind": "docs-subdir"
+    },
+    {
+      "path": "docs/features",
+      "kind": "docs-subdir"
+    }
+  ],
+  "ai_configs_detected": [
+    {
+      "path": ".claude/settings.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".claude/launch.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".cursor/rules/",
+      "type": "cursor",
+      "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing"
+    },
+    {
+      "path": ".cursor/hooks.json",
+      "type": "cursor-hooks"
+    },
+    {
+      "path": ".cursor/hooks/format-after-edit.ts",
+      "type": "cursor-hook-script"
+    },
+    {
+      "path": ".codex/config.toml",
+      "type": "codex"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "type": "codex-hooks"
+    },
+    {
+      "path": ".agents/skills/",
+      "type": "shared-agent-skills",
+      "detail": "9 skills incl. ship, simplify, verify-change, a11y-audit"
+    },
+    {
+      "path": ".agents/skills/chaos/agents/openai.yaml",
+      "type": "external-model-agent-config"
+    },
+    {
+      "path": "AGENTS.md",
+      "type": "agent-instructions"
+    }
+  ],
+  "ai_configs_absent": [
+    ".mcp.json (gitignored, not present on disk)",
+    "CLAUDE.md",
+    ".cursorrules",
+    ".aider.conf.yml",
+    ".continue/",
+    ".github/copilot-instructions.md",
+    ".roo/",
+    "routing-policy.yaml"
+  ],
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL",
+    "COMPASS_BUILD_REF",
+    "GOOGLE_CLIENT_ID",
+    "NODE_ENV",
+    "PORT",
+    "POSTHOG_HOST",
+    "POSTHOG_KEY",
+    "TZ"
+  ],
+  "monorepo": {
+    "type": "lerna+bun-workspaces",
+    "workspace_globs": ["packages/*"],
+    "packages": [
+      {
+        "name": "@compass/web",
+        "root": "packages/web",
+        "manifest": "packages/web/package.json",
+        "test_command": "bun test:web"
+      },
+      {
+        "name": "@compass/backend",
+        "root": "packages/backend",
+        "manifest": "packages/backend/package.json",
+        "test_command": "bun test:backend"
+      },
+      {
+        "name": "@compass/core",
+        "root": "packages/core",
+        "manifest": "packages/core/package.json",
+        "test_command": "bun test:core"
+      },
+      {
+        "name": "@compass/sync",
+        "root": "packages/sync",
+        "manifest": "packages/sync/package.json",
+        "test_command": "bun test:sync"
+      },
+      {
+        "name": "@compass/scripts",
+        "root": "packages/scripts",
+        "manifest": "packages/scripts/package.json",
+        "test_command": "bun test:scripts"
+      }
+    ],
+    "path_aliases": {
+      "@web/*": "packages/web/src/*",
+      "@core/*": "packages/core/src/*",
+      "@compass/backend": "packages/backend/src",
+      "@compass/sync": "packages/sync/src",
+      "@compass/scripts": "packages/scripts/src"
+    }
+  },
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+  "infra_hints": {
+    "dockerfile": false,
+    "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "github_workflow_count": 11,
+    "gitlab_ci": false,
+    "circleci": false,
+    "jenkins": false
+  },
+  "off_limits_proposed": [
+    ".git/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".agents/**",
+    "AGENTS.md",
+    ".mcp.json",
+    "compass.yaml",
+    ".playwright-compass.yaml",
+    "*.env*",
+    ".env",
+    ".env.*",
+    "node_modules/**",
+    "build/**",
+    "buildcache/**",
+    "packages/*/build/**",
+    "packages/*/node_modules/**",
+    "bun.lock",
+    "patches/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".github/workflows/**"
+  ],
+  "regulated_repo_signals": [
+    {
+      "kind": "security-policy",
+      "path": "SECURITY.md"
+    }
+  ],
+  "regulated_repo_warning_required": false,
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) — untouched by default, but they encode the conventions codegen must match.",
+    "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
+    ".gitignore does NOT cover .sdlc/ — run artifacts are visible to git add -A.",
+    ".gitignore contains a repo-wide '*.mjs' rule — any .mjs the plugin emits into user source would be silently untracked.",
+    ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
+    "No repo-local routing-policy.yaml — shipped policy applies."
+  ],
+  "repo_state_risks": [
+    {
+      "kind": "gitignore_missing_sdlc",
+      "severity": "medium",
+      "detail": ".sdlc/ untracked but visible to git add -A."
+    },
+    {
+      "kind": "aggressive_gitignore",
+      "severity": "medium",
+      "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs."
+    },
+    {
+      "kind": "external_format_hooks",
+      "severity": "low",
+      "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
+    },
+    {
+      "kind": "lfs",
+      "severity": "none",
+      "detail": "No Git-LFS in use."
+    },
+    {
+      "kind": "submodules",
+      "severity": "none",
+      "detail": "No submodules."
+    },
+    {
+      "kind": "dirty_tree",
+      "severity": "none",
+      "detail": "Clean apart from untracked .sdlc/."
+    }
+  ],
+  "intent_scope": {
+    "hint": "feature-extend-weekbody-multiday-drag",
+    "intent": "Add multi-day drag-to-select on the week body that creates a spanning event across the dragged day range.",
+    "primary_package": "packages/web",
+    "weekbody_component_exists": false,
+    "weekbody_note": "CONFIRMED: no component, file, symbol or test named `WeekBody` exists anywhere in source. The string appears only inside .sdlc/ artifacts. The week body is composed by views/Week/components/Grid/Grid.tsx.",
+    "component_tree": {
+      "week_root": "packages/web/src/views/Week/WeekView.tsx",
+      "body_composer": "packages/web/src/views/Week/components/Grid/Grid.tsx",
+      "composition": "Grid.tsx renders AllDayRow (render-prop) > MainGrid (render-prop) > EventGrid, where EventGrid receives onAllDayMouseDown + onTimedMouseDown and both event layers.",
+      "timed_grid_body": {
+        "week_container": "packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.tsx",
+        "shared_presentational": "packages/web/src/grid/components/TimedGrid.tsx",
+        "note": "TimedGrid owns the CSS-grid day columns via --calendar-column-count and takes a single onMouseDown for the whole column area."
+      },
+      "all_day_row": {
+        "week_container": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+        "shared_presentational": "packages/web/src/grid/components/AllDayGridRow.tsx",
+        "events": [
+          "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayEvents.tsx",
+          "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayEvent.tsx"
+        ]
+      },
+      "day_columns": {
+        "owner": "packages/web/src/grid/components/TimedGrid.tsx (timed) and packages/web/src/grid/components/AllDayGridRow.tsx (all-day)",
+        "note": "There is no per-day column component. Columns are CSS grid tracks generated from the `visibleDates: GridVisibleDate[]` prop; day identity is recovered from pointer x via useGridCoordinates, not from a DOM component."
+      },
+      "geometry": {
+        "week_hook": "packages/web/src/views/Week/hooks/grid/useDateCalcs.ts",
+        "shared_hook": "packages/web/src/grid/hooks/useGridCoordinates.ts",
+        "note": "getDateByXY(x,y) already resolves an arbitrary x to the correct day column. Geometry is NOT single-day-bound."
+      }
+    },
+    "drag_create_machinery": {
+      "timed": {
+        "hook": "packages/web/src/grid/hooks/useTimedDraftCreation.ts",
+        "week_wrapper": "packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts",
+        "day_wrapper": "packages/web/src/views/Day/components/Calendar/useDayTimedDraftCreation.ts",
+        "has_true_drag": true,
+        "single_day_bound": true,
+        "constraint_site": "useTimedDraftCreation.ts:104-117",
+        "constraint_detail": "resolveDraftForPointer computes isSameDayDrag = pointerDate.isSame(start,'day'). Both the isUpwardDrag and isSameDayDrag branches are gated on it, so a pointer in a DIFFERENT day column falls through to resolvedStart=start / resolvedEnd=start+DRAFT_DURATION_MIN. Cross-day drag is silently discarded and collapses to a 30-minute event on the origin day.",
+        "threshold": "TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX (packages/web/src/interaction/interaction.constants.ts)",
+        "unit_test_coverage": "NONE - no useTimedDraftCreation.test.* exists."
+      },
+      "all_day": {
+        "hook": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+        "has_true_drag": false,
+        "single_day_bound": true,
+        "constraint_site": "useAllDayDraftCreation.ts:48-51",
+        "constraint_detail": "Click-only. On mousedown it derives startDate then hardcodes endDate = start + 1 day. No mousemove/mouseup listeners are registered at all.",
+        "unit_test_coverage": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx"
+      },
+      "state_owner": {
+        "store": "packages/web/src/events/stores/draft.store.ts",
+        "actions": [
+          "draftActions.startGridDraft({activity, draft})",
+          "draftActions.setGridDraft(draft)",
+          "draftActions.discard()"
+        ],
+        "activities": ["creating", "gridClick"],
+        "note": "The store draft IS the live preview - the gesture writes it on every mousemove and both Week and Day render straight from it."
+      },
+      "adapter": "packages/web/src/events/grid-event-draft.adapter.ts (timedGridSchedule, allDayGridSchedule, createGridEventDraft, replaceGridDraftSchedule)"
+    },
+    "multi_day_rendering_already_exists": {
+      "status": "YES - the render half of this feature is already built.",
+      "helpers": {
+        "predicate": "packages/web/src/common/utils/event/event-nudge.util.ts :: isTimedEventMultiDay / shouldRenderTimedInAllDayRow",
+        "mapper": "packages/web/src/common/utils/event/event-nudge.util.ts :: timedMultiDayToAllDayDates",
+        "positioner": "packages/web/src/grid/layout/all-day-draft.position.ts :: positionAllDayDraftEvent / draftToAllDayRowGridEvent"
+      },
+      "flag": "isTimedMultiDayDisplay on GridEvent (packages/web/src/common/types/web.event.types.ts:73)",
+      "implication": "A timed draft whose start/end already cross midnight is automatically promoted into the all-day row as a spanning bar, and Grid.tsx already feeds the live draft through positionAllDayDraftEvent for column tinting. So widening the gesture to emit a cross-day range should light up existing rendering with little new layout code."
+    },
+    "prior_attempts": {
+      "branch_clean": true,
+      "evidence": "`git rev-list --count main..HEAD` = 0 and `git diff main...HEAD -- packages/` is empty.",
+      "conclusion": "None of the three prior attempts left code on this branch. The week view here has NO multi-day drag.",
+      "prior_run_dirs": [
+        ".sdlc/runs/20260819-212923-feature-extend-weekbody-multiday-drag",
+        ".sdlc/runs/20260819-233904-feature-extend-weekbody-multiday-drag",
+        ".sdlc/runs/20260820-004405-feature-extend-allday-multiday-drag",
+        ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag"
+      ],
+      "prior_run_note": "Prior run artifacts persist under .sdlc/runs/ but contain no applied source changes."
+    },
+    "current_single_day_behavior": {
+      "timed_grid": "mousedown opens a 30-min (DRAFT_DURATION_MIN) draft; dragging vertically within the SAME day column resizes it (min one GRID_TIME_STEP = 15 min); dragging upward past the origin inverts start/end; dragging into another day column is ignored and the draft stays a 30-min block on the origin day. mouseup commits via draftActions.startGridDraft({activity:'gridClick'}).",
+      "all_day_row": "mousedown immediately creates a fixed exactly-one-day all-day draft on the clicked column and opens the form. No drag at all. A second mousedown while drafting discards."
+    },
+    "likely_change_surface": [
+      "packages/web/src/grid/hooks/useTimedDraftCreation.ts (relax the isSameDayDrag clamp; resolve a day+time range)",
+      "packages/web/src/grid/hooks/useAllDayDraftCreation.ts (add drag lifecycle if the all-day row is in scope)",
+      "packages/web/src/views/Week/hooks/grid/useTimedGridDraftCreation.ts (Week wiring)",
+      "packages/web/src/views/Day/components/Calendar/useDayTimedDraftCreation.ts (shared hook - Day view is a co-consumer, must not regress)"
+    ],
+    "shared_hook_blast_radius": "useTimedDraftCreation is shared by BOTH Week and Day views. Day has a single column, so any cross-day widening must be a no-op there. Day-view tests are part of the same bun test:web run."
+  },
+  "refresh": {
+    "decision": "cached",
+    "reason": "git HEAD unchanged and no stack manifest mtime changed since baseline",
+    "helper": "discovery-refresh.mjs",
+    "git_head_baseline": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "git_head_current": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "baseline_age_commits": 0,
+    "baseline_built_at": "2026-08-20T04:32:08Z",
+    "policy_changed": false,
+    "living_baseline_refreshed": false,
+    "living_baseline_refresh_skipped_reason": "Helper returned 'cached'; Tier 1 facts re-verified by spot-check and still accurate. current.json left untouched per cached contract."
+  },
+  "snapshot_built_at": "2026-08-25T04:50:07.301Z",
+  "test_baseline_verified": {
+    "verified_at": "2026-08-25T04:50:07.301Z",
+    "full_web": {
+      "command": "bun test:web",
+      "pass": 2298,
+      "fail": 0,
+      "files": 302,
+      "duration_s": 79.8,
+      "status": "green"
+    },
+    "scoped_week_grid": {
+      "command": "bun packages/scripts/src/testing/test-parallel.ts web -- packages/web/src/views/Week packages/web/src/grid",
+      "pass": 388,
+      "fail": 0,
+      "files": 54,
+      "duration_s": 9.9,
+      "status": "green"
+    },
+    "caveat": "Bare `bun test <path>` from repo root FAILS (107 fail/27 errors) because packages/web/bunfig.toml preload (src/__tests__/web.preload.ts) is not applied outside the package. Always route through the test-parallel runner or `bun test:web`."
+  }
+}

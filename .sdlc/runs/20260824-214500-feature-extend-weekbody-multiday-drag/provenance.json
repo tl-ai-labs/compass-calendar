@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "run_id": "20260824-214500-feature-extend-weekbody-multiday-drag",
+  "intent": "feature-extend",
+  "git_head_before": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_head_after": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/interaction/interaction.constants.ts",
+      "existed_before": true,
+      "sha_before": "sha256:f7600560c6a2a09465d2054537f3e240ac7ff3209ecdbdc2c1e78d5be64913bc",
+      "sha_after": "sha256:09dee596e742dde89eef3e9bc9061c4c855194042337ffbdbb6d59f44f25762d",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_001_constant",
+      "written_at": "2026-08-25T05:32:24.929Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:12c22de745284749b42fea039f5d9079cedb45c9313497b7daa8f5fb95950058",
+      "sha_after": "sha256:b94c0938e3183c5c89973ad0484ab89fee6a823bd35993ecce4578d647ed5081",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_006_optin_wiring",
+      "written_at": "2026-08-25T05:32:24.982Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:77f87e8a9080416760e6bc945141cc279ad00c414a622b1f8f9270c4ee87f347",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_002_range_math",
+      "written_at": "2026-08-25T05:34:27.454Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/MainGrid/MainGrid.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:815aa9cf42622520df80d02e07be6e42038947c583385a55fbc8ab8718c09e8d",
+      "sha_after": "sha256:52e8af62b4cdf13c08fcad3d4bdb18ea07b5762b670b9827bd6164ed6d9f834a",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_008_maingrid_test_fix",
+      "written_at": "2026-08-25T05:34:27.512Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5b055bd33164b7a1dbcc8a33672e7bfc03d328c3270e0b0c3759cbf41d334891",
+      "sha_after": "sha256:5e85f8950f665103a4b1da1b2147cc0ea05f6189ec7ce477def2368b58b11804",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_004_hook",
+      "written_at": "2026-08-25T05:38:13.436Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:f145815b65ac44961bc66ccf1503f390f92b836ff3fa0a5a7564c024dd09a3ba",
+      "sha_after": "sha256:41664e33b306e86adf429722e1391b0127e5edf796dee5225417616a1f476eab",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__interaction__math__all-day.create.test.ts",
+      "packet_id": "tp_003_range_tests",
+      "written_at": "2026-08-25T05:40:26.830Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:bd7a01f28b35b19a08eee8ad37fb520e81c29f11c4d4b515358748c0f104953f",
+      "sha_after": "sha256:041dae27102ce9365c896af6f292f55bceff8ad7499f7367b241deb0b6d486f7",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__views__Week__components__Grid__AllDayRow__AllDayRow.test.tsx",
+      "packet_id": "tp_007_row_tests",
+      "written_at": "2026-08-25T05:45:51.166Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:b61c30e057c227e3845d994506f7fb1edbfceac698dfda6de3a1f72695258fe8",
+      "sha_after": "sha256:29dd48cdc74b96875a7f0ff11124908d2e07af38ccb910434e37f158ec12f7e6",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__hooks__useAllDayDraftCreation.test.tsx",
+      "packet_id": "tp_005_hook_tests",
+      "written_at": "2026-08-25T05:52:03.186Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:041dae27102ce9365c896af6f292f55bceff8ad7499f7367b241deb0b6d486f7",
+      "sha_after": "sha256:f034090bb7f084dd4003cf227dccc14ac91adf7c4468fdba656581ed0063f7d8",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__views__Week__components__Grid__AllDayRow__AllDayRow.test.tsx",
+      "packet_id": "tp_009_debug_mockmodule_leak",
+      "written_at": "2026-08-25T05:59:33.534Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:29dd48cdc74b96875a7f0ff11124908d2e07af38ccb910434e37f158ec12f7e6",
+      "sha_after": "sha256:92685673d2e1a1bad87860ad2c1e60974df3480bddef75e67fdf4ad6cdd8cbde",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__hooks__useAllDayDraftCreation.test.tsx",
+      "packet_id": "tp_010_debug_typecheck",
+      "written_at": "2026-08-25T06:04:18.730Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:b98a8eed3f20a14fc845750696eb16428689bca0f2537a8841459dae608b37e3",
+      "sha_after": "sha256:09ebc48d37d88f8df8c42eab77cf3857fe9f511435c1085762d5ef887b63536f",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__views__Week__components__Grid__AllDayRow__AllDayRow.test.tsx",
+      "packet_id": "tp_011_lint_import_order",
+      "written_at": "2026-08-25T06:07:45.824Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8e075eabff2822689e46d5f64996b91c8ebf2fcfba7e022d4afc64fcdb16b19b",
+      "sha_after": "sha256:8e075eabff2822689e46d5f64996b91c8ebf2fcfba7e022d4afc64fcdb16b19b",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__hooks__useAllDayDraftCreation.ts",
+      "packet_id": "tp_r1_gesture_hardening",
+      "written_at": "2026-08-25T06:25:47.916Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:92685673d2e1a1bad87860ad2c1e60974df3480bddef75e67fdf4ad6cdd8cbde",
+      "sha_after": "sha256:d779620104b6c2d7c31eada510ba943c63ad665af1950ebabc75a35c93b9451c",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__hooks__useAllDayDraftCreation.test.tsx",
+      "packet_id": "tp_r2_teardown_assertions",
+      "written_at": "2026-08-25T06:30:39.921Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d779620104b6c2d7c31eada510ba943c63ad665af1950ebabc75a35c93b9451c",
+      "sha_after": "sha256:a7c68bb1c5e854ef3ba6c96f458a47bb882735bd9c13e56b950a6ee1626621ef",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/backups/packages__web__src__grid__hooks__useAllDayDraftCreation.test.tsx",
+      "packet_id": "tp_r2b_type_fix",
+      "written_at": "2026-08-25T06:33:44.864Z"
+    }
+  ]
+}

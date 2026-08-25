@@ -1,0 +1,72 @@
+MMO: 2026-08-25T05:03:17.346Z INFO   run.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag mode=brownfield intent=feature-extend policy=opus-plus-sonnet auth_mode=estimated code_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar output_dir=.sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag
+MMO: 2026-08-25T05:04:35.890Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=requirements_analysis form=intent-specific
+MMO: 2026-08-25T05:06:39.344Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=requirements_analysis form=intent-specific
+MMO: 2026-08-25T05:06:39.397Z INFO   gate.open run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-1 title="Delta requirements approval"
+MMO: 2026-08-25T05:13:00.375Z INFO   gate.resolved run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-1 response=approved
+MMO: 2026-08-25T05:13:00.438Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=change_plan form=intent-specific
+MMO: 2026-08-25T05:13:00.493Z INFO   delegate.subagent.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=change_plan subagent=architect
+MMO: 2026-08-25T05:23:42.071Z INFO   delegate.subagent.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=change_plan subagent=architect ok=true artifact_path=.sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/change_plan.md
+MMO: 2026-08-25T05:25:14.474Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=change_plan form=intent-specific
+MMO: 2026-08-25T05:25:14.529Z INFO   gate.open run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-2 title="Delta change plan + allowlist extension request"
+MMO: 2026-08-25T05:28:40.059Z INFO   gate.resolved run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-2 response=approved
+MMO: 2026-08-25T05:28:40.122Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=plan_task_packets form=intent-specific
+MMO: 2026-08-25T05:30:25.285Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=plan_task_packets form=intent-specific
+MMO: 2026-08-25T05:30:25.335Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=execute_packets form=default
+MMO: 2026-08-25T05:30:44.238Z INFO   route.decide packet_id=tp_001_constant phase=codegen intent=feature-extend task_type=frontend_config module=interaction rule_index=7 rule_reason="Schema-driven boilerplate — Sonnet 5 handles well at lower cost" model_id=sonnet
+MMO: 2026-08-25T05:30:44.239Z INFO   dispatch.start packet_id=tp_001_constant model_id=sonnet max_out=2000 max_in=4000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:31:04.277Z INFO   dispatch.end packet_id=tp_001_constant model_id=sonnet ok=true terminal_reason=success tokens_in=9230 tokens_out=1295 tokens_cached=107677 cost_usd=0.1070901 latency_ms=20038 attempts=1
+MMO: 2026-08-25T05:31:07.591Z INFO   route.decide packet_id=tp_006_optin_wiring phase=codegen intent=feature-extend task_type=module_wiring module=week-allday-row rule_index=7 rule_reason="Schema-driven boilerplate — Sonnet 5 handles well at lower cost" model_id=sonnet
+MMO: 2026-08-25T05:31:07.592Z INFO   dispatch.start packet_id=tp_006_optin_wiring model_id=sonnet max_out=3000 max_in=6000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:31:35.604Z INFO   dispatch.end packet_id=tp_006_optin_wiring model_id=sonnet ok=true terminal_reason=success tokens_in=9643 tokens_out=2913 tokens_cached=30244 cost_usd=0.1106202 latency_ms=28012 attempts=1
+MMO: 2026-08-25T05:32:55.232Z INFO   route.decide packet_id=tp_002_range_math phase=codegen intent=feature-extend task_type=frontend_util module=allday-math rule_index=7 rule_reason="Schema-driven boilerplate — Sonnet 5 handles well at lower cost" model_id=sonnet
+MMO: 2026-08-25T05:32:55.233Z INFO   dispatch.start packet_id=tp_002_range_math model_id=sonnet max_out=3000 max_in=8000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:33:28.678Z INFO   dispatch.end packet_id=tp_002_range_math model_id=sonnet ok=true terminal_reason=success tokens_in=17208 tokens_out=1910 tokens_cached=346473 cost_usd=0.2357859 latency_ms=33445 attempts=1
+MMO: 2026-08-25T05:33:30.861Z INFO   route.decide packet_id=tp_008_maingrid_test_fix phase=tests intent=feature-extend task_type=test_add module=week-maingrid rule_index=8 rule_reason="Scaffold-heavy, pattern-based" model_id=sonnet
+MMO: 2026-08-25T05:33:30.861Z INFO   dispatch.start packet_id=tp_008_maingrid_test_fix model_id=sonnet max_out=2000 max_in=4000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:33:44.640Z INFO   dispatch.end packet_id=tp_008_maingrid_test_fix model_id=sonnet ok=true terminal_reason=success tokens_in=8713 tokens_out=688 tokens_cached=68494 cost_usd=0.08313419999999999 latency_ms=13779 attempts=1
+MMO: 2026-08-25T05:35:34.883Z INFO   route.decide packet_id=tp_004_hook phase=codegen intent=feature-extend task_type=frontend_util module=allday-hook rule_index=7 rule_reason="Schema-driven boilerplate — Sonnet 5 handles well at lower cost" model_id=sonnet
+MMO: 2026-08-25T05:35:34.884Z INFO   dispatch.start packet_id=tp_004_hook model_id=sonnet max_out=8000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:37:15.883Z INFO   dispatch.end packet_id=tp_004_hook model_id=sonnet ok=true terminal_reason=success tokens_in=32419 tokens_out=11803 tokens_cached=163496 cost_usd=0.4205838 latency_ms=100999 attempts=1
+MMO: 2026-08-25T05:38:27.184Z INFO   route.decide packet_id=tp_003_range_tests phase=tests intent=feature-extend task_type=test_add module=allday-math rule_index=8 rule_reason="Scaffold-heavy, pattern-based" model_id=sonnet
+MMO: 2026-08-25T05:38:27.184Z INFO   dispatch.start packet_id=tp_003_range_tests model_id=sonnet max_out=4000 max_in=8000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:39:38.799Z INFO   dispatch.end packet_id=tp_003_range_tests model_id=sonnet ok=true terminal_reason=success tokens_in=20809 tokens_out=6979 tokens_cached=412653 cost_usd=0.35327489999999995 latency_ms=71614 attempts=1
+MMO: 2026-08-25T05:40:53.027Z INFO   route.decide packet_id=tp_007_row_tests phase=tests intent=feature-extend task_type=test_add module=week-allday-row rule_index=8 rule_reason="Scaffold-heavy, pattern-based" model_id=sonnet
+MMO: 2026-08-25T05:40:53.027Z INFO   dispatch.start packet_id=tp_007_row_tests model_id=sonnet max_out=6000 max_in=20000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:44:50.240Z INFO   dispatch.end packet_id=tp_007_row_tests model_id=sonnet ok=true terminal_reason=success tokens_in=70812 tokens_out=21920 tokens_cached=2432901 cost_usd=1.4833503000000003 latency_ms=237213 attempts=1
+MMO: 2026-08-25T05:46:43.468Z INFO   route.decide packet_id=tp_005_hook_tests phase=tests intent=feature-extend task_type=test_add module=allday-hook rule_index=8 rule_reason="Scaffold-heavy, pattern-based" model_id=sonnet
+MMO: 2026-08-25T05:46:43.468Z INFO   dispatch.start packet_id=tp_005_hook_tests model_id=sonnet max_out=12000 max_in=30000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:50:48.983Z INFO   dispatch.end packet_id=tp_005_hook_tests model_id=sonnet ok=true terminal_reason=success tokens_in=54326 tokens_out=29352 tokens_cached=716000 cost_usd=0.980964 latency_ms=245514 attempts=1
+MMO: 2026-08-25T05:52:32.318Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=execute_packets form=default
+MMO: 2026-08-25T05:52:32.378Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=test_run form=default
+MMO: 2026-08-25T05:58:15.480Z INFO   route.decide packet_id=tp_009_debug_mockmodule_leak phase=debug intent=feature-extend task_type=test_fix module=week-allday-row rule_index=11 rule_reason="Most debugs have clear cause" model_id=sonnet
+MMO: 2026-08-25T05:58:15.481Z INFO   dispatch.start packet_id=tp_009_debug_mockmodule_leak model_id=sonnet max_out=6000 max_in=20000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T05:58:57.678Z INFO   dispatch.end packet_id=tp_009_debug_mockmodule_leak model_id=sonnet ok=true terminal_reason=success tokens_in=20112 tokens_out=3640 tokens_cached=195815 cost_usd=0.2339865 latency_ms=42197 attempts=1
+MMO: 2026-08-25T06:01:22.951Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=test_run form=default
+MMO: 2026-08-25T06:01:23.010Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=senior_code_review form=default
+MMO: 2026-08-25T06:01:23.078Z INFO   delegate.subagent.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=senior_code_review subagent=senior-reviewer
+MMO: 2026-08-25T06:03:36.456Z INFO   route.decide packet_id=tp_010_debug_typecheck phase=debug intent=feature-extend task_type=type_fix module=allday-hook rule_index=11 rule_reason="Most debugs have clear cause" model_id=sonnet
+MMO: 2026-08-25T06:03:36.457Z INFO   dispatch.start packet_id=tp_010_debug_typecheck model_id=sonnet max_out=2000 max_in=6000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T06:03:53.014Z INFO   dispatch.end packet_id=tp_010_debug_typecheck model_id=sonnet ok=true terminal_reason=success tokens_in=8991 tokens_out=1101 tokens_cached=69377 cost_usd=0.09126209999999998 latency_ms=16556 attempts=1
+MMO: 2026-08-25T06:14:34.108Z INFO   delegate.subagent.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=security_review subagent=security-reviewer ok=true artifact_path=.sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/security_review.md
+MMO: 2026-08-25T06:15:32.717Z INFO   delegate.subagent.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=senior_code_review subagent=senior-reviewer ok=true artifact_path=.sdlc/runs/20260824-214500-feature-extend-weekbody-multiday-drag/senior_review.md
+MMO: 2026-08-25T06:15:32.776Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=senior_code_review form=default
+MMO: 2026-08-25T06:15:32.836Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=security_review form=intent-specific
+MMO: 2026-08-25T06:15:32.892Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=security_review form=intent-specific
+MMO: 2026-08-25T06:15:32.961Z INFO   gate.open run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-3 title="Security + senior review sign-off"
+MMO: 2026-08-25T06:23:15.938Z INFO   gate.resolved run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-3 response=approved
+MMO: 2026-08-25T06:23:16.000Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=execute_packets form=default
+MMO: 2026-08-25T06:23:46.753Z INFO   route.decide packet_id=tp_r1_gesture_hardening phase=codegen intent=feature-extend task_type=frontend_util module=allday-hook rule_index=7 rule_reason="Schema-driven boilerplate — Sonnet 5 handles well at lower cost" model_id=sonnet
+MMO: 2026-08-25T06:23:46.754Z INFO   dispatch.start packet_id=tp_r1_gesture_hardening model_id=sonnet max_out=3000 max_in=8000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T06:24:45.800Z INFO   dispatch.end packet_id=tp_r1_gesture_hardening model_id=sonnet ok=true terminal_reason=success tokens_in=17242 tokens_out=5957 tokens_cached=160317 cost_usd=0.24087809999999996 latency_ms=59046 attempts=1
+MMO: 2026-08-25T06:26:27.122Z INFO   route.decide packet_id=tp_r2_teardown_assertions phase=tests intent=feature-extend task_type=test_add module=allday-hook rule_index=8 rule_reason="Scaffold-heavy, pattern-based" model_id=sonnet
+MMO: 2026-08-25T06:26:27.123Z INFO   dispatch.start packet_id=tp_r2_teardown_assertions model_id=sonnet max_out=10000 max_in=20000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T06:30:11.335Z INFO   dispatch.end packet_id=tp_r2_teardown_assertions model_id=sonnet ok=true terminal_reason=success tokens_in=46025 tokens_out=26224 tokens_cached=635628 cost_usd=0.8601324000000001 latency_ms=224211 attempts=1
+MMO: 2026-08-25T06:33:05.643Z INFO   route.decide packet_id=tp_r2b_type_fix phase=debug intent=feature-extend task_type=type_fix module=allday-hook rule_index=11 rule_reason="Most debugs have clear cause" model_id=sonnet
+MMO: 2026-08-25T06:33:05.644Z INFO   dispatch.start packet_id=tp_r2b_type_fix model_id=sonnet max_out=1500 max_in=4000 work_dir=/home/sainadh/projects/compass-calendar/compass/compass-calendar
+MMO: 2026-08-25T06:33:21.054Z INFO   dispatch.end packet_id=tp_r2b_type_fix model_id=sonnet ok=true terminal_reason=success tokens_in=8987 tokens_out=726 tokens_cached=69064 cost_usd=0.08551920000000002 latency_ms=15411 attempts=1
+MMO: 2026-08-25T06:39:21.795Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=execute_packets form=default
+MMO: 2026-08-25T06:39:21.857Z INFO   phase.start run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=generate_final_report form=default
+MMO: 2026-08-25T06:39:21.918Z INFO   phase.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag phase=generate_final_report form=default
+MMO: 2026-08-25T06:39:21.972Z INFO   gate.open run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-4 title="Final report sign-off"
+MMO: 2026-08-25T06:46:38.144Z INFO   gate.resolved run_id=20260824-214500-feature-extend-weekbody-multiday-drag gate=gate-4 response=approved
+MMO: 2026-08-25T06:46:38.197Z INFO   run.end run_id=20260824-214500-feature-extend-weekbody-multiday-drag outcome=completed total_cost_usd=8.08
