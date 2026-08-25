@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.5.0",
+  "built_at": "2026-08-20T04:32:08Z",
+  "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+  "mode": "first-time",
+
+  "git": {
+    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "branch": "main",
+    "dirty": false,
+    "dirty_note": "Only untracked .sdlc/ present; no tracked-file modifications.",
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "git@github.com:tl-ai-labs/compass-calendar.git"
+      }
+    ],
+    "gitignore_covers_sdlc": false,
+    "tracked_file_count": 1582
+  },
+
+  "topology": {
+    "top_level_dirs": [
+      ".agents",
+      ".claude",
+      ".codex",
+      ".cursor",
+      ".github",
+      "docs",
+      "e2e",
+      "packages",
+      "patches",
+      "self-host"
+    ],
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ]
+  },
+
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "node-typescript",
+      "runtime": "bun@1.3.14",
+      "node_engine": ">=24.0.0",
+      "typescript": "7.0.2",
+      "detected_frameworks": [
+        "react-18",
+        "tanstack-react-router",
+        "tanstack-react-query",
+        "zustand",
+        "zod",
+        "tailwind-4",
+        "express",
+        "playwright",
+        "biome"
+      ]
+    },
+    {
+      "manifest": "packages/web/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": [
+        "react-18",
+        "zustand",
+        "tanstack-react-router",
+        "tiptap",
+        "dexie",
+        "zod",
+        "tailwind-4",
+        "testing-library",
+        "msw"
+      ]
+    },
+    {
+      "manifest": "packages/backend/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["express", "supertokens", "mongodb"]
+    },
+    {
+      "manifest": "packages/core/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["zod"]
+    },
+    {
+      "manifest": "packages/sync/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["googleapis"]
+    },
+    {
+      "manifest": "packages/scripts/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": []
+    }
+  ],
+
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
+    "adaptive_profile_recommended": true
+  },
+
+  "test_command_proposed": "bun test:web",
+  "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun test:web",
+    "core": "bun test:core",
+    "type_check": "bun type-check",
+    "lint": "bun lint",
+    "e2e": "bun test:e2e",
+    "diff_aware": "bun run verify"
+  },
+  "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
+
+  "docs_present": [
+    { "path": "README.md", "kind": "readme" },
+    { "path": "AGENTS.md", "kind": "agent-instructions" },
+    { "path": "CONTRIBUTING.md", "kind": "contributing" },
+    { "path": "SECURITY.md", "kind": "security" },
+    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
+    { "path": "docs/README.md", "kind": "docs-index" },
+    { "path": "docs/architecture", "kind": "architecture-dir" },
+    { "path": "docs/frontend", "kind": "docs-subdir" },
+    { "path": "docs/features", "kind": "docs-subdir" }
+  ],
+
+  "ai_configs_detected": [
+    { "path": ".claude/settings.json", "type": "claude-code" },
+    { "path": ".claude/launch.json", "type": "claude-code" },
+    {
+      "path": ".cursor/rules/",
+      "type": "cursor",
+      "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing"
+    },
+    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    {
+      "path": ".cursor/hooks/format-after-edit.ts",
+      "type": "cursor-hook-script"
+    },
+    { "path": ".codex/config.toml", "type": "codex" },
+    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    {
+      "path": ".agents/skills/",
+      "type": "shared-agent-skills",
+      "detail": "9 skills incl. ship, simplify, verify-change, a11y-audit"
+    },
+    {
+      "path": ".agents/skills/chaos/agents/openai.yaml",
+      "type": "external-model-agent-config"
+    },
+    { "path": "AGENTS.md", "type": "agent-instructions" }
+  ],
+  "ai_configs_absent": [
+    ".mcp.json (gitignored, not present on disk)",
+    "CLAUDE.md",
+    ".cursorrules",
+    ".aider.conf.yml",
+    ".continue/",
+    ".github/copilot-instructions.md",
+    ".roo/",
+    "routing-policy.yaml"
+  ],
+
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL",
+    "COMPASS_BUILD_REF",
+    "GOOGLE_CLIENT_ID",
+    "NODE_ENV",
+    "PORT",
+    "POSTHOG_HOST",
+    "POSTHOG_KEY",
+    "TZ"
+  ],
+
+  "monorepo": {
+    "type": "lerna+bun-workspaces",
+    "workspace_globs": ["packages/*"],
+    "packages": [
+      {
+        "name": "@compass/web",
+        "root": "packages/web",
+        "manifest": "packages/web/package.json",
+        "test_command": "bun test:web"
+      },
+      {
+        "name": "@compass/backend",
+        "root": "packages/backend",
+        "manifest": "packages/backend/package.json",
+        "test_command": "bun test:backend"
+      },
+      {
+        "name": "@compass/core",
+        "root": "packages/core",
+        "manifest": "packages/core/package.json",
+        "test_command": "bun test:core"
+      },
+      {
+        "name": "@compass/sync",
+        "root": "packages/sync",
+        "manifest": "packages/sync/package.json",
+        "test_command": "bun test:sync"
+      },
+      {
+        "name": "@compass/scripts",
+        "root": "packages/scripts",
+        "manifest": "packages/scripts/package.json",
+        "test_command": "bun test:scripts"
+      }
+    ],
+    "path_aliases": {
+      "@web/*": "packages/web/src/*",
+      "@core/*": "packages/core/src/*",
+      "@compass/backend": "packages/backend/src",
+      "@compass/sync": "packages/sync/src",
+      "@compass/scripts": "packages/scripts/src"
+    }
+  },
+
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+
+  "infra_hints": {
+    "dockerfile": false,
+    "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "github_workflow_count": 11,
+    "gitlab_ci": false,
+    "circleci": false,
+    "jenkins": false
+  },
+
+  "off_limits_proposed": [
+    ".git/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".agents/**",
+    "AGENTS.md",
+    ".mcp.json",
+    "compass.yaml",
+    ".playwright-compass.yaml",
+    "*.env*",
+    ".env",
+    ".env.*",
+    "node_modules/**",
+    "build/**",
+    "buildcache/**",
+    "packages/*/build/**",
+    "packages/*/node_modules/**",
+    "bun.lock",
+    "patches/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".github/workflows/**"
+  ],
+
+  "regulated_repo_signals": [
+    { "kind": "security-policy", "path": "SECURITY.md" }
+  ],
+  "regulated_repo_warning_required": false,
+
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) — untouched by default, but they encode the conventions codegen must match.",
+    "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
+    ".gitignore does NOT cover .sdlc/ — run artifacts are visible to git add -A.",
+    ".gitignore contains a repo-wide '*.mjs' rule — any .mjs the plugin emits into user source would be silently untracked.",
+    ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
+    "No repo-local routing-policy.yaml — shipped policy applies."
+  ],
+
+  "repo_state_risks": [
+    {
+      "kind": "gitignore_missing_sdlc",
+      "severity": "medium",
+      "detail": ".sdlc/ untracked but visible to git add -A."
+    },
+    {
+      "kind": "aggressive_gitignore",
+      "severity": "medium",
+      "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs."
+    },
+    {
+      "kind": "external_format_hooks",
+      "severity": "low",
+      "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
+    },
+    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use." },
+    { "kind": "submodules", "severity": "none", "detail": "No submodules." },
+    {
+      "kind": "dirty_tree",
+      "severity": "none",
+      "detail": "Clean apart from untracked .sdlc/."
+    }
+  ],
+
+  "intent_scope": {
+    "hint": "feature-extend-weekbody-multiday-drag",
+    "primary_package": "packages/web",
+    "weekbody_component_exists": false,
+    "weekbody_note": "No component named WeekBody exists. The week-view body is composed by Grid.tsx via AllDayRow > MainGrid > EventGrid.",
+    "key_gap": "All-day row creation is click-only (useAllDayDraftCreation creates a fixed 1-day draft on mousedown). The timed grid has true drag-create via useTimedDraftCreation. Multi-day drag-create in the all-day row does not exist."
+  }
+}
