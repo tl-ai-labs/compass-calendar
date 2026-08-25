@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "active": false,
+  "mode": "brownfield",
+  "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+  "strict": true,
+  "allowlist": [
+    "README.md"
+  ],
+  "off_limits": [
+    ".env",
+    ".env.*",
+    ".mcp.json",
+    ".cursor/rules/**",
+    ".claude/settings.local.json",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    ".sdlc/**",
+    ".git/**",
+    ".claude/**",
+    ".cursor/**",
+    ".codex/**",
+    ".agents/**",
+    "AGENTS.md",
+    "packages/**",
+    "docs/**",
+    ".gitignore"
+  ],
+  "closed_at": "2026-08-25T09:55:00Z",
+  "closed_note": "Run 20260825-090211-docs-weekly-view-interactions-v4 closed at Gate 4 (accepted). Nothing committed."
+}

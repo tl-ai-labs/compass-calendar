@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+  "intent": "docs",
+  "git_head_before": "c3c59a36658d435273b033a2f0346012b5a5c998",
+  "git_head_after": "c3c59a36658d435273b033a2f0346012b5a5c998",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4/requirements.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:469c5682aa1b68dae835da56b2821ce52a8f8d8c1059e0e9ce7f227fd17a3df9",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct_requirements",
+      "written_at": "2026-08-25T09:17:30.447Z"
+    },
+    {
+      "path": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4/packets.json",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:f5b7f2f98305c9089af58ca63f85eb71f262ff25d2f36ac1191651cb3e7eba24",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct_plan",
+      "written_at": "2026-08-25T09:21:24.776Z"
+    },
+    {
+      "path": "README.md",
+      "existed_before": true,
+      "sha_before": "sha256:1ec462bb4c3bb475844e7c00e14039b61382582779eb679effaf53b1a0f92f35",
+      "sha_after": "sha256:81582a6d60be681feb0412628344d9a99b7ab2ce59e251552f495bc3ae3097af",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_docs_001_r1",
+      "written_at": "2026-08-25T09:26:09.524Z"
+    },
+    {
+      "path": "README.md",
+      "existed_before": true,
+      "sha_before": "sha256:81582a6d60be681feb0412628344d9a99b7ab2ce59e251552f495bc3ae3097af",
+      "sha_after": "sha256:aa22b3caab75b93be2df0cdea4332fa3598893dad3b16e9d4dbdfda7e7aadb4c",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4/backups/README.md",
+      "packet_id": "tp_docs_001_refine",
+      "written_at": "2026-08-25T09:33:35.240Z"
+    },
+    {
+      "path": "README.md",
+      "existed_before": true,
+      "sha_before": "sha256:aa22b3caab75b93be2df0cdea4332fa3598893dad3b16e9d4dbdfda7e7aadb4c",
+      "sha_after": "sha256:7afec71b753188499e47df1788cdbdce7de4608cdd9e964b2e8a61f8a594e980",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4/backups/README.md",
+      "packet_id": "tp_docs_001_style",
+      "written_at": "2026-08-25T09:34:16.714Z"
+    },
+    {
+      "path": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4/security_review.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:4d5fa2a9466af987da9e5683152ec418918e14f50eb40bfe51b04ff3fba0b541",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct_security",
+      "written_at": "2026-08-25T09:45:16.459Z"
+    }
+  ]
+}

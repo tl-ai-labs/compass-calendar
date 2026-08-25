@@ -1,15 +1,20 @@
 {
   "schema_version": 1,
-  "plugin_version": "0.5.0",
+  "plugin_version": "0.6.0",
   "built_at": "2026-08-20T04:32:08Z",
   "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
   "mode": "first-time",
-
   "git": {
-    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
-    "branch": "main",
-    "dirty": false,
-    "dirty_note": "Only untracked .sdlc/ present; no tracked-file modifications.",
+    "head": "c3c59a36658d435273b033a2f0346012b5a5c998",
+    "branch": "CMP-102/opus-plus-sonnet",
+    "dirty": true,
+    "dirty_files": [
+      {
+        "status": "M",
+        "path": ".claude/settings.json"
+      }
+    ],
+    "dirty_note": "One tracked modification: .claude/settings.json carries the manually-registered mmo write-contract PreToolUse hook. It is uncommitted and it is on the off-limits list, so this run will not touch it. Branch changed from the baseline's 'main' to a feature branch.",
     "remotes": [
       {
         "name": "origin",
@@ -17,9 +22,9 @@
       }
     ],
     "gitignore_covers_sdlc": false,
-    "tracked_file_count": 1582
+    "gitignore_sdlc_detail": "Commit c3c59a36 added narrow .sdlc rules on purpose ('keep the reports, drop the worker save-state blobs'): '.sdlc/**/_gemini_worker_save/', '.sdlc/local/debug.log', '.hook-logs/'. There is no blanket '.sdlc/' rule, so .sdlc/runs/** — including this run's packets, changes.md and backups/ — stays untracked-but-visible to 'git add -A'. This is a deliberate policy, not an oversight.",
+    "tracked_file_count": 1583
   },
-
   "topology": {
     "top_level_dirs": [
       ".agents",
@@ -40,7 +45,6 @@
       "packages/scripts/src/cli.ts"
     ]
   },
-
   "stacks": [
     {
       "manifest": "package.json",
@@ -78,17 +82,25 @@
     {
       "manifest": "packages/backend/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["express", "supertokens", "mongodb"]
+      "detected_frameworks": [
+        "express",
+        "supertokens",
+        "mongodb"
+      ]
     },
     {
       "manifest": "packages/core/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["zod"]
+      "detected_frameworks": [
+        "zod"
+      ]
     },
     {
       "manifest": "packages/sync/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["googleapis"]
+      "detected_frameworks": [
+        "googleapis"
+      ]
     },
     {
       "manifest": "packages/scripts/package.json",
@@ -96,13 +108,13 @@
       "detected_frameworks": []
     }
   ],
-
   "adapter_match": {
     "preauthored_adapter": "generic.md",
     "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
-    "adaptive_profile_recommended": true
+    "adaptive_profile_recommended": true,
+    "adaptive_profile_rerun_required": false,
+    "adaptive_profile_note": "Cached profile at .sdlc/baseline/stack-profile.md is reused. No manifest changed, refresh decision is not 'full', and no --refresh-profile was passed, so Tier 2b does not re-trigger."
   },
-
   "test_command_proposed": "bun test:web",
   "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
   "test_command_alternatives": {
@@ -115,34 +127,79 @@
     "diff_aware": "bun run verify"
   },
   "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
-
   "docs_present": [
-    { "path": "README.md", "kind": "readme" },
-    { "path": "AGENTS.md", "kind": "agent-instructions" },
-    { "path": "CONTRIBUTING.md", "kind": "contributing" },
-    { "path": "SECURITY.md", "kind": "security" },
-    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
-    { "path": "docs/README.md", "kind": "docs-index" },
-    { "path": "docs/architecture", "kind": "architecture-dir" },
-    { "path": "docs/frontend", "kind": "docs-subdir" },
-    { "path": "docs/features", "kind": "docs-subdir" }
+    {
+      "path": "README.md",
+      "kind": "readme"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "agent-instructions"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "kind": "contributing"
+    },
+    {
+      "path": "SECURITY.md",
+      "kind": "security"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "kind": "code-of-conduct"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "docs-index"
+    },
+    {
+      "path": "docs/architecture",
+      "kind": "architecture-dir"
+    },
+    {
+      "path": "docs/frontend",
+      "kind": "docs-subdir"
+    },
+    {
+      "path": "docs/features",
+      "kind": "docs-subdir"
+    }
   ],
-
   "ai_configs_detected": [
-    { "path": ".claude/settings.json", "type": "claude-code" },
-    { "path": ".claude/launch.json", "type": "claude-code" },
+    {
+      "path": ".claude/settings.json",
+      "type": "claude-code",
+      "state": "modified-uncommitted"
+    },
+    {
+      "path": ".claude/settings.local.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".claude/launch.json",
+      "type": "claude-code"
+    },
     {
       "path": ".cursor/rules/",
       "type": "cursor",
       "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing"
     },
-    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    {
+      "path": ".cursor/hooks.json",
+      "type": "cursor-hooks"
+    },
     {
       "path": ".cursor/hooks/format-after-edit.ts",
       "type": "cursor-hook-script"
     },
-    { "path": ".codex/config.toml", "type": "codex" },
-    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    {
+      "path": ".codex/config.toml",
+      "type": "codex"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "type": "codex-hooks"
+    },
     {
       "path": ".agents/skills/",
       "type": "shared-agent-skills",
@@ -152,19 +209,22 @@
       "path": ".agents/skills/chaos/agents/openai.yaml",
       "type": "external-model-agent-config"
     },
-    { "path": "AGENTS.md", "type": "agent-instructions" }
+    {
+      "path": "AGENTS.md",
+      "type": "agent-instructions"
+    }
   ],
   "ai_configs_absent": [
     ".mcp.json (gitignored, not present on disk)",
     "CLAUDE.md",
+    "CLAUDE.local.md",
     ".cursorrules",
     ".aider.conf.yml",
     ".continue/",
     ".github/copilot-instructions.md",
     ".roo/",
-    "routing-policy.yaml"
+    "routing-policy.yaml (no repo-local override at any depth <= 3)"
   ],
-
   "env_keys_by_file": {},
   "env_keys_all": [],
   "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
@@ -178,10 +238,11 @@
     "POSTHOG_KEY",
     "TZ"
   ],
-
   "monorepo": {
     "type": "lerna+bun-workspaces",
-    "workspace_globs": ["packages/*"],
+    "workspace_globs": [
+      "packages/*"
+    ],
     "packages": [
       {
         "name": "@compass/web",
@@ -222,11 +283,9 @@
       "@compass/scripts": "packages/scripts/src"
     }
   },
-
   "submodules": [],
   "lfs": false,
   "lfs_patterns": [],
-
   "infra_hints": {
     "dockerfile": false,
     "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
@@ -238,7 +297,6 @@
     "circleci": false,
     "jenkins": false
   },
-
   "off_limits_proposed": [
     ".git/**",
     ".claude/**",
@@ -264,51 +322,111 @@
     "blob-report/**",
     ".github/workflows/**"
   ],
-
   "regulated_repo_signals": [
-    { "kind": "security-policy", "path": "SECURITY.md" }
+    {
+      "kind": "security-policy",
+      "path": "SECURITY.md"
+    }
   ],
   "regulated_repo_warning_required": false,
-
   "coexistence_notes": [
     "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) — untouched by default, but they encode the conventions codegen must match.",
     "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
-    ".gitignore does NOT cover .sdlc/ — run artifacts are visible to git add -A.",
+    "Your .gitignore does not blanket-cover .sdlc/. Commit c3c59a36 added targeted rules for the heavy blobs only and deliberately keeps run reports trackable, so .sdlc/runs/** artifacts stay untracked but visible to 'git add -A'. Gate 0 need not offer to add a blanket rule unless you want one.",
     ".gitignore contains a repo-wide '*.mjs' rule — any .mjs the plugin emits into user source would be silently untracked.",
+    ".gitignore contains a repo-wide '*.log' rule, which is why .sdlc/pre-check/orchestrator.log is already ignored.",
     ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
-    "No repo-local routing-policy.yaml — shipped policy applies."
+    "No repo-local routing-policy.yaml — the shipped/selected policy applies.",
+    "The mmo write-contract PreToolUse hook is registered by hand in .claude/settings.json and that edit is UNCOMMITTED. The enforcement mechanism for this run therefore lives only in the working tree; a checkout, stash or reset would silently disarm it."
   ],
-
   "repo_state_risks": [
     {
-      "kind": "gitignore_missing_sdlc",
+      "kind": "dirty_tree",
+      "severity": "low",
+      "detail": "One tracked modification: .claude/settings.json (uncommitted write-contract hook registration). It is off-limits for this run, so it will not be clobbered, but it also will not be restored by rollback if lost."
+    },
+    {
+      "kind": "write_contract_uncommitted",
       "severity": "medium",
-      "detail": ".sdlc/ untracked but visible to git add -A."
+      "detail": "The write-contract hook is registered via an uncommitted edit to .claude/settings.json. Verify with a real Write probe before trusting the contract; do not assume the plugin's own hooks/hooks.json declaration fires in this environment."
+    },
+    {
+      "kind": "gitignore_missing_sdlc",
+      "severity": "low",
+      "detail": ".sdlc/runs/** is untracked but visible to 'git add -A'. Deliberate per commit c3c59a36 — reports are meant to be committable."
     },
     {
       "kind": "aggressive_gitignore",
       "severity": "medium",
-      "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs."
+      "detail": "Repo-wide '*.mjs', '*.log' and '*.env*' ignore globs. Anything the plugin writes matching these into user source is silently untracked."
     },
     {
       "kind": "external_format_hooks",
       "severity": "low",
-      "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
+      "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output between write and review."
     },
-    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use." },
-    { "kind": "submodules", "severity": "none", "detail": "No submodules." },
     {
-      "kind": "dirty_tree",
+      "kind": "runs_dir_empty",
+      "severity": "info",
+      "detail": ".sdlc/runs/ was empty at discovery time (0 files). A local .git/hooks/post-checkout parks prior runs per-branch; this is local-only state and is lost on reclone. Do not treat the absence of prior run dirs as evidence that no prior runs happened."
+    },
+    {
+      "kind": "branch_mismatch",
+      "severity": "info",
+      "detail": "Current branch is CMP-102/opus-plus-sonnet; the run id references docs-weekly-view-interactions-v4 and the session opened on CMP-103/opus-plus-flash-v37. Confirm at Gate 0 that this is the branch you want the run to land on."
+    },
+    {
+      "kind": "lfs",
       "severity": "none",
-      "detail": "Clean apart from untracked .sdlc/."
+      "detail": "No .gitattributes LFS filters; no Git-LFS in use."
+    },
+    {
+      "kind": "submodules",
+      "severity": "none",
+      "detail": "No .gitmodules; no submodules."
     }
   ],
-
-  "intent_scope": {
-    "hint": "feature-extend-weekbody-multiday-drag",
-    "primary_package": "packages/web",
-    "weekbody_component_exists": false,
-    "weekbody_note": "No component named WeekBody exists. The week-view body is composed by Grid.tsx via AllDayRow > MainGrid > EventGrid.",
-    "key_gap": "All-day row creation is click-only (useAllDayDraftCreation creates a fixed 1-day draft on mousedown). The timed grid has true drag-create via useTimedDraftCreation. Multi-day drag-create in the all-day row does not exist."
+  "ai_configs_delta_since_baseline": ".claude/settings.local.json newly observed on disk (untracked, covered by a global core.excludesfile pattern set). No new AI tool onboarded. No .mcp.json appeared. No repo-local routing-policy.yaml appeared.",
+  "docs_topology": {
+    "note": "Refreshed for the 'docs' intent hint even though group 5 was not in the delta — cheap, and downstream needs it.",
+    "markdown_file_count": 43,
+    "subdirs": [
+      "docs/CI-CD",
+      "docs/Config",
+      "docs/acceptance",
+      "docs/architecture",
+      "docs/backend",
+      "docs/development",
+      "docs/features",
+      "docs/frontend",
+      "docs/self-hosting"
+    ],
+    "intent_relevant_existing": [
+      {
+        "path": "docs/frontend/week-drag-interaction.md",
+        "note": "Nearest existing neighbour to 'weekly-view-interactions'. Establishes the house style: H1 title, one-line summary, '## The one-sentence model' bolded thesis, '## Why this exists', '## How it works now' with a mermaid diagram, relative cross-links to sibling docs (e.g. ./responsive-layout.md)."
+      }
+    ]
+  },
+  "last_refresh": {
+    "at": "2026-08-25T09:04:22Z",
+    "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+    "decision": "incremental",
+    "from_head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "to_head": "c3c59a36658d435273b033a2f0346012b5a5c998",
+    "groups_rescanned": [
+      "group-1-git-state",
+      "group-6-ai-configs"
+    ],
+    "groups_carried_forward": [
+      "group-2",
+      "group-3",
+      "group-4",
+      "group-5",
+      "group-7",
+      "group-8",
+      "group-9"
+    ],
+    "note": "Merged in place. Stack/topology/env/monorepo/infra sections are unchanged since built_at 2026-08-20T04:32:08Z — no manifest or user source moved."
   }
 }

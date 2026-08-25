@@ -15,6 +15,9 @@ real vendor-metered mechanical spend — the split is in each run's `manifest.js
 | 2026-08-22 | `20260822-040449-feature-extend-one-click-join` | brownfield · feature-extend | 4 written (3 edit, 1 new) | 2298/0 → 2309/0 (+11, 0 new failures) | $5.46 ⚠ | accepted → partially committed `53f057e4` on `CMP-103/flash-agsdk-only` (anchor 4189de1) |
 | 2026-08-22 | `20260822-062945-feature-extend-one-click-join` | brownfield · feature-extend | 7 written (6 edit, 1 new) | 2298/0 → 2326/0 (+28, 0 new failures) | $5.32 | accepted → **uncommitted** on `CMP-103/opus-only-v5` (anchor 4189de1) |
 | 2026-08-23 | `20260822-125447-refactor-week-day-interaction` | brownfield · refactor | 24 written (22 edit, 2 new) | 2298/0 → 2298/0 (+0 by design, 0 new failures) | $4.94 ⚠ | accepted → **uncommitted** on `CMP-104/flash-agsdk-only` (anchor 4189de1) |
+| 2026-08-24 | `20260824-002919-refactor-week-day-interaction` | brownfield · refactor | 43 written | 2298/0 → 2308/0 (+10, 0 new failures) | $1.87 ⚠ | accepted → **uncommitted** on `CMP-104/opus-plus-flash-v37` (anchor 4189de1) |
+| 2026-08-24 | `20260824-214500-feature-extend-weekbody-multiday-drag` | brownfield · feature-extend | 8 written | 2298/0 → 2337/0 (+39, 0 new failures) | $8.08 ⚠ | accepted → **uncommitted** on `CMP-101/opus-plus-sonnet` (anchor 4189de1) |
+| 2026-08-25 | `20260825-090211-docs-weekly-view-interactions-v4` | brownfield · docs | 1 written (1 edit, +14/−0) | none — no markdown linter exists in this repo | $1.71 ⚠ | accepted → **uncommitted** on `CMP-102/opus-plus-sonnet` (anchor c3c59a3) |
 
 ⚠ **The two rows above are not directly comparable.** `opus-plus-flash-v37` prices its Opus spend, so
 its $4.26 is fully loaded. `flash-agsdk-only` is deliberately single-model with no Claude pricing
@@ -344,3 +347,68 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260825-090211-docs-weekly-view-interactions-v4`
+
+**CMP-102 · `docs` · `doc_update` · `opus-plus-sonnet` · `estimated` · branch
+`CMP-102/opus-plus-sonnet` @ `c3c59a36` · $1.71 · 1 file · +14/−0 · nothing tool-validated ·
+uncommitted.**
+
+Fourth arm of the CMP-102 per-policy comparison. One `## Weekly view interactions` section
+added to the root `README.md`, between `## Features` and `## Tech stack`.
+
+**The ticket was wrong about two of its three subjects, and the run proved it from source
+rather than writing what it was told.** "Per-calendar event colouring" does not exist:
+`resolveEventPalette` (`theme.util.ts`) resolves `colorHex → color slot → EVENT_PALETTES[theme]`,
+so the last fallback is the *theme* default and the calendar's colour never enters the chain.
+"Multi-day selection in the all-day row" does not exist either: `useAllDayDraftCreation.ts`
+sets `endDate = dayjs(startDate).add(1, "day")` — a **one-day** draft — and CMP-101's
+`all-day.create.ts` is absent from this branch. Only edge-stretching of an existing event is
+real. Both were surfaced at Gate 1 as blocking questions, both independently re-verified by
+the coordinator before the user ruled, and both documented as the code behaves. **A run that
+had trusted its brief would have shipped two fabricated features into a public README.**
+
+**Senior review earned its cost here, which is unusual for a docs run.** It caught that
+`SHIFT` + `←` `→` does *nothing* to a Tab-focused edge on a **timed** event —
+`event-nudge.util.ts:152` returns `null` when `movement.minutes === 0`, and timed edges move
+only on up/down — so the first draft would have sent readers to press dead keys on an ordinary
+meeting. It also caught that the calendar stripe is gated on `lookup.size <= 1`
+(`useCalendarLookup.ts:97`), meaning single-calendar users never see one. Both corrections
+changed shipped text. At $0.5544 senior review was the single largest line item, and on this
+evidence it was the phase that paid for itself.
+
+**Nothing validated this change, and the report says so.** `bun lint` exits 1 for reasons not
+attributable to the run — `bunx biome check README.md` reports `Checked 0 files ... ignored:
+README.md`, and all three errors are formatter errors on `.sdlc/*.json` plumbing written by
+Gate 0 discovery. The repo has **no markdown linter at all**. Human review at Gate 4 was the
+only real gate, which is the honest description of every docs run in this repo to date.
+
+**Two plugin defects surfaced, both recorded rather than worked around.** `PROC-05`: the
+`security-reviewer` subagent **refused to write its own artifact**, reasoning from
+`write-contract.json` that `.sdlc/**` is off-limits while the allowlist is `["README.md"]`.
+The refusal was wrong — the PreToolUse hook implements a run-record carve-out that the contract
+JSON does not encode — and writes to the same directory from the orchestrator and from
+`senior-reviewer` succeeded in this very run. `BACKUP-01`: the run's backup is **not a pre-run
+snapshot**. Three sequential writes to `README.md` are recorded; the backup was skipped on the
+first (`backup_path: null` — the one write where it mattered) and overwritten on each later one,
+so `backups/README.md` holds an intermediate draft that already contains the new section.
+The escape hatch survives **only incidentally**, because a tracked, committed file routes to
+`git checkout <baseline-sha>` and never consults the backup.
+
+**Cost, and why it is not a policy verdict.** $1.7065 total = **$0.4523 vendor-metered** (two
+Sonnet dispatches, real) + **$1.2542 estimated** (in-session Opus booking `cached = 0`, an upper
+bound). The first docs dispatch was rejected on validation and re-run, so two were paid for.
+Against the prior CMP-102 arms — $0.62 `opus-plus-flash-v37`, $0.81 `flash-agsdk-only`, $1.83
+`opus-only-v5` — this arm is second-most expensive, but the four totals **differ in metering and
+are not a like-for-like comparison**. What is supportable: this is the only CMP-102 arm that
+rejected its ticket's premises on evidence, and the only one whose reviewer changed shipped text.
+The three prior arms documented features that, on this branch, do not exist.
+
+**A close-out correction, recorded rather than quietly fixed.** The coordinator's own Gate 3
+relay cited `calendar.util.ts:109` for the stripe gate. That line is `spansMultipleAccounts()`,
+an unrelated helper; the real gate is `useCalendarLookup.ts:97`. The claim was right, the
+citation was not — caught by the orchestrator at close-out and corrected in both artifacts.
+
+**Also noted at close-out:** the two prior rows (eleven, twelve) had narrative sections but were
+never added to the summary table above, contrary to its stated one-row-per-run contract. Both
+backfilled from `ledger.json` in this pass.

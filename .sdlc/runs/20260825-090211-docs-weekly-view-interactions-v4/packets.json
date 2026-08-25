@@ -1,0 +1,48 @@
+[
+  {
+    "id": "tp_docs_001",
+    "phase": "docs",
+    "task_type": "doc_update",
+    "module": "readme",
+    "pass_id": "20260825-090211-docs-weekly-view-interactions-v4",
+    "intent": "docs",
+    "artifact_path": "README.md",
+    "retry_count": 0,
+    "instruction": "Write ONE new markdown section for the root README of Compass Calendar, a calendar app. Heading exactly: '## Weekly view interactions'. Body: a one-line lead-in sentence, then three labelled bullet groups covering (a) multi-day all-day events, (b) recurring events, (c) event colors. Return ONLY the section markdown in the 'section' field - no surrounding file content, no code fences around it. VOICE: second person ('you'), present tense, end-user facing, matching the sibling '## Features' section. HARD BANS: no file paths, no component/function names, no CSS values, no pixel or percentage numbers, no mermaid, no code fences, no tables, no links. Keyboard keys use single backticks exactly as the README already does: `SHIFT`, `Tab`, and the arrow glyphs `<-` `->` written as the unicode left and right arrows. Every sentence MUST be supported by a fact in inputs[0]; write nothing that is not there. Facts marked FORBIDDEN must not appear in any form, not even softened or hedged. Target 9 to 13 lines total including the heading.",
+    "inputs": [
+      {
+        "path": "VERIFIED_FACTS.md",
+        "reason": "The only permitted source of truth. Each fact was read from source on this branch and confirmed twice.",
+        "content": "# Verified facts - Compass Calendar weekly view, branch CMP-102/opus-plus-sonnet @ c3c59a36\n\n## A. All-day row and multi-day events\nA1. The week grid has an all-day row above the timed grid, spanning the visible day columns.\nA2. Clicking an empty spot in the all-day row starts a new all-day event covering exactly ONE day.\nA3. An existing all-day event card has a grab handle at its left and right ends. Dragging either one with the mouse moves that end to a different day, so the event stretches across, or shrinks within, a range of days. The cursor becomes a horizontal resize cursor over a handle.\nA4. Keyboard equivalent: pressing Tab while an event is focused cycles what you are aiming at, in the order whole event -> start date -> end date -> back to whole event.\nA5. With the start or end aimed at, SHIFT plus the left or right arrow moves just that end by one day. With the whole event aimed at, the same keys move the entire event by one day.\nA6. A screen reader announces which end you are editing, and announces the new date after each move.\nA7. An all-day event that covers several days washes every day column it touches in a faint tint of that event's color, so the span is visible at a glance across the week. When two all-day events overlap on a column, the one drawn topmost supplies the tint.\nA8. Edges will not move past the edge of the week you are looking at.\n\n## B. Recurring events\nB1. An event that repeats shows a small repeat symbol in the bottom-right corner of its card. Both all-day cards and timed cards show it.\nB2. The symbol is hidden when the card is too narrow to fit it without crowding the title.\nB3. The symbol is decorative only. Screen readers instead hear the word 'Recurring' at the start of the card's description.\nB4. Editing or deleting one occurrence of a repeating event asks you to choose a scope first. The three choices are worded in the app as: This Event, This and Following Events, All Events.\nB5. Choosing the single-occurrence scope leaves every other occurrence in the series untouched.\n\n## C. Event colors\nC1. You set a color on an individual EVENT, from a picker in the event form. There are eleven named colors: lavender, mint, plum, coral, gold, orange, blue, slate, indigo, green, red.\nC2. Those eleven line up one-for-one with Google Calendar's eleven event colors, in both directions, so a color you set in Compass shows up in Google Calendar and a color set in Google Calendar shows up in Compass.\nC3. An event with no color of its own is drawn in the current theme's default event color.\nC4. The calendar an event belongs to is shown as a thin vertical stripe down the left edge of its card, in that calendar's color.\nC5. When the same event exists on two connected accounts, Compass shows one card and its left stripe becomes a two-color gradient blending both calendars' colors.\nC6. Color is never the only cue: the calendar's name, and the second account's email address when there is one, are part of the card's description for screen readers.\nC7. Events that have already finished are drawn in a dimmed version of their color.\n\n## FORBIDDEN - these are NOT true on this branch, never write them\nF1. Do NOT say you can drag across several days in the all-day row to CREATE a multi-day event. Creation is always one day; only an existing event can be stretched.\nF2. Do NOT say events are colored by, take the color of, or inherit the color of the calendar they belong to. They are not. The calendar shows only as the left stripe (C4).\nF3. Do NOT say SHIFT plus up or down arrow does nothing to an all-day event. Do not mention the up or down arrows at all in the all-day context.\nF4. Do NOT mention the repeat symbol being announced to screen readers (it is hidden from them - see B3).\nF5. Do NOT describe drag-and-drop creation, resizing, or any behaviour of the TIMED grid beyond what B1 says.\nF6. Do NOT invent a keyboard shortcut that is not A4 or A5."
+      },
+      {
+        "path": "README.md (excerpt: the sibling section, for voice only)",
+        "reason": "Match this voice, person and bullet style exactly. Do not reproduce, reword or extend these lines.",
+        "content": "## Features\n\nCool things you can do with in Compass\n\n- Find the perfect slot for an event with your keyboard: `SHIFT` + `↑` `↓` `←` `→`\n- Do everything from the cmd palette\n- Edit events smoothly\n- Google Calendar sync\n\nThings you can't do in Compass (yet):\n\n- See attendees, reminders, locations, and meeting links\n- See your Outlook events"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string",
+          "description": "The complete markdown section, starting with the line '## Weekly view interactions'. No trailing newline needed."
+        }
+      },
+      "required": ["section"],
+      "additionalProperties": false
+    },
+    "acceptance": [
+      "section starts with the exact line '## Weekly view interactions'",
+      "section contains exactly one '##' heading and no other heading of any level",
+      "all three subjects appear: multi-day all-day events, recurring events, event colors",
+      "every factual sentence maps to a numbered fact in VERIFIED_FACTS.md sections A, B or C",
+      "no sentence violates any FORBIDDEN item F1-F6",
+      "written in second person, bulleted, matching the '## Features' voice",
+      "no file paths, no component names, no pixel or percentage values, no links, no tables, no code fences, no mermaid",
+      "keyboard keys appear in single backticks, e.g. `SHIFT`, `Tab`, `←`, `→`",
+      "total length between 9 and 13 lines inclusive of the heading"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 3000 }
+  }
+]

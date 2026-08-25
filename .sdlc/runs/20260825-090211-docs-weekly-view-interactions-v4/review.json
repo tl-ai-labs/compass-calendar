@@ -1,0 +1,182 @@
+{
+  "module": "README.md :: ## Weekly view interactions",
+  "mode": "brownfield",
+  "intent": "docs",
+  "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+  "scope": [
+    "README.md"
+  ],
+  "verdict": "needs_changes",
+  "headline": "APPROVE-WITH-NITS - 6 of 8 bullets fully supported, 2 overstated (bullet 2 keyboard axis, bullet 7 stripe gating). No blockers. All mechanical acceptance criteria pass. No markdown linter exists in this repo; nothing was tool-validated.",
+  "mechanical_acceptance": {
+    "additions_only": "PASS - git diff --numstat README.md => 13 insertions, 0 deletions; no existing line reworded or reordered",
+    "one_new_heading": "PASS - single new '## Weekly view interactions' at README.md:37",
+    "placement": "PASS - sits between '## Features' (README.md:23) and '## Tech stack' (README.md:50)",
+    "no_paths_components_numbers_links_tables_fences_mermaid": "PASS - prose only; 'eleven' spelled out; no px/% values; no file paths or component names",
+    "key_backtick_convention": "PARTIAL - keys are backticked and arrows use the existing glyph style (README.md:27), but `Tab` is mixed-case where the only precedent (`SHIFT`) is uppercase"
+  },
+  "bullet_verdicts": [
+    {
+      "bullet": 1,
+      "text": "Multi-day events stretch when you drag the grab handle at either end to a new day.",
+      "verdict": "SUPPORTED",
+      "evidence": [
+        "packages/web/src/grid/components/AllDayEventCard.tsx:202-223 - start/end resize handles on the left and right edges (EVENT_RESIZE_HANDLE_ATTRIBUTE 'startDate'/'endDate'), col-resize cursor at :125",
+        "packages/web/src/grid/interaction/math/all-day.resize.ts:51-56 - the dragged edge snaps to the nearest day column",
+        "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts:38-56 - the commit shifts startDate/endDate by whole days"
+      ],
+      "notes": "No creation claim is made, so the CMP-101 multi-day-create trap is avoided. Handles are transparent (opacity 0) hit areas revealed by the resize cursor - 'grab handle' is generous but not false. Timed multi-day display bars in the all-day row are read-only (isGridEventContentReadOnly, useCalendarLookup.ts:130-134) and cannot be stretched; the bullet reads as all-day, which is correct."
+    },
+    {
+      "bullet": 2,
+      "text": "Keyboard editing cycles focus with `Tab` and moves the aimed-at part with `SHIFT` + `<-` `->`.",
+      "verdict": "OVERSTATED",
+      "evidence": [
+        "packages/web/src/shortcuts/keymap.ts:37 - edgeFocus hotkey is 'Tab'; packages/web/src/grid/shortcuts/useGridEventEditShortcuts.ts:642-647 binds Tab and Shift+Tab to cycleEdgeFocus",
+        "packages/web/src/grid/shortcuts/edge-focus.store.ts:26 - EDGE_CYCLE = [null, 'startDate', 'endDate'] (whole event -> start -> end)",
+        "packages/web/src/grid/shortcuts/useGridEventEditShortcuts.ts:458-474 - forward Tab enters at the start edge and EXITS past the end edge rather than wrapping",
+        "packages/web/src/shortcuts/keymap.ts:28-36 - moveEvent is Shift+Arrow",
+        "packages/web/src/common/utils/event/event-nudge.util.ts:19-22 - ArrowLeft/Right = -/+1 day",
+        "packages/web/src/common/utils/event/event-nudge.util.ts:141-155 (nudgeEventEdgeDates) - all-day edge requires movement.days !== 0; TIMED edge returns null when movement.minutes === 0"
+      ],
+      "notes": "With an edge focused, useGridEventEditShortcuts.ts:364-367 routes arrows to moveFocusedEventEdge BEFORE the all-day ArrowDown->timed conversion at :370, so the ArrowDown interception does not affect the documented path and the deliberate silence about up/down is safe for all-day events. The real gap is timed events: Shift+Left/Right on a focused timed START or END edge does nothing at all (only Shift+Up/Down moves a timed edge, by one grid time step). The sentence is true for all-day edges and for whole-event focus (both axes move a whole event by a day), false for a timed event's aimed-at edge."
+    },
+    {
+      "bullet": 3,
+      "text": "Multi-day spans tint every day column they cross in a faint wash of their color.",
+      "verdict": "SUPPORTED (minor caveat)",
+      "evidence": [
+        "packages/web/src/grid/utils/allDayColumnTint.util.ts:83-125 (mode 'date') + allDayEventOnDay.util.ts:11-23 - every column the exclusive span covers is a candidate",
+        "packages/web/src/grid/utils/allDayColumnTint.util.ts:9,22-23 - color-mix wash at a low fixed percent ('faint wash', no number leaked into the README)",
+        "packages/web/src/views/Week/components/Grid/Grid.tsx:94-103 - week view passes mode 'date'",
+        "packages/web/src/grid/components/AllDayGridRow.tsx:99-113 - the wash is painted on the column header cell",
+        "packages/web/src/grid/utils/allDayColumnTint.util.test.ts:83 'tints every day a multi-day all-day event spans'"
+      ],
+      "notes": "Caveat: the tint is not exclusive to multi-day spans (any all-day chip tints its own column), and on a contested column only the topmost chip (lowest row) wins - allDayColumnTint.util.ts:60-76 and its test at :101. So a multi-day span that sits below another chip will not tint that particular column. Advisory only."
+    },
+    {
+      "bullet": 4,
+      "text": "The repeat symbol in the corner of a card shows an event is part of a recurring series.",
+      "verdict": "SUPPORTED (minor caveat)",
+      "evidence": [
+        "packages/web/src/grid/components/EventRepeatIcon.tsx:15-22 - 'absolute right-1 bottom-0.5' => bottom-right corner",
+        "packages/web/src/grid/components/AllDayEventCard.tsx:75-77,201 - rendered when isRecurringEvent(event) and not a placeholder and the card is at least a minimum width",
+        "packages/web/src/grid/components/TimedEventCard.tsx:58,120 - same gating with its own minimum width"
+      ],
+      "notes": "Position claim is exact. 'In the corner' does very slightly imply always-visible: the glyph is suppressed on cards narrower than the minimum and on drag placeholders. Recurrence is still announced in the accessible label (AllDayEventCard.tsx:128), so no information is lost - advisory nit, not a fix."
+    },
+    {
+      "bullet": 5,
+      "text": "Editing or deleting one occurrence asks you to pick a scope: this event, this and following, or all.",
+      "verdict": "SUPPORTED (minor caveat)",
+      "evidence": [
+        "packages/web/src/common/types/web.event.types.ts:21-25 - 'This Event' / 'This and Following Events' / 'All Events'",
+        "packages/web/src/views/Forms/EventForm/RecurrenceScopeDialog.tsx:13-17 - the three options in that order",
+        "packages/web/src/views/Forms/EventForm/RecurrenceScopeDialog.tsx:52 - delete path reuses the same dialog ('Delete events'), save path uses 'Apply changes to'",
+        "packages/web/src/events/recurrence/useRecurrenceScopeConfirmation.ts:62-90 - prompt raised for both save and delete"
+      ],
+      "notes": "The lowercase shortened paraphrase is faithful to the app strings. Caveat: when the recurrence RULE itself was changed, only two options are offered (RecurrenceScopeDialog.tsx:19-22) - 'this event' is withheld. Advisory only."
+    },
+    {
+      "bullet": 6,
+      "text": "You choose an event color individually from eleven named options in the event form.",
+      "verdict": "SUPPORTED",
+      "evidence": [
+        "packages/core/src/types/event-color.contracts.ts:6-18 - exactly 11 slots",
+        "packages/web/src/common/styles/theme.util.ts:38-53 - each slot has a human-readable label ('Lavender', 'Mint', ...)",
+        "packages/web/src/views/Forms/EventForm/EventColorPicker/EventColorPicker.tsx:11,59-74 - one swatch per slot with its label as aria-label",
+        "packages/web/src/views/Forms/EventForm/EventForm.tsx:821 - mounted in the event form"
+      ],
+      "notes": "There is a twelfth 'Calendar default' swatch (EventColorPicker.tsx:49-58) that clears the color; 'eleven named options' still counts correctly since the default is not one of the named colors. 'Individually' is correct - the color is per-event and independent of the calendar."
+    },
+    {
+      "bullet": 7,
+      "text": "The calendar stripe on the left edge of a card shows which calendar the event belongs to.",
+      "verdict": "OVERSTATED",
+      "evidence": [
+        "packages/web/src/grid/components/AllDayEventCard.tsx:180-186 - stripe rendered at 'absolute inset-y-0 left-0' when calendarIdentity is non-null",
+        "packages/web/src/grid/components/TimedEventCard.tsx:317-318 - same stripe on timed cards",
+        "packages/web/src/grid/components/calendar-accent.util.ts:11-21 - filled with that calendar's backgroundColor",
+        "packages/web/src/calendars/useCalendarLookup.ts:97 - resolveCalendarCardIdentity returns null when the lookup has one or zero calendars"
+      ],
+      "notes": "The stripe is deliberately gated on having more than one active calendar, so a single-calendar account never sees it. The README states it unconditionally. Correctly does NOT claim the event takes its calendar's color - packages/web/src/common/styles/theme.util.ts:105-115 falls back to the theme default palette, never the calendar color, so the section stays clear of that trap."
+    },
+    {
+      "bullet": 8,
+      "text": "Your event color syncs two ways with the matching color in Google Calendar.",
+      "verdict": "SUPPORTED",
+      "evidence": [
+        "READ: packages/sync/src/providers/google/google-event.normalizer.ts:98 googleColorIdToSlot(item.colorId) and :117 spread into the parsed content via withColor",
+        "WRITE: packages/sync/src/providers/google/google-event-writer.adapter.ts:306 googleColorIdFields(content.color) inside toGoogleBody, used by the create path at :153 and the patch path at :205",
+        "MAP: packages/sync/src/providers/google/google-color.map.ts:5-34 - 1:1 both-direction map over Google's legacy colorIds 1-11"
+      ],
+      "notes": "Both directions are genuinely wired, not a dead constant map. 'Matching color' is right: the slot list maps 1:1 onto Google's 11 legacy event colors."
+    }
+  ],
+  "trap_checks": {
+    "multi_day_create_across_days": "CLEAR - no bullet claims drag-to-create across days. Creation is always exactly one day: packages/web/src/grid/hooks/useAllDayDraftCreation.ts:48-51 (startDate, exclusive end = startDate + 1 day). CMP-101's all-day.create.ts is CONFIRMED ABSENT on this branch (find over the repo and git ls-files return no such file; the all-day interaction math files present are all-day.drag.ts and all-day.resize.ts only).",
+    "event_inherits_calendar_color": "CLEAR - no bullet claims it. resolveEventPalette (packages/web/src/common/styles/theme.util.ts:105-115) falls back to EVENT_PALETTES[themeName], never the calendar color. Bullet 7 correctly scopes the calendar color to the stripe.",
+    "tab_cycle_and_arrow_axis": "PARTIAL - cycle order and Shift+Left/Right-by-one-day verified for all-day; the up/down omission is safe for all-day, but Shift+Left/Right does not move a TIMED event's focused edge (see bullet 2).",
+    "repeat_icon_corner": "VERIFIED bottom-right; hidden below a minimum card width (advisory, bullet 4).",
+    "scope_wording": "VERIFIED against RecurringEventUpdateScope enum values (bullet 5).",
+    "two_way_google_color": "VERIFIED read + write paths (bullet 8)."
+  },
+  "findings": [
+    {
+      "severity": "major",
+      "file": "README.md:42",
+      "issue": "Bullet 2 states without qualification that `SHIFT` + arrow-left/right 'moves the aimed-at part'. With Tab-focused start/end edges that is only true for all-day events. For a TIMED event, nudgeEventEdgeDates (packages/web/src/common/utils/event/event-nudge.util.ts:141-155) returns null when movement.minutes === 0, so Shift+Left/Right on a focused timed edge does nothing; timed edges only move on Shift+Up/Down. A reader following the README on an ordinary timed meeting will press keys that have no effect.",
+      "fix": "Replace the line with: '- **Keyboard editing** cycles focus between a card and its start or end with `Tab`, then moves the aimed-at end of an all-day event with `SHIFT` + `←` `→`.' (keeps up/down unmentioned, which stays true, and no paths/numbers/links are introduced.)"
+    },
+    {
+      "severity": "minor",
+      "file": "README.md:47",
+      "issue": "Bullet 7 presents the calendar stripe as always present. resolveCalendarCardIdentity (packages/web/src/calendars/useCalendarLookup.ts:97) returns null when one or zero calendars are active, so single-calendar accounts never see a stripe.",
+      "fix": "Replace with: '- When you have more than one calendar, a **stripe** on the left edge of a card shows which one the event belongs to.'"
+    },
+    {
+      "severity": "minor",
+      "file": "README.md:42",
+      "issue": "Key casing is inconsistent with the README's own precedent: line 27 writes `SHIFT`, the new line writes `Tab`.",
+      "fix": "Use `TAB` (or, if mixed case is preferred, that is a separate README-wide decision - do not split the convention in one section)."
+    },
+    {
+      "severity": "minor",
+      "file": "README.md:43",
+      "issue": "Bullet 3 attributes the column tint to multi-day spans and claims every crossed column. Any all-day chip tints its own column, and on a column covered by more than one chip only the topmost (lowest row) wins (packages/web/src/grid/utils/allDayColumnTint.util.ts:60-76, test at :101).",
+      "fix": "Optional: '- The **topmost all-day event** on a day tints that day column in a faint wash of its color.' Only worth taking if bullets 2 and 7 are being edited anyway."
+    },
+    {
+      "severity": "minor",
+      "file": "README.md:44",
+      "issue": "Bullet 4's 'in the corner of a card' reads as always visible; the glyph is suppressed on cards below a minimum width and on drag placeholders (packages/web/src/grid/components/AllDayEventCard.tsx:76-77).",
+      "fix": "Advisory - no change required. Recurrence is still announced in the card's accessible label, so nothing is lost. If touched, 'A **repeat symbol** in the corner of a card marks an event in a recurring series.' is no better; leave as is."
+    },
+    {
+      "severity": "minor",
+      "file": "README.md:45",
+      "issue": "Bullet 5 lists all three scopes unconditionally; when the recurrence rule itself changed, only 'this and following' and 'all' are offered (packages/web/src/views/Forms/EventForm/RecurrenceScopeDialog.tsx:19-22).",
+      "fix": "Advisory - acceptable simplification for a README. No change required."
+    }
+  ],
+  "refinement_packets": [
+    {
+      "task_type": "docs-edit",
+      "instruction": "In README.md, edit ONLY the two bullets inside '## Weekly view interactions'. (1) Replace the keyboard bullet with: '- **Keyboard editing** cycles focus between a card and its start or end with `TAB`, then moves the aimed-at end of an all-day event with `SHIFT` + `←` `→`.' (2) Replace the calendar-stripe bullet with: '- When you have more than one calendar, a **stripe** on the left edge of a card shows which one the event belongs to.' Do not touch any other line, do not add headings, links, tables, code fences, file paths, component names, or pixel/percentage values.",
+      "inputs": [
+        "README.md:42",
+        "README.md:47",
+        "packages/web/src/common/utils/event/event-nudge.util.ts:141-155",
+        "packages/web/src/calendars/useCalendarLookup.ts:97"
+      ],
+      "acceptance": [
+        "git diff README.md shows exactly two changed lines beyond the original addition block, all inside the new section",
+        "No claim remains that SHIFT + left/right moves a timed event's focused edge",
+        "The stripe bullet is conditioned on more than one calendar",
+        "Key names in the section are backticked and uppercase, matching README.md:27",
+        "No file paths, component names, numeric values, links, tables, code fences or mermaid in the section"
+      ]
+    }
+  ],
+  "tooling_note": "This repo has no markdown linter (no markdownlint, remark, or vale config; Biome does not lint markdown). Nothing in this review was machine-validated - every verdict above is a manual read of the cited source lines."
+}

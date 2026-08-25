@@ -1,0 +1,13 @@
+{
+  "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+  "mode": "brownfield",
+  "intent": "docs",
+  "policy": "opus-plus-sonnet",
+  "auth_mode": "estimated",
+  "status": "complete",
+  "phase": "generate_final_report",
+  "checkpoint": "gate-4-accepted",
+  "output_dir": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4",
+  "code_dir": "<repo-root>",
+  "notes": "TERMINAL. Gates 1/3/4 approved, Gate 2 skipped (docs intent). manifest.json status=final. Nothing committed; HEAD unchanged at c3c59a36. Defects recorded: PROC-05 (carve-out not encoded in contract), BACKUP-01 (backup taken at write time, not first write). Main loop still owns: ledger, CLAUDE-SDLC.md, clearing the write contract."
+}

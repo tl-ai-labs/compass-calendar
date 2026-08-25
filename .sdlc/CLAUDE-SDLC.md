@@ -54,6 +54,23 @@ and neither is needed. **This edit lives in `~/.claude/plugins/cache/` and any `
 reverts it** — backup at `opus-plus-flash-v37.yaml.bak-20260824-000357`; re-verify with
 `preflight_dispatch` after any plugin update.
 
+**Updated 2026-08-25.** `.sdlc/project.json`'s `default_policy` is **`opus-plus-sonnet`** (re-set
+2026-08-25T08:53:09Z, `--check-creds` green). **Everything above this paragraph about
+`opus-cli-plus-flash-adc` and `opus-plus-flash-v37` is superseded** — treat the lead paragraph of
+this section as history, not current state. `opus-plus-sonnet` routes **both** tiers through the
+`claude-cli` adapter (Opus premium, Sonnet mechanical), declares **no `required_env`**, needs no
+Vertex ADC, and spawns no `antigravity-worker`. So `auth_mode: estimated` no longer means "premium
+estimated, mechanical vendor-metered": under this policy the mechanical half is still vendor-metered
+through the dispatch server while the in-session Opus half is a `cached=0` upper-bound estimate. The
+two halves remain incomparable — see `ledger.json`'s per-run `cost_split`.
+
+**`.sdlc/project.json` was missing from the working tree when this was set**, which is why the
+re-set was needed. The project-level `.sdlc/` layer had only ever been committed on
+`CMP-101/opus-plus-sonnet` (`ae301922`), so git deleted it on every checkout to any other branch.
+Fixed 2026-08-25 by `c3c59a36`, which tracks that layer on `main` — `project.json`, `baseline/*`,
+`ledger.*`, `pre-check-status.json`, `CLAUDE-SDLC.md` — so every branch cut from `main` now inherits
+it. Branches predating that commit still trigger the deletion until they merge `main`.
+
 Two traps found while doing it: `setup-policy.mjs:320` builds `required_env` by regex over the **raw
 file text, comments included**, so a comment that merely *documents* an `auth: { env: NAME }` pattern
 re-arms the credential check for that var — as of 2026-08-24 `--check-creds` still falsely reports
@@ -431,3 +448,43 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+
+30. **A write contract's own carve-out is invisible to the subagents bound by it (medium, open) —
+    `PROC-05`.** Run `20260825-090211…`: the `security-reviewer` subagent **refused to write its own
+    `security_review.md`**, reasoning correctly from `.sdlc/local/write-contract.json` that `.sdlc/**`
+    sits in `off_limits` while `allowlist` is `["README.md"]`, and returned its report as text
+    instead. The refusal was wrong. `write-contract-check.mjs` implements an unconditional
+    plugin-bookkeeping carve-out (`.sdlc/runs/**`, `.sdlc/local/**`, `.sdlc/baseline/**`, the ledger,
+    `CLAUDE-SDLC.md`) that runs **ahead** of both the off-limits and allowlist checks — and writes to
+    that same directory from the orchestrator and from `senior-reviewer` (`review.json`) all
+    succeeded in this very run. **The contract JSON does not encode the carve-out the hook enforces**,
+    so any subagent that reads the contract literally reaches the wrong conclusion, and does so
+    silently — a refusal looks like caution, not like a bug. Fix belongs in the plugin: either the
+    frozen contract names the run-record path explicitly, or reviewer subagents are told the
+    carve-out exists. Recurring, not a one-off — the same class of gap was recorded on 2026-08-22.
+
+31. **The per-run backup is taken at write time, not at first write, and is overwritten (medium,
+    open) — `BACKUP-01`.** Same run. `provenance.json` records three sequential writes to
+    `README.md`; the backup was **skipped on the first** (`backup_path: null` — the only write where
+    a backup had any value) and **overwritten on each later one**, so `backups/README.md` ended up
+    holding an intermediate draft that **already contains the run's new content** (3,816 bytes
+    against a 2,846-byte original). The file is therefore useless for the purpose it exists for.
+    **The escape hatch survived only incidentally:** `commands/revert.md` routes a pre-existing,
+    tracked, committed file to `git checkout <baseline-sha> -- <path>` and never consults the backup.
+    Had the file been untracked or uncommitted, revert would have restored a draft containing the
+    new section — or refused outright, since that doc says not to proceed when `backup_path` is null
+    on a backup-dependent case. **Fix:** capture the backup on the FIRST write to a path within a run
+    and never overwrite it on subsequent writes to that same path. Until then, do not trust
+    `backups/` for any untracked or uncommitted file.
+
+32. **A ticket's own premise is not evidence, and three runs in a row proved it (info, closed by
+    process).** Run `20260825-090211…` was the fourth arm documenting the same CMP-102 subjects. Two
+    of the three requested subjects **did not exist as described**: "per-calendar event colouring"
+    (`resolveEventPalette` falls back to the *theme* default, never the calendar's colour) and
+    "multi-day selection in the all-day row" (`useAllDayDraftCreation.ts` creates a **one-day** draft;
+    CMP-101's `all-day.create.ts` is absent from this branch). Both were raised as blocking Gate 1
+    questions rather than written as asked. **The three earlier, cheaper arms surfaced neither** and
+    documented features this branch does not have. The durable lesson is for grounding, not cost:
+    require every behavioural claim in a docs packet to cite a path and symbol, so an unfounded
+    claim cannot be phrased its way past review.

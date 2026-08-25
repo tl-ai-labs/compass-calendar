@@ -41,7 +41,9 @@
           "subject": "CMP-101: opus-plus-flash-v37 pass"
         }
       ],
-      "tags": ["CMP-101-with-orchestration/opus-flash-v37"],
+      "tags": [
+        "CMP-101-with-orchestration/opus-flash-v37"
+      ],
       "compare_baseline_tag": "CMP-101-before-orchestration"
     },
     {
@@ -551,7 +553,10 @@
         "SEC-02 (low, not applied)",
         "CFG-02 (info)"
       ],
-      "tags": ["A/B-third-arm", "CMP-103"],
+      "tags": [
+        "A/B-third-arm",
+        "CMP-103"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "THIRD arm of the CMP-103 A/B, same feature and same anchor 4189de1 as rows seven and eight, on a third branch and a third policy. $5.32 (opus-only-v5) vs $5.46 (flash-agsdk-only) vs $5.71 (opus-cli-plus-flash-adc) \u2014 and this is the only one of the three that is BOTH fully loaded and clean: every phase priced (unlike flash-agsdk-only, which prices no orchestration) and no dispatch lost to timeout (unlike opus-cli-plus-flash-adc's four $0 rows). The all-premium single-tier policy came in cheapest of the three while producing the most thorough result. That is the fifth confirmation of the cost inversion first noted on row two: the mechanical tier's savings are eaten by the agent adapter re-exploring the repo on every dispatch. Separately, and NOT verified against the other two arms: this arm's senior review caught B-1, a capture-phase defect that green tests could not see because the automated suite asserts the mechanism rather than the symptom. Whether rows seven and eight carry the same latent defect was not checked \u2014 their implementations differ (row seven shipped an anchor, not a button) and no one has run the R-1 browser check against them. Worth checking before either is trusted as a working comparison point; it is a question this ledger raises, not a finding it records."
     },
@@ -679,7 +684,11 @@
         "FR-4 (deferred mid-execution, own ticket)",
         "FR-6 (deferred at Gate 2, own ticket)"
       ],
-      "tags": ["CMP-104", "first-vendor-auth-run", "first-refactor-intent"],
+      "tags": [
+        "CMP-104",
+        "first-vendor-auth-run",
+        "first-refactor-intent"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "NOT COMPARABLE to any existing row, on three independent axes, and it should not be read as a policy datapoint. (1) FIRST refactor-intent run in this ledger \u2014 every prior row is feature-extend or docs. A no-behaviour-change refactor has a different phase profile: full-suite verification with ZERO tests added, and a codegen phase that is 23 of 30 dispatches (76.8% of spend) because the work is a mechanical type-threading sweep across 24 files rather than a handful of feature packets. (2) FIRST auth_mode:vendor run \u2014 all 30 events carry real vendor-reported tokens, where all nine prior rows are char/3.8 estimates. Comparing $4.94 vendor-metered against, say, row nine's $5.32 estimated is comparing two different kinds of number. (3) It carries the SAME WARNING as rows two, five and eight: flash-agsdk-only prices no Claude orchestration, so the figure is Flash-dispatched-only and structurally understated, additionally by $0.25\u20130.36 of unrecoverable 429/TLS-killed spend. WHAT IT DOES CONFIRM is the agent-adapter exploration floor first noted on row two and now on its FIFTH confirmation: per-dispatch input ran 25k\u2013335k tokens across 30 calls for what is, in the end, a types-only change of net -45 LOC. Threading a generic parameter through 24 files cost $4.94 of dispatched Flash tokens plus unpriced orchestration. Whether a mixed or premium policy would have done it cheaper is UNTESTED \u2014 there is no sibling arm for this task, and one would be needed before drawing any conclusion."
     },
@@ -829,6 +838,75 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260825-090211-docs-weekly-view-interactions-v4",
+      "date": "2026-08-25",
+      "mode": "brownfield",
+      "intent": "docs",
+      "task_type": "doc_update",
+      "policy": "opus-plus-sonnet",
+      "auth_mode": "estimated",
+      "ticket": "CMP-102",
+      "status": "accepted",
+      "commit_strategy": "NONE at close-out - nothing committed, staged or pushed, no branch operation. Close-out touched .sdlc/ bookkeeping and the ledger only.",
+      "anchor_commit": "c3c59a36658d435273b033a2f0346012b5a5c998",
+      "branch": "CMP-102/opus-plus-sonnet",
+      "commits": [],
+      "files_written": 1,
+      "files_written_detail": "1 modified: README.md, +14/-0, one new '## Weekly view interactions' section placed between '## Features' and '## Tech stack'. No existing line reworded or reordered - the zero deletions are the evidence. Provenance records THREE sequential writes to this one path (tp_docs_001_r1, tp_docs_001_refine, tp_docs_001_style). Excludes .sdlc/baseline/current.json, which is tracked and IS dirty but was merged by discovery at Gate 0 before the contract was frozen, and .claude/settings.json, dirty since 2026-08-22 and never touched by this run.",
+      "files_allowlisted_untouched": 0,
+      "tests": {
+        "before": null,
+        "after": null,
+        "new_failures": null,
+        "tests_added": 0,
+        "verification": "NOTHING TOOL-VALIDATED THIS CHANGE, and that is the honest result rather than a gap in the run. bun lint exits 1 but is NOT attributable: bunx biome check README.md reports 'Checked 0 files ... These paths were provided but ignored: README.md'; all 3 errors are formatter errors on .sdlc/*.json plumbing written by Gate 0 discovery, and packages + self-host alone give 10 pre-existing warnings / 0 errors. The repo has NO markdown linter (no markdownlint, remark, vale; Biome does not lint markdown). Human review at Gate 4 was the only real gate. Coordinator independently re-verified the diff on disk (14 insertions / 0 deletions, README.md the only user-source file) rather than relaying the orchestrator's claim."
+      },
+      "cost_usd": 1.7065,
+      "cost_split": {
+        "claude-sonnet-5_vendor": 0.4523,
+        "claude-opus-5_estimated": 1.2542
+      },
+      "cost_note": "9 telemetry events. Two provenance classes that are NOT the same kind of number: $0.4523 vendor-metered across two claude-sonnet-5 dispatches (real), $1.2542 estimated across six claude-opus-5 in-session phases booking cached=0, so that half is an UPPER BOUND. The first docs dispatch was rejected on validation and re-run, so two were paid for. senior_code_review at $0.5544 was the largest single line and on this run's evidence it paid for itself - it caught two factual errors that had already reached disk. Do not quote $1.7065 as vendor-authoritative or use it to rank policies.",
+      "known_findings_open": [
+        "PROC-05: the security-reviewer subagent refused to write its own artifact, reading .sdlc/** in write-contract.json's off_limits against an allowlist of ['README.md']. The refusal was WRONG - the PreToolUse hook implements a run-record carve-out that the contract JSON does not encode, and orchestrator + senior-reviewer writes to the same directory succeeded in this run. Recurring gap; fix belongs in the plugin.",
+        "BACKUP-01: the run's backup is NOT a pre-run snapshot. Three writes to README.md; backup skipped on the first (backup_path null - the only one where it mattered) and overwritten on each later one, so backups/README.md holds an intermediate draft ALREADY CONTAINING the new section (3816 bytes vs a 2846-byte original). Escape hatch survives only incidentally: a tracked, committed file routes to git checkout <baseline-sha> and never consults the backup.",
+        "README typos left alone by design (brief non-goal): 'existance' L15, 'absense' L16, 'Cool things you can do with in Compass' L25.",
+        "Undocumented Google side effect: setting a Compass event color first clears any custom Google event label (google-event-writer.adapter.ts, preconditioned eventLabelId:'' patch). Out of scope here.",
+        "Cross-account two-stop gradient on the calendar stripe is real but omitted from the section; security review confirmed the omission is safe."
+      ],
+      "artifacts_dir": ".sdlc/runs/20260825-090211-docs-weekly-view-interactions-v4",
+      "gates": {
+        "gate-0": "approved before orchestrator invocation (intent docs, task_type doc_update, auth_mode estimated, allowlist README.md only). Declined the plugin's usual blanket .sdlc/ gitignore prompt BY DESIGN, because c3c59a36 tracks the project-level .sdlc/ layer on main deliberately.",
+        "gate-1": "approved - Q-1 and Q-2 both resolved in favour of documenting the TRUE behaviour. The brief's 'per-calendar event colouring' and 'multi-day selection in the all-day row' were both contradicted by source; FR-5 and FR-7 document what the code does instead.",
+        "gate-2": "SKIPPED with Phase 2 (architecture_design) per the docs row of the intent matrix.",
+        "gate-3": "approved - security verdict GO. Only findings were pre-existing .sdlc/ hygiene issues, re-framed at the coordinator's instruction after verification that nothing is pushed.",
+        "gate-4": "accepted - finalize manifest, do not commit. One defect the orchestrator's report had MISSED was found by the coordinator in provenance.json and folded in as BACKUP-01."
+      },
+      "senior_review": "Changed two pieces of shipped text, which is unusual for a docs run and is the reason this phase justified its $0.5544. (1) SHIFT + left/right does NOTHING to a Tab-focused edge on a TIMED event - event-nudge.util.ts:152 returns null when movement.minutes === 0, and timed edges move only on up/down; the first draft would have told readers to press dead keys on an ordinary meeting. (2) The calendar stripe is gated on useCalendarLookup.ts:97, 'if (!calendarId || lookup.size <= 1) return null', so single-calendar users never see one. Also narrowed the column-tint bullet: only the topmost chip wins a contested column, so 'every column they cross' was not always true. All three re-verified in source by the coordinator before acceptance.",
+      "security_review": "GO, no blocking issues. No finding implicates the README change. The only real findings are pre-existing .sdlc/ hygiene: pre-check-status.json contains <home> and CLAUDE-SDLC.md names GCP project <gcp-project>, both tracked as of local commit c3c59a36 in an MIT-licensed public repo. Coordinator verified NOTHING IS PUSHED (git branch -r --contains c3c59a36 empty; main 2 ahead of origin/main), which downgrades the severity and moots the reviewer's off-limits conflict - the remedy is rewriting two local commits and does not touch .gitignore. Note the reviewer refused to write its own artifact; see PROC-05.",
+      "manual_verification": "Coordinator verified on disk rather than relaying, at every gate: artifact existence and mtimes; the real git diff (14 insertions / 0 deletions, README.md the only user-source file); theme.util.ts:105-115 resolveEventPalette fallback chain; useAllDayDraftCreation.ts:48-54 add(1,'day'); AllDayEventCard.tsx:125 col-resize; event-color.contracts.ts:6-18 enum counted at exactly 11 slots; event-nudge.util.ts:152; useCalendarLookup.ts:97; and provenance.json, which is where BACKUP-01 was found. IN-APP VERIFICATION BY THE HUMAN IS NOT APPLICABLE - this is a README section, not behaviour.",
+      "scope_amendments": "None. The allowlist was README.md only from Gate 0 to close-out, and enforcement was probed live in BOTH directions before Phase 1: a Write to packages/web/ was refused by the hook, and a Write under .sdlc/runs/ was allowed via the PROC-05 carve-out. Unlike two prior CMP-102 arms, this run did NOT append a line to .gitignore - it was explicitly off-limits.",
+      "process_notes": "THE HEADLINE IS THAT THE TICKET WAS WRONG AND THE RUN PROVED IT FROM SOURCE. Two of the three requested subjects did not exist as described: 'per-calendar event colouring' (resolveEventPalette falls back to the THEME default, never the calendar colour) and 'multi-day selection in the all-day row' (useAllDayDraftCreation.ts creates a ONE-DAY draft; CMP-101's all-day.create.ts is absent from this branch). Both were raised as BLOCKING questions at Gate 1 rather than written as asked. A run that trusted its brief would have shipped two fabricated features into a public README - and the three prior CMP-102 arms, which documented this same ticket, did not surface either contradiction. Separately, a citation error by the COORDINATOR was caught by the orchestrator at close-out and corrected rather than left standing: calendar.util.ts:109 is spansMultipleAccounts(), an unrelated helper; the real stripe gate is useCalendarLookup.ts:97. The claim was right, the citation was not.",
+      "followups_open": [
+        ".sdlc/ hygiene - <home> and <gcp-project> tracked in local unpushed commit c3c59a36; decide before pushing",
+        "PROC-05 - write-contract carve-out not encoded in the contract JSON",
+        "BACKUP-01 - backup taken at write time instead of first write, and overwritten",
+        "README typos (existance, absense, 'do with in Compass')",
+        "Undocumented Google event-label clearing side effect"
+      ],
+      "tags": [
+        "policy-ab",
+        "docs",
+        "no-commit",
+        "estimated-cost-axis",
+        "ticket-premise-refuted",
+        "nothing-tool-validated",
+        "plugin-defect-found"
+      ],
+      "compare_baseline_tag": "20260820-164209-docs-weekly-view-interactions",
+      "compare_note": "FOURTH arm of the CMP-102 per-policy comparison, same intent brief and same subjects. Prior arms: opus-plus-flash-v37 $0.62 (committed c7fa74bb), flash-agsdk-only $0.81 (d93303a0), opus-only-v5 $1.83 (f2fb36c9) - each a 6-8 line README section, two of which also quietly appended a line to .gitignore. THIS ARM: $1.71, 14 lines, no .gitignore edit. THE COST COMPARISON IS NOT LIKE-FOR-LIKE - the four arms differ in metering, and this one is half vendor-metered and half an upper-bound estimate. WHAT IS SUPPORTABLE, and it is not a cost claim: this is the ONLY arm that rejected the ticket's premises on evidence, and the only one whose senior review changed shipped text. The three cheaper arms documented, on this same branch, features that do not exist. Cheapest is not the same as correct."
     }
   ]
 }
