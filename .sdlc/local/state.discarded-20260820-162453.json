@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "run_id": "20260820-091709-feature-extend-weekbody-multiday-drag",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-only-v5",
+  "state": "completed",
+  "gate": null,
+  "phase_completed": "generate_final_report",
+  "next_phase": null,
+  "gate0_response": "approved",
+  "gate1_response": "approved",
+  "git_head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+  "git_branch": "CMP-101/opus-only",
+  "committed": false,
+  "auth_mode": "estimated",
+  "test_baseline": "bun test:web = 2298 pass / 0 fail / 302 files (86.87s) at 4189de1 (from cached pre-check)",
+  "status": "completed",
+  "phase": "done",
+  "updated_at": "2026-08-20T10:49:30Z",
+  "artifacts": {
+    "requirements": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/requirements.md",
+    "change_plan": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/change_plan.md",
+    "packets": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/packets.json",
+    "senior_review": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/senior_review.md",
+    "security_review": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/security_review.md",
+    "final_report": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/final_report.md",
+    "manifest": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag/manifest.json"
+  },
+  "estimated_cost_usd_so_far": 3.0589,
+  "hydrate_compat_note": "status/phase mirror state/next_phase — session-hydrate readResume() keys on .status/.phase while the orchestrator writes .state/.next_phase.",
+  "notes": "Gate 1 pending. Preflight ok:true under auth_mode=estimated (opus adapter warning is expected and non-blocking: ANTHROPIC_API_KEY unset, nothing dispatches through the MCP server this run). Phase 1 ran in-session; cost is an ESTIMATE from the opus-only-v5 pricing block (in $5/M, cached $0.5/M, out $25/M), not metered spend. Requirements phase found an extra hard constraint not in the intent brief: useGridCoordinates.getDateByXY folds clientY into the resolved date via getMinuteByY, so a drag dragged far below the grid rolls the date to the next day — the move handler must resolve the day column from clientX only and pin clientY to the mousedown value (FR-3 / AC-9). | PAUSED at user request 2026-08-20T09:33:00Z. The architect had already written change_plan.md (40KB, 10 sections, ends coherently at a packet-decomposition table) before the stop, but the orchestrator never validated it, never logged phase.end, never appended Phase 2 telemetry, and never opened Gate 2. No user source files were written — the working tree is clean apart from untracked .sdlc/ and .hook-logs/. The write contract remains active:true and strict.",
+  "gate2_response": "approved",
+  "checkpoint": "run-complete",
+  "paused_at": null,
+  "paused_by": null,
+  "resume_instructions": "Run is COMPLETE and accepted at Gate 4. Nothing to resume. Remaining close-out (ledger entry, CLAUDE-SDLC.md, clearing .sdlc/local/write-contract.json) belongs to the main-loop session, not the orchestrator.",
+  "known_gaps": [
+    "All token counts are ESTIMATES (auth_mode=estimated, ~3.8 chars/token) against the opus-only-v5 pricing block, not metered vendor spend. The Phase 2 architect event was reconstructed after the fact and is the least precise.",
+    "provenance.json: all 10 sha_before values are correct, so /mmo:revert is sound. Three sha_after values (both test files, the doc) are stale because RP-001..RP-004 remediation landed after the helper had already closed those records.",
+    ".hook-logs/ is untracked and unignored; it is plugin hook output, not part of the write set. Both reviewers flagged it. Delete before committing — FR-17 permits only the one .sdlc/ line in .gitignore this run."
+  ],
+  "gate2_validation": {
+    "validated_on_resume": true,
+    "verdict": "pass — no architect re-invocation needed",
+    "checks": "10 sections complete and coherent; all 10 write-set paths present in the confirmed allowlist; load-bearing repo citations verified at exact line numbers (interaction.pointer.ts:27-33 threshold helper 3-arg OR form; interaction.constants.ts do-not-unify comment; all-day.resize.ts:86/:103 module-private; useAllDayDraftCreation.ts:30; useTimedDraftCreation.ts:40,:43-47,:81; useGridCoordinates getMinuteByY floor-at-0 / getDateByXY unbounded add; useDateCalcs.ts _firstDayInView discarded; AllDayRow.tsx:48-61; DayCalendarGrid.tsx:249-250 1-arity getStartDate; useTimedGridDraftCreation.ts exactly 20 lines; WeekView.render.test.tsx exactly 21 lines; 3 existing hook tests; .sdlc absent from .gitignore).",
+    "nits_surfaced_at_gate": [
+      "§3 row 5 says '11 cases' while §7.2 lists 14 and §10 P4 says '14 cases' — reconcilable as 11 new + 3 existing, but the written numbers drift.",
+      "D8 cites useDraftActions.ts:369-383 and useDraftEffects.ts:62-64 by bare filename; the real paths are under views/Week/components/Draft/hooks/{actions,effects}/. Line numbers verified exact. Packet instructions must carry full paths.",
+      "D8 changes existing Week behaviour: click-to-create completes on mouseup instead of mousedown. Disclosed and mitigated in §8, but it is the one knowing change to shipped behaviour and needs explicit human sign-off."
+    ]
+  },
+  "gate3_response": "approved",
+  "test_status": "2331 pass / 0 fail / 304 files (baseline 2298/0/302, +33 net new)",
+  "lint_status": "bun lint 0 errors (10 pre-existing warnings); bun type-check clean",
+  "blocking_decision": null,
+  "gate4_response": "accepted",
+  "files_written_count": 11
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "smoke-1",
+  "phase": "docs",
+  "task_type": "smoke",
+  "module": "smoke",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-22T03:11:42.640Z",
+  "duration_ms": 7263,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.018167,
+  "tokens": {
+    "input": 10941,
+    "input_cached": 0,
+    "output": 195,
+    "output_reasoning": 189
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1584,
+    "scanned": 1584,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-smoke-1.md",
+    "usage": "worker-usage-smoke-1.json"
+  }
+}

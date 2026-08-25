@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "run_id": "20260822-062945-feature-extend-one-click-join",
+  "phase": "generate_final_report",
+  "checkpoint": "closed-out/gate-4-approved/R-1-performed-B1-and-D5-PASS/D3-inconclusive-non-blocking/uncommitted-by-design",
+  "next_packet_index": 11,
+  "updated_at": "2026-08-22T18:06:13Z",
+  "timestamp": "2026-08-22T18:06:13Z",
+  "halt_reason": null,
+  "terminal": true,
+  "closed_out_at": "2026-08-22T18:06:13Z",
+  "close_out": {
+    "gate_4_response": "approve — plain, unconditional, no conditions attached",
+    "committed": false,
+    "commit_strategy": "NONE. Nothing committed, nothing pushed, per explicit operator instruction. The 7-path delta remains uncommitted working-tree changes for the human to review and commit.",
+    "bookkeeping_written": [
+      ".sdlc/runs/20260822-062945-feature-extend-one-click-join/final_report.md (section 7 rewritten, header status line, section 8 D3 follow-up, Gate 4 footer)",
+      ".sdlc/runs/20260822-062945-feature-extend-one-click-join/manifest.json (NEW — was never written by generate_final_report)",
+      ".sdlc/ledger.json (row 9 appended)",
+      ".sdlc/ledger.md (row + narrative appended)",
+      ".sdlc/local/state.json (this file)",
+      ".sdlc/runs/20260822-062945-feature-extend-one-click-join/orchestrator.log (gate.resolved gate-4, run.end)"
+    ],
+    "write_contract": "left active:true — deliberately NOT flipped to false, because the delta is uncommitted and the contract is the only written record of what this run was scoped to touch.",
+    "left_for_human": "Review the 7-path uncommitted delta and commit when ready. Note CFG-02: .hook-logs/ is untracked AND unignored, so `git add -A` would sweep it in."
+  },
+  "d1_final_resolution": "SPUN INTO ITS OWN FOLLOW-UP TICKET 2026-08-22T17:18Z, same treatment as D2/D7. No type change in this run; the busy-events-never-carry-a-conference invariant stays emergent/convention-only, exactly as at HEAD. Amendment-2 was NOT taken and no out-of-allowlist file was written. Evidence for the follow-up ticket is preserved verbatim in followups_for_final_report so the next engineer does not re-derive it.",
+  "blocker_B1": {
+    "verdict": "changes-required",
+    "summary": "ADR-5's four-handler set is dead code. PointerCaptureBoundary binds onPointerDownCapture on an ANCESTOR and calls preventDefault()+stopPropagation() in the CAPTURE phase, so the join button's onPointerDown/onMouseDown/onClick never execute. pointerup then yields {type:'click'} and the event form opens; native click still fires so window.open also runs. Net effect: join click opens BOTH a new tab and the event form.",
+    "independently_verified_by_orchestrator": true,
+    "evidence": [
+      "packages/web/src/interaction/react/PointerCaptureBoundary.tsx:107 onPointerDownCapture={handlePointerDownCapture}",
+      "packages/web/src/interaction/react/PointerCaptureBoundary.tsx:72-79 shouldOwn -> consumeOwnedPointerEvent(event)",
+      "packages/web/src/interaction/react/PointerCaptureBoundary.tsx:193-201 consumeOwnedPointerEvent = preventDefault() + stopPropagation()",
+      "packages/web/src/grid/interaction/event.registry.ts:79-96 resolveFromTarget = bare closest(), no interactive-descendant exclusion",
+      "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx:193 and packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx:117 wrap every card"
+    ],
+    "why_blocked_here": "The proposed fix (an ignore-attribute honored in event.registry.ts resolveFromTarget) touches packages/web/src/grid/interaction/*, which Gate 2 Q-B explicitly forbade and which is NOT in the write-contract allowlist (5 paths only). Reopening Q-B is a human decision; the orchestrator must not widen scope on its own.",
+    "secondary_finding": "design.md 6.4's claim that this path cannot be automated is false. fireEvent.pointerDown exists and PointerCaptureBoundary is mountable \u2014 packages/web/src/interaction/react/PointerCaptureBoundary.test.tsx already does exactly that. R-1's manual check is a detector, not a mitigation, and as written it is guaranteed to fail.",
+    "minor_finding": "T-21 (EventCard.test.tsx:1019) is vacuous: createEvent({ isBusy: true }) carries no conference, so it is byte-identical to T-2 and pins nothing about the role matrix.",
+    "status": "CLOSED \u2014 confirmed by senior review round 2",
+    "fix": {
+      "mechanism": "EVENT_INTERACTION_IGNORE_ATTRIBUTE exported from event.registry.ts and honored in resolveFromTarget via `ignored && element.contains(ignored)`; EventJoinIcon spreads it onto the button.",
+      "choke_point": "createEventRegistry is the single factory behind both Week and Day (view-event-registry.ts:74-83), so one check covers both views.",
+      "mutation_verified": "Temporarily disabling the check (`if (false && ignored ...)`) failed exactly 3 tests \u2014 the 2 registry ignore tests and the end-to-end pointerdown test. The unrelated-ancestor test correctly still passed. The regression tests genuinely bind the fix."
+    },
+    "round2_confirmation": "Reviewer independently traced all 8 ownership paths (week-interaction.adapter.ts:483-505, day-interaction.adapter.ts:434-455); all funnel through getRegisteredTarget -> resolveFromTarget. getResizeHandleEdge only discriminates between them, never grants a target. `grep shouldOwn` returns exactly those 8 sites plus the boundary's own check. All-day card fixed by the same edit. Scope containment correct; resize handles are siblings not descendants; drag-ghost clone inert three ways."
+  },
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-only-v5",
+  "auth_mode": "estimated",
+  "ticket": "CMP-103",
+  "branch": "CMP-103/opus-only-v5",
+  "git_head_at_start": "4189de13",
+  "code_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "output_dir": ".sdlc/runs/20260822-062945-feature-extend-one-click-join",
+  "test_command": "bun test:web",
+  "resume_action": "NONE — run is terminal (status: complete). Retained for history; the last live value was: 'Collect senior_review.md from the senior-reviewer subagent, relay any blocker/major findings to the human, then run security_review (Gate 3) and generate_final_report (Gate 4).' All of those completed.",
+  "gates": {
+    "gate_0": "approved (pre-run; write contract frozen)",
+    "gate_1": "approved 2026-08-22T06:55Z \u2014 Q1 append-to-existing-test-file, Q2 match prior converged layout, Q3 button+window.open, Q4 bun test:web",
+    "gate_2": "approved 2026-08-22T09:43Z \u2014 Q-A import VideoCameraIcon directly from @phosphor-icons/react (accepted FR-2 deviation); Q-B ship four-handler ADR-5 set, gate merge on manual R-1 check, do NOT widen into grid/interaction/*; Q-C ship contrast as bound, log non-blocking follow-up; Q-D keep all 21 tests",
+    "gate_p3_diff_preview": "approved 2026-08-22T09:54Z \u2014 candidate written verbatim (449 insertions, 0 deletions)",
+    "gate_senior_blocker": "approved 2026-08-22T10:15Z \u2014 option (a): reopen Q-B, extend scope into grid/interaction/*, add regression test, fix vacuous T-21",
+    "gate_3": "APPROVED-WITH-CONDITIONS 2026-08-22T16:56Z by human. Conditions D5 + D6 both applied and verified green. D1 decided as 'decline the render guard, tighten the type instead' but the type fix is BLOCKED on scope \u2014 see halt_reason. D2 deferred, D3 manual-check text only, D4 accepted, D7 separate ticket.",
+    "gate_4": "APPROVED 2026-08-22T18:06Z by human \u2014 response was plain, unconditional 'approve', no conditions attached. HISTORY (preserved, do not delete): the final report was written 2026-08-22T17:22Z and relayed verbatim while the gate stood OPEN, and at that moment the R-1 manual browser check was still outstanding and blocked merge independently of this gate. Between that relay and this approval the R-1 check WAS performed \u2014 by the human's operator in a real browser, NOT by the pipeline \u2014 with B-1 and D5 both PASS and D3 INCONCLUSIVE. See r1_manual_check_result. Merge is no longer blocked by R-1. NOT auto-approved at any point."
+  },
+  "phases_completed": [
+    {
+      "phase": "preflight_dispatch",
+      "result": "ok:true, opus/claude-opus-5 via claude-cli, no warnings"
+    },
+    {
+      "phase": "requirements_analysis",
+      "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/requirements.md",
+      "est_cost_usd": 0.2035
+    },
+    {
+      "phase": "architecture_design",
+      "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/design.md",
+      "est_cost_usd": 0.86275,
+      "subagent": "architect"
+    },
+    {
+      "phase": "plan_task_packets",
+      "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/packets.json",
+      "est_cost_usd": 0.235
+    },
+    {
+      "phase": "execute_packets",
+      "packets": 5,
+      "debug_packets": 2,
+      "est_cost_usd": 0.5725
+    },
+    {
+      "phase": "test_run",
+      "result": "ALL THREE GREEN \u2014 bun test:web 2319 pass / 0 fail (baseline 2298 + 21 new, exactly as design 6.5 predicted); bun type-check exit 0; bun lint exit 0 with 10 pre-existing warnings, none in the delta files"
+    },
+    {
+      "phase": "execute_packets (B-1 round)",
+      "packets": [
+        "P5-B1-fix",
+        "P5-B1-wire",
+        "P6-B1-regression",
+        "P6-B1-regression-card",
+        "P6-debug-imports"
+      ],
+      "est_cost_usd": 0.34125
+    },
+    {
+      "phase": "senior_code_review (round 2)",
+      "verdict": "approve-with-nits \u2014 B-1 CLOSED",
+      "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/senior_review_round2.md",
+      "est_cost_usd": 0.77265
+    },
+    {
+      "phase": "security_review (fresh re-run after crash)",
+      "verdict": "PASS-WITH-CONDITIONS",
+      "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/security_review.md",
+      "est_cost_usd": 0.7535,
+      "subagent": "security-reviewer",
+      "conditions": [
+        "SEC-01 (Medium): restore pre-navigation destination disclosure \u2014 surface host only in accessible name + title",
+        "SEC-03 (Low): match EVENT_INTERACTION_IGNORE_ATTRIBUTE by VALUE not presence"
+      ],
+      "no_source_files_written": true
+    }
+  ],
+  "phases_pending": [],
+  "final_report": {
+    "artifact": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/final_report.md",
+    "est_cost_usd": 0.3925,
+    "telemetry_events_total": 19,
+    "cost_total_usd_estimated": 5.3247,
+    "cost_cap_usd": 50,
+    "delta": "771 insertions, 3 deletions across 7 allowlisted paths (6 modified + 1 new)",
+    "verification": "bun test:web 2326 pass / 0 fail exit 0; bun type-check exit 0; bun lint exit 0 with 10 pre-existing warnings",
+    "blocking_before_merge": "NOTHING BLOCKS MERGE. Was: 'R-1 manual browser check (3 steps) — NOT performed, cannot be automated'. The check was subsequently performed by the human's operator in a real browser: step 1 (B-1 symptom) PASS, step 3 (D5 disclosure) PASS, step 2 (D3 bottom edge) INCONCLUSIVE and never a blocker. See r1_manual_check_result.",
+    "gate_4": "approved 2026-08-22T18:06Z — plain, unconditional",
+    "followups_carried": ["D1", "D2", "D7/PRE-01", "SEC-02", "CFG-02"]
+  },
+  "packets_completed": [
+    {
+      "id": "P1",
+      "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "task_type": "new_file_add",
+      "git_status_clean": true
+    },
+    {
+      "id": "P2a",
+      "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "task_type": "patch_apply",
+      "diff": "+31 -0",
+      "git_status_clean": true
+    },
+    {
+      "id": "P2b",
+      "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "task_type": "patch_apply",
+      "diff": "+33 -2 (the 2 deletions are the replaced pr-3.5 padding line + its comment, per design 3.2 hunk 4)",
+      "git_status_clean": true
+    },
+    {
+      "id": "P3",
+      "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "task_type": "existing_file_edit",
+      "diff": "+449 -0 append-only; all 575 original lines preserved in order",
+      "git_status_clean": true
+    },
+    {
+      "id": "P4",
+      "artifact_path": ".gitignore",
+      "task_type": "patch_apply",
+      "diff": "+1 -0",
+      "git_status_clean": true
+    },
+    {
+      "id": "P3-debug-1",
+      "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "task_type": "type_error_fix",
+      "reason": "mock(() => null) inferred an empty parameter tuple, making every open.mock.calls[0]?.[i] assertion a TS2493. Typed the stub's params so window.open's arg tuple flows through. Tests passed before and after; only type-check was red."
+    },
+    {
+      "id": "P1-debug-1",
+      "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "task_type": "lint_format_fix",
+      "reason": "Biome formatter wanted the react type-import on one line (error), and useSortedClasses wanted ph-no-capture sorted next to c-focus-ring (warning). Both cosmetic; design R-8 sanctions class reordering because assertions use toHaveClass, not whole-string equality."
+    }
+  ],
+  "packets_pending": [
+    {
+      "id": "P11-D1-type-tightening",
+      "status": "BLOCKED — awaiting human scope decision (amendment-2)",
+      "reason": "Target file packages/web/src/common/types/web.event.types.ts is not in the allowlist."
+    }
+  ],
+  "gate3_conditions_applied": [
+    {
+      "id": "P8-D6-attr-value-match",
+      "decision": "D6",
+      "artifact_paths": [
+        "packages/web/src/grid/interaction/event.registry.ts",
+        "packages/web/src/grid/interaction/event.registry.test.ts"
+      ],
+      "change": "resolveFromTarget selector changed from [ATTR] to [ATTR=\"true\"], so a React-stringified data-...=\"false\" no longer reads as an opt-out. One regression test added pinning that \"false\" still resolves.",
+      "git_status_clean": true
+    },
+    {
+      "id": "P9-D5-host-disclosure",
+      "decision": "D5",
+      "artifact_paths": [
+        "packages/web/src/grid/components/EventJoinIcon.tsx",
+        "packages/web/src/grid/components/EventCard.test.tsx"
+      ],
+      "change": "Accessible name and a new title attribute now disclose the conference HOST only, via new URL(url).hostname (hostname not host, so port and any user:pass@ prefix are dropped). Path/query — the capability token — deliberately never surfaced. Four existing exact-match name assertions updated; one new test pins that the host appears, the meeting token does not, and title === aria-label.",
+      "scope_note": "SEC-02's separate suggestion to replace the label heuristic with a positive allowlist was NOT applied — it was not one of the two approved conditions.",
+      "git_status_clean": true
+    },
+    {
+      "id": "P10-format-fix",
+      "decision": "housekeeping",
+      "artifact_paths": [
+        "packages/web/src/grid/components/EventJoinIcon.tsx",
+        "packages/web/src/grid/components/EventCard.test.tsx",
+        "packages/web/src/grid/interaction/event.registry.test.ts"
+      ],
+      "change": "Biome formatter errors introduced by P8/P9. Ran `bunx biome format --write` scoped to exactly these three files. Deliberately did NOT run the repo's `lint:fix` script, which is `biome check --write .` and would have silently auto-fixed the 10 pre-existing FIXABLE warnings in files outside the allowlist.",
+      "git_status_clean": true
+    }
+  ],
+  "git_status_deviations_found": "none \u2014 across all 12 writes this run, every write landed on an allowlisted path. The 2 newly-touched paths were added to the allowlist by amendment-1 BEFORE they were written.",
+  "verification_results": {
+    "bun test:web": "GREEN \u2014 2326 pass, 0 fail, exit 0 (re-run 2026-08-22T17:12Z after D5+D6). Baseline 2324 + 2 new tests, exactly as expected.",
+    "bun type-check": "GREEN \u2014 exit 0 (re-run 2026-08-22T17:13Z)",
+    "bun lint": "GREEN \u2014 exit 0, 10 warnings, none in delta files (re-run 2026-08-22T17:11Z). NOTE: lint went RED first (3 formatter errors, all three in the files P8/P9 had just edited) and was fixed by P10 before this green.",
+    "expect_call_count_variance": "Two consecutive full runs of an unchanged tree reported 5824 then 5822 expect() calls, with an identical 2326 pass / 0 fail both times. The +5 from baseline 5819 to 5824 is exactly the 5 assertions added by the two new tests, so the 5824 figure is the accounted-for one. The 2-assertion delta between runs indicates mild non-determinism somewhere in the wider suite (a conditional assertion), NOT in this delta. Flagged, not chased \u2014 out of scope.",
+    "mutation_check": "Disabling the ignore check failed exactly 3 tests (2 registry + 1 e2e); the unrelated-ancestor test correctly still passed."
+  },
+  "cost_final_usd_estimated": 5.324725,
+  "cost_final_note": "FINAL, reconciled at close-out by re-summing telemetry.jsonl from disk rather than trusting any running total: 19 events, $5.324725, against a hard_cost_cap_usd of 50. All 19 carry provenance:'estimated' — opus-only-v5 under auth_mode:estimated runs every phase in-session, so these are char/3.8 heuristic tokens priced from the policy's pricing block ($5/M input, $25/M output), NOT vendor-metered figures. The earlier cost_so_far_usd_estimated of 4.642225 was correct for the 17 events that existed when it was written; the 2 further events (codegen gate3_condition_fix $0.29, generate_final_report $0.3925) close the gap exactly.",
+  "cost_so_far_usd_estimated": 4.642225,
+  "cost_note": "SUPERSEDED by cost_final_usd_estimated — retained as history. Sum of 17 telemetry events on disk (16 pre-crash + the security_review event written 2026-08-22T16:51Z). CORRECTION: the pre-crash state.json claimed 17 events written, but only 16 were actually on disk — the security_review event was never written, which is the likely root cause of state.json recording gate_3 as 'not started' even though a complete security_review.md existed. Prior sum 3.888725 was itself the sum of those 16, so it was correct; only the count was wrong.",
+  "telemetry_events_written": 19,
+  "telemetry_events_note": "Verified by counting lines in telemetry.jsonl at close-out, not carried forward from a running tally — the pre-crash state.json's claim of 17-when-16-existed (PROC-03) is exactly why this is recounted from disk.",
+  "telemetry_path": ".sdlc/runs/20260822-062945-feature-extend-one-click-join/telemetry.jsonl",
+  "no_source_files_written_yet": false,
+  "provenance_files_recorded": 7,
+  "gate3_decisions_received": {
+    "decided_at": "2026-08-22T16:56Z",
+    "decided_by": "human (via coordinator)",
+    "gate_3": "approve with conditions — D5 + D6 are the conditions, apply both. DONE, both green.",
+    "D1": "DECLINE the isBusy render guard; keep the pinned test and Requirements §6 as-is. Instead tighten the TYPE so the invariant is enforced rather than emergent. BLOCKED — see halt_reason. Nothing written.",
+    "D2": "DEFER — do not widen into event.targeting.ts. Record as follow-up in the final report. No code change.",
+    "D3": "ACCEPT as manual-check addition — R-1 text gains 'press the bottom edge of the join glyph'. No code change.",
+    "D4": "ACCEPT with R-1 as backstop. No e2e coverage change.",
+    "D5": "APPLY NOW — done (P9).",
+    "D6": "APPLY NOW — done (P8).",
+    "D7": "SEPARATE TICKET — do not touch EventDetailsSection.tsx / UpNextCard.tsx / UpNextBanner.tsx in this run. Record as follow-up (pre-existing, non-gating)."
+  },
+  "r1_manual_check_result": {
+    "status": "PERFORMED 2026-08-22, after the final report was written and relayed",
+    "performed_by": "the human's operator — NOT the orchestrator, NOT any subagent, NOT the pipeline. No automated phase of this run produced or could have produced this evidence.",
+    "environment": "real headless-Chromium browser session against `bun run dev:web` with COMPASS_CONFIG_FILE=e2e/compass.playwright.yaml",
+    "fixture": "the app's built-in demo-data-seed migration event 'Morning standup' — today, 09:00-09:30 UTC, real conferenceUrl https://meet.google.com/abc-defg-hij",
+    "checks": {
+      "B-1_regression": {
+        "result": "PASS",
+        "detail": "Clicking the join icon opened exactly ONE new tab at the correct URL (https://meet.google.com/abc-defg-hij) and did NOT open the event detail form. Total open tabs after click: 2 (main + the one popup).",
+        "how_confirmed": "Two independent ways — programmatically (popup event captured; form role checked and found not visible) AND via screenshot.",
+        "significance": "This is the only check that could confirm the SYMPTOM is gone. The automated suite asserts the MECHANISM (registry ownership) only, by design — design.md 6.4 excludes onPointerDown because jsdom's fireEvent.mouseDown does not dispatch pointerdown."
+      },
+      "D5_destination_disclosure": {
+        "result": "PASS",
+        "detail": "The join button's aria-label and title both read exactly 'Join Google Meet (meet.google.com)' — host only, no path, no token."
+      },
+      "D3_resize_handle_overlap": {
+        "result": "INCONCLUSIVE — explicitly neither pass nor fail",
+        "detail": "A click placed 1px above the button's bottom edge missed the button's actual hit target and landed on the card underneath, opening the event form — which is neither a resize nor a join.",
+        "interpretation": "A precision limit of the automated click. NOT new evidence in either direction; it neither confirms nor refutes the overlap.",
+        "disposition": "D3 stands EXACTLY as Gate 3 already decided it: noted in the R-1 manual-check text, unresolved by code, NOT a merge blocker. It remains the one open manual-check item, carried into the final report section 8 follow-ups and manifest.json followups_open."
+      }
+    },
+    "merge_effect": "Both merge-gating checks (B-1, D5) PASS. Nothing in R-1 blocks merge any longer. D3 alone remains outstanding as a manual item, and was never a blocker.",
+    "note_on_automated_vs_manual": "Preserved deliberately: everything in verification_results was produced by the automated suite in this run; everything in this block was produced by a human operator in a real browser afterward. The distinction is the whole point of R-1 and must not be collapsed."
+  },
+  "R1_manual_check_text_final": "Run `bun dev:web`. (1) Click a join icon on a real event with a Meet link — confirm exactly ONE new tab opens and NO event form opens. (2) Per D3, press the BOTTOM EDGE of the join glyph specifically: the timed endDate resize handle (zIndex LAYER_4, bottom -0.25px, height 4.5px) overlaps the bottom ~2.25px of the 12px button, so confirm that pressing there does not start a resize instead of joining. (3) Per D5, hover the join glyph and confirm the tooltip shows the conference HOST only (e.g. 'Join Google Meet (meet.google.com)') and never the meeting path/token.",
+  "followups_for_final_report": [
+    "D2 — getFocusedGridEventTarget returns null while the join button holds focus, no-opping ~10 keyboard shortcut call sites while useIsAnyCalendarEventFocused still reports focused. Needs event.targeting.ts. Deferred by decision.",
+    "D7 — PRE-EXISTING HIGH: z.url() accepts javascript:/data:/vbscript:; three sinks open conference.url unguarded (EventDetailsSection.tsx:48, UpNextCard.tsx:89, UpNextBanner.tsx:32). Separate ticket by decision. This delta already carries the correct fix pattern (isSafeConferenceUrl) to copy.",
+    "SEC-02 (Low, from fresh security review) — conference.label is interpolated into the accessible name behind only a !label.includes('/') heuristic; slash-free capability material (e.g. 'Zoom Meeting 812 3456 7890 Passcode 4f2a') still reaches the DOM. A positive allowlist of known provider names was recommended. Not part of the two approved conditions, so NOT applied.",
+    "CFG-02 (Info) — .hook-logs/ is untracked AND unignored, so `git add -A` would sweep it into a commit.",
+    "Write-contract PreToolUse hook was never mechanically registered for this run; all enforcement was manual git status after every write."
+  ],
+  "prior_security_review_discrepancy": {
+    "finding": "state.json (pre-crash) recorded gate_3 as 'not reached — deliberately NOT started', and the operator's resume instruction described the prior pass as 'in-progress, never persisted'. BOTH ARE FACTUALLY WRONG. A complete 552-line security_review.md existed on disk, timestamped 2026-08-22T03:44, i.e. AFTER the B-1 fix and AFTER senior_review_round2 (03:29). It reviewed the final 6-path delta including event.registry.ts and carried a full Gate 3 recommendation of PASS-WITH-CONDITIONS.",
+    "likely_root_cause": "Its telemetry event was never written and its gates entry was never updated, so every downstream reader concluded it had not happened.",
+    "action_taken": "Preserved as security_review_prior_unlogged.md rather than overwritten. The fresh reviewer was explicitly instructed NOT to read it, so the re-run is genuinely independent.",
+    "value_of_the_rerun": "Non-trivial. The two passes agree on the verdict (PASS-WITH-CONDITIONS) but DISAGREE on D1, and the fresh pass found SEC-03, PRE-01 (High, pre-existing) and CFG-02, which the prior pass did not surface as gating items."
+  },
+  "resume_critical_notes": [
+    "RUN IS TERMINAL (status: complete, Gate 4 approved 2026-08-22T18:06Z). There is nothing to resume. These notes are retained as the run's historical record, not as instructions to a resuming session.",
+    "R-1 MANUAL PRE-MERGE CHECK: NO LONGER OUTSTANDING for its two merge-gating parts. SUPERSEDED 2026-08-22 — performed by the human's operator in a real headless-Chromium session against `bun run dev:web` (COMPASS_CONFIG_FILE=e2e/compass.playwright.yaml) using the demo-seed 'Morning standup' event. B-1 symptom check PASS (exactly one tab at the correct URL, no event form; confirmed programmatically and by screenshot). D5 disclosure check PASS (aria-label and title both 'Join Google Meet (meet.google.com)', host only). D3 bottom-edge check INCONCLUSIVE — the probe click missed the hit target, a precision limit rather than evidence — so D3 remains an open MANUAL-check item exactly as Gate 3 decided, and was never a merge blocker. Full detail in r1_manual_check_result.",
+    "ORIGINAL WORDING OF THE ABOVE NOTE, preserved verbatim because it was true for most of this run and the automated-vs-manual distinction must not be lost: 'R-1 MANUAL PRE-MERGE CHECK IS STILL OUTSTANDING and cannot be automated: bun dev:web, click a join icon on a real event with a Meet link, confirm exactly one new tab and NO event form. design 6.4 deliberately excludes onPointerDown from the suite because jsdom fireEvent.mouseDown does not dispatch pointerdown.'",
+    "WRITE-CONTRACT HOOK WAS NOT REGISTERED this session (accepted risk, operator-confirmed). Enforcement was manual git status after every write; done after all 16 writes across 7 distinct paths, zero deviations. Discipline is not a control — this is recorded as incident PROC-01 in manifest.json.",
+    "LATENT AND UNFIXED (PROC-05, found at close-out): the write contract lists `.sdlc/**` under off_limits with strict:true, and write-contract-check.mjs has NO carve-out for `.sdlc/runs/<run-id>/` despite the orchestrator contract claiming that path is auto-allowlisted. Had the hook actually been registered it would have DENIED every write to this run's own bookkeeping. PROC-01 and PROC-05 cancelled each other out this run. Registering the hook without adding the carve-out would deadlock the pipeline on its own record-keeping.",
+    "Gate relay mode: Gate 3 and Gate 4 were reported to the human verbatim and never auto-decided. Gate 4's answer was a plain 'approve'.",
+    "P4 added .sdlc/ to .gitignore, so `?? .sdlc/` no longer appears in git status. This is AC-10 taking effect, not a lost directory.",
+    "CFG-02 still open and now immediately relevant: .hook-logs/ is untracked AND unignored, so the human's `git add -A` over this uncommitted delta would sweep it into the commit."
+  ],
+  "write_contract_amendment": {
+    "id": "amendment-1",
+    "paths_added": [
+      "packages/web/src/grid/interaction/event.registry.ts",
+      "packages/web/src/grid/interaction/event.registry.test.ts"
+    ],
+    "reason": "Senior review B-1 proved no descendant-side fix exists; resolveFromTarget is the only choke point.",
+    "second_path_note": "event.registry.test.ts added alongside the source file so the required regression test has a home. Flagged explicitly, not assumed."
+  },
+  "open_decision_for_human": "T-21 rewrite pins that a busy event WITH a conference DOES render a join control, i.e. protection is contractual (no isBusy guard) per requirements 6. Round-2 reviewer asked to recommend whether to instead close it with an !event.isBusy guard. Relay to human.",
+  "open_decisions_for_human": [
+    {
+      "id": "D1-isBusy-guard",
+      "severity": "major",
+      "source": "senior round 2 M2-1 + security review item 6",
+      "summary": "EventCard.test.tsx:1061 pins that a busy event WITH a conference DOES render a join control, so adding !event.isBusy would fail CI. Senior reviewer recommends adding the guard and flipping the assertion, arguing the isSafeConferenceUrl defensive rationale (stale IndexedDB rows, future contract relaxation) applies verbatim to isBusy, where the failure mode is a masking leak. Security reviewer asked for an independent opinion.",
+      "orchestrator_note": "STILL NOT DECIDED. Requirements 6 explicitly said no guard needed. UPDATE 2026-08-22T16:51Z: the fresh security review reaches the OPPOSITE recommendation from the senior reviewer. It found, and the orchestrator independently confirmed, that EventContentSchema's busy arm is z.strictObject({kind: z.literal('busy')}) with no conference member (packages/core/src/types/event.contracts.ts:38), and event.view-model.ts:60-61,94 derives conference from details, which is undefined when busy. So isBusy=true implies conference=undefined structurally and NO join control can render today. Orchestrator additionally enumerated all GridEvent producers: event.view-model.ts and grid-event-draft.adapter.ts:294,324 (the latter sets no conference at all) — invariant holds at every producer. CAVEAT the orchestrator adds and neither reviewer stated: GridEvent itself (web.event.types.ts:70,88) declares isBusy and conference as INDEPENDENT optional fields, so this is an emergent property of all producers, NOT a type-enforced one. Two reviewers now disagree; this is precisely why it is a human call.",
+      "reviewer_opinions": {
+        "senior_round2": "ADD the guard and flip the assertion — defensive rationale mirrors isSafeConferenceUrl.",
+        "security_fresh": "DECLINE the guard is defensible; would not block. Redundant with a type-system-enforced rule. Pauses at: rests on a packages/core contract plus IndexedDB rows rehydratable under an older schema."
+      }
+    },
+    {
+      "id": "D2-getFocused-side-effect",
+      "severity": "minor",
+      "source": "senior round 2",
+      "summary": "event.targeting.ts:51 getFocusedGridEventTarget shares resolveFromTarget, so it now returns null while the join button holds focus, silently no-opping ~10 shortcut call sites while useIsAnyCalendarEventFocused.ts:22 still reports focused. Real side effect introduced by the B-1 fix.",
+      "orchestrator_note": "Fixing properly needs event.targeting.ts, which is NOT in the amended allowlist \u2014 another scope extension. Not decided."
+    },
+    {
+      "id": "D3-resize-handle-overlap",
+      "severity": "minor",
+      "source": "senior round 2",
+      "summary": "The timed endDate resize handle (zIndex LAYER_4, bottom -0.25px, height 4.5px) covers the bottom ~2.25px of the 12px join button. Add to the R-1 manual check: press the bottom edge of the join glyph.",
+      "outcome": "STILL OPEN as a manual-check item. The R-1 browser check attempted this and returned INCONCLUSIVE — the probe click, placed 1px above the button's bottom edge, missed the hit target and landed on the card underneath (opened the event form, neither a resize nor a join). That is a click-precision limit, not evidence either way. D3 therefore remains exactly as Gate 3 decided: noted, unresolved by code, NOT a merge blocker. Settling it requires a human pressing the glyph's bottom edge by hand."
+    },
+    {
+      "id": "D4-e2e-coverage",
+      "severity": "minor",
+      "source": "senior round 2",
+      "summary": "The e2e regression test asserts the mechanism (registry ownership) not the symptom (event form opening), and skips the all-day mirror and the resize handle."
+    },
+    {
+      "id": "D5-SEC-01-destination-disclosure",
+      "severity": "medium",
+      "source": "security review (fresh) SEC-01 — GATING CONDITION",
+      "summary": "ADR-1's button-over-anchor choice removed the browser's pre-navigation destination disclosure: no hover status bar, no copy-link-address, no host in the accessible name — while both conference.url and conference.label are attacker-settable via an ordinary calendar invite. One click, zero disclosure. Fix: surface HOST ONLY (not path/token, which is the capability material) in the accessible name and a title attribute. Confined to EventJoinIcon.tsx, already in the write contract.",
+      "orchestrator_note": "Not decided. This is a NEW finding not present in the pre-crash review's gating set as recorded in state.json."
+    },
+    {
+      "id": "D6-SEC-03-attribute-presence-match",
+      "severity": "low",
+      "source": "security review (fresh) SEC-03 — GATING CONDITION",
+      "summary": "event.registry.ts:114-116 matches EVENT_INTERACTION_IGNORE_ATTRIBUTE by PRESENCE, so data-*='false' also suppresses interaction. React stringifies data-* attributes, so a future falsy-flag spread would silently kill a card's interaction. Fix: match by value. One line plus one test.",
+      "orchestrator_note": "Not decided. NEW finding — directly concerns the B-1 fix mechanism introduced this run."
+    },
+    {
+      "id": "D7-PRE-01-z-url-scheme-bypass",
+      "severity": "high-but-PRE-EXISTING",
+      "source": "security review (fresh) PRE-01 — explicitly NON-GATING for this run",
+      "summary": "z.url() empirically accepts javascript:, data: and vbscript:. Three pre-existing sinks render or open conference.url unguarded: EventDetailsSection.tsx:48, UpNextCard.tsx:89, UpNextBanner.tsx:32 (React 18.3.1 is warn-only for javascript: hrefs). This delta is NOT the cause — it in fact wrote the correct fix pattern (isSafeConferenceUrl). Out of scope for CMP-103's write contract.",
+      "orchestrator_note": "Not decided. Recommend a separate ticket rather than widening this run's scope a second time. Flagging because it is the highest-severity item the review surfaced, even though it does not gate this gate."
+    }
+  ],
+  "fixed_this_round": "EventJoinIcon.tsx comment corrected: it wrongly claimed the stopPropagation handlers cover the keyboard-only path (that blocks earlier at window capture, useKeyboardOnlyMode.ts:79-81) and understated onMouseDown, which is now genuinely load-bearing because the boundary no longer consumes the gesture. Comment-only; re-verified all three commands green."
+}

@@ -33,3 +33,8 @@ packages/web/build/
 playwright-report/
 test-results/
 tmp/
+# SDLC run artifacts: keep the reports, drop the worker save-state blobs
+# (~28MB of opaque regenerable SQLite) and the transient hook/debug logs.
+.sdlc/**/_gemini_worker_save/
+.sdlc/local/debug.log
+.hook-logs/
