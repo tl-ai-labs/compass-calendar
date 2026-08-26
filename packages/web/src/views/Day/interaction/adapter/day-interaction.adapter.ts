@@ -1,74 +1,46 @@
-import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import {
-  applySmartScroll as applySmartScrollFrame,
-  getSavedEventInteractionCursor,
-  getSavedEventOwnershipReason,
-  readElementRect,
-} from "@web/grid/interaction/adapter.helpers";
-import { getLocalMinutes } from "@web/grid/interaction/date";
+  createViewInteractionAdapterCore,
+  type ViewEngineAdapter,
+} from "@web/grid/interaction/adapter/view-interaction.core";
 import {
-  createDraftEventMount,
-  getResizeHandleEdge,
-  updateDraftEventTimeLabel,
-} from "@web/grid/interaction/dom";
-import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
+  getViewInteractionDraftEventMode,
+  getViewInteractionSourceElement,
+  viewInteractionDraftEventMount,
+} from "@web/grid/interaction/adapter/view-interaction.engine-members";
+import { createViewInteractionLayoutState } from "@web/grid/interaction/adapter/view-interaction.layout-state";
+import { readElementRect } from "@web/grid/interaction/adapter.helpers";
+import { updateDraftEventTimeLabel } from "@web/grid/interaction/dom";
+import { dayEventRegistry } from "../registry/day-event.registry";
 import {
-  createAllDayDragVisual,
-  updateAllDayDragVisual,
-} from "@web/grid/interaction/math/all-day.drag";
-import {
-  createAllDayResizeVisual,
-  updateAllDayResizeVisual,
-} from "@web/grid/interaction/math/all-day.resize";
-import {
-  createTimedDragVisual,
-  updateTimedDragVisual,
-} from "@web/grid/interaction/math/timed.drag";
-import {
-  createTimedResizeVisual,
-  updateTimedResizeVisual,
-} from "@web/grid/interaction/math/timed.resize";
-import { type VisualPoint } from "@web/grid/interaction/types/timed-drag.types";
-import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
-import {
-  createInteractionEngine,
-  type InteractionCancellationTargets,
-  type InteractionEngine,
-} from "@web/interaction/interaction.engine";
-import { isEligibleInteractionPointerDown } from "@web/interaction/interaction.pointer";
-import {
-  type DayInteractionEventType,
-  dayEventRegistry,
-} from "../registry/day-event.registry";
-import {
-  commitAllDayDragInteraction,
-  commitAllDayResizeInteraction,
-} from "./commit/all-day.commit";
-import {
-  commitTimedDragInteraction,
-  commitTimedResizeInteraction,
-  timedDragVisualToDayGridEvent,
-  timedResizeVisualToDayGridEvent,
-} from "./commit/timed.commit";
-import {
-  type DayAllDayDragTarget,
-  type DayAllDayResizeTarget,
   type DayInteractionAdapter,
   type DayInteractionAdapterOptions,
   type DayInteractionCommitResult,
-  type DayInteractionPointerOwnership,
   type DayInteractionRuntime,
   type DayInteractionTarget,
-  type DayInteractionVisual,
-  type DayResolvedEventTarget,
-  type DayTimedDragTarget,
-  type DayTimedResizeTarget,
 } from "./day-interaction.adapter.types";
+import { resolveDayColumns } from "./geometry/day-columns";
+import { buildDayLayoutCacheForTarget } from "./geometry/day-layout.cache";
 import {
-  buildDayLayoutCacheForTarget,
-  isDayDragTarget,
-} from "./geometry/day-layout.cache";
+  commitAllDayDragInteraction,
+  createAllDayDragInteractionVisual,
+  updateAllDayDragInteractionVisual,
+} from "./interactions/all-day.drag";
+import {
+  commitAllDayResizeInteraction,
+  createAllDayResizeInteractionVisual,
+  updateAllDayResizeInteractionVisual,
+} from "./interactions/all-day.resize";
+import {
+  commitTimedDragInteraction,
+  createTimedDragInteractionVisual,
+  updateTimedDragInteractionVisual,
+} from "./interactions/timed.drag";
+import {
+  commitTimedResizeInteraction,
+  createTimedResizeInteractionVisual,
+  updateTimedResizeInteractionVisual,
+} from "./interactions/timed.resize";
 
 export type {
   DayAllDayDragCommitResult,
@@ -92,127 +64,29 @@ export const createDayInteractionAdapter = ({
   getVisibleDate = () => dayjs(),
   runtime = () => inertRuntime,
 }: DayInteractionAdapterOptions = {}): DayInteractionAdapter => {
-  let layout: GridLayoutCache | null = null;
-  let scrollTop: number | null = null;
+  const layoutState = createViewInteractionLayoutState();
 
-  const engine: InteractionEngine<
-    DayInteractionTarget,
-    DayInteractionVisual,
-    DayInteractionCommitResult
-  > = createInteractionEngine({
-    adapter: createEngineAdapter(),
-    ...engineOptions,
+  const core = createViewInteractionAdapterCore({
+    createEngineAdapter,
+    engineOptions,
+    // Day passes neither pointer hook: it has no motion flag. Adding one here
+    // would be the quiet way to grant Day a Week-only behaviour.
+    ownershipReasons: {
+      ineligiblePointer: "ineligible-day-pointer",
+      noTarget: "no-day-interaction-target",
+    },
+    registry: dayEventRegistry,
+    runtime,
   });
 
-  function ownsPointer(event: Pick<PointerEvent, "pointerId">) {
-    return engine.ownsPointer(event);
-  }
-
-  function connectCancellationEvents(targets?: InteractionCancellationTargets) {
-    return engine.connectCancellationEvents(targets);
-  }
-
-  function handlePointerDown(
-    event: PointerEvent,
-  ): DayInteractionPointerOwnership {
-    if (!isEligibleInteractionPointerDown(event)) {
-      return {
-        reason: "ineligible-day-pointer",
-        shouldOwn: false,
-      };
-    }
-
-    const target = getInteractionTarget(event);
-
-    if (!target) {
-      return {
-        reason: "no-day-interaction-target",
-        shouldOwn: false,
-      };
-    }
-
-    if (!engine.handlePointerDown(event)) {
-      return {
-        reason: "calendar-interaction-engine-busy",
-        shouldOwn: false,
-      };
-    }
-
-    return {
-      reason: getSavedEventOwnershipReason(target.type),
-      shouldOwn: true,
-    };
-  }
-
-  function handlePointerMove(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-
-    engine.handlePointerMove(event);
-
-    return isOwnedPointer;
-  }
-
-  function handlePointerUp(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-    const result = engine.handlePointerUp(event);
-
-    if (!result) {
-      return isOwnedPointer;
-    }
-
-    const currentRuntime = runtime();
-
-    if (result.type === "click") {
-      if (isAllDayTarget(result.target)) {
-        currentRuntime.onClickAllDayEvent?.(result.target.event);
-      } else {
-        currentRuntime.onClickTimedEvent(result.target.event);
-      }
-
-      return isOwnedPointer;
-    }
-
-    if (result.result.type === "allDayDragEnd") {
-      currentRuntime.onCommitAllDayDrag?.(result.result);
-      return isOwnedPointer;
-    }
-
-    if (result.result.type === "allDayResizeEnd") {
-      currentRuntime.onCommitAllDayResize?.(result.result);
-      return isOwnedPointer;
-    }
-
-    if (result.result.type === "timedDragEnd") {
-      currentRuntime.onCommitTimedDrag(result.result);
-      return isOwnedPointer;
-    }
-
-    currentRuntime.onCommitTimedResize?.(result.result);
-
-    return isOwnedPointer;
-  }
-
-  function handlePointerCancel(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-
-    engine.handlePointerCancel(event);
-
-    return isOwnedPointer;
-  }
-
-  function cancel() {
-    engine.cancel();
-  }
-
-  function createEngineAdapter(): InteractionAdapter<
-    DayInteractionTarget,
-    DayInteractionVisual,
-    DayInteractionCommitResult
-  > {
+  function createEngineAdapter({
+    getInteractionTarget,
+  }: {
+    getInteractionTarget: (event: PointerEvent) => DayInteractionTarget | null;
+  }): ViewEngineAdapter {
     return {
       cancel: () => {
-        layout = null;
-        scrollTop = null;
+        layoutState.clear();
       },
       commit: ({ target, visual }) => {
         let result: DayInteractionCommitResult;
@@ -236,31 +110,17 @@ export const createDayInteractionAdapter = ({
           throw new Error("Mismatched Day interaction target");
         }
 
-        layout = null;
-        scrollTop = null;
+        layoutState.clear();
 
         return result;
       },
       createVisual: ({ pointerStart, sourceElement, target }) => {
-        const visibleDateKey = getVisibleDate().format(YEAR_MONTH_DAY_FORMAT);
-        // The Day view renders one column per calendar, all sharing one date,
-        // so drag column keys are CALENDAR IDS (not dates like the Week
-        // view) — a column change is a cross-calendar move. Resizes stay
-        // within the event's own column and keep the single-column layout.
-        // An event whose calendar isn't among the rendered columns (columns
-        // and events momentarily out of sync) also falls back to the single
-        // column: anchoring it to column 0 would make a purely vertical drag
-        // commit a calendar move the user never made.
-        const calendarColumnKeys = isDayDragTarget(target)
-          ? getColumnKeys()
-          : [];
-        const eventColumnIndex = calendarColumnKeys.indexOf(
-          target.event.calendarId ?? "",
-        );
-        const columnKeys =
-          eventColumnIndex >= 0 ? calendarColumnKeys : [visibleDateKey];
-        const initialColumnIndex = Math.max(0, eventColumnIndex);
-        const initialColumnKey = columnKeys[initialColumnIndex]!;
+        const { columnKeys, initialColumnIndex, initialColumnKey } =
+          resolveDayColumns({
+            getColumnKeys,
+            target,
+            visibleDate: getVisibleDate(),
+          });
         const nextLayout = buildDayLayoutCacheForTarget(
           target,
           getLayoutSources(),
@@ -273,62 +133,50 @@ export const createDayInteractionAdapter = ({
 
         const sourceRect = readElementRect(sourceElement);
 
-        layout = nextLayout;
-        scrollTop = nextLayout.smartScroll?.initialScrollTop ?? null;
+        layoutState.setLayout(nextLayout);
         runtime().onMotionActivation?.(target);
 
         if (target.type === "allDayDrag") {
-          return createAllDayDragVisual({
-            dayDate: initialColumnKey,
-            dayIndex: initialColumnIndex,
-            eventId: target.event._id!,
+          return createAllDayDragInteractionVisual({
+            initialColumnIndex,
+            initialColumnKey,
             pointerStart,
             sourceRect,
+            target,
           });
         }
 
         if (target.type === "allDayResize") {
-          return createAllDayResizeVisual({
-            edge: target.edge,
-            endDayIndex: 0,
-            eventId: target.event._id!,
+          return createAllDayResizeInteractionVisual({
             pointerStart,
             sourceRect,
-            startDayIndex: 0,
+            target,
           });
         }
 
         if (target.type === "timedResize") {
-          return createTimedResizeVisual({
-            edge: target.edge,
-            endMinutes: getLocalMinutes(target.event.endDate),
-            eventId: target.event._id!,
+          return createTimedResizeInteractionVisual({
             pointerStart,
             sourceRect,
-            startMinutes: getLocalMinutes(target.event.startDate),
+            target,
           });
         }
 
-        return createTimedDragVisual({
-          dayDate: initialColumnKey,
-          dayIndex: initialColumnIndex,
-          endMinutes: getLocalMinutes(target.event.endDate),
-          eventId: target.event._id!,
+        return createTimedDragInteractionVisual({
+          initialColumnIndex,
+          initialColumnKey,
           pointerStart,
           sourceRect,
-          startMinutes: getLocalMinutes(target.event.startDate),
+          target,
         });
       },
-      getDraftEventMount: ({ sourceElement, target }) =>
-        createDraftEventMount({
-          cursor: getSavedEventInteractionCursor(target.type),
-          source: sourceElement,
-        }),
-      getSourceElement: (target) => target.registered.element,
-      getSourceElementDraftEventMode: (target) =>
-        isDayDragTarget(target) ? "dim-source" : "hide-source",
+      getDraftEventMount: viewInteractionDraftEventMount,
+      getSourceElement: getViewInteractionSourceElement,
+      getSourceElementDraftEventMode: getViewInteractionDraftEventMode,
       getTarget: (event) => getInteractionTarget(event),
       updateVisual: ({ pointer, target, visual }) => {
+        const layout = layoutState.getLayout();
+
         if (!layout) {
           return {
             draftEvent: null,
@@ -337,9 +185,10 @@ export const createDayInteractionAdapter = ({
         }
 
         if (visual.type === "allDayDrag") {
-          const nextVisual = updateAllDayDragVisual(visual, {
+          const nextVisual = updateAllDayDragInteractionVisual({
             layout,
             pointer,
+            visual,
           });
 
           return {
@@ -351,9 +200,10 @@ export const createDayInteractionAdapter = ({
         }
 
         if (visual.type === "allDayResize") {
-          const nextVisual = updateAllDayResizeVisual(visual, {
+          const nextVisual = updateAllDayResizeInteractionVisual({
             layout,
             pointer,
+            visual,
           });
 
           return {
@@ -371,26 +221,24 @@ export const createDayInteractionAdapter = ({
             throw new Error("Mismatched Day interaction target");
           }
 
-          const smartScroll = applySmartScroll(pointer);
-          const nextVisual = updateTimedResizeVisual(visual, {
+          const smartScroll = layoutState.applySmartScroll(pointer);
+          const next = updateTimedResizeInteractionVisual({
             layout,
             pointer,
             scrollDeltaPx: smartScroll.scrollDeltaPx,
+            target,
+            visibleDate: getVisibleDate(),
+            visual,
           });
-          const nextEvent = timedResizeVisualToDayGridEvent(
-            target.event,
-            nextVisual,
-            getVisibleDate(),
-          );
 
           return {
             draftEvent: {
-              height: nextVisual.height,
-              mutate: (node) => updateDraftEventTimeLabel(node, nextEvent),
-              transform: nextVisual.transform,
+              height: next.visual.height,
+              mutate: (node) => updateDraftEventTimeLabel(node, next.event),
+              transform: next.visual.transform,
             },
             shouldContinue: smartScroll.isScrolling,
-            visual: nextVisual,
+            visual: next.visual,
           };
         }
 
@@ -398,210 +246,27 @@ export const createDayInteractionAdapter = ({
           throw new Error("Mismatched Day interaction target");
         }
 
-        const smartScroll = applySmartScroll(pointer);
-        const nextVisual = updateTimedDragVisual(visual, {
+        const smartScroll = layoutState.applySmartScroll(pointer);
+        const next = updateTimedDragInteractionVisual({
           layout,
           pointer,
           scrollDeltaPx: smartScroll.scrollDeltaPx,
+          target,
+          visibleDate: getVisibleDate(),
+          visual,
         });
-        const nextEvent = timedDragVisualToDayGridEvent(
-          target.event,
-          nextVisual,
-          getVisibleDate(),
-        );
 
         return {
           draftEvent: {
-            mutate: (node) => updateDraftEventTimeLabel(node, nextEvent),
-            transform: nextVisual.transform,
+            mutate: (node) => updateDraftEventTimeLabel(node, next.event),
+            transform: next.visual.transform,
           },
           shouldContinue: smartScroll.isScrolling,
-          visual: nextVisual,
+          visual: next.visual,
         };
       },
     };
   }
 
-  function applySmartScroll(pointer: VisualPoint) {
-    const result = applySmartScrollFrame({ layout, pointer, scrollTop });
-    scrollTop = result.scrollTop;
-    return {
-      isScrolling: result.isScrolling,
-      scrollDeltaPx: result.scrollDeltaPx,
-    };
-  }
-
-  function getInteractionTarget(
-    event: PointerEvent,
-  ): DayInteractionTarget | null {
-    const allDayResizeTarget = getAllDayResizeTarget(event);
-
-    if (allDayResizeTarget) {
-      return allDayResizeTarget;
-    }
-
-    const timedResizeTarget = getTimedResizeTarget(event);
-
-    if (timedResizeTarget) {
-      return timedResizeTarget;
-    }
-
-    const timedDragTarget = getTimedDragTarget(event);
-
-    if (timedDragTarget) {
-      return timedDragTarget;
-    }
-
-    return getAllDayDragTarget(event);
-  }
-
-  function getAllDayDragTarget(
-    event: PointerEvent,
-  ): DayAllDayDragTarget | null {
-    if (getResizeHandleEdge(event)) {
-      return null;
-    }
-
-    const target = resolveAllDayEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      ...target,
-      type: "allDayDrag",
-    };
-  }
-
-  function getAllDayResizeTarget(
-    event: PointerEvent,
-  ): DayAllDayResizeTarget | null {
-    const edge = getResizeHandleEdge(event);
-
-    if (!edge) {
-      return null;
-    }
-
-    const target = resolveAllDayEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      edge,
-      ...target,
-      type: "allDayResize",
-    };
-  }
-
-  function getTimedDragTarget(event: PointerEvent): DayTimedDragTarget | null {
-    if (getResizeHandleEdge(event)) {
-      return null;
-    }
-
-    const target = resolveTimedEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      ...target,
-      type: "timedDrag",
-    };
-  }
-
-  function getTimedResizeTarget(
-    event: PointerEvent,
-  ): DayTimedResizeTarget | null {
-    const edge = getResizeHandleEdge(event);
-
-    if (!edge) {
-      return null;
-    }
-
-    const target = resolveTimedEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      edge,
-      ...target,
-      type: "timedResize",
-    };
-  }
-
-  function resolveAllDayEventTarget(
-    event: PointerEvent,
-  ): DayResolvedEventTarget | null {
-    const registered = getRegisteredTarget(event, "all-day");
-
-    if (!registered) {
-      return null;
-    }
-
-    const currentRuntime = runtime();
-    const allDayEvent = currentRuntime.getAllDayEventById?.(registered.eventId);
-
-    if (!allDayEvent?._id || !allDayEvent.isAllDay) {
-      return null;
-    }
-
-    return {
-      event: allDayEvent,
-      hadFormOpenBeforeInteraction: currentRuntime.isFormOpen?.() ?? false,
-      registered,
-    };
-  }
-
-  function resolveTimedEventTarget(
-    event: PointerEvent,
-  ): DayResolvedEventTarget | null {
-    const registered = getRegisteredTarget(event, "timed");
-
-    if (!registered) {
-      return null;
-    }
-
-    const currentRuntime = runtime();
-    const timedEvent = currentRuntime.getTimedEventById(registered.eventId);
-
-    if (!timedEvent?._id || timedEvent.isAllDay) {
-      return null;
-    }
-
-    return {
-      event: timedEvent,
-      hadFormOpenBeforeInteraction: currentRuntime.isFormOpen?.() ?? false,
-      registered,
-    };
-  }
-
-  function getRegisteredTarget(
-    event: PointerEvent,
-    eventType: DayInteractionEventType,
-  ) {
-    const registered = dayEventRegistry.resolveFromTarget(event.target);
-
-    return registered?.eventType === eventType ? registered : null;
-  }
-
-  return {
-    cancel,
-    connectCancellationEvents,
-    handlePointerCancel,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    ownsPointer,
-  };
+  return core.adapter;
 };
-
-const isAllDayTarget = (
-  target: DayInteractionTarget,
-): target is DayAllDayDragTarget | DayAllDayResizeTarget =>
-  target.type === "allDayDrag" || target.type === "allDayResize";

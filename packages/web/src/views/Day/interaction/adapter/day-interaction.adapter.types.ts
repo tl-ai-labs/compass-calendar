@@ -1,26 +1,25 @@
 import { type Dayjs } from "@core/util/date/dayjs";
-import { type GridEvent } from "@web/common/types/web.event.types";
+import {
+  type ViewAllDayDragCommitResult,
+  type ViewAllDayDragTarget,
+  type ViewAllDayResizeCommitResult,
+  type ViewAllDayResizeTarget,
+  type ViewInteractionAdapterBase,
+  type ViewInteractionCommitResult,
+  type ViewInteractionPointerOwnership,
+  type ViewInteractionRuntimeBase,
+  type ViewInteractionTarget,
+  type ViewInteractionVisual,
+  type ViewResolvedEventTarget,
+  type ViewTimedDragCommitResult,
+  type ViewTimedDragTarget,
+  type ViewTimedResizeCommitResult,
+  type ViewTimedResizeTarget,
+} from "@web/grid/interaction/adapter/view-interaction.types";
 import { type GridLayoutCacheSources } from "@web/grid/interaction/layout.cache";
-import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
-import {
-  type AllDayResizeEdge,
-  type AllDayResizeVisual,
-} from "@web/grid/interaction/types/all-day-resize.types";
-import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
-import {
-  type TimedResizeEdge,
-  type TimedResizeVisual,
-} from "@web/grid/interaction/types/timed-resize.types";
-import {
-  type InteractionCancellationTargets,
-  type InteractionEngineSchedulerOptions,
-} from "@web/interaction/interaction.engine";
-import { type DayRegisteredEventTarget } from "../registry/day-event.registry";
+import { type InteractionEngineSchedulerOptions } from "@web/interaction/interaction.engine";
 
-export interface DayInteractionPointerOwnership {
-  reason: string;
-  shouldOwn: boolean;
-}
+export type DayInteractionPointerOwnership = ViewInteractionPointerOwnership;
 
 export interface DayInteractionAdapterOptions {
   engineOptions?: InteractionEngineSchedulerOptions;
@@ -37,113 +36,40 @@ export interface DayInteractionAdapterOptions {
   runtime?: () => DayInteractionRuntime;
 }
 
-export interface DayInteractionRuntime {
-  getAllDayEventById?: (eventId: string) => GridEvent | null;
-  getTimedEventById(eventId: string): GridEvent | null;
-  isFormOpen?: () => boolean;
-  onClickAllDayEvent?: (event: GridEvent) => void;
-  onClickTimedEvent: (event: GridEvent) => void;
-  onCommitAllDayDrag?: (result: DayAllDayDragCommitResult) => void;
-  onCommitAllDayResize?: (result: DayAllDayResizeCommitResult) => void;
-  onCommitTimedDrag: (result: DayTimedDragCommitResult) => void;
-  onCommitTimedResize?: (result: DayTimedResizeCommitResult) => void;
-  onMotionActivation?: (target: DayInteractionTarget) => void;
-}
+/**
+ * Day adds nothing to the shared runtime. Its column semantics arrive through
+ * `DayInteractionAdapterOptions.getColumnKeys` / `getVisibleDate` instead of
+ * through the runtime, which is where Week puts `getVisibleDays()`.
+ */
+export type DayInteractionRuntime = ViewInteractionRuntimeBase;
 
-export interface DayAllDayDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayDragEnd";
-}
+export type DayAllDayDragCommitResult = ViewAllDayDragCommitResult;
 
-export interface DayAllDayDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "allDayDrag";
-}
+export type DayAllDayDragTarget = ViewAllDayDragTarget;
 
-export interface DayAllDayResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayResizeEnd";
-}
+export type DayAllDayResizeCommitResult = ViewAllDayResizeCommitResult;
 
-export interface DayAllDayResizeTarget {
-  edge: AllDayResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "allDayResize";
-}
+export type DayAllDayResizeTarget = ViewAllDayResizeTarget;
 
-export interface DayTimedDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedDragEnd";
-}
+export type DayTimedDragCommitResult = ViewTimedDragCommitResult;
 
-export interface DayTimedDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "timedDrag";
-}
+export type DayTimedDragTarget = ViewTimedDragTarget;
 
-export interface DayTimedResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedResizeEnd";
-}
+export type DayTimedResizeCommitResult = ViewTimedResizeCommitResult;
 
-export interface DayTimedResizeTarget {
-  edge: TimedResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-  type: "timedResize";
-}
+export type DayTimedResizeTarget = ViewTimedResizeTarget;
 
-export type DayInteractionTarget =
-  | DayAllDayDragTarget
-  | DayAllDayResizeTarget
-  | DayTimedDragTarget
-  | DayTimedResizeTarget;
+export type DayInteractionTarget = ViewInteractionTarget;
 
-export type DayInteractionVisual =
-  | AllDayDragVisual
-  | AllDayResizeVisual
-  | TimedDragVisual
-  | TimedResizeVisual;
+export type DayInteractionVisual = ViewInteractionVisual;
 
-export type DayInteractionCommitResult =
-  | DayAllDayDragCommitResult
-  | DayAllDayResizeCommitResult
-  | DayTimedDragCommitResult
-  | DayTimedResizeCommitResult;
+export type DayInteractionCommitResult = ViewInteractionCommitResult;
 
-export type DayResolvedEventTarget = {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: DayRegisteredEventTarget;
-};
+export type DayResolvedEventTarget = ViewResolvedEventTarget;
 
-export interface DayInteractionAdapter {
-  cancel(): void;
-  connectCancellationEvents(
-    targets?: InteractionCancellationTargets,
-  ): () => void;
-  handlePointerCancel(event: PointerEvent): boolean;
-  handlePointerDown(event: PointerEvent): DayInteractionPointerOwnership;
-  handlePointerMove(event: PointerEvent): boolean;
-  handlePointerUp(event: PointerEvent): boolean;
-  ownsPointer(event: Pick<PointerEvent, "pointerId">): boolean;
-}
+/**
+ * Deliberately the bare shared surface: no `rebuildLayoutAfterNavigation`.
+ * Day has no edge navigation, and adding one here would be the quiet way to
+ * grant it some.
+ */
+export type DayInteractionAdapter = ViewInteractionAdapterBase;

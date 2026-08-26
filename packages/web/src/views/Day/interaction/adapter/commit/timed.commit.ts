@@ -7,48 +7,8 @@ import {
 } from "@web/grid/interaction/commit/timed-moved";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
-import {
-  type DayTimedDragCommitResult,
-  type DayTimedDragTarget,
-  type DayTimedResizeCommitResult,
-  type DayTimedResizeTarget,
-} from "../day-interaction.adapter.types";
 
-export const commitTimedDragInteraction = (
-  target: DayTimedDragTarget,
-  visual: TimedDragVisual,
-  visibleDate: Dayjs,
-): DayTimedDragCommitResult => {
-  const hasMoved = hasTimedDragVisualMoved(visual);
-
-  return {
-    event: hasMoved
-      ? timedDragVisualToDayGridEvent(target.event, visual, visibleDate)
-      : target.event,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved,
-    type: "timedDragEnd",
-  };
-};
-
-export const commitTimedResizeInteraction = (
-  target: DayTimedResizeTarget,
-  visual: TimedResizeVisual,
-  visibleDate: Dayjs,
-): DayTimedResizeCommitResult => {
-  const hasMoved = hasTimedResizeVisualMoved(visual);
-
-  return {
-    event: hasMoved
-      ? timedResizeVisualToDayGridEvent(target.event, visual, visibleDate)
-      : target.event,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved,
-    type: "timedResizeEnd",
-  };
-};
+export { hasTimedDragVisualMoved, hasTimedResizeVisualMoved };
 
 export const timedDragVisualToDayGridEvent = (
   event: GridEvent,

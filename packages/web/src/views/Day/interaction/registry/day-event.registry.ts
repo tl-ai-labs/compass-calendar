@@ -1,11 +1,11 @@
 import {
-  createViewInteractionRegistry,
   type ViewEventRegistry,
   type ViewInteractionEventType,
   type ViewRegisteredEventTarget,
 } from "@web/grid/interaction/view-event-registry";
+import { VIEW_INTERACTION_MODULES } from "@web/grid/interaction/view-interaction.module";
 
-const day = createViewInteractionRegistry("day");
+const day = VIEW_INTERACTION_MODULES.day;
 
 export const DAY_INTERACTION_EVENT_ID_ATTRIBUTE = day.idAttribute;
 export const DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE = day.typeAttribute;

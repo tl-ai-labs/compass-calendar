@@ -5,6 +5,11 @@ import {
 } from "@web/common/constants/web.constants";
 import { GRID_TIME_STEP, TIMED_VISIBLE_HOURS } from "@web/grid/grid.constants";
 import {
+  isViewAllDayTarget,
+  isViewDragTarget,
+} from "@web/grid/interaction/adapter/view-interaction.targets";
+import { type ViewInteractionTarget } from "@web/grid/interaction/adapter/view-interaction.types";
+import {
   SMART_SCROLL_BOTTOM_INSET_PX,
   SMART_SCROLL_SPEED_PX,
 } from "@web/grid/interaction/adapter.helpers";
@@ -71,3 +76,21 @@ export const buildDragWeekLayoutCache = (
   sourceRow: DragRow,
 ): WeekLayoutCache | null =>
   buildDragGridLayoutCache(weekLayoutCacheOptions(sources), sourceRow);
+
+// Drags cache both rows so they can be dropped across them; resizes stay within
+// one row and only need their own.
+export const buildWeekLayoutCacheForTarget = (
+  target: ViewInteractionTarget,
+  input: WeekLayoutCacheInput,
+) => {
+  if (isViewDragTarget(target)) {
+    return buildDragWeekLayoutCache(
+      input,
+      target.type === "allDayDrag" ? "allDay" : "timed",
+    );
+  }
+
+  return isViewAllDayTarget(target)
+    ? buildAllDayWeekLayoutCache(input)
+    : buildTimedWeekLayoutCache(input);
+};

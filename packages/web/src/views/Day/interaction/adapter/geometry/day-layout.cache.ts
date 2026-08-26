@@ -4,6 +4,7 @@ import {
   ID_GRID_MAIN,
 } from "@web/common/constants/web.constants";
 import { GRID_TIME_STEP, TIMED_VISIBLE_HOURS } from "@web/grid/grid.constants";
+import { isViewAllDayTarget } from "@web/grid/interaction/adapter/view-interaction.targets";
 import {
   SMART_SCROLL_BOTTOM_INSET_PX,
   SMART_SCROLL_SPEED_PX,
@@ -15,12 +16,7 @@ import {
   type GridLayoutCacheSources,
 } from "@web/grid/interaction/layout.cache";
 import { INTERACTION_EDGE_THRESHOLD_PX } from "@web/interaction/interaction.constants";
-import {
-  type DayAllDayDragTarget,
-  type DayAllDayResizeTarget,
-  type DayInteractionTarget,
-  type DayTimedDragTarget,
-} from "../day-interaction.adapter.types";
+import { type DayInteractionTarget } from "../day-interaction.adapter.types";
 
 export type DayLayoutCache = GridLayoutCache;
 export type DayLayoutCacheSources = GridLayoutCacheSources;
@@ -56,21 +52,11 @@ export const buildDayAllDayLayoutCache = (
     visibleDates,
   });
 
-const isAllDayTarget = (
-  target: DayInteractionTarget,
-): target is DayAllDayDragTarget | DayAllDayResizeTarget =>
-  target.type === "allDayDrag" || target.type === "allDayResize";
-
 export const buildDayLayoutCacheForTarget = (
   target: DayInteractionTarget,
   sources: GridLayoutCacheSources,
   visibleDates: string[],
 ) =>
-  isAllDayTarget(target)
+  isViewAllDayTarget(target)
     ? buildDayAllDayLayoutCache(sources, visibleDates)
     : buildDayTimedLayoutCache(sources, visibleDates);
-
-export const isDayDragTarget = (
-  target: DayInteractionTarget,
-): target is DayAllDayDragTarget | DayTimedDragTarget =>
-  target.type === "allDayDrag" || target.type === "timedDrag";

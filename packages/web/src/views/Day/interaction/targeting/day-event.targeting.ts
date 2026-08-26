@@ -1,26 +1,12 @@
-import {
-  createGridEventTargeting,
-  type GridEventTarget as SharedGridEventTarget,
-} from "@web/grid/interaction/event.targeting";
-import {
-  DAY_INTERACTION_EVENT_ID_ATTRIBUTE,
-  DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE,
-  type DayInteractionEventType,
-  dayEventRegistry,
-} from "@web/views/Day/interaction/registry/day-event.registry";
+import { type GridEventTarget as SharedGridEventTarget } from "@web/grid/interaction/event.targeting";
+import { VIEW_INTERACTION_MODULES } from "@web/grid/interaction/view-interaction.module";
+import { type DayInteractionEventType } from "@web/views/Day/interaction/registry/day-event.registry";
 
 export type DayGridEventTargetType = DayInteractionEventType;
 
 export type DayGridEventTarget = SharedGridEventTarget<DayGridEventTargetType>;
 
-const TARGET_SELECTOR = `[${DAY_INTERACTION_EVENT_ID_ATTRIBUTE}][${DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE}]`;
-
-const dayGridEventTargeting = createGridEventTargeting<DayInteractionEventType>(
-  {
-    registry: dayEventRegistry,
-    targetSelector: TARGET_SELECTOR,
-  },
-);
+const dayGridEventTargeting = VIEW_INTERACTION_MODULES.day.targeting;
 
 export const getFocusedDayGridEventTarget =
   dayGridEventTargeting.getFocusedGridEventTarget;

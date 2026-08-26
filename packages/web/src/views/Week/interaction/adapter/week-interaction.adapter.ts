@@ -1,12 +1,16 @@
 import {
-  applySmartScroll as applySmartScrollFrame,
-  getSavedEventInteractionCursor,
-  getSavedEventOwnershipReason,
-  readElementRect,
-} from "@web/grid/interaction/adapter.helpers";
+  createViewInteractionAdapterCore,
+  type ViewEngineAdapter,
+} from "@web/grid/interaction/adapter/view-interaction.core";
 import {
-  createDraftEventMount,
-  getResizeHandleEdge,
+  getViewInteractionDraftEventMode,
+  getViewInteractionSourceElement,
+  viewInteractionDraftEventMount,
+} from "@web/grid/interaction/adapter/view-interaction.engine-members";
+import { createViewInteractionLayoutState } from "@web/grid/interaction/adapter/view-interaction.layout-state";
+import { isViewDragTarget } from "@web/grid/interaction/adapter/view-interaction.targets";
+import { readElementRect } from "@web/grid/interaction/adapter.helpers";
+import {
   hideDraftEventTimeLabel,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
@@ -20,17 +24,7 @@ import {
   type VisualRect,
 } from "@web/grid/interaction/types/timed-drag.types";
 import { calendarEventIdValueSelector } from "@web/grid/interaction/view-event-registry";
-import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
-import {
-  createInteractionEngine,
-  type InteractionCancellationTargets,
-  type InteractionEngine,
-} from "@web/interaction/interaction.engine";
-import { isEligibleInteractionPointerDown } from "@web/interaction/interaction.pointer";
-import {
-  type WeekInteractionEventType,
-  weekEventRegistry,
-} from "../registry/week-event.registry";
+import { weekEventRegistry } from "../registry/week-event.registry";
 import {
   resetWeekInteractionEdgeNavigationState,
   setWeekInteractionEdgeNavigationState,
@@ -38,10 +32,7 @@ import {
 import { setWeekInteractionMotionActive } from "../state/motion.state";
 import { createWeekEdgeNavigationController } from "./edge-navigation";
 import {
-  buildAllDayWeekLayoutCache,
-  buildDragWeekLayoutCache,
-  buildTimedWeekLayoutCache,
-  type WeekLayoutCache,
+  buildWeekLayoutCacheForTarget,
   type WeekLayoutCacheInput,
 } from "./geometry/week-layout.cache";
 import {
@@ -65,19 +56,12 @@ import {
   updateTimedResizeInteractionVisual,
 } from "./interactions/timed.resize";
 import {
-  type WeekAllDayDragTarget,
-  type WeekAllDayResizeTarget,
   type WeekEdgeNavigableVisual,
   type WeekInteractionAdapter,
   type WeekInteractionAdapterOptions,
   type WeekInteractionCommitResult,
-  type WeekInteractionPointerOwnership,
   type WeekInteractionRuntime,
   type WeekInteractionTarget,
-  type WeekInteractionVisual,
-  type WeekResolvedEventTarget,
-  type WeekTimedDragTarget,
-  type WeekTimedResizeTarget,
 } from "./week-interaction.adapter.types";
 
 export type {
@@ -109,29 +93,24 @@ export const createWeekInteractionAdapter = ({
   runtime = () => inertRuntime,
 }: WeekInteractionAdapterOptions = {}): WeekInteractionAdapter => {
   const edgeNavigation = createWeekEdgeNavigationController();
+  const layoutState = createViewInteractionLayoutState();
   let isLayoutRebuildPending = false;
-  let layout: WeekLayoutCache | null = null;
-  let scrollTop: number | null = null;
 
-  const engine: InteractionEngine<
-    WeekInteractionTarget,
-    WeekInteractionVisual,
-    WeekInteractionCommitResult
-  > = createInteractionEngine({
-    adapter: createEngineAdapter(),
-    ...engineOptions,
+  const core = createViewInteractionAdapterCore({
+    createEngineAdapter,
+    engineOptions,
+    onPointerClickSettled: () => setWeekInteractionMotionActive(false),
+    onPointerDownAccepted: () => setWeekInteractionMotionActive(true),
+    ownershipReasons: {
+      ineligiblePointer: "ineligible-week-pointer",
+      noTarget: "no-week-interaction-target",
+    },
+    registry: weekEventRegistry,
+    runtime,
   });
 
-  function ownsPointer(event: Pick<PointerEvent, "pointerId">) {
-    return engine.ownsPointer(event);
-  }
-
-  function connectCancellationEvents(targets?: InteractionCancellationTargets) {
-    return engine.connectCancellationEvents(targets);
-  }
-
   function rebuildLayoutAfterNavigation() {
-    const session = engine.getSession();
+    const session = core.engine.getSession();
 
     if (session.phase === "idle") {
       return;
@@ -149,112 +128,16 @@ export const createWeekInteractionAdapter = ({
           calendarEventIdValueSelector(eventId),
         );
       if (nextElement) {
-        engine.rebindPreparedSource(nextElement);
+        core.engine.rebindPreparedSource(nextElement);
       }
     }
   }
 
-  function handlePointerDown(
-    event: PointerEvent,
-  ): WeekInteractionPointerOwnership {
-    if (!isEligibleWeekPointerDown(event)) {
-      return {
-        reason: "ineligible-week-pointer",
-        shouldOwn: false,
-      };
-    }
-
-    const target = getInteractionTarget(event);
-
-    if (!target) {
-      return {
-        reason: "no-week-interaction-target",
-        shouldOwn: false,
-      };
-    }
-
-    if (!engine.handlePointerDown(event)) {
-      return {
-        reason: "calendar-interaction-engine-busy",
-        shouldOwn: false,
-      };
-    }
-
-    setWeekInteractionMotionActive(true);
-
-    return {
-      reason: getSavedEventOwnershipReason(target.type),
-      shouldOwn: true,
-    };
-  }
-
-  function handlePointerMove(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-
-    engine.handlePointerMove(event);
-
-    return isOwnedPointer;
-  }
-
-  function handlePointerUp(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-    const result = engine.handlePointerUp(event);
-
-    if (!result) {
-      return isOwnedPointer;
-    }
-
-    if (result.type === "click") {
-      const currentRuntime = runtime();
-
-      if (isAllDayTarget(result.target)) {
-        currentRuntime.onClickAllDayEvent?.(result.target.event);
-      } else {
-        currentRuntime.onClickTimedEvent(result.target.event);
-      }
-      setWeekInteractionMotionActive(false);
-      return isOwnedPointer;
-    }
-
-    const currentRuntime = runtime();
-
-    if (result.result.type === "allDayDragEnd") {
-      currentRuntime.onCommitAllDayDrag?.(result.result);
-      return isOwnedPointer;
-    }
-
-    if (result.result.type === "allDayResizeEnd") {
-      currentRuntime.onCommitAllDayResize?.(result.result);
-      return isOwnedPointer;
-    }
-
-    if (result.result.type === "timedDragEnd") {
-      currentRuntime.onCommitTimedDrag(result.result);
-      return isOwnedPointer;
-    }
-
-    currentRuntime.onCommitTimedResize?.(result.result);
-
-    return isOwnedPointer;
-  }
-
-  function handlePointerCancel(event: PointerEvent) {
-    const isOwnedPointer = ownsPointer(event);
-
-    engine.handlePointerCancel(event);
-
-    return isOwnedPointer;
-  }
-
-  function cancel() {
-    engine.cancel();
-  }
-
-  function createEngineAdapter(): InteractionAdapter<
-    WeekInteractionTarget,
-    WeekInteractionVisual,
-    WeekInteractionCommitResult
-  > {
+  function createEngineAdapter({
+    getInteractionTarget,
+  }: {
+    getInteractionTarget: (event: PointerEvent) => WeekInteractionTarget | null;
+  }): ViewEngineAdapter {
     return {
       cancel: () => {
         clearInteractionState();
@@ -296,8 +179,8 @@ export const createWeekInteractionAdapter = ({
         }
 
         const sourceRect = readElementRect(sourceElement);
-        setLayout(layout);
-        if (isDragTarget(target)) {
+        layoutState.setLayout(layout);
+        if (isViewDragTarget(target)) {
           setWeekInteractionEdgeNavigationState(
             activeEdgeNavigationIndicatorState,
           );
@@ -339,19 +222,16 @@ export const createWeekInteractionAdapter = ({
           target,
         });
       },
-      getDraftEventMount: ({ sourceElement, target }) =>
-        createDraftEventMount({
-          cursor: getSavedEventInteractionCursor(target.type),
-          source: sourceElement,
-        }),
-      getSourceElement: (target) => target.registered.element,
-      getSourceElementDraftEventMode: (target) =>
-        isDragTarget(target) ? "dim-source" : "hide-source",
+      getDraftEventMount: viewInteractionDraftEventMount,
+      getSourceElement: getViewInteractionSourceElement,
+      getSourceElementDraftEventMode: getViewInteractionDraftEventMode,
       getTarget: (event) => getInteractionTarget(event),
       updateVisual: ({ pointer, target, timestamp, visual }) => {
         rebuildLayoutIfNeeded(target);
 
-        if (!layout || scrollTop === null) {
+        const layout = layoutState.getLayout();
+
+        if (!layout || layoutState.getScrollTop() === null) {
           if (visual.type !== "allDayDrag" && visual.type !== "allDayResize") {
             return {
               draftEvent: null,
@@ -420,7 +300,7 @@ export const createWeekInteractionAdapter = ({
             throw new Error("Mismatched Week interaction target");
           }
 
-          const smartScroll = applySmartScroll(pointer);
+          const smartScroll = layoutState.applySmartScroll(pointer);
           const next = updateTimedResizeInteractionVisual({
             layout,
             pointer,
@@ -449,7 +329,7 @@ export const createWeekInteractionAdapter = ({
         // the view around behind the ghost.
         const smartScroll = isPointerOverAllDayRow(pointer)
           ? { isScrolling: false, scrollDeltaPx: 0 }
-          : applySmartScroll(pointer);
+          : layoutState.applySmartScroll(pointer);
         const nextEdgeNavigation = updateEdgeNavigation(
           visual,
           pointer,
@@ -480,166 +360,9 @@ export const createWeekInteractionAdapter = ({
     };
   }
 
-  function getInteractionTarget(
-    event: PointerEvent,
-  ): WeekInteractionTarget | null {
-    const allDayResizeTarget = getAllDayResizeTarget(event);
-
-    if (allDayResizeTarget) {
-      return allDayResizeTarget;
-    }
-
-    const resizeTarget = getTimedResizeTarget(event);
-
-    if (resizeTarget) {
-      return resizeTarget;
-    }
-
-    const timedDragTarget = getTimedDragTarget(event);
-
-    if (timedDragTarget) {
-      return timedDragTarget;
-    }
-
-    return getAllDayDragTarget(event);
-  }
-
-  function getAllDayDragTarget(
-    event: PointerEvent,
-  ): WeekAllDayDragTarget | null {
-    if (getResizeHandleEdge(event)) {
-      return null;
-    }
-
-    const target = resolveAllDayEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      ...target,
-      type: "allDayDrag",
-    };
-  }
-
-  function getAllDayResizeTarget(
-    event: PointerEvent,
-  ): WeekAllDayResizeTarget | null {
-    const edge = getResizeHandleEdge(event);
-
-    if (!edge) {
-      return null;
-    }
-
-    const target = resolveAllDayEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      edge,
-      ...target,
-      type: "allDayResize",
-    };
-  }
-
-  function getTimedDragTarget(event: PointerEvent): WeekTimedDragTarget | null {
-    if (getResizeHandleEdge(event)) {
-      return null;
-    }
-
-    const target = resolveTimedEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      ...target,
-      type: "timedDrag",
-    };
-  }
-
-  function getTimedResizeTarget(
-    event: PointerEvent,
-  ): WeekTimedResizeTarget | null {
-    const edge = getResizeHandleEdge(event);
-
-    if (!edge) {
-      return null;
-    }
-
-    const target = resolveTimedEventTarget(event);
-
-    if (!target) {
-      return null;
-    }
-
-    return {
-      edge,
-      ...target,
-      type: "timedResize",
-    };
-  }
-
-  function resolveAllDayEventTarget(
-    event: PointerEvent,
-  ): WeekResolvedEventTarget | null {
-    const registered = getRegisteredTarget(event, "all-day");
-
-    if (!registered) {
-      return null;
-    }
-
-    const currentRuntime = runtime();
-    const allDayEvent = currentRuntime.getAllDayEventById?.(registered.eventId);
-
-    if (!allDayEvent?._id || !allDayEvent.isAllDay) {
-      return null;
-    }
-
-    return {
-      event: allDayEvent,
-      hadFormOpenBeforeInteraction: currentRuntime.isFormOpen?.() ?? false,
-      registered,
-    };
-  }
-
-  function resolveTimedEventTarget(
-    event: PointerEvent,
-  ): WeekResolvedEventTarget | null {
-    const registered = getRegisteredTarget(event, "timed");
-
-    if (!registered) {
-      return null;
-    }
-
-    const currentRuntime = runtime();
-    const timedEvent = currentRuntime.getTimedEventById(registered.eventId);
-
-    if (!timedEvent?._id || timedEvent.isAllDay) {
-      return null;
-    }
-
-    return {
-      event: timedEvent,
-      hadFormOpenBeforeInteraction: currentRuntime.isFormOpen?.() ?? false,
-      registered,
-    };
-  }
-
-  function getRegisteredTarget(
-    event: PointerEvent,
-    eventType: WeekInteractionEventType,
-  ) {
-    const registered = weekEventRegistry.resolveFromTarget(event.target);
-
-    return registered?.eventType === eventType ? registered : null;
-  }
-
   function isPointerOverAllDayRow(pointer: VisualPoint) {
+    const layout = layoutState.getLayout();
+
     if (!layout) {
       return false;
     }
@@ -656,20 +379,13 @@ export const createWeekInteractionAdapter = ({
     );
   }
 
-  function applySmartScroll(pointer: VisualPoint) {
-    const result = applySmartScrollFrame({ layout, pointer, scrollTop });
-    scrollTop = result.scrollTop;
-    return {
-      isScrolling: result.isScrolling,
-      scrollDeltaPx: result.scrollDeltaPx,
-    };
-  }
-
   function updateEdgeNavigation<TVisual extends WeekEdgeNavigableVisual>(
     visual: TVisual,
     pointer: VisualPoint,
     timestamp: number,
   ): { isDwellActive: boolean; visual: TVisual } {
+    const layout = layoutState.getLayout();
+
     if (!layout) {
       resetEdgeNavigation();
       setWeekInteractionEdgeNavigationState(activeEdgeNavigationIndicatorState);
@@ -720,7 +436,7 @@ export const createWeekInteractionAdapter = ({
       return;
     }
 
-    setLayout(nextLayout);
+    layoutState.setLayout(nextLayout);
     isLayoutRebuildPending = false;
   }
 
@@ -729,55 +445,15 @@ export const createWeekInteractionAdapter = ({
   }
 
   function clearInteractionState() {
-    layout = null;
-    scrollTop = null;
+    layoutState.clear();
     resetEdgeNavigation();
     isLayoutRebuildPending = false;
   }
 
-  function setLayout(nextLayout: WeekLayoutCache) {
-    layout = nextLayout;
-    scrollTop = nextLayout.smartScroll?.initialScrollTop ?? null;
-  }
-
   return {
-    cancel,
-    connectCancellationEvents,
-    handlePointerCancel,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    ownsPointer,
+    ...core.adapter,
     rebuildLayoutAfterNavigation,
   };
-};
-
-const isAllDayTarget = (
-  target: WeekInteractionTarget,
-): target is WeekAllDayDragTarget | WeekAllDayResizeTarget =>
-  target.type === "allDayDrag" || target.type === "allDayResize";
-
-const isDragTarget = (
-  target: WeekInteractionTarget,
-): target is WeekAllDayDragTarget | WeekTimedDragTarget =>
-  target.type === "allDayDrag" || target.type === "timedDrag";
-
-// Drags cache both rows so they can be dropped across them; resizes stay within
-// one row and only need their own.
-const buildWeekLayoutCacheForTarget = (
-  target: WeekInteractionTarget,
-  input: WeekLayoutCacheInput,
-) => {
-  if (isDragTarget(target)) {
-    return buildDragWeekLayoutCache(
-      input,
-      target.type === "allDayDrag" ? "allDay" : "timed",
-    );
-  }
-
-  return isAllDayTarget(target)
-    ? buildAllDayWeekLayoutCache(input)
-    : buildTimedWeekLayoutCache(input);
 };
 
 // Always explicit for drags: the clone keeps whatever size it was last given,
@@ -791,5 +467,3 @@ const getDraftEventSize = (visual: {
     height: visual.sourceRect.height,
     width: visual.sourceRect.width,
   };
-
-const isEligibleWeekPointerDown = isEligibleInteractionPointerDown;
