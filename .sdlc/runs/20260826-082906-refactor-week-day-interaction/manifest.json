@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "run_id": "20260826-082906-refactor-week-day-interaction",
+  "mode": "brownfield",
+  "intent": "refactor",
+  "policy": "opus-plus-sonnet",
+  "policy_version": 1,
+  "auth_mode": "estimated",
+  "plugin": "mmo 0.6.0",
+  "branch": "CMP-104/opus-plus-sonnet",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits_made": 0,
+  "outcome": "complete_pending_gate_4",
+
+  "cost": {
+    "total_usd": 9.0801,
+    "hard_cap_usd": 50,
+    "provenance": "estimated",
+    "estimator": "char/3.8 heuristic for direct-tier; vendor-reported tokens for MCP-dispatched packets",
+    "pricing_source": "policy YAML opus-plus-sonnet pricing block (opus 5/0.5/25, sonnet 3/0.3/15 per Mtok)",
+    "total_input_tokens": 951348,
+    "total_output_tokens": 132156,
+    "by_phase": [
+      { "phase": "change_plan", "model": "claude-opus-5", "events": 2, "cost_usd": 1.3141 },
+      { "phase": "codegen", "model": "claude-opus-5", "events": 7, "cost_usd": 2.4025 },
+      { "phase": "plan_task_packets", "model": "claude-opus-5", "events": 1, "cost_usd": 0.425 },
+      { "phase": "requirements_analysis", "model": "claude-opus-5", "events": 2, "cost_usd": 0.3761 },
+      { "phase": "security_review", "model": "claude-opus-5", "events": 1, "cost_usd": 0.69 },
+      { "phase": "senior_code_review", "model": "claude-opus-5", "events": 1, "cost_usd": 0.97 },
+      { "phase": "test_run", "model": "claude-opus-5", "events": 1, "cost_usd": 0.2375 },
+      { "phase": "tests", "model": "claude-sonnet-5", "events": 3, "cost_usd": 2.6649 }
+    ],
+    "by_tier": {
+      "mechanical_sonnet": { "packets": 3, "cost_usd": 2.6649, "share_pct": 29.3 },
+      "premium_opus": { "events": 15, "cost_usd": 6.4152, "share_pct": 70.7 }
+    },
+    "headline_finding": "The 'cheap' mechanical tier was the most expensive single phase in the run. Three test files cost $2.66 - more than the 7 Opus codegen events at $2.40 - because the claude-cli adapter bills very large cached-context inputs per call (1,544,084 / 2,242,907 / 392,112 cached input tokens)."
+  },
+
+  "verification": {
+    "test_command": "bun test:web",
+    "test_result": "2305 pass / 0 fail / 303 files, exit 0",
+    "baseline": "2298 pass / 0 fail / 302 files",
+    "type_check": "bun type-check -> exit 0",
+    "lint": "bunx biome check packages/ -> 0 errors, 9 pre-existing warnings",
+    "lint_repo_note": "bun run lint (repo-wide) fails on .sdlc/baseline/current.json and .sdlc/runs/<rid>/baseline.json, both discovery-phase artifacts. Verified ALREADY FAILING at HEAD - not a regression from this run.",
+    "independently_reverified_by": ["senior-reviewer subagent", "user at Gate 3"],
+    "final_suite_run": "10:32:16Z - 10:33:31Z, 74.84s"
+  },
+
+  "acceptance_criteria": {
+    "AC-1": { "verdict": "PASS", "note": "Restated as durable invariant: zero failures, no pre-existing test removed or weakened. Literal counts retired after being invalidated twice." },
+    "AC-2": { "verdict": "PASS", "note": "bun type-check exit 0" },
+    "AC-3": { "verdict": "PASS", "note": "PB-1..PB-10 all HELD per senior review, verified by reading code" },
+    "AC-4": { "verdict": "PASS", "note": "registry/targeting/adapter-types each have one implementation; commit has one envelope builder with per-view mappers as the declared extension point" },
+    "AC-5": { "verdict": "PASS", "note": "no pre-existing test file modified except moved imports; all 8 targeting cases survive byte-identical" },
+    "AC-5a": { "verdict": "PASS", "note": "8 it() cases before and after the S2 collapse" },
+    "AC-5b": { "verdict": "PASS", "note": "characterization tests green on pristine HEAD before S5; mutation-tested against the refactored code afterwards" },
+    "AC-6": { "verdict": "PASS", "note": "unified InteractionCommitResult in grid/interaction/commit/; both coordinators adopt via annotation+import only, zero logic change" },
+    "AC-7": { "verdict": "FAIL", "note": "On the criterion's own 'four in-scope trees' wording: 12636 -> 12985, +349. Excluding the 322 directed characterization lines: +27, break-even. Passes only on the two-tree sub-measure (-91), which is not what the text asks for. Recorded as FAILED." },
+    "AC-7b": { "verdict": "N/A", "note": "AC-7 was internally inconsistent from the start - text says four trees, parenthetical baseline counts two. Defect in the criterion, not a measurement error." }
+  },
+
+  "line_counts": {
+    "baseline": { "week": 5428, "day": 2375, "grid": 2625, "shared": 2208, "two_tree": 7803, "all_four": 12636 },
+    "after": { "week": 5400, "day": 2312, "grid": 3065, "shared": 2208, "two_tree": 7712, "all_four": 12985 },
+    "delta": { "week": -28, "day": -63, "grid": 440, "shared": 0, "two_tree": -91, "all_four": 349 },
+    "directed_characterization_test_lines": 322,
+    "all_four_excluding_directed": 12663,
+    "note": "change_plan.md quoted an all-four baseline of 10336, which was wrong - it reused discovery's incorrect 1527 for the shared interaction/ tree (actual 2208)."
+  },
+
+  "artifacts": {
+    "intent_brief": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/intent_brief.md",
+    "discovery": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/discovery.md",
+    "requirements": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/requirements.md",
+    "change_plan": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/change_plan.md",
+    "packets": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/packets.json",
+    "review": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/review.md",
+    "security_review": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/security_review.md",
+    "provenance": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/provenance.json",
+    "provenance_reconciliation": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/provenance.reconciliation.json",
+    "telemetry": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/telemetry.jsonl",
+    "orchestrator_log": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/orchestrator.log",
+    "final_report": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/final_report.md",
+    "manifest": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/manifest.json"
+  },
+
+  "gates_resolved": [
+    { "gate": 0, "response": "approved" },
+    { "gate": 1, "response": "approved", "rulings": ["5.1 reduced commit scope", "5.2 option A", "5.3 proceed at Opus"] },
+    { "gate": 2, "response": "approved", "rulings": ["F1 amendment granted", "F2 confirmed (ADR-1)", "characterization tests directed"] },
+    { "gate": 3, "response": "approved", "rulings": ["AC-7 scope extended: delete shims in-run", "write contract amended with 5 paths"] }
+  ],
+
+  "defects_for_plugin_filing": [
+    "WORKER-WRITE-BYPASS",
+    "BUDGET-MAXOUTPUTTOKENS-UNENFORCED",
+    "MECHANICAL-TIER-CACHED-TOKEN-ECONOMICS",
+    "PROVENANCE-MULTI-ROUND-STALE",
+    "PROVENANCE-MIDRUN-BACKUP",
+    "ORCHESTRATOR-RETROACTIVE-PHASE-LOGGING"
+  ],
+
+  "open_items": [
+    "Production dependency risk is UNMEASURED: npm audit --omit=dev cannot run (ENOLOCK, Bun workspace, no package-lock.json) and the bun audit --prod fallback did not respect --prod. Pre-existing transitive dompurify@3.3.3 under root posthog-js@1.409.0 (bun.lock:1824); packages/web declares a safe ^3.4.13. Out of scope - bun.lock is off-limits.",
+    "AC-7 recorded FAILED on the four-tree measure. Decision needed at Gate 4 on whether that blocks acceptance."
+  ]
+}

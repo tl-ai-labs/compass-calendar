@@ -1,0 +1,1000 @@
+[
+  {
+    "id": "tp_sc_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "week-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "SC",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/commit-characterization.test.ts",
+    "instruction": "Create a characterization test pinning two CURRENT Week commit behaviors that no existing test covers. CT-1: commitAllDayDragInteraction and commitTimedDragInteraction must return hasMoved:true for a cross-row drop onto the SAME day (all-day->timed and timed->all-day), because the forcing rule is `isCrossRow || has*VisualMoved(visual)`. CT-2 (Week half): commitTimedResizeInteraction calls timedResizeVisualToGridEvent UNCONDITIONALLY, so on a no-op resize the returned event is a NEW re-formatted object, NOT the same reference as target.event - assert `result.event` is not toBe(target.event) while hasMoved is false. These must pass against UNMODIFIED HEAD. Import from the CURRENT paths: commit fns live in adapter/interactions/*.ts today.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "reason": "commitAllDayDragInteraction - isCrossRow forcing rule"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.drag.ts",
+        "reason": "commitTimedDragInteraction - isCrossRow forcing rule"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.resize.ts",
+        "reason": "commitTimedResizeInteraction - ungated mapper call"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "reason": "target and commit-result shapes"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "reason": "TimedDragVisual + DragRow"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.test.ts",
+        "reason": "house test style, imports, fixture conventions"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Passes against unmodified HEAD - no production file is changed",
+      "CT-1 asserts hasMoved===true for a same-day cross-row all-day->timed drop",
+      "CT-1 asserts hasMoved===true for a same-day cross-row timed->all-day drop",
+      "CT-2 asserts Week no-op timed resize returns hasMoved===false AND a NON-identical event object",
+      "Imports resolve against current HEAD paths (adapter/interactions/)",
+      "No existing test file is modified"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_sc_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "day-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "SC",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit-characterization.test.ts",
+    "instruction": "Create a characterization test pinning the Day half of CT-2. Day's commitTimedResizeInteraction is GATED on hasMoved: `event: hasMoved ? timedResizeVisualToDayGridEvent(...) : target.event`. On a no-op resize it must return target.event BY REFERENCE IDENTITY - assert with toBe(target.event). This is the exact asymmetry against Week (which maps unconditionally), and asserting by identity is what makes it impossible to 'tidy away'. Also pin that Day's commitAllDayResizeInteraction returns target.event by identity when hasMoved is false. Must pass against UNMODIFIED HEAD.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+        "reason": "commitTimedResizeInteraction - the hasMoved ternary"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+        "reason": "commitAllDayResizeInteraction - same gate"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "reason": "target and commit-result shapes"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.test.ts",
+        "reason": "house test style and fixture conventions"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Passes against unmodified HEAD - no production file is changed",
+      "Asserts Day no-op timed resize returns target.event via toBe (reference identity)",
+      "Asserts Day no-op all-day resize returns target.event via toBe",
+      "Requires a visibleDate Dayjs argument, matching the current 3-arg signature",
+      "No existing test file is modified"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s0_001",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "grid-shared",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S0",
+    "artifact_path": "packages/web/src/grid/interaction/view-interaction.bindings.ts",
+    "instruction": "NEW shared binding factory. createViewInteractionBindings(viewName: CalendarViewName) returns registry members from the EXISTING createViewInteractionRegistry(viewName) plus a computed targetSelector `[${idAttribute}][${typeAttribute}]` plus the four targeting fns from the EXISTING createGridEventTargeting. Pass the literals 'week'/'day' straight through - PB-10 forbids changing attribute VALUES. Do not modify view-event-registry.ts or event.targeting.ts.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/interaction/view-event-registry.ts",
+        "reason": "createViewInteractionRegistry contract"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/event.targeting.ts",
+        "reason": "createGridEventTargeting contract"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Exactly one factory export; no side-effectful module-level registry instance",
+      "targetSelector computed from the same idAttribute/typeAttribute the registry returns",
+      "No change to view-event-registry.ts or event.targeting.ts",
+      "Compiles standalone under bun type-check"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s0_002",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "grid-shared",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S0",
+    "artifact_path": "packages/web/src/grid/interaction/view-adapter.types.ts",
+    "instruction": "NEW generic adapter contract per change_plan.md 2.3. Generic over the registered-target type. Provide ViewAllDayDragTarget/ViewAllDayResizeTarget/ViewTimedDragTarget/ViewTimedResizeTarget, the ViewInteractionTarget union, ViewInteractionVisual, ViewResolvedEventTarget, ViewInteractionPointerOwnership, base ViewInteractionRuntime, base ViewInteractionAdapterOptions, base ViewInteractionAdapter. CRITICAL: do NOT put getVisibleDays/onRequestWeekNavigation/getColumnKeys/getVisibleDate/rebuildLayoutAfterNavigation on any base type - those are per-view extension points added by interface extension on the view side. An optional rebuildLayoutAfterNavigation on the base would let a Day adapter structurally satisfy Week's RebuildableAdapter.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "reason": "Week shape to generalize"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "reason": "Day shape to generalize"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/view-event-registry.ts",
+        "reason": "ViewRegisteredEventTarget"
+      },
+      {
+        "path": "packages/web/src/interaction/interaction.engine.ts",
+        "reason": "InteractionCancellationTargets, InteractionEngineSchedulerOptions"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "No view-specific member appears on any base type, not even as optional",
+      "Generic over the registered-target type so each view supplies its own",
+      "Target discriminants stay exactly allDayDrag/allDayResize/timedDrag/timedResize",
+      "Compiles standalone"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 3500 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s0_003",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "grid-shared",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S0",
+    "artifact_path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+    "instruction": "NEW unified commit envelope per change_plan.md 2.4 and ADR-1. Export InteractionCommitType union of the four literals; InteractionCommitResultOf<TType> with EXACTLY {event, eventId, hadFormOpenBeforeInteraction, hasMoved, type}; the four aliases; the InteractionCommitResult union; buildInteractionCommitResult; commitWithMapper(type, target, visual, mapper). InteractionCommitMapper MUST declare hasMoved as a REQUIRED member with NO default anywhere - a default would silently break Week's cross-row forcing (R1, potential data loss). buildInteractionCommitResult MUST assign event BY REFERENCE and never spread it (R2 - spreading drops Day's isAllDay forcing). Uncurried so all eight call sites keep their exact parameter lists including Day's third visibleDate arg.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "reason": "Week envelope + cross-row hasMoved forcing"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.resize.ts",
+        "reason": "Week ungated mapper call (R10)"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+        "reason": "Day gated mapper call (R10)"
+      },
+      {
+        "path": "packages/web/src/common/types/web.event.types.ts",
+        "reason": "GridEvent"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "hasMoved is a required mapper member with no default and no optional marker",
+      "buildInteractionCommitResult assigns event by reference; no spread of the mapped event",
+      "Envelope has exactly the five fields, no more",
+      "commitWithMapper is uncurried and type-narrows the result on the type literal",
+      "Compiles standalone"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3500 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s1_001",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "week-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Week/interaction/week-interaction.bindings.ts",
+    "instruction": "NEW. Exactly: `export const weekInteractionBindings = createViewInteractionBindings(\"week\");` plus the import. This must be the ONLY call site passing 'week' in the whole repo (R6 - a second call builds a second registry instance and silently splits registration from resolution).",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/interaction/view-interaction.bindings.ts",
+        "reason": "factory just written in S0"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Single const export",
+      "Exactly one createViewInteractionBindings('week') call in the repo"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s1_002",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "day-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Day/interaction/day-interaction.bindings.ts",
+    "instruction": "NEW. Exactly: `export const dayInteractionBindings = createViewInteractionBindings(\"day\");` plus the import. Only call site passing 'day' (R6).",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/interaction/view-interaction.bindings.ts",
+        "reason": "factory just written in S0"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Single const export",
+      "Exactly one createViewInteractionBindings('day') call in the repo"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s1_003",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+    "instruction": "Convert to a shim over weekInteractionBindings. Keep the file at this exact path and keep ALL NINE export names byte-identical (WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE, WeekInteractionEventType, WeekRegisteredEventTarget, WeekEventRegistry, getWeekInteractionTargetAttributes, createWeekEventRegistry, weekEventRegistry, useWeekEventRegistrationRef). Four call sites and four test files import these - none may need an edit. Do NOT call createViewInteractionBindings here; import weekInteractionBindings (R6). Do not import the targeting shim (R7).",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+        "reason": "current file - exact export list to preserve"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/week-interaction.bindings.ts",
+        "reason": "the single week instance"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "All nine export names preserved exactly",
+      "Attribute VALUES unchanged (PB-10)",
+      "No createViewInteractionBindings call in this file",
+      "Does not import the targeting shim"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 1500 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s1_004",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+    "instruction": "Same as tp_s1_003 but for Day: nine DAY_-prefixed export names preserved byte-identical, shim over dayInteractionBindings.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/day-interaction.bindings.ts",
+        "reason": "the single day instance"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "All nine export names preserved exactly",
+      "Attribute VALUES unchanged",
+      "No factory call here",
+      "Does not import the targeting shim"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 1500 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s1_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+    "instruction": "Convert to a shim over weekInteractionBindings. Preserve exactly: type WeekGridEventTargetType, type WeekGridEventTarget, getFocusedWeekGridEventTarget, getFirstVisibleWeekGridEventTarget, listVisibleWeekGridEventTargets, focusWeekGridEventTarget. useWeekShortcutOwner.ts imports four of these and must not need an edit. Do not import the registry shim (R7) - take everything from weekInteractionBindings.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+        "reason": "current file - exact export list"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/week-interaction.bindings.ts",
+        "reason": "the single week instance"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Six export names preserved exactly",
+      "Does not import the registry shim",
+      "TARGET_SELECTOR no longer duplicated here"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 1500 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s1_006",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-bindings",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S1",
+    "artifact_path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts",
+    "instruction": "Same as tp_s1_005 for Day. Preserve DayGridEventTargetType, DayGridEventTarget, getFocusedDayGridEventTarget, getFirstVisibleDayGridEventTarget, listVisibleDayGridEventTargets, focusDayGridEventTarget. useDayEventNudgeShortcuts.ts imports three of these.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/day-interaction.bindings.ts",
+        "reason": "the single day instance"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Six export names preserved exactly",
+      "Does not import the registry shim"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 1500 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s2_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "grid-shared",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S2",
+    "artifact_path": "packages/web/src/grid/interaction/view-interaction.bindings.test.ts",
+    "instruction": "Collapse the two 92-line targeting test files into ONE table-driven test using describe.each over [week, day]. AC-5a is load-bearing: exactly 8 it() cases must exist after (4 per view before), with BYTE-IDENTICAL expectations. Do not add, drop, weaken or reword any assertion. If any assertion cannot be expressed as a table case with identical expectations, STOP and report rather than adapting it.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.test.ts",
+        "reason": "source assertions - Week"
+      },
+      {
+        "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.test.ts",
+        "reason": "source assertions - Day"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/view-interaction.bindings.ts",
+        "reason": "the factory under test"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "case_count": { "type": "number" },
+        "assertions_dropped": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["content", "case_count", "assertions_dropped"]
+    },
+    "acceptance": [
+      "case_count === 8",
+      "assertions_dropped is empty",
+      "Every expectation byte-identical to its source",
+      "Uses the per-view bindings, not a fresh factory call (R6)"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3500 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s3_001",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-adapter-types",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S3",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+    "instruction": "Reduce 149 lines to ~58 by aliasing view-adapter.types.ts and commit-result.ts. KEEP as genuine declarations: WeekInteractionRuntime (extends the base, ADDS getVisibleDays and onRequestWeekNavigation - these stay on the RUNTIME, never move to options), WeekInteractionAdapterOptions, WeekInteractionAdapter (extends base, ADDS rebuildLayoutAfterNavigation), WeekEdgeNavigableVisual. Everything else becomes a one-line alias. Every currently-exported name must still be exported - week-interaction.adapter.ts (795 lines) and the coordinator must compile with ZERO body edits.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+        "reason": "current file - full export surface"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/view-adapter.types.ts",
+        "reason": "generic base from S0"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "unified envelope from S0"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Every previously exported name still exported",
+      "getVisibleDays and onRequestWeekNavigation remain on WeekInteractionRuntime",
+      "rebuildLayoutAfterNavigation on WeekInteractionAdapter only",
+      "week-interaction.adapter.ts needs no body edit"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s3_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-adapter-types",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S3",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+    "instruction": "Same reduction for Day. KEEP DayInteractionAdapterOptions as a genuine declaration - it ADDS getColumnKeys and getVisibleDate, which stay on OPTIONS and never move to the runtime. DayInteractionAdapter must NOT gain rebuildLayoutAfterNavigation. Preserve the getColumnKeys doc comment about calendar-id columns and the empty-means-single-dateless-column rule. Every exported name preserved so day-interaction.adapter.ts (607 lines) needs no body edit.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/view-adapter.types.ts",
+        "reason": "generic base"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "unified envelope"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Every previously exported name still exported",
+      "getColumnKeys and getVisibleDate remain on DayInteractionAdapterOptions",
+      "DayInteractionAdapter has no rebuildLayoutAfterNavigation",
+      "day-interaction.adapter.ts needs no body edit"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s4_001",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-geometry",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S4",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+    "instruction": "Delete ONLY the pure type aliases: WeekLayoutCacheSources, WeekLayoutCache, the SmartScrollCache re-export, the getNearestDayColumn re-export. KEEP WeekLayoutCacheInput (it carries the real visibleDays field - PB-9). KEEP all three builders and weekLayoutCacheOptions completely unchanged, including edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX and the smartScroll block (F6 - do NOT converge with Day's builders). Update in-tree importers to take the types from @web/grid/interaction/layout.cache. If an orphaned importer lives OUTSIDE the allowlist, KEEP that alias and report it (R9).",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/layout.cache.ts",
+        "reason": "shared types to alias onto"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "kept_aliases": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["content", "kept_aliases"]
+    },
+    "acceptance": [
+      "WeekLayoutCacheInput retained with visibleDays",
+      "All three builders and weekLayoutCacheOptions byte-identical",
+      "edgeThresholdPx and smartScroll untouched",
+      "No merge with Day's builders"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s4_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-geometry",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S4",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+    "instruction": "Delete ONLY DayLayoutCache and DayLayoutCacheSources aliases. KEEP buildDayTimedLayoutCache, buildDayAllDayLayoutCache, buildDayLayoutCacheForTarget, isAllDayTarget, isDayDragTarget byte-identical - including buildDayAllDayLayoutCache's hard-coded edgeThresholdPx: 0 and its omission of smartScroll/mainGridElementId (F6). Do not converge with Week's builders.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/layout.cache.ts",
+        "reason": "shared types"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "kept_aliases": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["content", "kept_aliases"]
+    },
+    "acceptance": [
+      "All five function bodies byte-identical",
+      "edgeThresholdPx: 0 preserved",
+      "No merge with Week's builders"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s5_001",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "week-visuals",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.drag.ts",
+    "instruction": "CONTENT-IDENTICAL MOVE of adapter/interactions/all-day.drag.ts, minus commitAllDayDragInteraction (which moves to commit/all-day.commit.ts in tp_s5_006). Keep createAllDayDragInteractionVisual and updateAllDayDragInteractionVisual byte-identical - especially the ghost-nulling ternary `nextVisual.row === 'timed' ? allDayDragVisualToTimedGridEvent(...) : null`. R8: this ternary is ASYMMETRIC with the one in timed.drag.ts; do NOT extract a shared helper. Only import paths may change (../ becomes ../../ where needed).",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "reason": "source file to move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Both retained function bodies byte-identical",
+      "Ghost-nulling ternary unchanged",
+      "No shared ghost helper introduced",
+      "commitAllDayDragInteraction absent"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_002",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "week-visuals",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.resize.ts",
+    "instruction": "CONTENT-IDENTICAL MOVE minus commitAllDayResizeInteraction. Keep createAllDayResizeInteractionVisual and updateAllDayResizeInteractionVisual byte-identical. Import paths only.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.resize.ts",
+        "reason": "source file to move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Retained bodies byte-identical",
+      "commitAllDayResizeInteraction absent"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_003",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "week-visuals",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/visuals/timed.drag.ts",
+    "instruction": "CONTENT-IDENTICAL MOVE minus commitTimedDragInteraction. Keep createTimedDragInteractionVisual and updateTimedDragInteractionVisual byte-identical - especially the ghost-nulling ternary `nextVisual.row === 'allDay' ? null : timedDragVisualToGridEvent(...)`. R8: asymmetric with all-day.drag.ts; do NOT extract a shared helper. getNearestDayColumn import moves to @web/grid/interaction/layout.cache (S4 removed the re-export).",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.drag.ts",
+        "reason": "source file to move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Retained bodies byte-identical",
+      "Ghost-nulling ternary unchanged and not shared",
+      "commitTimedDragInteraction absent"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_004",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "week-visuals",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/visuals/timed.resize.ts",
+    "instruction": "CONTENT-IDENTICAL MOVE minus commitTimedResizeInteraction. Keep createTimedResizeInteractionVisual and updateTimedResizeInteractionVisual byte-identical.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.resize.ts",
+        "reason": "source file to move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Retained bodies byte-identical",
+      "commitTimedResizeInteraction absent"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_005",
+    "phase": "codegen",
+    "task_type": "patch_apply",
+    "module": "week-visuals",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.visible-range.ts",
+    "instruction": "BYTE-IDENTICAL MOVE of adapter/interactions/all-day.visible-range.ts. getVisibleAllDayRange unchanged. Its siblings import it as ./all-day.visible-range, which still resolves after the move.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.visible-range.ts",
+        "reason": "source file to move"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": ["File byte-identical to source"],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1200 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_006",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+    "instruction": "Gains commitAllDayDragInteraction and commitAllDayResizeInteraction, rewritten onto commitWithMapper. PB-4/R1 CRITICAL: the drag mapper's hasMoved MUST stay `(v) => v.row === 'timed' || hasAllDayDragVisualMoved(v)` and toEvent must keep selecting allDayDragVisualToTimedGridEvent on the same isCrossRow condition. R10: commitAllDayResizeInteraction currently calls allDayResizeVisualToGridEvent UNCONDITIONALLY - preserve that; do not add a hasMoved gate. R3: getExclusiveEndDateBaseline stays module-private and un-exported. Keep the four existing mappers unchanged.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+        "reason": "current mappers to keep"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.drag.ts",
+        "reason": "commit fn being moved in"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.resize.ts",
+        "reason": "commit fn being moved in"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "commitWithMapper contract"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Cross-row hasMoved forcing preserved verbatim",
+      "All-day resize mapper still called unconditionally",
+      "getExclusiveEndDateBaseline still un-exported",
+      "Both commit fns keep their exact 2-arg signatures"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_007",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+    "instruction": "Gains commitTimedDragInteraction and commitTimedResizeInteraction onto commitWithMapper. PB-4/R1: drag hasMoved MUST stay `(v) => v.row === 'allDay' || hasTimedDragVisualMoved(v)` with toEvent selecting timedDragVisualToAllDayGridEvent on the same condition. R10 CRITICAL: commitTimedResizeInteraction calls timedResizeVisualToGridEvent UNCONDITIONALLY - its toEvent must IGNORE the hasMoved argument. Do NOT converge with Day's gated version. The SC characterization test pins this. Keep the timed-moved re-export.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+        "reason": "current mappers to keep"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.drag.ts",
+        "reason": "commit fn being moved in"
+      },
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/interactions/timed.resize.ts",
+        "reason": "commit fn being moved in - ungated"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "commitWithMapper contract"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Cross-row hasMoved forcing preserved verbatim",
+      "Timed resize toEvent ignores hasMoved (ungated) - R10",
+      "timed-moved re-export retained",
+      "Both commit fns keep their exact 2-arg signatures"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_008",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+    "instruction": "Rewrite the two commit bodies onto commitWithMapper, keeping the 3-arg signature (target, visual, visibleDate) for the resize. PB-1: the drag mapper must keep rewriting calendarId via columnMoveCalendarId and MUST NOT touch dates. PB-2/R2: allDayVisualToDayGridEvent keeps isAllDay: true and the visibleDate.add(1,'day') exclusive end. R10: both Day commits stay GATED - `hasMoved ? mapped : target.event` returning target.event BY IDENTITY. Note Day's resize mapper ignores `visual` entirely - preserve that.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "commitWithMapper contract"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Drag mapper rewrites calendarId only, never dates (PB-1)",
+      "isAllDay: true preserved on the resize mapper",
+      "Both commits return target.event by identity when hasMoved is false",
+      "columnMoveCalendarId still imported from ./timed.commit, not hoisted (R4)"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_009",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-commit",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+    "instruction": "Rewrite the two commit bodies onto commitWithMapper, keeping 3-arg signatures. PB-3: timedDragVisualToDayGridEvent keeps taking the day from visibleDate and the calendarId from columnMoveCalendarId; isAllDay: false preserved on both mappers. R4 CRITICAL: columnMoveCalendarId MUST stay exported from THIS file and must NOT move to grid/interaction/commit/ - hoisting it would put a Day-only calendarId rewrite one import away from Week's drags. R10: both commits stay gated, returning target.event by identity on no-op.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "commitWithMapper contract"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "columnMoveCalendarId still exported from this file, not hoisted (R4)",
+      "isAllDay: false preserved on both mappers",
+      "Both commits return target.event by identity when hasMoved is false (R10)",
+      "3-arg signatures with visibleDate retained"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s5_010",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-adapter",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S5",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "instruction": "IMPORT PATHS ONLY in this 795-line file. ./interactions/* becomes ./visuals/* for the create/update visual fns and ./commit/* for the four commit fns. getNearestDayColumn now comes from @web/grid/interaction/layout.cache. ZERO body changes - do not touch inertRuntime, createWeekInteractionAdapter, isAllDayTarget, or the commit() switch. Any diff outside the import block is a defect.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "reason": "current import block and call sites"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "content": { "type": "string" } },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Only import lines differ from HEAD",
+      "commit() switch untouched",
+      "No body change anywhere"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 12000 },
+    "retry_count": 0
+  },
+
+  {
+    "id": "tp_s6_001",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-coordinator",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S6",
+    "artifact_path": "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx",
+    "instruction": "TYPE ANNOTATIONS AND IMPORTS ONLY - this is the exact boundary of the Gate 1 option-A relaxation. Replace the four-member inline union on commitSavedMutation's parameter with InteractionCommitResult, and swap WeekLayoutCacheSources to GridLayoutCacheSources (S4 deleted the alias). ZERO logic change: PB-7's three branches (!hasMoved -> reopen; hadFormOpenBeforeInteraction -> rebuild draft + setFormOpen; else -> updateEvent) stay verbatim, as do the runtime object literal, onMotionActivation's activeInteractionEventRef retention, and the updateEvent call expression. If you find yourself wanting a logic change, STOP and report - do not perform it.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "unified type"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "logic_changed": { "type": "boolean" }
+      },
+      "required": ["content", "logic_changed"]
+    },
+    "acceptance": [
+      "logic_changed === false",
+      "Only import lines and the commitSavedMutation parameter annotation differ",
+      "Three-branch routing verbatim (PB-7)",
+      "updateEvent call expression byte-identical"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_s6_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-coordinator",
+    "pass_id": "20260826-082906-refactor-week-day-interaction",
+    "intent": "refactor",
+    "stage": "S6",
+    "artifact_path": "packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx",
+    "instruction": "TYPE ANNOTATIONS AND IMPORTS ONLY. Replace the four-member inline union on commitSavedMutation with InteractionCommitResult. ZERO logic change: Day's ONE-branch routing (straight to updateEvent) stays verbatim - do not add Week's branches. PB-7 requires the asymmetry to survive.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx",
+        "reason": "current file"
+      },
+      {
+        "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+        "reason": "unified type"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "logic_changed": { "type": "boolean" }
+      },
+      "required": ["content", "logic_changed"]
+    },
+    "acceptance": [
+      "logic_changed === false",
+      "Only import lines and the parameter annotation differ",
+      "One-branch routing preserved; Week's branches NOT added"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  }
+]

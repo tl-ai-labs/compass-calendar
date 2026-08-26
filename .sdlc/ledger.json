@@ -829,6 +829,105 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260826-082906-refactor-week-day-interaction",
+      "date": "2026-08-26",
+      "mode": "brownfield",
+      "intent": "refactor",
+      "policy": "opus-plus-sonnet",
+      "auth_mode": "estimated",
+      "ticket": "CMP-104",
+      "status": "accepted-with-ac7-failed",
+      "status_note": "ACCEPTED, but acceptance criterion AC-7 (net line count) is recorded FAILED. Do not read this row as an unqualified win.",
+      "commit_strategy": "NONE at close-out - nothing committed, staged or pushed, no branch operation. The human is reviewing the 57-path diff first. Deliberately did not stage: .sdlc/ is tracked on main, so a git add -A would sweep run artifacts in alongside source.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-104/opus-plus-sonnet",
+      "commits": [],
+      "files_written": 57,
+      "files_written_detail": "39 modified, 10 new, 8 deleted. New shared substrate: grid/interaction/{view-interaction.bindings.ts, view-adapter.types.ts, commit/commit-result.ts, view-interaction.bindings.test.ts}. New per-view: views/{Week,Day}/interaction/{week,day}-interaction.bindings.ts + 2 commit-characterization.test.ts. Deleted: 4 shim files, 2 duplicate targeting tests, 5 files moved out of Week adapter/interactions/ (dir removed). Week adapter/interactions/ split into adapter/visuals/ + adapter/commit/. registry/ and targeting/ directories no longer exist in either view.",
+      "tests": {
+        "before": { "pass": 2298, "fail": 0, "files": 302 },
+        "after": { "pass": 2305, "fail": 0, "files": 303 },
+        "new_failures": 0,
+        "tests_added": 7,
+        "verification": "bun test:web 2305 pass / 0 fail across 303 files exit 0, RE-RUN INDEPENDENTLY by the senior-reviewer subagent AND again by the parent session at Gate 3 and Gate 4 - not relayed. bun type-check exit 0 (separate gate; the suite does not type-check, and type-check caught a branded-CalendarId defect the suite did not). bunx biome check packages/ 0 errors, 9 pre-existing warnings. File-count arithmetic: 302 - 2 (targeting tests collapsed) + 1 (table-driven replacement) + 2 (characterization) = 303. Pass arithmetic: 2298 + 7 (characterization) + 0 (collapse is net zero, 8 it() before and after) = 2305. ZERO pre-existing tests lost."
+      },
+      "cost_usd": 9.0801,
+      "cost_split": { "claude-sonnet-5": 2.6649, "claude-opus-5": 6.4152 },
+      "cost_note": "18 events, all succeeded, 0 output-cap retries. HEADLINE: the CHEAP TIER WAS THE MOST EXPENSIVE PHASE. Three Sonnet test packets cost $2.6649 - more than seven Opus codegen events at $2.4025 - driven by 1,544,084 / 2,242,907 / 392,112 CACHED INPUT TOKENS per call ($1.10 / $1.22 / $0.34 per packet). A mixed policy is only cheaper if the mechanical tier is cheap PER PACKET; on the claude-cli adapter, delegating a small file cost more than doing it in-session at the premium tier. Under auth_mode=estimated the Opus half is char-count heuristic and the Sonnet half vendor-reported - the two halves are NOT the same kind of number and the total must not be quoted as vendor-authoritative.",
+      "acceptance_criteria": {
+        "AC-1": "PASS - restated as a durable invariant (zero failures, no pre-existing test removed or weakened). Literal counts RETIRED after being invalidated twice: original 2298/302 by the S2 collapse, then the Gate-2 amendment 2298/301 by the Gate-2 characterization directive.",
+        "AC-2": "PASS - bun type-check exit 0",
+        "AC-3": "PASS - PB-1..PB-10 all HELD per senior review, verified by reading code",
+        "AC-4": "PASS - with the caveat that F4 showed registry and targeting were ALREADY on one shared factory at HEAD",
+        "AC-5": "PASS - no pre-existing test modified except moved imports; all 8 targeting cases byte-identical",
+        "AC-5a": "PASS - 8 it() cases before and after the collapse",
+        "AC-5b": "PASS - characterization tests green on pristine HEAD before S5, then mutation-tested against the refactored code",
+        "AC-6": "PASS - unified InteractionCommitResult in grid/interaction/commit/ (ADR-1); both coordinators adopt via annotation+import only, zero logic change",
+        "AC-7": "FAILED. Four-tree measure (the criterion's own wording): 12636 -> 12985, +349. Excluding the 322 lines of directed characterization tests: +27, break-even. Passes ONLY on the two-tree sub-measure (7803 -> 7712, -91), which is not what the text asks for.",
+        "AC-7b": "The criterion was INTERNALLY INCONSISTENT from the start - text says 'four in-scope trees', parenthetical baseline counts two. Never coherently evaluable. Defect in the criterion, not a measurement error."
+      },
+      "line_counts": {
+        "baseline": { "week": 5428, "day": 2375, "grid": 2625, "shared": 2208, "two_tree": 7803, "all_four": 12636 },
+        "after": { "week": 5400, "day": 2312, "grid": 3065, "shared": 2208, "two_tree": 7712, "all_four": 12985 },
+        "per_concern": "registry 48 -> 136 (+88) to deduplicate 48 lines; adapter types 298 -> 297 (-1); commit +216; targeting src+test 254 -> 161 (-93, the only unambiguous win). Roughly ALL of the two-tree reduction is relocation into grid/interaction/**, not deletion.",
+        "note": "change_plan.md quoted an all-four baseline of 10336 - wrong; it reused discovery's incorrect 1527 for the shared interaction/ tree, whose real size is 2208."
+      },
+      "brief_claims_falsified": [
+        "Commit layer is GENUINE DOMAIN DIVERGENCE, not drift. A Week column is a DATE, a Day column is a CALENDAR: Week's all-day drag shifts startDate/endDate by a day delta and never touches calendarId; Day's rewrites calendarId and never touches dates. Both views already exported the SAME four function names, so there were never 'two naming conventions'. The mappers must NOT be unified - doing so would change one view's behavior.",
+        "useUpdateEvent.ts DOES NOT consume the commit envelope. grep CommitResult -> 13 files, none of them that one. The real consumers are the two coordinators, which the brief listed as non-goals. AC-6 was restated at Gate 1 and the non-goal relaxed to annotation+import edits only.",
+        "The policy routes refactor codegen to OPUS, not Sonnet - refactor_extract/existing_file_edit/patch_apply are absent from the codegen rule's enumerated task_type list and fall through to default:opus. This affects the CODEGEN PHASE ONLY; tests/docs/debug still route to Sonnet by explicit rule. An earlier framing of 'most of this run will bill at Opus' was an overstatement and was corrected.",
+        "F4 (architect): createViewInteractionRegistry and createGridEventTargeting ALREADY EXISTED and were ALREADY USED BY BOTH VIEWS at HEAD. AC-4's 'one implementation' was already true for registry and targeting before this run started; what was duplicated was ~59 lines/view of binding boilerplate."
+      ],
+      "known_findings_open": [
+        "PRODUCTION DEPENDENCY RISK IS UNMEASURED: npm audit --omit=dev cannot run (ENOLOCK; Bun workspace, no package-lock.json) and the bun audit --prod fallback DID NOT RESPECT --prod, so its 24 high findings span dev and backend rather than production web. Pre-existing transitive dompurify@3.3.3 under root posthog-js@1.409.0 (bun.lock:1824); packages/web declares a safe direct ^3.4.13 and its own posthog-js@1.413.3 pins ^3.4.12. NOT FIXED - bun.lock is off-limits and this is out of the ticket's scope. Needs a lockfile strategy decision.",
+        "bun run lint (repo-wide) fails on .sdlc/baseline/current.json and .sdlc/runs/<rid>/baseline.json, both discovery-phase artifacts. Verified ALREADY FAILING AT HEAD - pre-existing, not a regression from this run. packages/ itself is clean.",
+        "AC-7 recorded FAILED on the four-tree measure (+349, or +27 excluding directed tests).",
+        "The ledger summary table at the top of ledger.md is missing rows for 20260824-002919 and 20260824-214500, which have ## sections but no table row. Noticed, flagged, deliberately not silently fixed."
+      ],
+      "defects_for_plugin_filing": [
+        "WORKER-WRITE-BYPASS (high) - mechanical-tier workers dispatched via execute_with_model on the CLAUDE-CLI adapter (not just Antigravity) have filesystem write access and use it. Their writes bypass the PreToolUse write-contract hook entirely (it matches only the orchestrator's Write|Edit) and they IGNORE the packet's declared artifact_path. Evidence: tp_sc_002's worker created the Day characterization test at 09:23Z, before the orchestrator's --before ran at 09:25Z; tp_sc_001's worker wrote to adapter/interactions/week-commit.characterization.test.ts, NOT its artifact_path. NON-DETERMINISTIC: both SC packets returned unparsed `raw` markdown AND wrote files, while tp_s2_001 returned clean structured output and wrote nothing. Detection used was a pre/post sha manifest plus find -newer around the dispatch.",
+        "BUDGET-MAXOUTPUTTOKENS-UNENFORCED (medium) - declared 3000, returned 17,497 and 15,344, hit_output_cap:false, stop_reason end_turn. The ceiling-doubling machinery never engages; the budget field is decorative on this adapter.",
+        "MECHANICAL-TIER-CACHED-TOKEN-ECONOMICS (medium) - see cost_note. Undermines cross-policy cost comparison unless cached-context billing is accounted for.",
+        "PROVENANCE-MULTI-ROUND-STALE (medium) - write-provenance.mjs cannot record a second edit to the same path; re-running --after prints 'no matching --before record; ignoring'. 6 files drifted. NOT fixable in place: forcing a fresh sha_after requires re-running --before, which would overwrite sha_before with post-refactor content and break revert.",
+        "PROVENANCE-MIDRUN-BACKUP (high, revert correctness) - same root cause, sharper edge. 5 paths have TWO files_touched entries; for the 4 shims the SECOND entry's backup holds the mid-run shim this run itself created. Verified against git show HEAD: week-event.registry.ts backup 37 lines vs HEAD 24; day-event.registry.ts 30 vs 24; week-event.targeting.ts 30 vs 35; day-event.targeting.ts 26 vs 35; every backup imports a *-interaction.bindings module that DID NOT EXIST at HEAD. A naive revert resurrects the shims. MITIGATED IN THE DATA: all 10 entries across the 5 groups now carry a machine-readable on_revert directive (RESTORE_FROM_GIT_HEAD / DELETE on the authoritative entry, DO_NOT_RESTORE on the other). Backups deliberately RETAINED on disk as bug-report evidence. Almost certainly the same root cause as CMP-103's PROV-1. Suggested fix: make --before idempotent per path per run, appending to a rounds[] list instead of overwriting sha_before/backup_path.",
+        "ORCHESTRATOR-RETROACTIVE-PHASE-LOGGING (medium, self-reported) - the orchestrator emitted test_run phase.start/phase.end in a batch AFTER the suites ran; the pair spans 61ms with no telemetry, so the log claims a test phase that took no time. Results were true (reviewer independently re-ran) but the log misrepresented them. Caught by the senior reviewer, not the orchestrator. A correction pair bracketing a real 77s run was appended."
+      ],
+      "artifacts_dir": ".sdlc/runs/20260826-082906-refactor-week-day-interaction",
+      "gates": {
+        "gate-0": "approved before orchestrator invocation (intent refactor, auth_mode estimated, test command bun test:web + bun type-check)",
+        "gate-1": "approved - 5.1 reduced commit scope (unify envelope + directory layout, RETAIN per-view mappers); 5.2 option A (unified InteractionCommitResult, coordinators via annotation+import ONLY); 5.3 proceed at Opus, change nothing, do not relabel packets to chase the cheaper rule",
+        "gate-2": "approved - F1 amendment granted (AC-1 file count, AC-5 restated at assertion level, new load-bearing AC-5a); F2 confirmed (commit-result.ts lands in grid/interaction/commit/, recorded as ADR-1); CHARACTERIZATION TESTS DIRECTED for R1 and R10, added as stage SC positioned before S0 so they go green on a pristine tree",
+        "gate-3": "approved - AC-7 SCOPE EXTENDED: delete the 4-shim / 20-alias layer IN-RUN rather than booking it as debt. Write contract amended with 5 previously out-of-scope importer paths.",
+        "gate-4": "accept - with two close-out directives: annotate all 5 duplicate provenance groups with on_revert (done), and record the ledger outcome as accepted WITH AC-7 FAILED (done)."
+      },
+      "senior_review": "APPROVE WITH FIXES, 0 blockers. All 10 PB invariants and all 11 R risks HELD, verified by reading code rather than trusting orchestrator artifacts - it diffed all five moved visual files against HEAD:.../interactions/*.ts and found zero diff inside any retained body. 4 comment-only fixes + 1 type narrowing (createViewInteractionBindings(viewName: string) -> CalendarViewName) applied and re-verified. CAUGHT AN ORCHESTRATOR DEFECT the orchestrator had missed: the 61ms test_run phase markers. Also CORRECTED THE ORCHESTRATOR'S NUMBERS (13074/+438/7817 -> 12985/+436/7816 pre-shim-deletion) and its under-statement of 'roughly half is relocation' when it is essentially all of it.",
+      "security_review": "PASS, changed-files-only per the Intent matrix. No security finding introduced. Verified rather than assumed: useUpdateEvent.ts genuinely untouched (empty git diff HEAD, absent from provenance) with both authz guards intact at :78-81 (recurring events cannot change calendar) and :82-89 (read-only target calendar); ZERO calendarId writes in Week or the shared layers and exactly two in Day, both via the unchanged columnMoveCalendarId; commit-result.ts:69 assigns event BY REFERENCE with no spread, so Day's mapper-set isAllDay/calendarId survive; exactly two createViewInteractionBindings call sites so no cross-view registry aliasing; view-event-registry.ts unmodified so DOM attribute VALUES cannot have changed; targetSelector remains a two-attribute CONJUNCTION, not broadened. Reviewer disclosed that npm audit could not run (ENOLOCK) and that its bun audit --prod fallback did not respect --prod.",
+      "manual_verification": "Parent session independently re-ran rather than relaying, at BOTH Gate 3 and Gate 4: bun test:web 2305/0/303 exit 0, bun type-check exit 0, bun.lock clean, HEAD still 2d81253a with nothing staged, all four shim directories gone, 0 hits across six alias names, 57 changed paths all inside the amended contract, four-tree count 12985 matching exactly. Also independently MUTATION-TESTED CT-1 against the pre-refactor code (removing isCrossRow || gave Expected: true, Received: false) and byte-for-byte confirmed the D5 backup hazard. IN-APP VERIFICATION BY THE HUMAN IS STILL PENDING - drag, resize, click-place, keyboard-place and draft handling in BOTH Week and Day.",
+      "scope_amendments": "Gate 3 amended the write contract with FIVE previously out-of-scope importer paths (common/utils/event/event.util.test.ts, components/ContextMenu/contextMenuLayering.test.tsx, views/Forms/hooks/useCloseEventForm.test.ts, views/Week/components/Draft/grid/GridDraft.tsx, views/Week/components/Grid/MainGrid/MainGridBusyPeriods.test.tsx), recorded with an amendments[] entry carrying the authorization and reason. The orchestrator RE-DERIVED the importer set itself rather than trusting the count and found 28 across all four shims (the user's 18 was Week-registry only), then validated all 28 against the amended allowlist BEFORE editing. All 57 final changed paths validate.",
+      "process_notes": "STAGE ORDER was SC (characterization, deliberately BEFORE S0 so the guards go green on a pristine tree) -> S0 shared scaffolding -> S1 bindings -> S2 test collapse -> S3 adapter types -> S4 geometry -> S5 commit -> S6 coordinators -> Gate-3 shim deletion. S4 was SPLIT and resequenced: Day's geometry aliases had zero importers and were deleted at the planned point, but Week's WeekLayoutCache had 14 references across the exact files S5 moves and WeekLayoutCacheSources had one importer S6 edits, so deleting them at S4 would have left the tree red between stages; they were folded into S5 and S6. Every stage ended type-check green. MUTATION TESTING was performed twice: the user proved CT-1 bit the PRE-refactor code, and the orchestrator re-proved BOTH guards against the REFACTORED code (removing the isCrossRow forcing fails CT-1 with Expected: true Received: false; converging Week's timed resize to Day's gated form fails CT-2 on .not.toBe), restoring and sha-verifying both files. TWO DEFECTS WERE CAUGHT BY PROJECT TOOLING RATHER THAN JUDGEMENT: state.json was malformed JSON (an object closed with ']') caught by biome, and the Day characterization test compared a branded CalendarId to a plain string, caught by bun type-check - which also means the earlier 'SC green on pristine HEAD' claim was true for bun test but had NOT been type-checked at that point. THE AUTO-MODE BASH-WRITE REROUTE WAS DECLINED SIX TIMES and roughly 70 shim-deletion edits were routed through Write/Edit so the PreToolUse hook could gate them; given WORKER-WRITE-BYPASS showed the hook is the only thing standing between a worker and an ungated write, that discipline is why this run's provenance is imperfect rather than untrustworthy.",
+      "followups_open": [
+        "Production dependency risk unmeasured - needs a lockfile strategy decision (npm audit ENOLOCK, bun audit --prod broken)",
+        "dompurify@3.3.3 transitive under root posthog-js@1.409.0 - pre-existing, untouched",
+        "biome.json still has no .sdlc exclusion (recurring per-run tax, carried from row twelve)",
+        "AC-7 failed on the four-tree measure - decide whether future line-count criteria are worth stating at all, and if so, name ONE tree set and ONE baseline",
+        "Six plugin defects above need filing; PROVENANCE-MIDRUN-BACKUP should be filed TOGETHER WITH CMP-103's PROV-1 as one defect"
+      ],
+      "tags": [
+        "policy-ab",
+        "refactor",
+        "no-commit",
+        "ac7-failed",
+        "scope-extended-at-gate-3",
+        "characterization-tests",
+        "mutation-proved-tests",
+        "worker-write-bypass",
+        "provenance-hazard",
+        "estimated-cost-axis"
+      ],
+      "compare_baseline_tag": "20260822-125447-refactor-week-day-interaction",
+      "compare_note": "THIRD arm of the CMP-104 refactor comparison, branch cut fresh from main at 2d81253a. Prior arms: flash-agsdk-only $4.94 / 24 files / 2298 pass (uncommitted); opus-plus-flash-v37 $1.87 / 43 files / 2308 pass. THIS ARM: $9.08 / 57 files / 2305 pass - BY FAR THE MOST EXPENSIVE, at roughly 5x the opus-plus-flash-v37 arm. THE COMPARISON IS NOT LIKE-FOR-LIKE ON EITHER AXIS. Cost: this arm ran auth_mode=estimated (Opus half heuristic, Sonnet half vendor-reported) and its single largest cost driver was CACHED-CONTEXT BILLING on the mechanical tier, not model choice or misrouting - every routing rule fired as intended. Scope: this arm's 57 files include a GATE-3-DIRECTED SCOPE EXTENSION (deleting the 4-shim / 20-alias layer and repointing 28 importers) that the other arms did not attempt, so file count is not a like-for-like measure of the same work either. WHAT IS SUPPORTED: this is the only CMP-104 arm to (a) delete the compatibility layer rather than book it as debt, (b) add characterization tests over the R1 data-loss path, and (c) record AC-7 as FAILED rather than passing it on the two-tree technicality."
     }
   ]
 }

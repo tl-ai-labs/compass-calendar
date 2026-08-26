@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "run_id": "20260826-082906-refactor-week-day-interaction",
+  "reconciled_at": "2026-08-26T10:10:00Z",
+  "why_this_file_exists": {
+    "defect": "PROVENANCE-MULTI-ROUND-STALE",
+    "summary": "write-provenance.mjs only records a sha_after when it can match a preceding --before for the same path. Any further edit to a file AFTER its --before/--after pair has been stamped is invisible to the record: re-running --after prints 'no matching --before record; ignoring' and changes nothing.",
+    "why_not_fixed_in_place": "The only way to make the helper stamp a fresh sha_after is to run --before again first. That would overwrite sha_before with the CURRENT (post-refactor) content, falsely recording the post-run state as the pre-run state and breaking /mmo:revert for those files. Leaving sha_before correct and sha_after stale is the safe failure direction, so that is what was done.",
+    "revert_impact": "LOW and fail-safe. /mmo:revert restores from sha_before / backup_path / git, all of which are correct. sha_after feeds only the 'has a later run touched this file?' dirty-check, so a stale value makes revert MORE cautious, not less.",
+    "relationship_to_other_defects": "This is very likely the same root cause as CMP-103's recorded PROV-1 ('provenance backup is a mid-run intermediate'). Both are the helper mishandling multi-round edits to one path. Worth filing together."
+  },
+  "causes": {
+    "biome_reformat": "bunx biome check --write reformatted 3 files (import ordering only) after their provenance pair was stamped.",
+    "post_hoc_orchestrator_fix": "3 files received a further Edit after their pair was stamped: the branded-CalendarId assertion fix, the S5 moved-import update, and the Day geometry unused-import removal."
+  },
+  "true_final_shas": [
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/commit-characterization.test.ts",
+      "sha_after_true": "sha256:c1919382bbc29495934771aa4726933183ba3613cfa10cc41efba8dc622ddcb5",
+      "cause": "post_hoc_orchestrator_fix - S5 moved-import update (./interactions/* -> ./commit/*)"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/commit-characterization.test.ts",
+      "sha_after_true": "sha256:13ff4bc781957333bb9caefbb1c028cf5eb3828219d596679f042664cc6e5cc1",
+      "cause": "post_hoc_orchestrator_fix - branded CalendarId assertion widened after bun type-check flagged it"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+      "sha_after_true": "sha256:9a4694fd6516e0238c67550531490ed2b5cc5c0290eb18aabd6458b484280751",
+      "cause": "biome_reformat"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+      "sha_after_true": "sha256:03a4af8dc9a2328f4b1cd886df8d74662c93fd1c01c460fa2d9fa8ef817d0094",
+      "cause": "post_hoc_orchestrator_fix - removed the GridLayoutCache import left unused by the alias deletion"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+      "sha_after_true": "sha256:cee39fb5992df7c1cb95a70b49baa891cdbc8c6c48dc0ed3355117659c188e5f",
+      "cause": "biome_reformat"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "sha_after_true": "sha256:bf90f74850f1cf93715c1e9e795c2c05bf2715dfe1a825f8203a09e8799f06b4",
+      "cause": "biome_reformat"
+    }
+  ],
+  "duplicate_entry_hazard": {
+    "defect": "PROVENANCE-MIDRUN-BACKUP",
+    "severity": "high for revert correctness",
+    "summary": "Five paths have TWO entries in files_touched. For the four shim files this is actively dangerous: the SECOND entry's backup contains a MID-RUN INTERMEDIATE, not the pre-run state.",
+    "how_it_happened": "Stage S1 rewrote the four per-view files into thin shims. Provenance recorded entry #1 with the correct pre-run sha_before and backup=no (the files were clean and tracked, so git holds the original). At Gate 3 the user directed deleting the shims. write-provenance --before ran again; this time the files were DIRTY, so the helper took a backup - of the SHIM content it had itself helped create - and recorded that as sha_before on entry #2.",
+    "revert_rule": "For these four paths the AUTHORITATIVE pre-run state is ENTRY #1 (sha_before against git HEAD 2d81253a). ENTRY #2's backup_path must be IGNORED - restoring it would resurrect the shim, which never existed before this run and which the run deliberately deleted. Correct revert is: restore from git HEAD.",
+    "affected_paths": [
+      "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+      "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+      "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+      "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts"
+    ],
+    "fifth_path_is_benign": "packages/web/src/views/Week/interaction/adapter/commit-characterization.test.ts also has 2 entries, but it is a NEW file in both, so existed_before is false on entry #1 and revert correctly deletes it.",
+    "confirms_hypothesis": "This is the third distinct manifestation of the same root cause in one run, and it is almost certainly what CMP-103 recorded as PROV-1 ('provenance backup for EventJoinIcon.tsx is a mid-run intermediate; on revert that file must be DELETED, never restored'). write-provenance.mjs has no concept of a path it has already seen: every --before overwrites the run's belief about the pre-run state with whatever is on disk at that moment.",
+    "suggested_fix": "write-provenance.mjs --before should be idempotent per path per run: if an entry for that path already exists, do not overwrite sha_before/backup_path, only append to a rounds[] list."
+  },
+  "audit_at_reconciliation": {
+    "files_touched": 31,
+    "sha_after_matches_disk": 23,
+    "sha_after_stale": 6,
+    "deleted_or_null_sha_after": 2,
+    "note": "The 2 null/deleted entries are the two targeting test files removed in stage S2; their sha_before and tracked_in_git are correct, which is what revert needs."
+  },
+  "mutation_verification_performed": {
+    "why": "The user mutation-tested CT-1 against the PRE-refactor implementation. Stage S5 then rewrote the commit layer onto commitWithMapper, so the guard needed re-proving against the NEW code.",
+    "mutation_1": {
+      "change": "Removed the `v.row === \"timed\" ||` forcing from the refactored Week commitAllDayDragInteraction",
+      "result": "CT-1 FAILED with 'Expected: true, Received: false' - the exact R1 data-loss path. 3 pass / 1 fail.",
+      "restored": true
+    },
+    "mutation_2": {
+      "change": "Converged Week's commitTimedResizeInteraction to Day's gated form (hasMoved ? map : t.event)",
+      "result": "CT-2 FAILED on expect(received).not.toBe(expected) - the R10 asymmetry. 3 pass / 1 fail.",
+      "restored": true
+    },
+    "post_restore": "Both files verified byte-identical to their pre-mutation state via sha comparison; SC back to 7 pass / 0 fail."
+  }
+}

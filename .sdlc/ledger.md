@@ -15,6 +15,7 @@ real vendor-metered mechanical spend — the split is in each run's `manifest.js
 | 2026-08-22 | `20260822-040449-feature-extend-one-click-join` | brownfield · feature-extend | 4 written (3 edit, 1 new) | 2298/0 → 2309/0 (+11, 0 new failures) | $5.46 ⚠ | accepted → partially committed `53f057e4` on `CMP-103/flash-agsdk-only` (anchor 4189de1) |
 | 2026-08-22 | `20260822-062945-feature-extend-one-click-join` | brownfield · feature-extend | 7 written (6 edit, 1 new) | 2298/0 → 2326/0 (+28, 0 new failures) | $5.32 | accepted → **uncommitted** on `CMP-103/opus-only-v5` (anchor 4189de1) |
 | 2026-08-23 | `20260822-125447-refactor-week-day-interaction` | brownfield · refactor | 24 written (22 edit, 2 new) | 2298/0 → 2298/0 (+0 by design, 0 new failures) | $4.94 ⚠ | accepted → **uncommitted** on `CMP-104/flash-agsdk-only` (anchor 4189de1) |
+| 2026-08-26 | `20260826-082906-refactor-week-day-interaction` | brownfield · refactor | 57 written (39 edit, 10 new, 8 deleted) | 2298/0 → 2305/0 (+7, 0 new failures) | $9.08 ⚠ | accepted **with AC-7 FAILED** → **uncommitted** on `CMP-104/opus-plus-sonnet` (anchor `2d81253a`) |
 
 ⚠ **The two rows above are not directly comparable.** `opus-plus-flash-v37` prices its Opus spend, so
 its $4.26 is fully loaded. `flash-agsdk-only` is deliberately single-model with no Claude pricing
@@ -344,3 +345,89 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+---
+
+## Row thirteen — `20260826-082906-refactor-week-day-interaction` (CMP-104 third arm, `opus-plus-sonnet`)
+
+**Accepted WITH AC-7 FAILED.** This is not an unqualified win and must not be read as one.
+
+**What shipped.** 57 source paths: 39 modified, 10 new, 8 deleted. Week and Day interaction
+registry/targeting/adapter-types/commit layers now sit on one shared substrate —
+`grid/interaction/view-interaction.bindings.ts`, `view-adapter.types.ts`,
+`commit/commit-result.ts` — and the four-shim / 20-alias compatibility layer was deleted at Gate 3
+rather than booked as debt, with all 28 importers repointed. `registry/` and `targeting/`
+directories no longer exist in either view.
+
+**Tests 2298/0/302 → 2305/0/303**, exit 0, independently re-run by the senior reviewer and again by
+the parent session. `bun type-check` exit 0. `biome check packages/` 0 errors. Zero pre-existing
+tests lost: the two 92-line targeting test files collapsed into one table-driven file preserving all
+8 `it()` cases byte-identically, and +7 comes from the two new characterization test files.
+
+**AC-7 FAILED and is recorded as failed.** Its text says "across the four in-scope trees"; on that
+measure **12 636 → 12 985, +349**. Excluding the 322 lines of Gate-2-directed characterization
+tests: **+27**, break-even. It passes only on the two-tree sub-measure (7803 → 7712, −91), which is
+not what the criterion asks for. The criterion was also **internally inconsistent from the start** —
+its text says four trees while its own parenthetical baseline counts two — so it was never
+coherently evaluable. That is a defect in the criterion, not a measurement error.
+
+**The refactor's real value is not line count.** Per concern: registry went **48 → 136 (+88)** to
+deduplicate 48 lines; adapter types netted **−1**; commit **+216**; only the targeting-test collapse
+(−93) is an unambiguous reduction. Roughly all of the two-tree "reduction" is relocation into
+`grid/interaction/**`. What was genuinely bought: characterization tests over a **data-loss path
+nothing previously covered** (Week's cross-row same-day drop must force `hasMoved: true`, or the
+coordinator reopens the event instead of saving), one eliminated 149-line duplicate types file, one
+eliminated 92-line duplicate test, and a documented extension point.
+
+**Four brief/discovery claims were falsified against the code and corrected at gates.** (1) The
+commit layer is **genuine domain divergence, not drift** — a Week column is a date, a Day column is
+a calendar, so Week's all-day drag shifts dates while Day's rewrites `calendarId`; the mappers must
+NOT be unified. (2) `useUpdateEvent.ts` **does not consume the commit envelope** — `grep CommitResult`
+returns 13 files, none of them that one; the real consumers are the two coordinators, and AC-6 was
+restated accordingly. (3) The policy routes refactor codegen to **Opus, not Sonnet** — the brownfield
+task types are absent from the `codegen` rule's enumerated list, so they fall through to
+`default: opus`; this affects the **codegen phase only**, not the whole run. (4) The architect found
+`createViewInteractionRegistry`/`createGridEventTargeting` **already existed and were already used
+by both views at HEAD** — AC-4's "one implementation" was already true before the run started.
+
+**Cost $9.08 — and the cheap tier was the most expensive phase.** Three Sonnet test packets cost
+**$2.66**, more than seven Opus codegen events at $2.40, driven by **1 544 084 / 2 242 907 / 392 112**
+cached input tokens per call ($1.10 / $1.22 / $0.34 per packet). A mixed policy is only cheaper if
+the mechanical tier is cheap *per packet*; on the `claude-cli` adapter, delegating a small file cost
+more than doing it in-session at the premium tier. Under `estimated`, the Opus half is heuristic and
+the Sonnet half vendor-reported — **the two halves are not the same kind of number**.
+
+**Six defects recorded** (full evidence in the run's `final_report.md` §4): `WORKER-WRITE-BYPASS`
+(mechanical workers write to disk ungated by the `Write|Edit` hook, ignore `artifact_path`, and do so
+**non-deterministically** — on `claude-cli`, not just Antigravity); `BUDGET-MAXOUTPUTTOKENS-UNENFORCED`
+(declared 3000, returned 17 497 / 15 344, `hit_output_cap: false`);
+`MECHANICAL-TIER-CACHED-TOKEN-ECONOMICS`; `PROVENANCE-MULTI-ROUND-STALE`;
+`PROVENANCE-MIDRUN-BACKUP`; and `ORCHESTRATOR-RETROACTIVE-PHASE-LOGGING` (self-reported — the
+`test_run` phase markers were emitted in a batch *after* the suites ran, spanning 61 ms; caught by
+the senior reviewer, corrected with a real bracketed run).
+
+**`PROVENANCE-MIDRUN-BACKUP` is a revert hazard and was mitigated in the data.** Five paths have two
+`files_touched` entries; for the four shims the *second* entry's backup holds the mid-run shim this
+run itself created. Verified against `git show HEAD:`: `week-event.registry.ts` backup is **37 lines**
+vs HEAD's 24; `day-event.targeting.ts` is **26** vs 35; every backup imports a `*-interaction.bindings`
+module that did not exist at HEAD. All ten entries in the five groups now carry a machine-readable
+`on_revert` directive (`RESTORE_FROM_GIT_HEAD` / `DELETE` on the authoritative entry,
+`DO_NOT_RESTORE` on the other). The misleading backups are **retained on disk deliberately** as
+evidence. This is almost certainly the same root cause as CMP-103's `PROV-1`.
+
+**Open, not fixed: production dependency risk is UNMEASURED.** `npm audit --omit=dev` cannot run —
+`ENOLOCK`, Bun workspace, no `package-lock.json` — and the `bun audit --prod` fallback did not respect
+`--prod`, so its 24 high findings span dev and backend. Pre-existing transitive **`dompurify@3.3.3`**
+under root `posthog-js@1.409.0` (`bun.lock:1824`); `packages/web` declares a safe `^3.4.13`. Out of
+scope — `bun.lock` is off-limits.
+
+**Process note.** The auto-mode Bash-write reroute was declined six times and roughly 70 shim-deletion
+edits were routed through `Write`/`Edit` so the `PreToolUse` hook could gate them. Given
+`WORKER-WRITE-BYPASS` showed the hook is the only thing standing between a worker and an ungated
+write, that discipline is why this run's provenance is imperfect rather than untrustworthy. Two
+further defects were caught by project tooling rather than judgement: `state.json` was malformed JSON
+(caught by Biome) and a branded-`CalendarId` comparison was wrong (caught by `bun type-check`).
+
+**Ledger-table gap noticed, not silently fixed:** rows eleven (`20260824-002919`) and twelve
+(`20260824-214500`) have `##` sections but no row in the summary table at the top of this file. Left
+as-is; flagged here so the omission is visible.

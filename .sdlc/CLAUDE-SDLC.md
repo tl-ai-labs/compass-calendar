@@ -331,6 +331,24 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
 
 See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
 
+**Latest run:** `20260826-082906-refactor-week-day-interaction` (2026-08-26) — brownfield · refactor
+· policy `opus-plus-sonnet` · anchor `2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe` · branch
+`CMP-104/opus-plus-sonnet` · **accepted with AC-7 FAILED** · **uncommitted**.
+Ledger row: [row thirteen](./ledger.md#row-thirteen--20260826-082906-refactor-week-day-interaction-cmp-104-third-arm-opus-plus-sonnet).
+Artifacts: `.sdlc/runs/20260826-082906-refactor-week-day-interaction/`.
+
+**Fingerprint currency.** Stack, Validation, Policy and Off-limits above were last confirmed against
+anchor `2d81253a` on 2026-08-26. Nothing in those sections changed this run: the test command is
+still `bun test:web` (paired with the separate `bun type-check` gate), no dependency or manifest was
+touched, and the run's 57 changed paths are confined to
+`packages/web/src/{interaction,grid/interaction,views/Week/interaction,views/Day/interaction}` plus
+five Gate-3-amended importer paths.
+
+**Suite baseline moved: `2298/0/302` → `2305/0/303`.** The +7 is two new characterization test files;
+the file count is +1 net because two duplicate targeting tests collapsed into one. **Zero
+pre-existing tests were lost.** Future runs should baseline against `2305/0/303` on this branch —
+but note `main` is still at `2298/0/302`, because this run is uncommitted.
+
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added
     **both** missing lines to `.gitignore` — `.sdlc/` *and* `.hook-logs/` — closing the half of
@@ -431,3 +449,67 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **Mechanical-tier workers write to disk ungated (HIGH, open) — `WORKER-WRITE-BYPASS`.**
+    Confirmed on the **`claude-cli`** adapter in run `20260826-082906…`, so this is not
+    Antigravity-specific. Workers dispatched via `execute_with_model` have filesystem write access
+    and use it; those writes **bypass the `PreToolUse` write-contract hook entirely** (it matches
+    only the orchestrator's `Write|Edit`) and **ignore the packet's declared `artifact_path`**.
+    Evidence: `tp_sc_002`'s worker created its file at 09:23Z, *before* the orchestrator's
+    `write-provenance --before` ran at 09:25Z; `tp_sc_001`'s worker wrote to a path that was not its
+    `artifact_path`. **Non-deterministic** — the two packets that wrote files also returned unparsed
+    `raw` markdown, while the one that returned clean structured output wrote nothing, so you cannot
+    rely on it being consistent. **Workaround that works:** take a sha manifest of `packages/` plus a
+    marker file immediately before dispatch, then `find -newer` and re-manifest immediately after and
+    before writing anything yourself; delete anything that appeared. This closes follow-up 20's
+    "mechanism UNCONFIRMED" question in the affirmative for `claude-cli`.
+
+31. **`write-provenance.mjs` cannot handle multi-round edits (HIGH for revert, open) —
+    `PROVENANCE-MIDRUN-BACKUP` / `PROVENANCE-MULTI-ROUND-STALE`.** The helper has no concept of a
+    path it has already seen. Every `--before` overwrites the run's belief about the pre-run state
+    with whatever is on disk *at that moment*, and `--after` refuses to re-stamp without a matching
+    `--before`. Two consequences, both seen in `20260826-082906…`: (a) `sha_after` goes stale for any
+    file edited again later (6 files, e.g. after a Biome reformat); (b) far worse, if a file is
+    edited in an early stage and then deleted in a later one, the second `--before` **backs up the
+    mid-run intermediate and records it as `sha_before`**. Verified byte-for-byte: the
+    `week-event.registry.ts` backup is **37 lines** vs HEAD's **24** and imports a module that did
+    not exist at HEAD. **A naive revert from those backups resurrects mid-run code.** This is almost
+    certainly the same root cause as CMP-103's `PROV-1` and should be filed as one defect.
+    **Mitigation used:** annotate *every* entry in each duplicate group with a machine-readable
+    `on_revert` directive (`RESTORE_FROM_GIT_HEAD` / `DELETE` on the authoritative entry,
+    `DO_NOT_RESTORE` on the other), so a tool reading the *last* entry is told in the data not to use
+    it. **Suggested fix:** make `--before` idempotent per path per run — append to a `rounds[]` list
+    instead of overwriting `sha_before`/`backup_path`.
+
+32. **`budget.maxOutputTokens` is not enforced on the `claude-cli` adapter (medium, open).**
+    Declared `3000`, returned **17 497** and **15 344**, with `hit_output_cap: false` and
+    `stop_reason: end_turn`. The ceiling-doubling machinery described in the pipeline skill therefore
+    never engages and the budget field is decorative on this adapter.
+
+33. **The "cheap" mechanical tier can be the most expensive phase in a run (medium, open) —
+    `MECHANICAL-TIER-CACHED-TOKEN-ECONOMICS`.** In `20260826-082906…` three Sonnet test packets cost
+    **$2.66**, more than seven Opus codegen events at **$2.40**, driven by **1 544 084 / 2 242 907 /
+    392 112 cached input tokens** per call ($1.10 / $1.22 / $0.34 per packet). Routing was correct on
+    every packet; the cost is context volume, not misrouting. **A mixed policy is only cheaper if the
+    mechanical tier is cheap *per packet*** — on this adapter, delegating a small file cost more than
+    doing it in-session at the premium tier. Any cross-policy cost comparison that ignores
+    cached-context billing is not meaningful. Compounds the existing "cost numbers not comparable"
+    caveat.
+
+34. **Phase markers must bracket the work, not follow it (medium, resolved-in-run) —
+    `ORCHESTRATOR-RETROACTIVE-PHASE-LOGGING`.** In `20260826-082906…` the orchestrator emitted
+    `test_run` `phase.start`/`phase.end` **in a batch after the suites had already run**. The pair
+    spans **61 ms** with no telemetry, so `orchestrator.log` claimed a test phase that took no time
+    and produced nothing. The results were true — the senior reviewer independently re-ran and
+    confirmed — but the log misrepresented them, and it was the *reviewer* who noticed, not the
+    orchestrator. A correction pair bracketing a real 77 s run was appended. Given this project's
+    standing rule to verify rather than relay, a phase that reports zero duration should be treated
+    as a red flag by any future reader.
+
+35. **Line-count acceptance criteria need one tree set and one baseline (low, open).** `AC-7` in
+    `20260826-082906…` said "across the four in-scope trees" while its own parenthetical baseline
+    counted **two**, giving opposite verdicts on identical code (two-tree −91 = pass; four-tree +349
+    = fail). It was never coherently evaluable and was recorded **FAILED**. Related: a literal
+    pass/file count is a poor invariant — `AC-1`'s was invalidated **twice** in one run, first by a
+    test-file collapse and then by a directed test addition. Prefer "zero failures, no pre-existing
+    test removed or weakened".

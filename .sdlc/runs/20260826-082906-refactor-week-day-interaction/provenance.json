@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "run_id": "20260826-082906-refactor-week-day-interaction",
+  "intent": "refactor",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "_sha_after_staleness_notice": {
+    "defect": "PROVENANCE-MULTI-ROUND-STALE",
+    "affected_entries": 6,
+    "detail": "6 files received a further edit AFTER their --before/--after pair was stamped (3 by biome reformat, 3 by post-hoc orchestrator fixes). write-provenance.mjs cannot stamp a second sha_after without a fresh --before, and running one would overwrite sha_before with post-run content and break revert. sha_before, backup_path and tracked_in_git are all CORRECT; only sha_after is stale.",
+    "true_final_shas": "see provenance.reconciliation.json in this directory",
+    "revert_safety": "unaffected - revert reads sha_before/backup_path/git, not sha_after"
+  },
+  "files_touched": [
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/commit-characterization.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:8e8e28ca835c4409da5077f1c68eacbbde10a211b13766a825bc2f6c42eefc42",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_sc_001",
+      "written_at": "2026-08-26T09:21:30.280Z",
+      "on_revert": {
+        "action": "DELETE",
+        "authoritative": true,
+        "entry": "1 of 2",
+        "reason": "existed_before is false - this file was created by this run and must be DELETED on revert, never restored. A later entry for the same path exists (packet_id tp_s5) whose backup holds a mid-run intermediate; ignore it. Defect PROVENANCE-MIDRUN-BACKUP (D5)."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/commit-characterization.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:59661c97dcb6e19563bb0ea2de9cac653653fadaefb2095ce7fcc10dce8b6246",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_sc_002",
+      "written_at": "2026-08-26T09:28:25.304Z",
+      "_orchestrator_correction": {
+        "corrected_at": "2026-08-26T09:27:00Z",
+        "defect": "WORKER-WRITE-BYPASS",
+        "reason": "write-provenance.mjs --before recorded existed_before:true with a backup, because the tp_sc_002 mechanical worker had ALREADY written this file to disk itself, before the orchestrator's --before call ran. The true pre-run state is 'did not exist'.",
+        "impact_if_uncorrected": "/mmo:revert would RESTORE the worker's file instead of DELETING it - same class of defect as CMP-103 PROV-1.",
+        "false_sha_before": "sha256:5dd2239f8e115fbc88ffe6f239fbcc0f764f275151758082e23ba2645bcd5a7a",
+        "backup_deleted": true,
+        "on_revert": "DELETE this file. Do not restore."
+      }
+    },
+    {
+      "path": "packages/web/src/grid/interaction/view-interaction.bindings.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:f6708ccd326ee3e0d54dc0480547b83fbc4f485ee057269d68ca4c11ee392f9b",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s0",
+      "written_at": "2026-08-26T09:42:31.286Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/view-adapter.types.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:65ea68a226e786c9ab2915e8d019c23d5c0d3dffe5041fc2a56644b13b415f4e",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s0",
+      "written_at": "2026-08-26T09:42:31.343Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/commit/commit-result.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:56039c962ad81ee09c6edab91fb64367a8d9c52bd19093e22e749d1928730a2b",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s0",
+      "written_at": "2026-08-26T09:42:31.401Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/week-interaction.bindings.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:25bf05d3e73cfc2469ab23859f3815e8b340afaca3a108d7076247f72f16cf2d",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:07.704Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/day-interaction.bindings.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:1fb601a3872d97ea25b1db16823f55e9f2f32ae492879dd24cc2094d150edb76",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:07.769Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+      "existed_before": true,
+      "sha_before": "sha256:e7e155b1e2a8a796efc7999e909368608c3a1fb7129b91b7640704b8c531de0e",
+      "sha_after": "sha256:9426953d179fe49d230fc6c50b3d1904aa88578d90b01fe0bf7ab432b41f9746",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:07.830Z",
+      "on_revert": {
+        "action": "RESTORE_FROM_GIT_HEAD",
+        "authoritative": true,
+        "entry": "1 of 2",
+        "git_ref": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+        "reason": "This entry holds the TRUE pre-run state (24 lines at HEAD). A later entry for the same path exists with a backup containing mid-run shim content - see defect PROVENANCE-MIDRUN-BACKUP (D5). Restore from git, not from any backup."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+      "existed_before": true,
+      "sha_before": "sha256:21139d1470765317a046653fa1b97235bab18386477f146953b769f1ae609a67",
+      "sha_after": "sha256:3828b9d3d4402a3415fe8ef978b98b232398cbbbb694df92348958efc9fd5832",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:07.886Z",
+      "on_revert": {
+        "action": "RESTORE_FROM_GIT_HEAD",
+        "authoritative": true,
+        "entry": "1 of 2",
+        "git_ref": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+        "reason": "This entry holds the TRUE pre-run state (24 lines at HEAD). A later entry for the same path exists with a backup containing mid-run shim content - see defect PROVENANCE-MIDRUN-BACKUP (D5). Restore from git, not from any backup."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+      "existed_before": true,
+      "sha_before": "sha256:1a84c4ca7a41e3ab647ad47d233abfd82551200c0c37d2df1c70979b39180d33",
+      "sha_after": "sha256:b608137295d8167cd1e6f3c301a1b69518bc6ba1460c9491438c7b1660b372e6",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:07.945Z",
+      "on_revert": {
+        "action": "RESTORE_FROM_GIT_HEAD",
+        "authoritative": true,
+        "entry": "1 of 2",
+        "git_ref": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+        "reason": "This entry holds the TRUE pre-run state (35 lines at HEAD). A later entry for the same path exists with a backup containing mid-run shim content - see defect PROVENANCE-MIDRUN-BACKUP (D5). Restore from git, not from any backup."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts",
+      "existed_before": true,
+      "sha_before": "sha256:6c9fdb7b5fca25172c19b20b2c4eeafbe233f497442b564112e34df183768158",
+      "sha_after": "sha256:d653a1d7d125893c92f8e5da47a72519a9fee07b7b3f59d8a03ba0f3652f1c54",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s1",
+      "written_at": "2026-08-26T09:44:08.005Z",
+      "on_revert": {
+        "action": "RESTORE_FROM_GIT_HEAD",
+        "authoritative": true,
+        "entry": "1 of 2",
+        "git_ref": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+        "reason": "This entry holds the TRUE pre-run state (35 lines at HEAD). A later entry for the same path exists with a backup containing mid-run shim content - see defect PROVENANCE-MIDRUN-BACKUP (D5). Restore from git, not from any backup."
+      }
+    },
+    {
+      "path": "packages/web/src/grid/interaction/view-interaction.bindings.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:026145170e23d3baaceafa7f71525f9bb9bc9648c7e9fc1d0ca32fd8f92f4350",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s2_001",
+      "written_at": "2026-08-26T09:47:39.147Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:89ad1106e8ff7ea71a09c0e04e8a42a904df6291fffa9193ec04ca5b0afae665",
+      "sha_after": null,
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s2_001_delete",
+      "written_at": "2026-08-26T09:48:00.430Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8df207bfc22eab14d851873d3726de403f2fd4b39dae565697494ea1ee81e426",
+      "sha_after": null,
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s2_001_delete",
+      "written_at": "2026-08-26T09:48:00.487Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+      "existed_before": true,
+      "sha_before": "sha256:abea23d2c83d44f84743eaff26eb8008ed8bb3c39e33ced94c80065443e3cff4",
+      "sha_after": "sha256:e215069bfad74dbbe427e521bc281f5c77a6ce61b10cc48a44c1480622266f4b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s3",
+      "written_at": "2026-08-26T09:49:37.044Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+      "existed_before": true,
+      "sha_before": "sha256:6156ce508f770766a0fa868fc5debf9e39585f29276c5419b8e59c0937935ddc",
+      "sha_after": "sha256:e42df3d805e9e09cb0d75fc124404b5af791acb52635c1afec9cbc74bf2ca16a",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s3",
+      "written_at": "2026-08-26T09:49:37.110Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+      "existed_before": true,
+      "sha_before": "sha256:2962f03e2346f3a71629b23e97ed1aaab2e84e578c062d97a734cc5a16d3753a",
+      "sha_after": "sha256:d7e333c4c288d66a41d1bad2ce33af05492ec82c7264eac95343efb602092a53",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s4_002",
+      "written_at": "2026-08-26T09:50:36.940Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.drag.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:54bc4c6b747595aef2aae2c59536a67d88a8070236642db1fbf235239c2f11ef",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:14.797Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.resize.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:58dcabee86d19f653f56b9f79a7d345e660a3edf048e4b04dcf50e3ccbe14512",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:14.854Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/visuals/timed.drag.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:8e843eb93d5619bbe2ddbb06040811d9780f4a9084666eca2df27f13df56df3e",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:14.910Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/visuals/timed.resize.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:c97bac71ccbd4746411e16532953019344fd5a0f53b4639dc186c93973b9f898",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:14.971Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/visuals/all-day.visible-range.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:17a9c00a93bcf541c5d4293591e3a799692a9e73af60e6d89f115fae59f50265",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.029Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts",
+      "existed_before": true,
+      "sha_before": "sha256:d10adabe134cb14b28a6a22e4ca36d12bcb924e817e14f58ac59c64461e8f798",
+      "sha_after": "sha256:e49beeec1732499a565f49630ca87fc58ac114d5562941d41ec4149c391b4eaa",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.083Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts",
+      "existed_before": true,
+      "sha_before": "sha256:d5222f87943ed7bc0f32bf0df9faf996dbb969331d3f431bc66fc60c083e8ee1",
+      "sha_after": "sha256:1b9a478076197cd341922a8ef224fb56db000f3d7692170fdda8d3d2cc81ed6a",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.137Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+      "existed_before": true,
+      "sha_before": "sha256:47f8eb56dcff638e8e914224abd00094c7851c510c7d1067a6ef2d22fe769d66",
+      "sha_after": "sha256:661c835fba611c53ad7393115885007c4b9ecd872b1b023960da135269442665",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.195Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+      "existed_before": true,
+      "sha_before": "sha256:aedb46a35652286bdd0bc9282342e2ba1bf860c11d7eb8311595bd99967e7bc3",
+      "sha_after": "sha256:3bbdeb74595be8ff191cc0e46e53720ca976481f996650a0e6f7bc25dfe80e17",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.255Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8888bcb034fd32365c0be7088c28f56c00ae4ea1b06e321fdcc1e23631e85bcc",
+      "sha_after": "sha256:24e29a80af00fc7528e4428ef41c62cb8ce25d5e30393847620357660152733f",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.309Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5fb9a371b0c1f1fce77174d81acf59439da8b88d494df4c9b2ff4dba26d88aff",
+      "sha_after": "sha256:1390ebee0dede17fb60813071e2bcf83b889dda4e37b6b172cc303b031dcf6d6",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.365Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/commit-characterization.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8e8e28ca835c4409da5077f1c68eacbbde10a211b13766a825bc2f6c42eefc42",
+      "sha_after": "sha256:c1919382bbc29495934771aa4726933183ba3613cfa10cc41efba8dc622ddcb5",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/backups/packages__web__src__views__Week__interaction__adapter__commit-characterization.test.ts",
+      "packet_id": "tp_s5",
+      "written_at": "2026-08-26T09:55:15.425Z",
+      "on_revert": {
+        "action": "DO_NOT_RESTORE",
+        "authoritative": false,
+        "entry": "2 of 2",
+        "backup_is_midrun_intermediate": true,
+        "use_instead": "the earlier entry for this same path (packet_id tp_sc_001), which carries action DELETE",
+        "reason": "existed_before is recorded true here ONLY because the file already existed by stage S5 - this run created it in stage SC. The true pre-run state is 'did not exist'. Restoring this backup would leave behind a file that was never in the repo. Defect PROVENANCE-MIDRUN-BACKUP (D5).",
+        "backup_retained_deliberately": "Kept on disk as evidence for the D5 bug report. Do not act on it."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/WeekInteractionCoordinator.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:8f88dea11d2b3faf650016502a60a0582ca6725fffc6db25c00d907f8e3a2548",
+      "sha_after": "sha256:1f5a232beefc47d78cb765d8379464ae2159a345f08f4f438305558267ec0224",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s6",
+      "written_at": "2026-08-26T09:55:15.490Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/DayInteractionCoordinator.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:44abff7af6e502632cf78bc389952b01ebe75fa55ad065892b7efba709a7f8e4",
+      "sha_after": "sha256:577c4bebf155ecd6e91ef64acf8db37e3a4aac3fde2010718d0f687aa9c3e964",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_s6",
+      "written_at": "2026-08-26T09:55:15.550Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+      "existed_before": true,
+      "sha_before": "sha256:0f1c13cb9d1b2129939f9df2892508cfcb8810ab965939ea8752ec037daffea6",
+      "sha_after": "sha256:0f1c13cb9d1b2129939f9df2892508cfcb8810ab965939ea8752ec037daffea6",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/backups/packages__web__src__views__Week__interaction__registry__week-event.registry.ts",
+      "packet_id": "tp_shim_delete",
+      "written_at": "2026-08-26T10:29:58.469Z",
+      "on_revert": {
+        "action": "DO_NOT_RESTORE",
+        "authoritative": false,
+        "entry": "2 of 2",
+        "backup_is_midrun_intermediate": true,
+        "use_instead": "the earlier entry for this same path (packet_id tp_s1), which carries action RESTORE_FROM_GIT_HEAD",
+        "reason": "sha_before on THIS entry is the mid-run SHIM content this run itself created in stage S1, not the pre-run state. Verified: backup is 37 lines and imports view-interaction.bindings; HEAD is 24 lines and does not. Restoring this backup would resurrect a shim that never existed before this run. Defect PROVENANCE-MIDRUN-BACKUP (D5).",
+        "backup_retained_deliberately": "Kept on disk as evidence for the D5 bug report. Do not act on it."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+      "existed_before": true,
+      "sha_before": "sha256:3828b9d3d4402a3415fe8ef978b98b232398cbbbb694df92348958efc9fd5832",
+      "sha_after": "sha256:3828b9d3d4402a3415fe8ef978b98b232398cbbbb694df92348958efc9fd5832",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/backups/packages__web__src__views__Day__interaction__registry__day-event.registry.ts",
+      "packet_id": "tp_shim_delete",
+      "written_at": "2026-08-26T10:29:58.531Z",
+      "on_revert": {
+        "action": "DO_NOT_RESTORE",
+        "authoritative": false,
+        "entry": "2 of 2",
+        "backup_is_midrun_intermediate": true,
+        "use_instead": "the earlier entry for this same path (packet_id tp_s1), which carries action RESTORE_FROM_GIT_HEAD",
+        "reason": "sha_before on THIS entry is the mid-run SHIM content this run itself created in stage S1, not the pre-run state. Verified: backup is 30 lines and imports day-interaction.bindings; HEAD is 24 lines and does not. Restoring this backup would resurrect a shim that never existed before this run. Defect PROVENANCE-MIDRUN-BACKUP (D5).",
+        "backup_retained_deliberately": "Kept on disk as evidence for the D5 bug report. Do not act on it."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+      "existed_before": true,
+      "sha_before": "sha256:b608137295d8167cd1e6f3c301a1b69518bc6ba1460c9491438c7b1660b372e6",
+      "sha_after": "sha256:b608137295d8167cd1e6f3c301a1b69518bc6ba1460c9491438c7b1660b372e6",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/backups/packages__web__src__views__Week__interaction__targeting__week-event.targeting.ts",
+      "packet_id": "tp_shim_delete",
+      "written_at": "2026-08-26T10:29:58.599Z",
+      "on_revert": {
+        "action": "DO_NOT_RESTORE",
+        "authoritative": false,
+        "entry": "2 of 2",
+        "backup_is_midrun_intermediate": true,
+        "use_instead": "the earlier entry for this same path (packet_id tp_s1), which carries action RESTORE_FROM_GIT_HEAD",
+        "reason": "sha_before on THIS entry is the mid-run SHIM content this run itself created in stage S1, not the pre-run state. Verified: backup is 30 lines and imports week-interaction.bindings; HEAD is 35 lines and does not. Restoring this backup would resurrect a shim that never existed before this run. Defect PROVENANCE-MIDRUN-BACKUP (D5).",
+        "backup_retained_deliberately": "Kept on disk as evidence for the D5 bug report. Do not act on it."
+      }
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8ce77924609a1a649bbec8eb6eb9737f3b2e436898a8f61f36cfd9be5a8d8350",
+      "sha_after": "sha256:8ce77924609a1a649bbec8eb6eb9737f3b2e436898a8f61f36cfd9be5a8d8350",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260826-082906-refactor-week-day-interaction/backups/packages__web__src__views__Day__interaction__targeting__day-event.targeting.ts",
+      "packet_id": "tp_shim_delete",
+      "written_at": "2026-08-26T10:29:58.666Z",
+      "on_revert": {
+        "action": "DO_NOT_RESTORE",
+        "authoritative": false,
+        "entry": "2 of 2",
+        "backup_is_midrun_intermediate": true,
+        "use_instead": "the earlier entry for this same path (packet_id tp_s1), which carries action RESTORE_FROM_GIT_HEAD",
+        "reason": "sha_before on THIS entry is the mid-run SHIM content this run itself created in stage S1, not the pre-run state. Verified: backup is 26 lines and imports day-interaction.bindings; HEAD is 35 lines and does not. Restoring this backup would resurrect a shim that never existed before this run. Defect PROVENANCE-MIDRUN-BACKUP (D5).",
+        "backup_retained_deliberately": "Kept on disk as evidence for the D5 bug report. Do not act on it."
+      }
+    }
+  ]
+}
