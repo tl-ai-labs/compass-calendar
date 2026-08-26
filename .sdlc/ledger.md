@@ -344,3 +344,80 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260826-115739-refactor-week-day-interaction` (CMP-104, fourth arm, first `opus-only-v5`)
+
+**CMP-104 · `refactor` · `opus-only-v5` · `estimated` · branch `CMP-104/opus-only-v5` ·
+$6.15 · 30 files · +42 tests · 2340 pass / 0 fail · uncommitted by the human's explicit choice.**
+
+Fourth arm of the CMP-104 comparison. The duplicated Week/Day interaction wiring was collapsed onto
+the shared engine: `week-interaction.adapter.ts` 795→469 LOC, `day-interaction.adapter.ts` 607→272,
+registry and targeting reduced from two implementations each to one view-parameterized each.
+
+**The run could not start.** It deadlocked before Gate 0 on a plugin bug, not a repo problem.
+`write-contract-check.mjs` applies the PROC-05 bookkeeping carve-out **only on the post-contract
+path**; on the pre-contract path it matches `.sdlc/**` from `HARDCODED_OFF_LIMITS` and denies — which
+makes `.sdlc/local/write-contract.json` **itself unseedable**. Guide steps 4 and 5 both died, and the
+denial told the operator to run `/mmo:brownfield` to establish a contract, which is exactly what they
+were doing. No script in `plugin/scripts/` writes the contract; only the checker reads it. The
+`mmo:discovery` subagent was the **only** component that got through, and only because it has no
+Write tool and writes via Bash. Patched in-cache with the human's approval and verified in **both**
+directions — `.sdlc/runs/**` writes succeed, `.sdlc/delegation/**` still refused. **The patch reverts
+on `/plugin update`.** The same gap was noted at the close of CMP-103 and is still unfixed in 0.6.0.
+
+**The central design bet was that no public export name or module path would change** — so the four
+view shells survive as pure alias files and Stage 8 became a *verification* stage rather than an edit
+stage. It held: **zero call-site edits** across all 25 known call sites, and Week's six adapter suites
+plus Day's suite are **byte-identical** (`git diff --stat` empty). That is what protected FR-9, since
+Week carries 48 tests / 157 assertions against Day's 14, and a careless unification would have
+averaged the two.
+
+**The human's Gate 2 addition earned its place twice, and it was added over the plan's own
+judgement.** The architect had disclosed Stage 4 as a weak checkpoint — pure addition, nothing imports
+it, so `bun test` cannot prove type validity — and accepted that as risk *because it could not assert
+a typecheck script existed*. One does: `bun run type-check`, covering the app **and the test**
+tsconfig. Made per-stage rather than Stage-4-only, it retired that weak checkpoint at Stage 4, then at
+Stage 7 caught **8 real type errors in three test files that were passing all 19 of their tests at
+runtime** (branded `CalendarId` rejected in `.toBe()`, plus a too-narrow cast). Both batches would
+have reached CI.
+
+**The senior review caught a false positive in the orchestrator's own work, and it was settled by
+mutation rather than argument.** `week-interaction.idempotence.test.ts` never reached the state it
+existed to guard: the harness grid spans y 100–1400 with a 100px bottom inset, so the scroll zones sit
+outside y 150–1250 and the test's pointers at y=1020/1120 sat in the dead band where `scrollDeltaPx`
+is identically 0 — and accumulating zero is zero. With `applySmartScroll` temporarily rewritten to
+accumulate, the **old suite passed all 3 tests** while the replacement failed 2. AC-8 had been claimed
+on evidence that could not support it; it now rests on a test that discriminates.
+
+**A recommendation from the security review was rejected on repo evidence.** It proposed a blanket
+`.sdlc/` gitignore as a one-line lint fix. But `.gitignore:36-39` carries an explicit *"keep the
+reports"* decision and commit `2d81253a` deliberately tracks the project-level SDLC layer —
+`git ls-files .sdlc` returns exactly 8 tracked files, and `.sdlc/runs/**` is already untracked. The
+targeted `.sdlc/runs/` entry was substituted instead: it cleared 6 of the 8 offenders and untracked
+nothing. The 2 survivors are **format-only** diagnostics on plugin-written JSON that was *already
+dirty before the run began*, deliberately left rather than churned, since the next plugin run reverses
+any reformat.
+
+**Cost is the least comparable axis here, and this row should not be read as a policy ranking.**
+Three independent reasons: this arm's total is 100% in-session **estimate** booking `cached=0`, while
+the flash/sonnet arms derive from **placeholder** rates; `refactor` task types fall through to the
+premium default on all five policies, so the "cheap" arms were never running a cheap tier; and **this
+arm alone** was blocked before Gate 0 and needed a plugin patch to start, so its wall-clock is not
+comparable either. What *is* supported: +42 tests against opus-plus-flash-v37's +10, the only arm with
+zero call-site edits, and the only one whose LOC reduction was independently re-verified by the parent
+session. A `CMP-104/opus-plus-sonnet` branch exists but that arm was never closed out and has no row,
+so it is not a data point.
+
+**Two plugin defects and one revert hazard are recorded rather than quietly fixed.**
+`npm audit --omit=dev` is `ENOLOCK` on this Bun workspace, so the security checklist's audit step is
+**silently unrunnable on every run against this repo** — it reports nothing rather than failing.
+Provenance holds 36 records over 30 unique paths, 6 of them written twice; the **earliest** record per
+path holds true pre-run state, so **a last-record-wins `/mmo:revert` would restore mid-run content
+instead of deleting a newly created file.** And `change_plan.md` is deliberately absent from
+provenance — backfilling a `--before` now would record post-write content as pre-run state and teach
+revert to *restore* a file it should *delete*.
+
+**The `sed`/heredoc write reroute recurred on every single turn** and was declined every time — by the
+parent session, the orchestrator and the security reviewer independently. The hook matches only
+`Write|Edit`, so a Bash write would have bypassed Gate 0 enforcement **silently, with no refusal to
+report**. All 30 writes went through `Write`/`Edit`.

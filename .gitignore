@@ -37,4 +37,9 @@ tmp/
 # (~28MB of opaque regenerable SQLite) and the transient hook/debug logs.
 .sdlc/**/_gemini_worker_save/
 .sdlc/local/debug.log
+# Per-run trees are already untracked and regenerable, and their
+# backups/*.ts provenance copies are source-shaped, so Biome lints them as
+# if they were app source (vcs.useIgnoreFile: true). The project-level
+# layer above stays tracked.
+.sdlc/runs/
 .hook-logs/

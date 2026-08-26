@@ -16,8 +16,8 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 
 | Command | Notes |
 |---|---|
-| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
-| `bun type-check` | Clean as of 2026-08-20. |
+| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. Baseline on `main` is 2298 pass / 0 fail / 302 files (~83s). |
+| `bun run type-check` | Clean as of 2026-08-26. **A SEPARATE GATE — `bun test:web` does not type-check.** Covers the app *and* the test tsconfig (`type-check:web-tests`), so it catches type errors in test files that pass at runtime. Note the script name is `type-check`, not `bun type-check`. |
 | `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
 | `bun run verify` | Diff-aware. |
 | `bun test:e2e` | Playwright. |
@@ -431,3 +431,52 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **The write contract cannot be seeded, so EVERY brownfield run deadlocks before Gate 0 (HIGH,
+    patched in-cache only) — `PROC-05-PRE-CONTRACT`.** `write-contract-check.mjs` applies the PROC-05
+    plugin-bookkeeping carve-out **only on the post-contract path** (`:303-318`). On the pre-contract
+    path (`:265-290`) it matches `.sdlc/**` from `HARDCODED_OFF_LIMITS` and denies with no carve-out.
+    Since the contract lives at `.sdlc/local/write-contract.json`, **the contract itself is
+    unwritable**, and so are the run artifacts brownfield-guide step 4 requires. No script in
+    `plugin/scripts/` writes the contract — only the checker reads it — so nothing can bootstrap it.
+    The denial message compounds it by telling the operator to "run `/mmo:setup` or `/mmo:brownfield`
+    first to establish an explicit contract", which is precisely what they are already doing.
+    **`mmo:discovery` is the only component that gets through, and only because it has no Write tool
+    and writes via Bash** — which is also why this went unnoticed for so long. Fixed 2026-08-26 by
+    hoisting `BOOKKEEPING_CARVE_OUT` to module scope and checking it on the pre-contract path *ahead
+    of* the `HARDCODED_OFF_LIMITS` scan; verified in both directions (`.sdlc/runs/**` allowed,
+    `.sdlc/delegation/**` still refused). **The patch is in the plugin cache and `/plugin update`
+    reverts it.** Same gap was noted at the close of CMP-103 and never filed upstream. Do **not** work
+    around it with a Bash heredoc: the file being written *is* the safety mechanism.
+
+31. **`/mmo:revert` can restore mid-run content instead of deleting a new file (HIGH, open) —
+    `PROC-REVERT-LAST-WINS`.** When more than one packet touches the same path — a stage write plus a
+    refinement write, which is routine — `provenance.json` gains **two records for that path**, and
+    the second one's `sha_before` is *mid-run* content, not pre-run. Run
+    `20260826-115739-refactor-week-day-interaction` has 36 records over 30 unique paths, 6 of them
+    doubled. The **earliest** record per path holds true pre-run state, so the data needed for a
+    correct revert is present — but a resolver that reads last-record-wins will restore a mid-run
+    snapshot rather than deleting a file that did not exist before the run. **Verify the resolution
+    order in `brownfield-cleanup.mjs` before trusting `/mmo:revert` on any multi-packet run.**
+    Related: 11 records in that run carry stale `sha_after` because `biome check --write` reformatted
+    files *after* the provenance helper stamped them — the same out-of-band-reformat hazard flagged
+    for the Cursor/Codex format-on-edit hooks. **Do not "tidy" either by rewriting records.**
+
+32. **The security checklist's dependency-audit step is silently unrunnable here (medium, open).**
+    `npm audit --omit=dev` fails `ENOLOCK` on this repo because it is a Bun workspace with no
+    `package-lock.json`. It does not fail loudly — the step simply yields nothing, so a security
+    review can read as "audit clean" when no audit ran. `bun audit --prod` is the working substitute
+    and reports 69 vulnerabilities / 24 high (`postcss`, `nanoid`, `ws`, `ip-address`) — all
+    pre-existing, and advisory on any run that does not touch dependencies. The checklist should
+    detect the lockfile flavour and pick the matching command.
+
+33. **`.gitignore` and `.sdlc` tracking: two runs made *different* choices, deliberately (info).**
+    Follow-up 21 records that `CMP-104/flash-agsdk-only` added a blanket `.sdlc/` line. Run
+    `20260826-115739…` on `CMP-104/opus-only-v5` **rejected** that approach after checking the repo:
+    `.gitignore:36-39` carries an explicit "keep the reports" decision, and commit `2d81253a`
+    deliberately tracks the project-level SDLC layer (`git ls-files .sdlc` → exactly 8 files, with
+    `.sdlc/runs/**` already untracked). It added the targeted `.sdlc/runs/` instead, which clears the
+    source-shaped `backups/*.ts` that Biome lints as app code while untracking nothing. **Both changes
+    are uncommitted and on different branches — reconcile before merging either.** A blanket `.sdlc/`
+    would also stop future run artifacts being committable, which is the opposite of what `2d81253a`
+    intended.
