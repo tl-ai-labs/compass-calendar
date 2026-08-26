@@ -75,6 +75,17 @@ the previous paragraph still applies, so check `project.json` directly. Run
 a contradiction, and the nuance is worth knowing before reading any `vendor` cost figure — see
 follow-up 23.
 
+**Updated 2026-08-26.** `.sdlc/project.json`'s `default_policy` is now **`opus-plus-sonnet`**
+(set 2026-08-25T08:53:09Z), superseding `opus-plus-flash-v37` above. The round-tripping warning two
+paragraphs up still applies — this is the **fifth** default this project has carried, so read
+`project.json` rather than trusting any paragraph here. Both tiers route through `claude-cli`
+(direct `claude-opus-5`, mechanical `claude-sonnet-5`), so there is **no vendor-metered half at all**
+and no `antigravity-worker` in the path: follow-up 18's write-contract gap does not apply. The
+policy's `pricing` block is real and dated 2026-08-19 (opus 5/0.5/25, sonnet 3/0.3/15), not the TODO
+placeholders that made earlier `flash`/`sonnet` figures uninterpretable — but **both** halves are now
+char-count estimates booking `cached=0`, so cross-policy cost ranking remains invalid. First run
+under it on this ticket line: `20260825-220640-feature-extend-one-click-join`.
+
 ## Off-limits
 
 Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs discovery found:
@@ -431,3 +442,26 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **`write-provenance.mjs` corrupts the pre-run record of any file written by more than one packet
+    (high, open).** Run `20260825-220640-feature-extend-one-click-join`. Each `--before` call
+    overwrites the same per-file backup slot *and* re-stamps `existed_before`/`sha_before`, so the
+    last write wins — but only the **first** observation in a run describes the pre-run state. In
+    that run `EventJoinIcon.tsx` was written by three packets and ended with three rows, all reading
+    `existed_before: true` with a non-null `sha_before` **for a file that did not exist before the
+    run**, all pointing at one backup holding the mid-run intermediate (4,526 B, `getJoinableConference`
+    present, `ph-no-capture` absent; live file 5,997 B with both). `/mmo:revert` would therefore
+    *resurrect a half-finished file instead of deleting it*. Git-tracked files are unaffected in
+    practice because git restores them regardless — the damage lands only on **untracked** files,
+    which is exactly the new-file case. Fix: make `--before` idempotent per `(run_id, path)`.
+    **Until then, verify `provenance.json` by hand before trusting any revert.**
+
+31. **Every brownfield run must breach its own write discipline once, at Gate 0, to start (medium,
+    open).** No plugin script creates `.sdlc/local/write-contract.json`, but the pre-contract safety
+    net in `write-contract-check.mjs` refuses `Write`/`Edit` to `.sdlc/**` while no contract exists —
+    so the file that *lifts* the net cannot be created through the gated path. The hook's own refusal
+    text says to "run `/mmo:setup` or `/mmo:brownfield` first to establish an explicit contract",
+    which is circular at exactly this moment. Run `20260825-220640` bootstrapped it via `node` and
+    disclosed the fact rather than passing it off as a normal write. Fix: a `--freeze-contract`
+    subcommand, or a bootstrap carve-out for that one path. Note this is **not** PN-1 — the
+    distinction that matters is payload versus safety mechanism, and disclosure versus silence.

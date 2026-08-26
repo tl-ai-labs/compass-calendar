@@ -1,0 +1,251 @@
+[
+  {
+    "id": "tp_001_dom_optout",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "grid-interaction",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/grid/interaction/dom.ts",
+    "instruction": "Add an interactive-affordance opt-out to this module, mirroring EVENT_RESIZE_HANDLE_ATTRIBUTE/getResizeHandleEdge exactly. Add: (1) `export const EVENT_INTERACTIVE_ATTRIBUTE = \"data-calendar-event-interactive\";` beside the other attribute constants; (2) `export const isInteractiveAffordanceTarget = (event: Pick<PointerEvent, \"target\">): boolean => { const pointerTarget = event.target instanceof Element ? event.target : null; return Boolean(pointerTarget?.closest(`[${EVENT_INTERACTIVE_ATTRIBUTE}]`)); };` placed immediately after getResizeHandleEdge. Add a short comment explaining that the grid's PointerCaptureBoundary owns pointerdown in capture phase and preventDefault()s it, so an inner interactive affordance (a link/button inside a card) cannot defend itself by stopPropagation and must instead be recognised here, exactly as resize handles are. Return the COMPLETE new file contents. Change nothing else.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/interaction/dom.ts",
+        "reason": "target file; lines 20-40 show the constants + getResizeHandleEdge shape to mirror",
+        "content": "export const EVENT_CONTENT_ATTRIBUTE = \"data-calendar-event-content\";\nexport const EVENT_CONTENT_SELECTOR = `[${EVENT_CONTENT_ATTRIBUTE}='true']`;\nexport const EVENT_RESIZE_HANDLE_ATTRIBUTE =\n  \"data-calendar-event-resize-handle\";\nexport const EVENT_TIME_LABEL_ATTRIBUTE = \"data-calendar-event-time-label\";\nexport const EVENT_TIME_LABEL_SELECTOR = `[${EVENT_TIME_LABEL_ATTRIBUTE}='true']`;\n\nexport type ResizeEdge = \"endDate\" | \"startDate\";\n\nexport const getResizeHandleEdge = (\n  event: Pick<PointerEvent, \"target\">,\n): ResizeEdge | null => {\n  const pointerTarget = event.target instanceof Element ? event.target : null;\n  const handle = pointerTarget?.closest<HTMLElement>(\n    `[${EVENT_RESIZE_HANDLE_ATTRIBUTE}]`,\n  );\n  const edge = handle?.getAttribute(EVENT_RESIZE_HANDLE_ATTRIBUTE);\n\n  return isResizeEdge(edge) ? edge : null;\n};"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "EVENT_INTERACTIVE_ATTRIBUTE exported with value data-calendar-event-interactive",
+      "isInteractiveAffordanceTarget exported, uses closest() on that attribute, returns boolean",
+      "signature accepts Pick<PointerEvent, \"target\"> exactly like getResizeHandleEdge",
+      "no existing export removed or renamed"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 4000 }
+  },
+  {
+    "id": "tp_002_week_adapter_bail",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "grid-interaction",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "instruction": "Make the week interaction adapter ignore pointerdowns that originate on an interactive affordance inside a card, so the card is not resolved as a drag target. TWO edits only: (1) add `isInteractiveAffordanceTarget` to the existing named import from \"@web/grid/interaction/dom\", keeping alphabetical order; (2) in BOTH getAllDayDragTarget and getTimedDragTarget, change the existing guard `if (getResizeHandleEdge(event)) { return null; }` to `if (getResizeHandleEdge(event) || isInteractiveAffordanceTarget(event)) { return null; }`. Do NOT touch getAllDayResizeTarget or getTimedResizeTarget: they already bail when getResizeHandleEdge returns null, which is the case for an affordance. Return ONLY a JSON array of precise search/replace edits.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+        "reason": "import block at :7-12 and the two drag-target guards at :507-511 and :548-551",
+        "content": "// lines 7-12 (import block)\nimport {\n  createDraftEventMount,\n  getResizeHandleEdge,\n  hideDraftEventTimeLabel,\n  updateDraftEventTimeLabel,\n} from \"@web/grid/interaction/dom\";\n\n// lines 507-524\n  function getAllDayDragTarget(\n    event: PointerEvent,\n  ): WeekAllDayDragTarget | null {\n    if (getResizeHandleEdge(event)) {\n      return null;\n    }\n\n    const target = resolveAllDayEventTarget(event);\n\n    if (!target) {\n      return null;\n    }\n\n    return {\n      ...target,\n      type: \"allDayDrag\",\n    };\n  }\n\n// lines 548-561\n  function getTimedDragTarget(event: PointerEvent): WeekTimedDragTarget | null {\n    if (getResizeHandleEdge(event)) {\n      return null;\n    }\n\n    const target = resolveTimedEventTarget(event);\n\n    if (!target) {\n      return null;\n    }\n\n    return {\n      ...target,\n      type: \"timedDrag\",\n    };\n  }"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "old_string": { "type": "string" }, "new_string": { "type": "string" } },
+            "required": ["old_string", "new_string"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "exactly 3 edits: 1 import, 2 guards",
+      "each old_string is unique within the file",
+      "resize-target functions untouched"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_003_day_adapter_bail",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "grid-interaction",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+    "instruction": "Identical change to tp_002 but for the Day adapter. TWO edits: (1) add `isInteractiveAffordanceTarget` to the existing named import from \"@web/grid/interaction/dom\", alphabetical; (2) in BOTH getAllDayDragTarget and getTimedDragTarget, change `if (getResizeHandleEdge(event)) { return null; }` to `if (getResizeHandleEdge(event) || isInteractiveAffordanceTarget(event)) { return null; }`. Leave the resize-target functions alone. Return ONLY a JSON array of precise search/replace edits.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+        "reason": "import block at :10-14 and the two drag-target guards at :457-461 and :499-503",
+        "content": "// lines 10-14 (import block)\nimport {\n  createDraftEventMount,\n  getResizeHandleEdge,\n  updateDraftEventTimeLabel,\n} from \"@web/grid/interaction/dom\";\n\n// lines 457-475\n  function getAllDayDragTarget(\n    event: PointerEvent,\n  ): DayAllDayDragTarget | null {\n    if (getResizeHandleEdge(event)) {\n      return null;\n    }\n\n    const target = resolveAllDayEventTarget(event);\n\n    if (!target) {\n      return null;\n    }\n\n    return {\n      ...target,\n      type: \"allDayDrag\",\n    };\n  }\n\n// lines 499-503\n  function getTimedDragTarget(event: PointerEvent): DayTimedDragTarget | null {\n    if (getResizeHandleEdge(event)) {\n      return null;\n    }\n\n    const target = resolveTimedEventTarget(event);"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "old_string": { "type": "string" }, "new_string": { "type": "string" } },
+            "required": ["old_string", "new_string"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "exactly 3 edits: 1 import, 2 guards",
+      "each old_string unique within the file",
+      "resize-target functions untouched"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_004_event_join_icon",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "grid-cards",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "instruction": "Create the shared join affordance. Export TWO things. (1) `joinableConference(conference, isSaved)` returning Conference|null: null unless isSaved AND conference?.url is present AND `new URL(url).protocol` is http: or https: (wrap in try/catch, return null on throw). This is the single gate both cards call so the all-day padding reservation can never disagree with what renders. (2) `EventJoinIcon` component with props { baseColor: string; conference: Conference; hasRepeatIcon: boolean; title?: string | null }. It renders an <a> with: `data-calendar-event-interactive=\"true\"` (REQUIRED - this is the attribute the grid interaction adapters use to skip drag-target resolution), aria-label, href=conference.url, target=\"_blank\", rel=\"noopener noreferrer\", style={{ zIndex: ZIndex.LAYER_5 }}, className via `cn(\"c-focus-ring absolute bottom-0.5 flex h-3 w-3 items-center justify-center\", hasRepeatIcon ? \"right-4\" : \"right-1\")`, plus React handlers `onMouseDown={(e) => e.stopPropagation()}` and `onKeyDown={(e) => { if (e.key === \"Enter\" || e.key === \" \") e.stopPropagation(); }}`. Child: <VideoCameraIcon aria-hidden=\"true\" className={getInteractiveIconClassName()} color={theme.getContrastText(baseColor)} size={12} weight=\"bold\" />. Accessible name: `Join ${title?.trim() || \"Untitled event\"}` and when conference.label is set `Join ${eventTitle} via ${conference.label}`. Do NOT preventDefault anywhere. Do NOT use useEffect or native addEventListener. Do NOT add a click handler. Include a docstring in the tone of EventRepeatIcon's, explaining the one-place rule, why this cannot use pointer-events-none (it is a real focusable link), why the http(s) guard exists (z.url() does not constrain scheme), and why the data-calendar-event-interactive attribute is load-bearing.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "reason": "sibling component: docstring tone, prop shape, and the right-1 bottom-0.5 slot this must avoid",
+        "content": "import { darken } from \"@web/common/styles/color.utils\";\nimport { RepeatIcon } from \"@web/components/Icons/Repeat\";\n\ninterface Props {\n  baseColor: string;\n}\n\n/**\n * The recurrence indicator shared by the timed and all-day grid cards: a small\n * repeat glyph pinned to the card's bottom-right, tinted a darker shade of the\n * event color so it complements the card instead of a loud fixed white.\n * Keeping it in one place stops the two cards from drifting apart.\n * Decorative - the recurrence state is announced via each card's aria-label.\n */\nexport const EventRepeatIcon = ({ baseColor }: Props) => (\n  <RepeatIcon\n    aria-hidden=\"true\"\n    className=\"pointer-events-none absolute right-1 bottom-0.5\"\n    color={darken(baseColor, 30)}\n    size={10}\n    weight=\"bold\"\n  />\n);"
+      },
+      {
+        "path": "packages/web/src/components/Sidebar/UpNextCard/UpNextCard.tsx",
+        "reason": "existing join-link precedent: direct phosphor import, target/rel, class conventions",
+        "content": "import { VideoCameraIcon } from \"@phosphor-icons/react\";\n// ...\n          {upNext.conference && (\n            <a\n              href={upNext.conference.url}\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n              className=\"c-focus-ring relative z-10 flex w-fit items-center gap-1 text-accent text-xs hover:underline\"\n            >\n              <VideoCameraIcon size={12} />\n              Join\n            </a>\n          )}"
+      },
+      {
+        "path": "packages/web/src/components/Icons/icon.utils.ts",
+        "reason": "the class-name convention required by AC-9",
+        "content": "import classNames from \"classnames\";\n\nexport const getInteractiveIconClassName = (\n  className?: string,\n  hoverBrightnessClass?: string,\n) => classNames(\"c-icon\", hoverBrightnessClass, className);"
+      },
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "reason": "the Conference type this component consumes",
+        "content": "export const ConferenceSchema = z.strictObject({\n  url: z.url(),\n  label: z.string().trim().min(1).max(256).nullable(),\n});\nexport type Conference = z.infer<typeof ConferenceSchema>;"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "exports both joinableConference and EventJoinIcon",
+      "joinableConference returns null for javascript:, data:, vbscript: and for unsaved cards",
+      "anchor carries data-calendar-event-interactive=\"true\"",
+      "anchor has target=_blank and rel=\"noopener noreferrer\"",
+      "React onMouseDown and onKeyDown stopPropagation only; no preventDefault; no useEffect; no onClick",
+      "glyph className resolves to c-icon and contains no positional class (no right-1)",
+      "imports VideoCameraIcon directly from @phosphor-icons/react; no new dependency"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 6000 }
+  },
+  {
+    "id": "tp_005_timed_card",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "grid-cards",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Wire the join affordance into TimedEventCard. THREE edits: (1) add `import { EventJoinIcon, joinableConference } from \"./EventJoinIcon\";` next to the existing EventRepeatIcon import; (2) immediately after the showRepeatIcon block, add `const joinConference = joinableConference(event.conference, displayMode === \"saved\");`; (3) replace the line `{showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}` with that same line followed by `{joinConference && (<EventJoinIcon baseColor={bgColor} conference={joinConference} hasRepeatIcon={showRepeatIcon} title={event.title} />)}` so the link is the card's last child. Add NO padding reservation (this card reserves none for the repeat icon either). Change nothing else - no new props, no changes to handlers, gates, or styles. Return ONLY a JSON array of precise search/replace edits.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "reason": "the three edit sites: import :49, showRepeatIcon gate :116-120, render :363",
+        "content": "// line 49\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";\n\n// lines 116-120\n  const showRepeatIcon =\n    isRecurring &&\n    !isPlaceholder &&\n    durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&\n    position.width >= REPEAT_ICON_MIN_WIDTH;\n\n// line 363 (last child of the root div)\n      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}\n    </div>\n  );\n};\n\n// context: displayMode prop is \"draft\" | \"placeholder\" | \"saved\"; isDraft/isPlaceholder derived at :106-108"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "old_string": { "type": "string" }, "new_string": { "type": "string" } },
+            "required": ["old_string", "new_string"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "exactly 3 edits",
+      "gate uses displayMode === \"saved\" so both draft and placeholder are excluded",
+      "join link rendered after the repeat icon, as the root div's last child",
+      "no padding/reservation change"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_006_allday_card",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "grid-cards",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Wire the join affordance into AllDayEventCard, mirroring tp_005 so the two cards do not drift. FOUR edits: (1) add `import { EventJoinIcon, joinableConference } from \"./EventJoinIcon\";` next to the EventRepeatIcon import; (2) after the showRepeatIcon line add `const joinConference = joinableConference(event.conference, !isPlaceholder);` (this card has no displayMode - isPlaceholder is its only draft signal, mirroring the existing showRepeatIcon gate); (3) widen the title wrapper's padding reservation from the two-way `{ \"pr-3.5\": showRepeatIcon }` to an exhaustive four-way over (showRepeatIcon x joinConference): neither => no padding; repeat only => pr-3.5; join only => pr-4; both => pr-7. Express it so exactly one class applies. (4) render `{joinConference && (<EventJoinIcon baseColor={bgColor} conference={joinConference} hasRepeatIcon={showRepeatIcon} title={event.title} />)}` immediately after the endDate resize handle so the link is the root div's last child. Change nothing else. Return ONLY a JSON array of precise search/replace edits.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "reason": "the four edit sites: import :30, gate :76-77, title reservation :187-192, end of root div :223",
+        "content": "// line 30\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";\n\n// lines 76-77\n  const showRepeatIcon =\n    isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;\n\n// lines 187-201\n      <div\n        className={cn(\"flex min-w-0 items-center\", {\n          // Reserve room so a long title truncates before the bottom-right icon.\n          \"pr-3.5\": showRepeatIcon,\n        })}\n      >\n        <span\n          className=\"relative min-w-0 truncate text-xs\"\n          style={{ color: titleColor }}\n        >\n          {event.title}\n          {\"\\u00A0\"}\n        </span>\n      </div>\n      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}\n\n// lines 213-224 (endDate handle, then the root div closes)\n      {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}\n      <div\n        aria-hidden=\"true\"\n        role=\"presentation\"\n        {...{ [EVENT_RESIZE_HANDLE_ATTRIBUTE]: \"endDate\" }}\n        style={scalerStyle({ right: \"-0.25px\" })}\n        onMouseDown={(e) => {\n          e.stopPropagation();\n          onScalerMouseDown?.(event, e, \"endDate\");\n        }}\n      />\n    </div>\n  );\n};"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "old_string": { "type": "string" }, "new_string": { "type": "string" } },
+            "required": ["old_string", "new_string"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "exactly 4 edits",
+      "gate uses !isPlaceholder",
+      "padding reservation is exhaustive over all four combinations, exactly one class applied",
+      "join link is the root div's last child"
+    ],
+    "budget": { "maxInputTokens": 5000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_007_card_tests",
+    "phase": "tests",
+    "task_type": "test_unit",
+    "module": "grid-cards",
+    "pass_id": "20260825-220640-feature-extend-one-click-join",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Append new `it(...)` blocks inside the existing `describe(\"EventCard\", ...)` covering the join affordance. Use the file's existing helpers (createEvent, position) and its existing imports (fireEvent, render, screen from @testing-library/react; bun:test). Cover, for BOTH cards where applicable: (a) a conference-bearing saved event exposes getByRole(\"link\", { name: \"Join Planning block\" }) with href, target=_blank, rel=\"noopener noreferrer\"; (b) conference.label produces the name \"Join Planning block via Google Meet\"; (c) no conference => queryByRole(\"link\") is null and, for the all-day card, the title wrapper has no pr- reservation; (d) fireEvent.mouseDown on the link does NOT call onEventMouseDown, while mouseDown on the card still does; (e) fireEvent.keyDown(link, { key: \"Enter\" }) does NOT call onEventKeyDown; (f) a recurring AND conference-bearing event renders BOTH icons - assert the repeat glyph still matches svg[class*=\"right-1\"] AND the link has class right-4, and assert the all-day title wrapper reserves pr-7; (g) draft (displayMode=\"draft\") and placeholder cards render no link; (h) a conference url of \"javascript:alert(1)\" renders no link. IMPORTANT: do NOT use fireEvent.click on the link (jsdom throws 'Not implemented: navigation'). ALSO REQUIRED: add a clearly-worded comment block above the new tests stating that this file renders the cards in isolation with no PointerCaptureBoundary and no interaction adapter above them, so these tests do NOT cover the integrated plain-click path in the Week/Day views - that path is closed by the data-calendar-event-interactive opt-out in grid/interaction/dom.ts honored by both view adapters, and is not exercised here. Return the COMPLETE new file contents.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "reason": "existing helpers, imports, and the repeat-icon tests the new ones must sit beside without breaking",
+        "content": "import { fireEvent, render, screen } from \"@testing-library/react\";\nimport { type GridEvent } from \"@web/common/types/web.event.types\";\nimport { afterEach, describe, expect, it, mock } from \"bun:test\";\nimport \"@testing-library/jest-dom\";\nimport { AllDayEventCard } from \"./AllDayEventCard\";\nimport { TimedEventCard } from \"./TimedEventCard\";\n\nconst createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>\n  ({\n    _id: \"event-1\",\n    endDate: \"2024-01-15T10:00:00.000Z\",\n    isAllDay: false,\n    position: { dragOffset: { x: 0, y: 0 }, horizontalOrder: 0, initialX: null, initialY: null, isOverlapping: false, totalEventsInGroup: 1, widthMultiplier: 1 },\n    recurrence: undefined,\n    startDate: \"2024-01-15T09:00:00.000Z\",\n    title: \"Planning block\",\n    ...overrides,\n  }) as GridEvent;\n\nconst position = { height: 60, left: 10, top: 20, width: 140 };\n\n// Existing repeat-icon probe style (that glyph is aria-hidden, hence structural):\n//   const { container } = render(<TimedEventCard displayMode=\"saved\" ... />);\n//   expect(container.querySelector('svg[class*=\"right-1\"]')).not.toBeNull();\n// Timed card requires props: displayMode, event, motionMode, position.\n// All-day card requires props: event, isPlaceholder, position.\n// Recurring fixture: createEvent({ recurrence: { rule: [\"RRULE:FREQ=WEEKLY\"] } })\n// Future-dated fixture used to avoid isInPast styling: startDate/endDate in 2099."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "all pre-existing it() blocks preserved verbatim",
+      "new tests use getByRole(\"link\", ...) not structural svg queries",
+      "no fireEvent.click on the link",
+      "explicit comment stating the isolated-render limitation vs the integrated Week/Day path",
+      "covers both cards, both gates, the collision case, and the javascript: rejection"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 12000 }
+  }
+]

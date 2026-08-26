@@ -344,3 +344,91 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260825-220640-feature-extend-one-click-join`
+
+**CMP-103 · `feature-extend` · `opus-plus-sonnet` · `estimated` · branch `CMP-103/opus-plus-sonnet` ·
+$6.36 · 9 files · +33 tests · 2331 pass / 0 fail · uncommitted, nothing staged.**
+
+Fourth arm of the CMP-103 per-policy comparison, anchored at `2d81253a` rather than the `4189de1`
+the first three arms used — the delta between them is `.sdlc/` and `.gitignore` only, no source.
+The brief was deliberately **unseeded**: arm one's SEC-01/SEC-02 were withheld from every phase
+prompt, so what this arm found, it found on its own.
+
+**The approved architecture was refuted before a line of code was written, and that is the row's
+headline.** The plan's central mechanism — target-phase native listeners bound on the anchor — can
+never fire. `PointerCaptureBoundary` (`interaction/react/PointerCaptureBoundary.tsx:107`) owns
+pointerdown via `onPointerDownCapture` at an ancestor of both grids and calls `preventDefault()` +
+`stopPropagation()` on ownership (`:199-200`); capture runs root→target, so nothing bound on the
+link can pre-empt it. `isEligibleInteractionPointerDown` has no interactive-element exclusion and
+`view-event-registry.ts:53` resolves the card from any descendant via `closest()`. Verified
+independently by the shepherd before the scope decision was put to the human.
+
+**The failure mode this closed is the one worth remembering: the tests would have been green.**
+`EventCard.test.tsx` renders both cards in isolation with no boundary and no adapter above them, so
+all 20 originally-planned tests — including the two the plan called proof of its remedy — would have
+passed while plain-click join was dead in both shipping views. Gate 2 widened the allowlist 4 → 7 for
+an `EVENT_INTERACTIVE_ATTRIBUTE` opt-out in `grid/interaction/dom.ts`, honored in both view adapters.
+That shape was not invented: `dom.ts` already defined three attribute-recognition constants and
+`getResizeHandleEdge` is the same `closest()`-on-an-attribute lookup.
+
+**The senior review then caught the same class of error one level down.** The opt-out had been placed
+in the two *drag*-target functions only, which worked **by markup luck** — the anchor happens to be a
+sibling of the resize handles rather than a descendant. Moving the bail to the top of
+`getInteractionTarget` in both adapters covered all four target kinds at **net −2 lines**.
+
+**R-5 forced a second widening, 7 → 9, and it was the cheapest finding in the run.** No adapter-level
+test pinned the opt-out: the only references to the attribute anywhere were two `EventCard.test.tsx`
+assertions that it is *present in the markup*, which is not the same as proving either adapter honors
+it. Delete either bail and all 27 new tests stayed green. The remedy was gated on a mutation bar —
+each test must fail with its bail removed — and that bar was met and demonstrated: **week 2 fail / 15
+pass, day 2 fail / 15 pass**, with the negative control still passing, which is what makes the pair
+meaningful rather than a bail that always returns null looking correct.
+
+**The unseeded security review paid for itself.** It independently reached the scheme guard the design
+stage had already proposed, then verified it against an obfuscation corpus (`JaVaScRiPt:`, embedded
+tab/newline, `javascript://%0a…`) and found four more issues. The premise was confirmed by execution,
+not inspection: `ConferenceSchema.safeParse` accepts `javascript:alert(1)`, `data:text/html,…` and
+`vbscript:msgbox(1)` exactly as readily as a real Meet URL, because `z.url()` does not constrain
+scheme. Note the **A/B-relevant difference**: this arm surfaced the scheme hazard in *design*, where
+arm one surfaced it in *security review*.
+
+**Two residual risks ship knowingly.** R-1: the link is a focusable descendant of a `role="button"`
+card, which axe's `nested-interactive` rule flags at *serious* / `wcag2a`; the e2e a11y gate is green
+only because no fixture seeds a `conference`, and RTL's `getByRole("link")` does not model
+presentational-children pruning, so the AC-6 test is **not** evidence AT can reach it. Documented in
+code, not fixed — the real remedy is a `grid`/`gridcell` restructure. SEC-03: https-only means an
+event with a plain `http` conference URL renders **no icon at all** rather than a broken one, which is
+a user-visible behavior change for self-hosted conferencing, not purely a security win.
+
+**PROV-1 — this run's own provenance record is defective, and it is a plugin bug, not a one-off.**
+`EventJoinIcon.tsx` has three `files_touched` rows (`tp_004_event_join_icon`, `rp_001_join_icon_refine`,
+`rp_003_sec_remediation`), every one stamped `existed_before: true` with a non-null `sha_before` for a
+file that did not exist before the run, all three pointing at the same backup slot. The stored backup
+is the mid-run intermediate — 4,526 B with `getJoinableConference` and no `ph-no-capture`, against a
+live file of 5,997 B with both. **On revert this file must be DELETED, never restored from
+`backups/`.** Generalized: any file written by more than one packet is affected; the damage is only
+unrecoverable when the file is untracked in git, which is why `dom.ts` is fine and this one is not.
+Suggested fix — make `--before` idempotent per `(run_id, path)`, since the first observation in a run
+is the only one describing the pre-run state. Found and disclosed by the orchestrator about its own
+bookkeeping.
+
+**PN-1 did not recur.** The session carried an auto-mode instruction directing file changes through
+Bash (`sed`, heredocs), which would have bypassed a write-contract hook that matches on `Write|Edit`
+only — the exact pattern logged twice in rows six and the CLAUDE-SDLC follow-ups. Both the shepherd
+and the orchestrator declined it independently and said so. The one Bash-written file was
+`write-contract.json` itself, disclosed at the time: the pre-contract safety net blocks `Write` to the
+very file that lifts it, and no plugin script creates it. **That bootstrap deadlock is worth a plugin
+fix of its own.** Enforcement was then probed live three times with real `Write` calls — off-limits,
+not-in-allowlist, and again after each widening — all denied, no residue.
+
+**One gap remains open and is narrower than what Gate 2 found, but is not zero:** the six adapter
+tests prove `handlePointerDown` declines ownership; no test drives a real click through
+`PointerCaptureBoundary` into a mounted card, so the boundary's own behavior over the anchor is still
+uncovered.
+
+**Cost, as ever, is the least comparable axis.** $6.36 ($4.21 opus / $2.15 sonnet) against the other
+arms' $5.71 / $5.46 / $5.32 — but those three carry ⚠ for dispatches that died before writing usage
+JSON, the opus half here is a char-count heuristic booking cached=0, and this arm did strictly more
+work (9 files and two mutation-verified adapter suites versus 4/4/7 files). **Do not quote the four
+totals as a clean policy comparison.**

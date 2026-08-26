@@ -829,6 +829,101 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260825-220640-feature-extend-one-click-join",
+      "date": "2026-08-26",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "opus-plus-sonnet",
+      "auth_mode": "estimated",
+      "ticket": "CMP-103",
+      "status": "accepted",
+      "commit_strategy": "none during the run and none at close-out; nothing staged, no checkout, no stash",
+      "anchor_commit": "2d81253a",
+      "branch": "CMP-103/opus-plus-sonnet",
+      "commits": [],
+      "files_written": 9,
+      "files_written_detail": "8 edit, 1 new (EventJoinIcon.tsx). Allowlist grew 4 -> 7 -> 9 across two gated widenings.",
+      "files_allowlisted_untouched": 0,
+      "tests": {
+        "command": "bun test:web",
+        "before": { "pass": 2298, "fail": 0, "files": 302 },
+        "after": { "pass": 2331, "fail": 0, "files": 302 },
+        "new_failures": 0,
+        "verification": "Re-run independently by the shepherd twice, not only reported by the orchestrator: 2325/0 mid-run before the R-5 adapter tests existed, then 2331/0 in 83.80s after them. Focused probe 30 -> 57, adapter probe 28 -> 34. biome check clean on all 9 files; tsconfig.app.json and tsconfig.test.json both exit 0."
+      },
+      "cost_usd": 6.36,
+      "cost_split": {
+        "estimated_opus_tier": 4.2126,
+        "estimated_sonnet_tier": 2.1498
+      },
+      "cost_note": "auth_mode=estimated on BOTH tiers - this policy routes opus and sonnet alike through claude-cli, so unlike the flash arms there is no vendor-metered half. The opus figure is a char-count heuristic booking cached=0. Not comparable across arms; see compare_note.",
+      "known_findings_open": 2,
+      "artifacts_dir": ".sdlc/runs/20260825-220640-feature-extend-one-click-join",
+      "gates": {
+        "gate_0": "approved - stack, test command, policy, auth mode, intent, 4-file allowlist, AI configs all off-limits",
+        "gate_1": "approved - OQ-1 resolved to direct @phosphor-icons/react import (no new Icons wrapper, allowlist stays frozen), OQ-2 accessible-name default accepted, AC-5 and AC-10 added",
+        "gate_2": "approved: A - allowlist widened 4 -> 7 for the EVENT_INTERACTIVE_ATTRIBUTE opt-out; D-8 http(s) scheme guard kept",
+        "gate_3": "approved - allowlist widened 7 -> 9 to close R-5 with mutation-verified adapter tests; R-1 documented not fixed, e2e fixture deliberately NOT seeded; R-10 and SEC-03 ratified as deviations from the approved plan",
+        "gate_4": "accept"
+      },
+      "senior_review": {
+        "verdict": "REQUEST CHANGES, then satisfied",
+        "note": "Top finding was structural: the opt-out sat in the two DRAG-target functions only and worked by markup luck - the anchor is a sibling of the resize handles, not a descendant. Moved to the top of getInteractionTarget in both adapters at net -2 lines, covering all four target kinds. Also caught that <a href> is draggable by default, so once the pointer layer declined ownership a native link-drag with a URL ghost became reachable."
+      },
+      "security_review": {
+        "verdict": "pass, LOW-to-MEDIUM residual",
+        "finding_count": 4,
+        "seeded": false,
+        "note": "Run WITHOUT seeding - arm one's SEC-01/SEC-02 were withheld from every phase prompt. It independently reached the scheme guard the design stage had proposed and verified it against an obfuscation corpus (JaVaScRiPt:, embedded tab/newline, javascript://%0a...), then found four more issues, all fixed: destination host surfaced in tooltip and accessible name (title and label are both attacker-controlled), ph-no-capture to keep meeting URLs out of PostHog autocapture, https-only, and returning the re-serialized parsed.href so the validated value is the navigated value. A/B-RELEVANT: this arm surfaced the scheme hazard in DESIGN, where arm one surfaced it in SECURITY REVIEW."
+      },
+      "manual_verification": "Shepherd verified independently rather than relaying: the V-1 capture-phase mechanism end to end (PointerCaptureBoundary.tsx:107 onPointerDownCapture, :199-200 preventDefault+stopPropagation, interaction.pointer.ts:12-25 no interactive-element exclusion, view-event-registry.ts:53 closest()); the R-5 test gap by grep; the ConferenceSchema scheme vector BY EXECUTION (javascript:, data:, vbscript: all accepted); the PROV-1 defect by reading all three provenance rows and diffing the backup against the live file; both adapter bails present post-mutation-test; git status exactly 9 source paths; and the full suite twice.",
+      "scope_amendments": [
+        "Gate 2: +3 files (grid/interaction/dom.ts, week-interaction.adapter.ts, day-interaction.adapter.ts) - the approved design was unimplementable inside the original 4",
+        "Gate 3: +2 files (week-interaction.timed-drag.test.ts, day-interaction.adapter.test.ts) - to close R-5 under a mutation bar"
+      ],
+      "process_notes": [
+        {
+          "id": "PROV-1",
+          "severity": "high",
+          "summary": "Provenance record is defective for the one new file, and /mmo:revert would restore a mid-run intermediate instead of deleting it. EventJoinIcon.tsx has three files_touched rows (tp_004_event_join_icon, rp_001_join_icon_refine, rp_003_sec_remediation), each stamped existed_before:true with a non-null sha_before for a file that did not exist pre-run, all three sharing one backup slot. Backup 4526 B with getJoinableConference and no ph-no-capture; live file 5997 B with both.",
+          "structural_point": "Suspected plugin defect in scripts/write-provenance.mjs, NOT a one-off: each --before call overwrites the same per-file backup path and re-stamps existed_before. ANY file written by more than one packet is affected; the damage is only unrecoverable when the file is untracked in git, which is why dom.ts survives and this one does not.",
+          "plugin_fix_hint": "Make --before idempotent per (run_id, path) - never overwrite an existing row's existed_before/sha_before or its backup slot. The first observation in a run is the only one describing the pre-run state.",
+          "manual_remedy": "On revert, packages/web/src/grid/components/EventJoinIcon.tsx must be DELETED, never restored from backups/.",
+          "verification": "Found and disclosed by the orchestrator about its own bookkeeping, then independently confirmed by the shepherd."
+        },
+        {
+          "id": "PN-1-not-recurred",
+          "severity": "info",
+          "summary": "The session carried an auto-mode instruction directing file changes through Bash (sed, heredocs), which would have bypassed a write-contract hook matching on Write|Edit only - the exact PN-1 pattern logged twice before. Both the shepherd and the orchestrator declined it independently and said so in-band. All source mutations went through Write/Edit.",
+          "structural_point": "The one Bash-written file was write-contract.json itself, disclosed at the time rather than slipped in: the pre-contract safety net blocks Write to the very file that lifts it, and no plugin script creates it. THAT BOOTSTRAP DEADLOCK IS ITS OWN PLUGIN BUG - every brownfield run must currently breach its own stated write discipline once, at Gate 0, to start.",
+          "verification": "Hook enforcement probed live three times with real Write calls - off-limits (packages/sync/**), not-in-allowlist, and again after each widening. All denied with no residue on disk."
+        }
+      ],
+      "followups_open": [
+        "NOT FILED IN ANY TRACKER - recorded for the user to file or discard",
+        "R-1 a11y: link is a focusable descendant of a role=button card; axe nested-interactive, serious / wcag2a. Documented in code, not fixed. Real remedy is a grid/gridcell restructure. The e2e a11y gate is green ONLY because no fixture seeds a conference, and RTL getByRole('link') does not model presentational-children pruning - so the AC-6 test is not evidence AT can reach it.",
+        "Integrated-path test gap: the six adapter tests prove handlePointerDown declines ownership, but no test drives a real click through PointerCaptureBoundary into a mounted card.",
+        "UpNextCard.tsx, EventDetailsSection.tsx and UpNextBanner.tsx all still render conference.url with no scheme guard - SEC-01's class, not just its instance.",
+        "No CSP on the SPA document.",
+        "PROV-1 plugin fix in scripts/write-provenance.mjs (see process_notes).",
+        "Write-contract bootstrap deadlock: no plugin script creates .sdlc/local/write-contract.json, but the pre-contract net blocks Write to it.",
+        "CMP-104's FR-3/FR-4/FR-6 follow-up ticket is STILL unfiled from the 2026-08-23 run."
+      ],
+      "tags": [
+        "policy-ab",
+        "feature-extend",
+        "no-commit",
+        "bounded-allowlist-extension",
+        "mutation-proved-tests",
+        "estimated-cost-axis",
+        "design-refuted-pre-codegen",
+        "unseeded-security-review",
+        "provenance-defect"
+      ],
+      "compare_baseline_tag": "20260822-062945-feature-extend-one-click-join",
+      "compare_note": "FOURTH arm of the CMP-103 per-policy comparison on one identical ticket. Anchored at 2d81253a where the first three used 4189de1; the delta is .sdlc/ and .gitignore only, no source, so the starting code was identical. Prior arms: opus-plus-flash-v37 $5.71 / 4 files / +18 tests (committed 399a2554); flash-agsdk-only $5.46 / 4 files / +11 tests (partially committed 53f057e4); opus-only-v5 $5.32 / 7 files / +28 tests (uncommitted). THIS ARM: $6.36 / 9 files / +33 tests. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: the three earlier arms carry a cost warning for dispatches that died before writing usage JSON, this arm's opus half is a char-count heuristic booking cached=0 with no vendor-metered half at all, and this arm did strictly more work under two gated widenings. WHAT IS SUPPORTED, and is the interesting result: this is the only arm that REFUTED ITS OWN APPROVED ARCHITECTURE BEFORE CODEGEN - the capture-phase PointerCaptureBoundary interception that makes an anchor-bound listener unreachable - and the only one to mutation-prove its adapter tests. It is also the only arm to surface the URL-scheme hazard during DESIGN rather than security review, while unseeded. Against that, it is the only arm to ship a documented serious-impact a11y violation (R-1) and the only one with a defective provenance record (PROV-1)."
     }
   ]
 }

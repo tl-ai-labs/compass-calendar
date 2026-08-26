@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "run_id": "20260825-220640-feature-extend-one-click-join",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "ticket": "CMP-103",
+  "policy": "opus-plus-sonnet",
+  "policy_version": 1,
+  "auth_mode": "estimated",
+  "branch": "CMP-103/opus-plus-sonnet",
+  "baseline_commit": "2d81253a",
+  "commits_made": 0,
+  "status": "accepted",
+  "outcome": "completed",
+  "gates": [
+    { "gate": 1, "title": "Requirements Approval", "response": "approved", "notes": "OQ-1 and OQ-2 took the defaults; AC-5 (Enter bubbling) and AC-10 (resize handles) accepted into the AC set" },
+    { "gate": 2, "title": "Architecture Approval", "response": "approved: A", "notes": "finding V-1 accepted; allowlist widened 4 -> 7; D-8 http(s) guard kept" },
+    { "gate": 3, "title": "Security Review", "response": "approved", "notes": "allowlist widened 7 -> 9 to close R-5; R-1 documented not fixed and e2e fixture deliberately not seeded; R-10 and SEC-03 ratified; follow-ups recorded not filed" },
+    { "gate": 4, "title": "Final Acceptance", "response": "accept", "notes": "accepted as delivered; nothing committed" }
+  ],
+  "ledger_row_written_by": "shepherd (not this run) - orchestrator deliberately did not write .sdlc/ledger.md, .sdlc/ledger.json or .sdlc/CLAUDE-SDLC.md",
+  "ab_arm": 4,
+  "models": {
+    "direct_tier": "claude-opus-5",
+    "mechanical_tier": "claude-sonnet-5"
+  },
+  "cost": {
+    "total_usd": 6.36,
+    "by_model": {
+      "claude-opus-5": 4.2126,
+      "claude-sonnet-5": 2.1498
+    },
+    "by_phase": {
+      "requirements_analysis": 0.2434,
+      "change_plan": 1.1269,
+      "plan_task_packets": 0.4447,
+      "codegen": 1.9805,
+      "tests": 1.1043,
+      "senior_code_review": 0.8623,
+      "security_review": 0.6003
+    },
+    "caveat": "Direct-tier events are char-count estimates booking cached=0; mechanical-tier events carry vendor-reported tokens. Cross-policy cost ranking is not valid on these numbers. This arm also did strictly more work than the others (9 files vs 4, two mid-run scope widenings).",
+    "telemetry_events": 16,
+    "provenance_split": { "estimated": 9, "vendor": 7 }
+  },
+  "tests": {
+    "command": "bun test:web",
+    "baseline": { "pass": 2298, "fail": 0, "files": 302 },
+    "final": { "pass": 2331, "fail": 0, "files": 302 },
+    "delta": 33,
+    "focused_probe": { "baseline": 30, "final": 57, "fail": 0 },
+    "adapter_probe": { "baseline": 28, "final": 34, "fail": 0 },
+    "mutation_test": {
+      "week": "bail deleted -> 2 fail / 15 pass; restored and re-verified",
+      "day": "bail deleted -> 2 fail / 15 pass; restored and re-verified"
+    },
+    "type_check": { "app": "pass", "tests": "pass" },
+    "lint": { "biome": "clean", "semantic_colors": "clean" }
+  },
+  "files_changed": [
+    { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "kind": "new" },
+    { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "kind": "edit" },
+    { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "kind": "edit" },
+    { "path": "packages/web/src/grid/components/EventCard.test.tsx", "kind": "edit" },
+    { "path": "packages/web/src/grid/interaction/dom.ts", "kind": "edit" },
+    { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "kind": "edit" },
+    { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "kind": "edit" },
+    { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.timed-drag.test.ts", "kind": "edit" },
+    { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts", "kind": "edit" }
+  ],
+  "allowlist_widened": [
+    {
+      "gate": 2,
+      "from": 4,
+      "to": 7,
+      "reason": "Finding V-1: PointerCaptureBoundary consumes pointerdown in React capture phase; the affordance cannot defend itself, so the interaction layer needed a recognition-based opt-out."
+    },
+    {
+      "gate": 3,
+      "from": 7,
+      "to": 9,
+      "reason": "Finding R-5: no adapter-level test pinned the opt-out; deleting either bail left the whole suite green."
+    }
+  ],
+  "run_record_defect": {
+    "id": "PROV-1",
+    "severity": "high",
+    "class": "suspected plugin-level defect in scripts/write-provenance.mjs, NOT a one-off in this run",
+    "title": "Multi-round edits overwrite the per-file backup slot and re-stamp existed_before, destroying the pre-run state for new files",
+    "what": "provenance.json records packages/web/src/grid/components/EventJoinIcon.tsx as existed_before:true with a non-null sha_before, for a file that did not exist before this run. The stored backup is a mid-run intermediate, not the pre-run state.",
+    "cause": "One file was written by three packets (tp_004_event_join_icon, rp_001_join_icon_refine, rp_003_sec_remediation). Each --before call wrote to the same per-file backup slot and re-stamped existed_before from the moment of that call, so rounds 2 and 3 destroyed round 1's pre-run observation. Any file touched by more than one packet in a run is affected; the damage is only unrecoverable when the file is untracked in git.",
+    "evidence": {
+      "files_touched_rows": 3,
+      "row_packet_ids": ["tp_004_event_join_icon", "rp_001_join_icon_refine", "rp_003_sec_remediation"],
+      "all_rows_existed_before": true,
+      "all_rows_sha_before_non_null": true,
+      "shared_backup_path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventJoinIcon.tsx",
+      "backup_bytes": 4526,
+      "backup_contains": ["getJoinableConference"],
+      "backup_missing": ["ph-no-capture"],
+      "live_file_bytes": 5997,
+      "live_file_contains": ["getJoinableConference", "ph-no-capture"],
+      "conclusion": "The backup is the post-senior-review / pre-security-remediation intermediate.",
+      "verified_independently_by": ["orchestrator", "shepherd"]
+    },
+    "impact": "/mmo:revert would restore EventJoinIcon.tsx to a mid-run intermediate version instead of removing it, silently leaving a file the pre-run tree never had. The other 8 changed files are tracked in git and revert correctly from git_head_before = 2d81253a.",
+    "manual_remedy": "On revert, packages/web/src/grid/components/EventJoinIcon.tsx must be DELETED, never restored from backups/.",
+    "plugin_fix_hint": "Make --before idempotent per (run_id, path): if a row for the path already exists, do not overwrite its existed_before/sha_before and do not overwrite its backup slot. The first observation in a run is the only one that describes the pre-run state.",
+    "related_process_notes": ["PN-1 (blocked Write must halt-and-surface, never reroute through Bash) - PN-1 did not recur in this run"]
+  },
+  "artifacts": {
+    "intent_brief": "intent_brief.md",
+    "requirements": "requirements.md",
+    "change_plan": "change_plan.md",
+    "change_plan_verification": "change_plan.verification.md",
+    "packets": "packets.json",
+    "review": "review.md",
+    "security_review": "security_review.md",
+    "telemetry": "telemetry.jsonl",
+    "provenance": "provenance.json"
+  },
+  "open_items": {
+    "blocking_unresolved": [],
+    "ratified_deviations": [
+      "R-1: nested-interactive a11y deviation documented in code, not fixed; e2e fixture deliberately NOT seeded per Gate 3",
+      "R-10: Space activates the link (deviates from the approved change_plan, which kept Space native)",
+      "SEC-03: scheme allowlist narrowed to https-only; user-visible effect is that http-only conferencing renders no icon at all",
+      "R-6: ~12x2.25px sliver of the timed endDate resize strip shadowed by the link",
+      "R-7: no size gate on the join link, deliberately, with an in-code comment"
+    ],
+    "follow_ups_recorded_not_filed": [
+      "NOT FILED IN ANY TRACKER - recorded here for the user to file or discard",
+      "a11y restructure: move card root off role=button to grid/gridcell, then seed a conference into the e2e a11y fixture",
+      "UpNextCard, EventDetailsSection, UpNextBanner render conference.url with no scheme guard",
+      "No CSP on the SPA document",
+      "PostHog autocapture config (mask_all_element_attributes / element_attribute_ignorelist) untouched; only this link is opted out via ph-no-capture",
+      "http-only conferencing needs a configurable host/scheme allowlist if internal meetings matter"
+    ]
+  }
+}

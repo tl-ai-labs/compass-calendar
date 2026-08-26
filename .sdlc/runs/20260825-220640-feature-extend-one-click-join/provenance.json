@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "run_id": "20260825-220640-feature-extend-one-click-join",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/requirements.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:a862fcccf87ee13d901a2332ef03754f2e4eeaf73021e8b1b31f269c211fcdeb",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-requirements",
+      "written_at": "2026-08-26T05:17:09.645Z"
+    },
+    {
+      "path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/change_plan.verification.md",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:9a45c36257761e7f2b9191813ae25f569cf1941cd0bd93149a4e4e9392de3831",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "direct-changeplan-verify",
+      "written_at": "2026-08-26T05:40:22.194Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/dom.ts",
+      "existed_before": true,
+      "sha_before": "sha256:b981427edabc82da5940d909966a9492d2c76540e6540a94bfc92071f9318687",
+      "sha_after": "sha256:cc1627e1c287179cbae25bf5025de6efef35011e0633bec984eb7a9fb6e6bb7c",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_001_dom_optout",
+      "written_at": "2026-08-26T05:51:25.127Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:dafeeaf38e34756a036dbea13f0d4777a081c0e820b08c7f3fa3a97c02b7bc9c",
+      "sha_after": "sha256:98cba6d4919d9567fe82deeae2039c01f653c6b506767e443db9f101cd78e5fc",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventJoinIcon.tsx",
+      "packet_id": "tp_004_event_join_icon",
+      "written_at": "2026-08-26T05:51:25.180Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:b5ef0a6423d1561925e8035ece40fe809f8fa444be1d2881526ccfbb17ad0163",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_005_timed_card",
+      "written_at": "2026-08-26T05:55:00.420Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:a697398598862e0bded4a951b80a67ba6adf08dfda51c491abcc3a2a23cb093b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_006_allday_card",
+      "written_at": "2026-08-26T05:55:00.481Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8888bcb034fd32365c0be7088c28f56c00ae4ea1b06e321fdcc1e23631e85bcc",
+      "sha_after": "sha256:62b119b8912c977427a6e84edacc9425accf1898d3909c620663341004542eeb",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_002_week_adapter_bail",
+      "written_at": "2026-08-26T05:55:00.543Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+      "existed_before": true,
+      "sha_before": "sha256:267576804458298f5fcfd5af950ef6192d613585bc387ed755eaf241cc82d71d",
+      "sha_after": "sha256:838d439c0e837451ca2956cec17a87c7686bed2116a1cd0b298c7c3041fc4c0f",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_003_day_adapter_bail",
+      "written_at": "2026-08-26T05:55:00.603Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:4ed0dbd08d1b2f281f835b0f375264273abbb3c4f63e0a88f3276c8e692fd050",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_007_card_tests",
+      "written_at": "2026-08-26T05:59:52.732Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:98cba6d4919d9567fe82deeae2039c01f653c6b506767e443db9f101cd78e5fc",
+      "sha_after": "sha256:af4b0e042a9970bad1f96568b11422d169c03f40680afdab1bff7db1239e9664",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventJoinIcon.tsx",
+      "packet_id": "rp_001_join_icon_refine",
+      "written_at": "2026-08-26T06:20:15.781Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/dom.ts",
+      "existed_before": true,
+      "sha_before": "sha256:cc1627e1c287179cbae25bf5025de6efef35011e0633bec984eb7a9fb6e6bb7c",
+      "sha_after": "sha256:1a9f5a40f53ef10a6189893be7c257696e121b849d80c06aae43744a0c909c95",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/backups/packages__web__src__grid__interaction__dom.ts",
+      "packet_id": "rp_002_dom_selector",
+      "written_at": "2026-08-26T06:20:15.845Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:af4b0e042a9970bad1f96568b11422d169c03f40680afdab1bff7db1239e9664",
+      "sha_after": "sha256:113c7259e74ae54fdff6d77e720a099f95230fcac1ddd2f35fb3503f419233a1",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260825-220640-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventJoinIcon.tsx",
+      "packet_id": "rp_003_sec_remediation",
+      "written_at": "2026-08-26T06:36:10.273Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.timed-drag.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:a9ec1aa49f6cd2dfc6d94b50a882c022f0f0fa745d5f2dbd47474b7dad65de75",
+      "sha_after": "sha256:f598230ef8d903f675b6374d5e49e22b3004e40ffb85f156a41db2d111e8e38c",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "rp_004_adapter_tests",
+      "written_at": "2026-08-26T06:47:56.498Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5c05d3a2d11a5a141885c2985310fe180fc39e32595ef3581c7b6200e77b5ff8",
+      "sha_after": "sha256:cd0da6263668729b805e9cc27c41ea30074a245768d70b303e88fed4bc439a46",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "rp_004_adapter_tests",
+      "written_at": "2026-08-26T06:47:56.564Z"
+    }
+  ]
+}
