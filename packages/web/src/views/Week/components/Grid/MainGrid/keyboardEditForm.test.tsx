@@ -25,7 +25,7 @@ import { draftActions } from "@web/events/stores/draft.store";
 import { DraftProvider } from "@web/views/Week/components/Draft/context/DraftProvider";
 import { useDateCalcs } from "@web/views/Week/hooks/grid/useDateCalcs";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
-import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { MainGridEvents } from "./MainGridEvents";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
@@ -133,7 +133,7 @@ beforeEach(() => {
 afterEach(() => {
   act(() => draftActions.discard());
   cleanup();
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   seededEvents = [];
 });
 

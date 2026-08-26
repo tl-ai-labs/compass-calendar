@@ -31,10 +31,7 @@ import {
   initialEdgeFocusState,
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
-import {
-  dayEventRegistry,
-  getDayInteractionTargetAttributes,
-} from "@web/views/Day/interaction/registry/day-event.registry";
+import { dayInteractionBindings } from "@web/views/Day/interaction/day-interaction.bindings";
 import { useDayEventNudgeShortcuts } from "./useDayEventNudgeShortcuts";
 import {
   afterEach,
@@ -117,7 +114,7 @@ const focusCalendarTarget = (
     get: () => document.body,
   });
   document.body.appendChild(button);
-  dayEventRegistry.register({
+  dayInteractionBindings.registry.register({
     element: button,
     eventId,
     eventType,
@@ -140,7 +137,7 @@ const seedFocusedKeyboardPlaceDraft = () => {
     configurable: true,
     get: () => document.body,
   });
-  const attributes = getDayInteractionTargetAttributes({
+  const attributes = dayInteractionBindings.getInteractionTargetAttributes({
     eventId: DRAFT_ID,
     eventType: "timed",
   });
@@ -252,7 +249,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
-  dayEventRegistry.clear();
+  dayInteractionBindings.registry.clear();
   draftActions.discard();
   useEdgeFocusStore.setState(initialEdgeFocusState, true);
   document.body.innerHTML = "";

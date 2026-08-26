@@ -1,3 +1,4 @@
+import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
   createAllDayResizeVisual,
   updateAllDayResizeVisual,
@@ -8,15 +9,7 @@ import {
   type VisualRect,
 } from "@web/grid/interaction/types/timed-drag.types";
 import { type InteractionPoint } from "@web/interaction/interaction.types";
-import {
-  allDayResizeVisualToGridEvent,
-  hasAllDayResizeVisualChanged,
-} from "../commit/all-day.commit";
-import { type WeekLayoutCache } from "../geometry/week-layout.cache";
-import {
-  type WeekAllDayResizeCommitResult,
-  type WeekAllDayResizeTarget,
-} from "../week-interaction.adapter.types";
+import { type WeekAllDayResizeTarget } from "../week-interaction.adapter.types";
 import { getVisibleAllDayRange } from "./all-day.visible-range";
 
 export const createAllDayResizeInteractionVisual = ({
@@ -25,7 +18,7 @@ export const createAllDayResizeInteractionVisual = ({
   sourceRect,
   target,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointerStart: InteractionPoint;
   sourceRect: VisualRect;
   target: WeekAllDayResizeTarget;
@@ -47,7 +40,7 @@ export const updateAllDayResizeInteractionVisual = ({
   pointer,
   visual,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointer: VisualPoint;
   visual: AllDayResizeVisual;
 }) =>
@@ -55,18 +48,3 @@ export const updateAllDayResizeInteractionVisual = ({
     layout,
     pointer,
   });
-
-export const commitAllDayResizeInteraction = (
-  target: WeekAllDayResizeTarget,
-  visual: AllDayResizeVisual,
-): WeekAllDayResizeCommitResult => {
-  const resizedEvent = allDayResizeVisualToGridEvent(target.event, visual);
-
-  return {
-    event: resizedEvent,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved: hasAllDayResizeVisualChanged(visual),
-    type: "allDayResizeEnd",
-  };
-};

@@ -30,6 +30,7 @@ import {
   updateTimedResizeVisual,
 } from "@web/grid/interaction/math/timed.resize";
 import { type VisualPoint } from "@web/grid/interaction/types/timed-drag.types";
+import { type ViewInteractionEventType } from "@web/grid/interaction/view-interaction.bindings";
 import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
 import {
   createInteractionEngine,
@@ -37,10 +38,7 @@ import {
   type InteractionEngine,
 } from "@web/interaction/interaction.engine";
 import { isEligibleInteractionPointerDown } from "@web/interaction/interaction.pointer";
-import {
-  type DayInteractionEventType,
-  dayEventRegistry,
-} from "../registry/day-event.registry";
+import { dayInteractionBindings } from "../day-interaction.bindings";
 import {
   commitAllDayDragInteraction,
   commitAllDayResizeInteraction,
@@ -583,9 +581,11 @@ export const createDayInteractionAdapter = ({
 
   function getRegisteredTarget(
     event: PointerEvent,
-    eventType: DayInteractionEventType,
+    eventType: ViewInteractionEventType,
   ) {
-    const registered = dayEventRegistry.resolveFromTarget(event.target);
+    const registered = dayInteractionBindings.registry.resolveFromTarget(
+      event.target,
+    );
 
     return registered?.eventType === eventType ? registered : null;
   }

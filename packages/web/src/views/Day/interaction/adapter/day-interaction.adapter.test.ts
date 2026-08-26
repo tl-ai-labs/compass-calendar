@@ -3,7 +3,7 @@ import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { gridEventDefaultPosition } from "@web/common/utils/event/event.util";
-import { dayEventRegistry } from "../registry/day-event.registry";
+import { dayInteractionBindings } from "../day-interaction.bindings";
 import {
   createDayInteractionAdapter,
   type DayAllDayDragCommitResult,
@@ -223,7 +223,7 @@ const registerEvent = (event: GridEvent, eventType: "all-day" | "timed") => {
 
   source.append(child);
   document.body.append(source);
-  dayEventRegistry.register({
+  dayInteractionBindings.registry.register({
     element: source,
     eventId: event._id!,
     eventType,
@@ -354,7 +354,7 @@ const createTimedResizeHandle = (edge: "startDate" | "endDate") => {
 
 afterEach(() => {
   document.body.innerHTML = "";
-  dayEventRegistry.clear();
+  dayInteractionBindings.registry.clear();
 });
 
 // Two 160px-wide calendar columns across the 320px grid: dragging from

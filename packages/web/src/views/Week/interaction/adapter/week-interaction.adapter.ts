@@ -10,6 +10,7 @@ import {
   hideDraftEventTimeLabel,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
+import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
   getDragRowLayouts,
   resolveDragRow,
@@ -20,6 +21,7 @@ import {
   type VisualRect,
 } from "@web/grid/interaction/types/timed-drag.types";
 import { calendarEventIdValueSelector } from "@web/grid/interaction/view-event-registry";
+import { type ViewInteractionEventType } from "@web/grid/interaction/view-interaction.bindings";
 import { type InteractionAdapter } from "@web/interaction/interaction.adapter.types";
 import {
   createInteractionEngine,
@@ -28,42 +30,42 @@ import {
 } from "@web/interaction/interaction.engine";
 import { isEligibleInteractionPointerDown } from "@web/interaction/interaction.pointer";
 import {
-  type WeekInteractionEventType,
-  weekEventRegistry,
-} from "../registry/week-event.registry";
-import {
   resetWeekInteractionEdgeNavigationState,
   setWeekInteractionEdgeNavigationState,
 } from "../state/edge-navigation.state";
 import { setWeekInteractionMotionActive } from "../state/motion.state";
+import { weekInteractionBindings } from "../week-interaction.bindings";
+import {
+  commitAllDayDragInteraction,
+  commitAllDayResizeInteraction,
+} from "./commit/all-day.commit";
+import {
+  commitTimedDragInteraction,
+  commitTimedResizeInteraction,
+} from "./commit/timed.commit";
 import { createWeekEdgeNavigationController } from "./edge-navigation";
 import {
   buildAllDayWeekLayoutCache,
   buildDragWeekLayoutCache,
   buildTimedWeekLayoutCache,
-  type WeekLayoutCache,
   type WeekLayoutCacheInput,
 } from "./geometry/week-layout.cache";
 import {
-  commitAllDayDragInteraction,
   createAllDayDragInteractionVisual,
   updateAllDayDragInteractionVisual,
-} from "./interactions/all-day.drag";
+} from "./visuals/all-day.drag";
 import {
-  commitAllDayResizeInteraction,
   createAllDayResizeInteractionVisual,
   updateAllDayResizeInteractionVisual,
-} from "./interactions/all-day.resize";
+} from "./visuals/all-day.resize";
 import {
-  commitTimedDragInteraction,
   createTimedDragInteractionVisual,
   updateTimedDragInteractionVisual,
-} from "./interactions/timed.drag";
+} from "./visuals/timed.drag";
 import {
-  commitTimedResizeInteraction,
   createTimedResizeInteractionVisual,
   updateTimedResizeInteractionVisual,
-} from "./interactions/timed.resize";
+} from "./visuals/timed.resize";
 import {
   type WeekAllDayDragTarget,
   type WeekAllDayResizeTarget,
@@ -110,7 +112,7 @@ export const createWeekInteractionAdapter = ({
 }: WeekInteractionAdapterOptions = {}): WeekInteractionAdapter => {
   const edgeNavigation = createWeekEdgeNavigationController();
   let isLayoutRebuildPending = false;
-  let layout: WeekLayoutCache | null = null;
+  let layout: GridLayoutCache | null = null;
   let scrollTop: number | null = null;
 
   const engine: InteractionEngine<
@@ -144,7 +146,7 @@ export const createWeekInteractionAdapter = ({
     if (session.phase === "pending" || session.phase === "motion") {
       const { eventId, eventType } = session.target.registered;
       const nextElement =
-        weekEventRegistry.resolve(eventId, eventType) ??
+        weekInteractionBindings.registry.resolve(eventId, eventType) ??
         document.querySelector<HTMLElement>(
           calendarEventIdValueSelector(eventId),
         );
@@ -632,9 +634,11 @@ export const createWeekInteractionAdapter = ({
 
   function getRegisteredTarget(
     event: PointerEvent,
-    eventType: WeekInteractionEventType,
+    eventType: ViewInteractionEventType,
   ) {
-    const registered = weekEventRegistry.resolveFromTarget(event.target);
+    const registered = weekInteractionBindings.registry.resolveFromTarget(
+      event.target,
+    );
 
     return registered?.eventType === eventType ? registered : null;
   }
@@ -735,7 +739,7 @@ export const createWeekInteractionAdapter = ({
     isLayoutRebuildPending = false;
   }
 
-  function setLayout(nextLayout: WeekLayoutCache) {
+  function setLayout(nextLayout: GridLayoutCache) {
     layout = nextLayout;
     scrollTop = nextLayout.smartScroll?.initialScrollTop ?? null;
   }

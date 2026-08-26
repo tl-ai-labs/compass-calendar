@@ -11,7 +11,7 @@ import {
   initialDraftState,
   useDraftStore,
 } from "@web/events/stores/draft.store";
-import { WEEK_INTERACTION_EVENT_ID_ATTRIBUTE } from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { useCloseEventForm } from "./useCloseEventForm";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
@@ -65,7 +65,7 @@ describe("useCloseEventForm", () => {
     if (!draft) throw new Error("expected an edit draft");
 
     const card = document.createElement("button");
-    card.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, EXISTING_EVENT_ID);
+    card.setAttribute(weekInteractionBindings.idAttribute, EXISTING_EVENT_ID);
     card.tabIndex = 0;
     document.body.appendChild(card);
 
@@ -88,7 +88,7 @@ describe("useCloseEventForm", () => {
 
     const draftPortal = document.createElement("button");
     draftPortal.setAttribute(
-      WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
+      weekInteractionBindings.idAttribute,
       EXISTING_EVENT_ID,
     );
     draftPortal.setAttribute("data-grid-event-surface", "draft");
@@ -105,7 +105,7 @@ describe("useCloseEventForm", () => {
     draftPortal.remove();
     const savedCard = document.createElement("button");
     savedCard.setAttribute(
-      WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
+      weekInteractionBindings.idAttribute,
       EXISTING_EVENT_ID,
     );
     savedCard.tabIndex = 0;

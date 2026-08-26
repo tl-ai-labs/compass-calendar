@@ -1,13 +1,6 @@
 import { render } from "@testing-library/react";
-import {
-  createDayEventRegistry,
-  DAY_INTERACTION_EVENT_ID_ATTRIBUTE,
-  DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE,
-  type DayInteractionEventType,
-  dayEventRegistry,
-  getDayInteractionTargetAttributes,
-  useDayEventRegistrationRef,
-} from "./day-event.registry";
+import { type ViewInteractionEventType } from "@web/grid/interaction/view-interaction.bindings";
+import { dayInteractionBindings } from "./day-interaction.bindings";
 import { afterEach, describe, expect, it } from "bun:test";
 
 const RegistrationHarness = ({
@@ -16,10 +9,10 @@ const RegistrationHarness = ({
   isEnabled = true,
 }: {
   eventId?: string;
-  eventType?: DayInteractionEventType;
+  eventType?: ViewInteractionEventType;
   isEnabled?: boolean;
 }) => {
-  const ref = useDayEventRegistrationRef({
+  const ref = dayInteractionBindings.useRegistrationRef({
     eventId,
     eventType,
     isEnabled,
@@ -27,7 +20,10 @@ const RegistrationHarness = ({
 
   return (
     <div
-      {...getDayInteractionTargetAttributes({ eventId, eventType })}
+      {...dayInteractionBindings.getInteractionTargetAttributes({
+        eventId,
+        eventType,
+      })}
       ref={ref}
     >
       event
@@ -36,13 +32,13 @@ const RegistrationHarness = ({
 };
 
 afterEach(() => {
-  dayEventRegistry.clear();
+  dayInteractionBindings.registry.clear();
   document.body.innerHTML = "";
 });
 
-describe("dayEventRegistry", () => {
+describe("dayInteractionBindings.registry", () => {
   it("keeps Day event attributes after registry extraction", () => {
-    const attributes = getDayInteractionTargetAttributes({
+    const attributes = dayInteractionBindings.getInteractionTargetAttributes({
       eventId: "event-1",
       eventType: "timed",
     });
@@ -57,40 +53,52 @@ describe("dayEventRegistry", () => {
     const { container, unmount } = render(<RegistrationHarness />);
     const element = container.firstElementChild as HTMLElement;
 
-    expect(dayEventRegistry.resolve("event-1", "timed")).toBe(element);
+    expect(dayInteractionBindings.registry.resolve("event-1", "timed")).toBe(
+      element,
+    );
     expect(element).toHaveAttribute(
-      DAY_INTERACTION_EVENT_ID_ATTRIBUTE,
+      dayInteractionBindings.idAttribute,
       "event-1",
     );
     expect(element).toHaveAttribute(
-      DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE,
+      dayInteractionBindings.typeAttribute,
       "timed",
     );
 
     unmount();
 
-    expect(dayEventRegistry.resolve("event-1", "timed")).toBeNull();
+    expect(
+      dayInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeNull();
   });
 
   it("does not register disabled event elements", () => {
     render(<RegistrationHarness isEnabled={false} />);
 
-    expect(dayEventRegistry.resolve("event-1", "timed")).toBeNull();
+    expect(
+      dayInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeNull();
   });
 
   it("unregisters the old element when a render swaps event ids", () => {
     const { rerender } = render(<RegistrationHarness eventId="event-1" />);
 
-    expect(dayEventRegistry.resolve("event-1", "timed")).toBeTruthy();
+    expect(
+      dayInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeTruthy();
 
     rerender(<RegistrationHarness eventId="event-2" />);
 
-    expect(dayEventRegistry.resolve("event-1", "timed")).toBeNull();
-    expect(dayEventRegistry.resolve("event-2", "timed")).toBeTruthy();
+    expect(
+      dayInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeNull();
+    expect(
+      dayInteractionBindings.registry.resolve("event-2", "timed"),
+    ).toBeTruthy();
   });
 
   it("rejects stale or mismatched registrations", () => {
-    const registry = createDayEventRegistry();
+    const registry = dayInteractionBindings.createRegistry();
     const staleElement = document.createElement("div");
 
     document.body.append(staleElement);
@@ -112,7 +120,7 @@ describe("dayEventRegistry", () => {
       eventType: "timed",
     });
     mismatchedElement.setAttribute(
-      DAY_INTERACTION_EVENT_ID_ATTRIBUTE,
+      dayInteractionBindings.idAttribute,
       "other-event",
     );
 
@@ -120,7 +128,7 @@ describe("dayEventRegistry", () => {
   });
 
   it("resolves a registered event from child pointer targets", () => {
-    const registry = createDayEventRegistry();
+    const registry = dayInteractionBindings.createRegistry();
     const element = document.createElement("div");
     const child = document.createElement("span");
 

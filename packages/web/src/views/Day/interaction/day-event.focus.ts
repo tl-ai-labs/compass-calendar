@@ -1,15 +1,12 @@
-import {
-  focusDayGridEventTarget,
-  getFirstVisibleDayGridEventTarget,
-} from "@web/views/Day/interaction/targeting/day-event.targeting";
+import { dayInteractionBindings } from "@web/views/Day/interaction/day-interaction.bindings";
 
 export function focusFirstDayCalendarEvent() {
-  const target = getFirstVisibleDayGridEventTarget();
+  const target = dayInteractionBindings.getFirstVisibleGridEventTarget();
 
   if (!target) {
     return;
   }
 
   target.element.scrollIntoView({ block: "nearest" });
-  focusDayGridEventTarget(target);
+  dayInteractionBindings.focusGridEventTarget(target);
 }

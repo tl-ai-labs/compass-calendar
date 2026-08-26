@@ -16,10 +16,7 @@ import {
   type GridMeasurements,
   type GridVisibleDate,
 } from "@web/grid/types/grid.types";
-import {
-  getDayInteractionTargetAttributes,
-  useDayEventRegistrationRef,
-} from "@web/views/Day/interaction/registry/day-event.registry";
+import { dayInteractionBindings } from "@web/views/Day/interaction/day-interaction.bindings";
 
 interface DayEventCardProps {
   calendarIdentity?: CalendarCardIdentity | null;
@@ -57,7 +54,7 @@ export const DayAllDayCalendarEvent = ({
   const hasEventIdentity = Boolean(event._id);
   const isRegisteredForDragResize =
     hasEventIdentity && !isPlaceholder && !isReadOnly;
-  const registrationRef = useDayEventRegistrationRef({
+  const registrationRef = dayInteractionBindings.useRegistrationRef({
     eventId: event._id,
     eventType: "all-day",
     isEnabled: isRegisteredForDragResize,
@@ -65,7 +62,7 @@ export const DayAllDayCalendarEvent = ({
   const interactionAttributes = useMemo(
     () =>
       hasEventIdentity
-        ? getDayInteractionTargetAttributes({
+        ? dayInteractionBindings.getInteractionTargetAttributes({
             eventId: event._id,
             eventType: "all-day",
           })
@@ -131,7 +128,7 @@ export const DayTimedCalendarEvent = ({
     hasEventIdentity && !isPlaceholder && !isReadOnly;
   const isDeck = Boolean(deckLayout);
   const [isFocused, setIsFocused] = useState(false);
-  const registrationRef = useDayEventRegistrationRef({
+  const registrationRef = dayInteractionBindings.useRegistrationRef({
     eventId: event._id,
     eventType: "timed",
     isEnabled: isRegisteredForDragResize,
@@ -139,7 +136,7 @@ export const DayTimedCalendarEvent = ({
   const interactionAttributes = useMemo(
     () =>
       hasEventIdentity
-        ? getDayInteractionTargetAttributes({
+        ? dayInteractionBindings.getInteractionTargetAttributes({
             eventId: event._id,
             eventType: "timed",
           })

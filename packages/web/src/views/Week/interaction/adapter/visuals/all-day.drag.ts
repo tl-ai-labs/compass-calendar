@@ -1,4 +1,5 @@
 import { allDayDragVisualToTimedGridEvent } from "@web/grid/interaction/commit/cross-row.commit";
+import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
   createAllDayDragVisual,
   updateAllDayDragVisual,
@@ -9,15 +10,7 @@ import {
   type VisualRect,
 } from "@web/grid/interaction/types/timed-drag.types";
 import { type InteractionPoint } from "@web/interaction/interaction.types";
-import {
-  allDayDragVisualToGridEvent,
-  hasAllDayDragVisualMoved,
-} from "../commit/all-day.commit";
-import { type WeekLayoutCache } from "../geometry/week-layout.cache";
-import {
-  type WeekAllDayDragCommitResult,
-  type WeekAllDayDragTarget,
-} from "../week-interaction.adapter.types";
+import { type WeekAllDayDragTarget } from "../week-interaction.adapter.types";
 import { getVisibleAllDayRange } from "./all-day.visible-range";
 
 export const createAllDayDragInteractionVisual = ({
@@ -26,7 +19,7 @@ export const createAllDayDragInteractionVisual = ({
   sourceRect,
   target,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointerStart: InteractionPoint;
   sourceRect: VisualRect;
   target: WeekAllDayDragTarget;
@@ -53,7 +46,7 @@ export const updateAllDayDragInteractionVisual = ({
   target,
   visual,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointer: VisualPoint;
   target: WeekAllDayDragTarget;
   visual: AllDayDragVisual;
@@ -71,25 +64,5 @@ export const updateAllDayDragInteractionVisual = ({
         ? allDayDragVisualToTimedGridEvent(target.event, nextVisual)
         : null,
     visual: nextVisual,
-  };
-};
-
-export const commitAllDayDragInteraction = (
-  target: WeekAllDayDragTarget,
-  visual: AllDayDragVisual,
-): WeekAllDayDragCommitResult => {
-  // A drop in the timed grid is always a change, even onto the same day: the
-  // event gains a time of day it never had.
-  const isCrossRow = visual.row === "timed";
-  const movedEvent = isCrossRow
-    ? allDayDragVisualToTimedGridEvent(target.event, visual)
-    : allDayDragVisualToGridEvent(target.event, visual);
-
-  return {
-    event: movedEvent,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved: isCrossRow || hasAllDayDragVisualMoved(visual),
-    type: "allDayDragEnd",
   };
 };

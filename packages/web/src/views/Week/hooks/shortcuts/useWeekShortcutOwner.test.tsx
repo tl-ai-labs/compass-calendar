@@ -33,10 +33,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { DraftContext } from "@web/views/Week/components/Draft/context/DraftContext";
-import {
-  getWeekInteractionTargetAttributes,
-  weekEventRegistry,
-} from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 
 // Fixed 24-hex-char ids so fixtures satisfy EventIdSchema (real ObjectId
@@ -173,7 +170,7 @@ afterEach(() => {
   cleanup();
   document.body.innerHTML = "";
   pendingEventIds = [];
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   useViewStore.setState(initialViewState);
   useEdgeFocusStore.setState(initialEdgeFocusState, true);
   draftActions.discard();
@@ -189,7 +186,7 @@ const addCalendarTarget = (
     get: () => document.body,
   });
   document.body.appendChild(button);
-  weekEventRegistry.register({
+  weekInteractionBindings.registry.register({
     element: button,
     eventId,
     eventType,
@@ -206,7 +203,10 @@ const addDraftTarget = (
     configurable: true,
     get: () => document.body,
   });
-  const attributes = getWeekInteractionTargetAttributes({ eventId, eventType });
+  const attributes = weekInteractionBindings.getInteractionTargetAttributes({
+    eventId,
+    eventType,
+  });
   for (const [key, value] of Object.entries(attributes)) {
     if (value !== undefined) button.setAttribute(key, value);
   }

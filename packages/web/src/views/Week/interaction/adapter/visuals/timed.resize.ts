@@ -1,4 +1,5 @@
 import { getLocalMinutes } from "@web/grid/interaction/date";
+import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
 import {
   createTimedResizeVisual,
   updateTimedResizeVisual,
@@ -9,15 +10,8 @@ import {
 } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
 import { type InteractionPoint } from "@web/interaction/interaction.types";
-import {
-  hasTimedResizeVisualMoved,
-  timedResizeVisualToGridEvent,
-} from "../commit/timed.commit";
-import { type WeekLayoutCache } from "../geometry/week-layout.cache";
-import {
-  type WeekTimedResizeCommitResult,
-  type WeekTimedResizeTarget,
-} from "../week-interaction.adapter.types";
+import { timedResizeVisualToGridEvent } from "../commit/timed.commit";
+import { type WeekTimedResizeTarget } from "../week-interaction.adapter.types";
 
 export const createTimedResizeInteractionVisual = ({
   pointerStart,
@@ -44,7 +38,7 @@ export const updateTimedResizeInteractionVisual = ({
   target,
   visual,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointer: VisualPoint;
   scrollDeltaPx?: number;
   target: WeekTimedResizeTarget;
@@ -59,20 +53,5 @@ export const updateTimedResizeInteractionVisual = ({
   return {
     event: timedResizeVisualToGridEvent(target.event, nextVisual),
     visual: nextVisual,
-  };
-};
-
-export const commitTimedResizeInteraction = (
-  target: WeekTimedResizeTarget,
-  visual: TimedResizeVisual,
-): WeekTimedResizeCommitResult => {
-  const resizedEvent = timedResizeVisualToGridEvent(target.event, visual);
-
-  return {
-    event: resizedEvent,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved: hasTimedResizeVisualMoved(visual),
-    type: "timedResizeEnd",
   };
 };

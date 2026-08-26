@@ -11,7 +11,6 @@ import {
 import {
   buildAllDayGridLayoutCache,
   buildTimedGridLayoutCache,
-  type GridLayoutCache,
   type GridLayoutCacheSources,
 } from "@web/grid/interaction/layout.cache";
 import { INTERACTION_EDGE_THRESHOLD_PX } from "@web/interaction/interaction.constants";
@@ -22,8 +21,19 @@ import {
   type DayTimedDragTarget,
 } from "../day-interaction.adapter.types";
 
-export type DayLayoutCache = GridLayoutCache;
-export type DayLayoutCacheSources = GridLayoutCacheSources;
+/**
+ * NOTE: the `DayLayoutCache` / `DayLayoutCacheSources` aliases were removed —
+ * they expanded to `GridLayoutCache` / `GridLayoutCacheSources` and carried no
+ * structure of their own, and nothing imported them. Use the shared types from
+ * `@web/grid/interaction/layout.cache` directly.
+ *
+ * The builders below are deliberately NOT merged with Week's. Week threads
+ * `visibleDays` through an options object and reuses ONE options object for
+ * both rows, so its all-day row inherits `edgeThresholdPx: 50` and a
+ * `smartScroll` block. Day passes `visibleDates` positionally and hard-codes
+ * `edgeThresholdPx: 0` for the all-day row with no `smartScroll` at all.
+ * Converging the two builders would silently flip one view's edge behavior.
+ */
 
 export const buildDayTimedLayoutCache = (
   sources: GridLayoutCacheSources,

@@ -39,12 +39,8 @@ import {
 } from "@web/grid/grid.constants";
 import { DraftContext } from "@web/views/Week/components/Draft/context/DraftContext";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
-import {
-  WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
-  WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE,
-  weekEventRegistry,
-} from "@web/views/Week/interaction/registry/week-event.registry";
 import { setWeekInteractionMotionActive } from "@web/views/Week/interaction/state/motion.state";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
 import { Categories_Event } from "@web/common/types/web.event.types";
@@ -105,7 +101,7 @@ const { MainGridEvents } = await import("./MainGridEvents");
 afterEach(() => {
   cleanup();
   setWeekInteractionMotionActive(false);
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   pendingEventIds = [];
   seededWeekEvents = [];
   useDraftStore.setState(initialDraftState);
@@ -614,7 +610,7 @@ describe("Week calendar accessibility", () => {
     const card = screen.getByRole("button", { name: /pending save/i });
     expect(card).not.toHaveAttribute("aria-disabled");
     expect(card).toHaveAttribute(
-      WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
+      weekInteractionBindings.idAttribute,
       event._id,
     );
   });
@@ -643,11 +639,11 @@ describe("Week calendar accessibility", () => {
       name: /all-day event: all-day planning/i,
     });
 
-    expect(eventButton.getAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE)).toBe(
+    expect(eventButton.getAttribute(weekInteractionBindings.idAttribute)).toBe(
       event._id ?? null,
     );
     expect(
-      eventButton.getAttribute(WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE),
+      eventButton.getAttribute(weekInteractionBindings.typeAttribute),
     ).toBe("all-day");
   });
 

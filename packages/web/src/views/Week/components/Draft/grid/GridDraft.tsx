@@ -24,7 +24,7 @@ import { AllDayEventMemo } from "@web/views/Week/components/Grid/AllDayRow/AllDa
 import { useGridEventMouseDown } from "@web/views/Week/hooks/grid/useGridEventMouseDown";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
-import { getWeekInteractionTargetAttributes } from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 
 interface Props {
   activeAllDayDraftEvent?: GridEventEntity | null;
@@ -109,7 +109,7 @@ export const GridDraft: FC<Props> = ({
   // node — it shares the saved event's interaction id but unmounts on discard.
   const draftInteractionAttributes = draftAsGridEvent._id
     ? {
-        ...getWeekInteractionTargetAttributes({
+        ...weekInteractionBindings.getInteractionTargetAttributes({
           eventId: draftAsGridEvent._id,
           eventType: draftEventType,
         }),
@@ -128,7 +128,7 @@ export const GridDraft: FC<Props> = ({
           event={preview}
           interactionAttributes={
             preview._id
-              ? getWeekInteractionTargetAttributes({
+              ? weekInteractionBindings.getInteractionTargetAttributes({
                   eventId: preview._id,
                   eventType: "timed",
                 })

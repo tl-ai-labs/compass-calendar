@@ -15,32 +15,37 @@ import {
   type GridLayoutCache,
   type GridLayoutCacheOptions,
   type GridLayoutCacheSources,
-  getNearestDayColumn,
-  type SmartScrollCache,
 } from "@web/grid/interaction/layout.cache";
 import { type DragRow } from "@web/grid/interaction/types/timed-drag.types";
 import { WEEK_EDGE_NAVIGATION_THRESHOLD_PX } from "../edge-navigation";
-
-export type WeekLayoutCacheSources = GridLayoutCacheSources;
 
 /**
  * The week renders a dynamic window of 1-7 day columns. The columns' dates
  * come from the same React render that painted them (weekProps weekDays via
  * the interaction runtime), so drag geometry and drop dates always agree
  * with what is on screen.
+ *
+ * This interface is KEPT (unlike the deleted `WeekLayoutCacheSources` /
+ * `WeekLayoutCache` / `SmartScrollCache` / `getNearestDayColumn` re-exports)
+ * because it carries real structure: the `visibleDays` field. Day has no
+ * equivalent — it passes `visibleDates` positionally instead — and that
+ * difference is deliberate.
  */
 export interface WeekLayoutCacheInput extends GridLayoutCacheSources {
   /** Local YYYY-MM-DD dates of the rendered day columns, in window order. */
   visibleDays: string[];
 }
 
-export type WeekLayoutCache = GridLayoutCache;
-export type { SmartScrollCache };
-export { getNearestDayColumn };
-
+/**
+ * ONE options object feeds BOTH rows, so the all-day row also receives
+ * `edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX` (50) and a
+ * `smartScroll` block that `buildAllDayGridLayoutCache` discards. Day's
+ * all-day builder hard-codes `edgeThresholdPx: 0` instead. Do NOT merge the
+ * two builder families — one view's edge behavior would silently flip.
+ */
 const weekLayoutCacheOptions = (
   sources: WeekLayoutCacheInput,
-): GridLayoutCacheOptions & WeekLayoutCacheSources => ({
+): GridLayoutCacheOptions & GridLayoutCacheSources => ({
   ...sources,
   allDayColumnsElementId: ID_ALLDAY_COLUMNS,
   edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX,
@@ -57,17 +62,17 @@ const weekLayoutCacheOptions = (
 
 export const buildTimedWeekLayoutCache = (
   sources: WeekLayoutCacheInput,
-): WeekLayoutCache | null =>
+): GridLayoutCache | null =>
   buildTimedGridLayoutCache(weekLayoutCacheOptions(sources));
 
 export const buildAllDayWeekLayoutCache = (
   sources: WeekLayoutCacheInput,
-): WeekLayoutCache | null =>
+): GridLayoutCache | null =>
   buildAllDayGridLayoutCache(weekLayoutCacheOptions(sources));
 
 /** Both rows at once, so a drag can be dropped across them. */
 export const buildDragWeekLayoutCache = (
   sources: WeekLayoutCacheInput,
   sourceRow: DragRow,
-): WeekLayoutCache | null =>
+): GridLayoutCache | null =>
   buildDragGridLayoutCache(weekLayoutCacheOptions(sources), sourceRow);

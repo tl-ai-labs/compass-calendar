@@ -24,10 +24,7 @@ import { createObjectIdString } from "@web/common/utils/id/object-id.util";
 import { draftActions, useDraftStore } from "@web/events/stores/draft.store";
 import { DraftContext } from "@web/views/Week/components/Draft/context/DraftContext";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
-import {
-  WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
-  weekEventRegistry,
-} from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { AllDayEvents } from "../AllDayRow/AllDayEvents";
 import { MainGridEvents } from "./MainGridEvents";
 import { afterEach, describe, expect, it, mock } from "bun:test";
@@ -37,7 +34,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 // concrete mechanism that stops the engine from treating it as a target,
 // blocked before any optimistic state change. Id-bearing view-registry
 // attributes still stamp so context menus / focus restore can resolve the
-// card; registration (`weekEventRegistry.resolve`) is the gate.
+// card; registration (`weekInteractionBindings.registry.resolve`) is the gate.
 
 let seededEvents: Event[] = [];
 let seededCalendars: Calendar[] = [];
@@ -60,7 +57,7 @@ function Provider({ children }: PropsWithChildren) {
 
 afterEach(() => {
   cleanup();
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   seededEvents = [];
   seededCalendars = [];
 });
@@ -207,8 +204,10 @@ describe("Week grid read-only interaction gate", () => {
     renderMainGridEvents();
 
     const card = screen.getByRole("button", { name: /shared meeting/i });
-    expect(card).toHaveAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, event.id);
-    expect(weekEventRegistry.resolve(event.id, "timed")).toBeNull();
+    expect(card).toHaveAttribute(weekInteractionBindings.idAttribute, event.id);
+    expect(
+      weekInteractionBindings.registry.resolve(event.id, "timed"),
+    ).toBeNull();
   });
 
   it("keeps registering a writable-calendar timed event as an interaction target", () => {
@@ -225,8 +224,10 @@ describe("Week grid read-only interaction gate", () => {
     renderMainGridEvents();
 
     const card = screen.getByRole("button", { name: /my focus block/i });
-    expect(card).toHaveAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, event.id);
-    expect(weekEventRegistry.resolve(event.id, "timed")).toBe(card);
+    expect(card).toHaveAttribute(weekInteractionBindings.idAttribute, event.id);
+    expect(weekInteractionBindings.registry.resolve(event.id, "timed")).toBe(
+      card,
+    );
   });
 
   it("stamps id attrs on a read-only all-day event without registering it for drag/resize", () => {
@@ -240,8 +241,10 @@ describe("Week grid read-only interaction gate", () => {
     const card = screen.getByRole("button", {
       name: /all-day event: team holiday/i,
     });
-    expect(card).toHaveAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, event.id);
-    expect(weekEventRegistry.resolve(event.id, "all-day")).toBeNull();
+    expect(card).toHaveAttribute(weekInteractionBindings.idAttribute, event.id);
+    expect(
+      weekInteractionBindings.registry.resolve(event.id, "all-day"),
+    ).toBeNull();
   });
 
   it("still opens a read-only all-day event for inspection on click", () => {
@@ -363,7 +366,9 @@ describe("Week grid read-only interaction gate", () => {
     renderMainGridEvents();
 
     const card = screen.getByRole("button", { name: /timed event: busy/i });
-    expect(card).toHaveAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, event.id);
-    expect(weekEventRegistry.resolve(event.id, "timed")).toBeNull();
+    expect(card).toHaveAttribute(weekInteractionBindings.idAttribute, event.id);
+    expect(
+      weekInteractionBindings.registry.resolve(event.id, "timed"),
+    ).toBeNull();
   });
 });

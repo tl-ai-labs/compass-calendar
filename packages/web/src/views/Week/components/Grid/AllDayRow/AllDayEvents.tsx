@@ -18,10 +18,7 @@ import { AllDayEventMemo } from "@web/views/Week/components/Grid/AllDayRow/AllDa
 import { useGridEventDraftHandlers } from "@web/views/Week/components/Grid/useGridEventDraftHandlers";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
-import {
-  getWeekInteractionTargetAttributes,
-  useWeekEventRegistrationRef,
-} from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { isAllDayEventInVisibleDays } from "@web/views/Week/util/week-window.util";
 
 interface Props {
@@ -158,7 +155,7 @@ const AllDayEventItem = ({
   const hasEventIdentity = Boolean(event._id);
   const isRegisteredForDragResize =
     hasEventIdentity && !isPlaceholder && !isReadOnly;
-  const registrationRef = useWeekEventRegistrationRef({
+  const registrationRef = weekInteractionBindings.useRegistrationRef({
     eventId: event._id,
     eventType: "all-day",
     isEnabled: isRegisteredForDragResize,
@@ -167,7 +164,7 @@ const AllDayEventItem = ({
   const interactionAttributes = useMemo(
     () =>
       hasEventIdentity
-        ? getWeekInteractionTargetAttributes({
+        ? weekInteractionBindings.getInteractionTargetAttributes({
             eventId: event._id,
             eventType: "all-day",
           })

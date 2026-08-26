@@ -16,7 +16,7 @@ import {
   refocusEventElement,
 } from "@web/common/utils/event/event.util";
 import { registerToastPort } from "@web/common/utils/toast/toast.port";
-import { WEEK_INTERACTION_EVENT_ID_ATTRIBUTE } from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import {
   afterEach,
   beforeEach,
@@ -229,7 +229,7 @@ describe("focusCalendarEventElement", () => {
 
   const addEventElement = () => {
     const element = document.createElement("div");
-    element.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, EVENT_ID);
+    element.setAttribute(weekInteractionBindings.idAttribute, EVENT_ID);
     element.tabIndex = 0;
     document.body.appendChild(element);
     return element;
@@ -281,7 +281,7 @@ describe("focusCalendarEventElementAfterDiscard", () => {
 
   const addEventElement = () => {
     const element = document.createElement("div");
-    element.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, EVENT_ID);
+    element.setAttribute(weekInteractionBindings.idAttribute, EVENT_ID);
     element.tabIndex = 0;
     document.body.appendChild(element);
     return element;
@@ -339,7 +339,7 @@ describe("refocusEventElement", () => {
 
   const addEventElement = () => {
     const element = document.createElement("div");
-    element.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, EVENT_ID);
+    element.setAttribute(weekInteractionBindings.idAttribute, EVENT_ID);
     element.tabIndex = 0;
     document.body.appendChild(element);
     return element;

@@ -12,22 +12,19 @@ import {
 import { useUpdateEvent } from "@web/events/mutations/useUpdateEvent";
 import { useWeekEventViewModel } from "@web/events/queries/useWeekEventsQuery";
 import { draftActions } from "@web/events/stores/draft.store";
+import { type InteractionCommitResult } from "@web/grid/interaction/commit/commit-result";
+import { type GridLayoutCacheSources } from "@web/grid/interaction/layout.cache";
 import { PointerCaptureBoundary } from "@web/interaction/react/PointerCaptureBoundary";
 import { useDraftContext } from "@web/views/Week/components/Draft/context/useDraftContext";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
-import { type WeekLayoutCacheSources } from "./adapter/geometry/week-layout.cache";
 import {
   createWeekInteractionAdapter,
-  type WeekAllDayDragCommitResult,
-  type WeekAllDayResizeCommitResult,
   type WeekInteractionRuntime,
-  type WeekTimedDragCommitResult,
-  type WeekTimedResizeCommitResult,
 } from "./adapter/week-interaction.adapter";
 import { useWeekInteractionLayoutSync } from "./useWeekInteractionLayoutSync";
 
 interface Props extends PropsWithChildren {
-  getLayoutSources?: () => WeekLayoutCacheSources;
+  getLayoutSources?: () => GridLayoutCacheSources;
   weekProps: WeekProps;
 }
 
@@ -125,13 +122,7 @@ export const WeekInteractionCoordinator: FC<Props> = ({
   // useUpdateEvent (including recurring events) with no scope dialog.
   // When the form was open before the gesture, keep the draft in the Week
   // local state and reopen the form instead of writing immediately.
-  const commitSavedMutation = (
-    result:
-      | WeekAllDayDragCommitResult
-      | WeekAllDayResizeCommitResult
-      | WeekTimedDragCommitResult
-      | WeekTimedResizeCommitResult,
-  ) => {
+  const commitSavedMutation = (result: InteractionCommitResult) => {
     if (!result.hasMoved) {
       if (result.event.isAllDay) {
         openAllDayEvent(result.event);

@@ -1,7 +1,10 @@
 import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
-import { timedDragVisualToAllDayGridEvent } from "@web/grid/interaction/commit/cross-row.commit";
 import { getLocalMinutes } from "@web/grid/interaction/date";
+import {
+  type GridLayoutCache,
+  getNearestDayColumn,
+} from "@web/grid/interaction/layout.cache";
 import {
   createTimedDragVisual,
   updateTimedDragVisual,
@@ -12,18 +15,8 @@ import {
   type VisualRect,
 } from "@web/grid/interaction/types/timed-drag.types";
 import { type InteractionPoint } from "@web/interaction/interaction.types";
-import {
-  hasTimedDragVisualMoved,
-  timedDragVisualToGridEvent,
-} from "../commit/timed.commit";
-import {
-  getNearestDayColumn,
-  type WeekLayoutCache,
-} from "../geometry/week-layout.cache";
-import {
-  type WeekTimedDragCommitResult,
-  type WeekTimedDragTarget,
-} from "../week-interaction.adapter.types";
+import { timedDragVisualToGridEvent } from "../commit/timed.commit";
+import { type WeekTimedDragTarget } from "../week-interaction.adapter.types";
 
 export const createTimedDragInteractionVisual = ({
   layout,
@@ -31,7 +24,7 @@ export const createTimedDragInteractionVisual = ({
   sourceRect,
   target,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointerStart: InteractionPoint;
   sourceRect: VisualRect;
   target: WeekTimedDragTarget;
@@ -67,7 +60,7 @@ export const updateTimedDragInteractionVisual = ({
   target,
   visual,
 }: {
-  layout: WeekLayoutCache;
+  layout: GridLayoutCache;
   pointer: VisualPoint;
   scrollDeltaPx: number;
   target: WeekTimedDragTarget;
@@ -87,25 +80,5 @@ export const updateTimedDragInteractionVisual = ({
         ? null
         : timedDragVisualToGridEvent(target.event, nextVisual),
     visual: nextVisual,
-  };
-};
-
-export const commitTimedDragInteraction = (
-  target: WeekTimedDragTarget,
-  visual: TimedDragVisual,
-): WeekTimedDragCommitResult => {
-  // A drop in the all-day row is always a change, even onto the same day: the
-  // event loses its time of day.
-  const isCrossRow = visual.row === "allDay";
-  const movedEvent = isCrossRow
-    ? timedDragVisualToAllDayGridEvent(target.event, visual)
-    : timedDragVisualToGridEvent(target.event, visual);
-
-  return {
-    event: movedEvent,
-    eventId: target.event._id!,
-    hadFormOpenBeforeInteraction: target.hadFormOpenBeforeInteraction,
-    hasMoved: isCrossRow || hasTimedDragVisualMoved(visual),
-    type: "timedDragEnd",
   };
 };

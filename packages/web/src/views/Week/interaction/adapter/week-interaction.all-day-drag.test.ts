@@ -4,8 +4,8 @@ import {
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
-import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import { resetWeekInteractionEdgeNavigationState } from "@web/views/Week/interaction/state/edge-navigation.state";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { afterEach, describe, expect, it, mock } from "bun:test";
 
 const createAllDayEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
@@ -110,7 +110,7 @@ const createHarness = ({
   sourceRect?: Pick<DOMRect, "height" | "left" | "top" | "width">;
 } = {}) => {
   document.body.innerHTML = "";
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
 
   let now = 100;
   let nextFrameId = 1;
@@ -150,7 +150,7 @@ const createHarness = ({
   });
   setRect(source, sourceRect);
 
-  weekEventRegistry.register({
+  weekInteractionBindings.registry.register({
     element: source,
     eventId: event._id!,
     eventType: "all-day",
@@ -238,7 +238,7 @@ const createHarness = ({
 
 afterEach(() => {
   document.body.innerHTML = "";
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   resetWeekInteractionEdgeNavigationState();
 });
 

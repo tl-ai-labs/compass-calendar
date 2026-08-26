@@ -15,8 +15,8 @@ import { ContextMenuWrapper } from "@web/components/ContextMenu/GridContextMenuW
 import { eventQueryKeys } from "@web/events/queries/event.query.keys";
 import { draftActions } from "@web/events/stores/draft.store";
 import { useDayCalendarContextMenu } from "@web/views/Day/components/Calendar/DayCalendarContextMenu";
-import { DAY_INTERACTION_EVENT_ID_ATTRIBUTE } from "@web/views/Day/interaction/registry/day-event.registry";
-import { WEEK_INTERACTION_EVENT_ID_ATTRIBUTE } from "@web/views/Week/interaction/registry/week-event.registry";
+import { dayInteractionBindings } from "@web/views/Day/interaction/day-interaction.bindings";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { afterEach, describe, expect, it } from "bun:test";
 import "@testing-library/jest-dom";
 
@@ -81,7 +81,7 @@ describe("context menu layering", () => {
       <ContextMenuWrapper id={WRAPPER_ID}>
         {/* Stands in for an event card: the wrapper reads the id off the
             right-clicked element. */}
-        <div {...{ [WEEK_INTERACTION_EVENT_ID_ATTRIBUTE]: event.id }}>
+        <div {...{ [weekInteractionBindings.idAttribute]: event.id }}>
           Stacked event
         </div>
       </ContextMenuWrapper>,
@@ -100,7 +100,7 @@ describe("context menu layering", () => {
   it("ignores a right-click on an event that isn't in the cache", () => {
     render(
       <ContextMenuWrapper id={WRAPPER_ID}>
-        <div {...{ [WEEK_INTERACTION_EVENT_ID_ATTRIBUTE]: "not-in-cache" }}>
+        <div {...{ [weekInteractionBindings.idAttribute]: "not-in-cache" }}>
           Orphan event
         </div>
       </ContextMenuWrapper>,
@@ -127,7 +127,7 @@ describe("context menu layering", () => {
       return (
         // biome-ignore lint/a11y/noStaticElementInteractions: stands in for the day grid, which forwards right-clicks from its cards.
         <div id={WRAPPER_ID} onContextMenu={handleContextMenu}>
-          <div {...{ [DAY_INTERACTION_EVENT_ID_ATTRIBUTE]: event.id }}>
+          <div {...{ [dayInteractionBindings.idAttribute]: event.id }}>
             Stacked event
           </div>
           {contextMenu}

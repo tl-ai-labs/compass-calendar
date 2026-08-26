@@ -4,11 +4,11 @@ import {
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
-import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import {
   getWeekInteractionEdgeNavigationState,
   resetWeekInteractionEdgeNavigationState,
 } from "@web/views/Week/interaction/state/edge-navigation.state";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { afterEach, describe, expect, it, mock } from "bun:test";
 
 const createTimedEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
@@ -133,7 +133,7 @@ const createHarness = ({
   visibleDays?: string[];
 } = {}) => {
   document.body.innerHTML = "";
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
 
   let now = 100;
   let nextFrameId = 1;
@@ -174,7 +174,7 @@ const createHarness = ({
   });
   setRect(source, sourceRect);
 
-  const unregister = weekEventRegistry.register({
+  const unregister = weekInteractionBindings.registry.register({
     element: source,
     eventId: event._id!,
     eventType: "timed",
@@ -271,7 +271,7 @@ const createHarness = ({
 
 afterEach(() => {
   document.body.innerHTML = "";
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   resetWeekInteractionEdgeNavigationState();
 });
 

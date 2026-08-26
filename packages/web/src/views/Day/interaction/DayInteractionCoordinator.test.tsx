@@ -21,7 +21,7 @@ import {
   useDraftStore,
 } from "@web/events/stores/draft.store";
 import { DayInteractionCoordinator } from "./DayInteractionCoordinator";
-import { dayEventRegistry } from "./registry/day-event.registry";
+import { dayInteractionBindings } from "./day-interaction.bindings";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import "@testing-library/jest-dom";
 
@@ -90,7 +90,7 @@ const TestTimedEventTarget: FC = () => {
       top: 160,
       width: 320,
     });
-    dayEventRegistry.register({
+    dayInteractionBindings.registry.register({
       element: node,
       eventId: timedEvent._id!,
       eventType: "timed",
@@ -188,7 +188,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
-  dayEventRegistry.clear();
+  dayInteractionBindings.registry.clear();
   document.body.innerHTML = "";
   globalThis.requestAnimationFrame = originalRequestAnimationFrame;
   globalThis.cancelAnimationFrame = originalCancelAnimationFrame;

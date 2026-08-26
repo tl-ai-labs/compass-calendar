@@ -27,7 +27,7 @@ import { toUTCOffset } from "@web/common/utils/datetime/web.date.util";
 import { createObjectIdString } from "@web/common/utils/id/object-id.util";
 import { useDraftStore } from "@web/events/stores/draft.store";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
-import { WEEK_INTERACTION_EVENT_ID_ATTRIBUTE } from "@web/views/Week/interaction/registry/week-event.registry";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 import { MainGridBusyPeriods } from "./MainGridBusyPeriods";
 import { afterEach, describe, expect, it, mock } from "bun:test";
 
@@ -165,7 +165,7 @@ describe("MainGridBusyPeriods", () => {
     renderMainGridBusyPeriods();
 
     const block = screen.getByRole("img", { name: /busy/i });
-    expect(block).not.toHaveAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE);
+    expect(block).not.toHaveAttribute(weekInteractionBindings.idAttribute);
     expect(
       screen.queryByRole("button", { name: /busy/i }),
     ).not.toBeInTheDocument();

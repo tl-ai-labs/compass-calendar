@@ -21,12 +21,7 @@ import { type Util_Scroll } from "@web/views/Week/hooks/grid/useScroll";
 import { useWeekViewShortcuts } from "@web/views/Week/hooks/shortcuts/useWeekViewShortcuts";
 import { goToTodayInWeek } from "@web/views/Week/hooks/shortcuts/weekShortcuts.util";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
-import {
-  focusWeekGridEventTarget,
-  getFirstVisibleWeekGridEventTarget,
-  getFocusedWeekGridEventTarget,
-  listVisibleWeekGridEventTargets,
-} from "@web/views/Week/interaction/targeting/week-event.targeting";
+import { weekInteractionBindings } from "@web/views/Week/interaction/week-interaction.bindings";
 
 export interface ShortcutProps {
   isCurrentWeek: boolean;
@@ -167,16 +162,16 @@ export const useWeekShortcutOwner = ({
   useFocusSidebarShortcut();
 
   const focusFirstCalendarEvent = useCallback(() => {
-    const target = getFirstVisibleWeekGridEventTarget();
+    const target = weekInteractionBindings.getFirstVisibleGridEventTarget();
     if (!target) return;
 
-    focusWeekGridEventTarget(target);
+    weekInteractionBindings.focusGridEventTarget(target);
   }, []);
 
   const targeting = {
-    focus: focusWeekGridEventTarget,
-    getFocused: getFocusedWeekGridEventTarget,
-    listVisible: listVisibleWeekGridEventTargets,
+    focus: weekInteractionBindings.focusGridEventTarget,
+    getFocused: weekInteractionBindings.getFocusedGridEventTarget,
+    listVisible: weekInteractionBindings.listVisibleGridEventTargets,
   };
 
   useGridEventEditShortcuts({
@@ -208,8 +203,8 @@ export const useWeekShortcutOwner = ({
 
   const { hints: shiftHints } = useShiftHoldEventHints({
     allDayEvents,
-    focus: focusWeekGridEventTarget,
-    listVisible: listVisibleWeekGridEventTargets,
+    focus: weekInteractionBindings.focusGridEventTarget,
+    listVisible: weekInteractionBindings.listVisibleGridEventTargets,
     mode: "week",
     timedEvents,
   });

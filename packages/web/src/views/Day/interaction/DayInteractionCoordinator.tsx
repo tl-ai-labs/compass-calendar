@@ -7,15 +7,12 @@ import {
   selectIsEventFormOpen,
   useDraftStore,
 } from "@web/events/stores/draft.store";
+import { type InteractionCommitResult } from "@web/grid/interaction/commit/commit-result";
 import { type GridLayoutCacheSources } from "@web/grid/interaction/layout.cache";
 import { PointerCaptureBoundary } from "@web/interaction/react/PointerCaptureBoundary";
 import {
   createDayInteractionAdapter,
-  type DayAllDayDragCommitResult,
-  type DayAllDayResizeCommitResult,
   type DayInteractionRuntime,
-  type DayTimedDragCommitResult,
-  type DayTimedResizeCommitResult,
 } from "./adapter/day-interaction.adapter";
 
 interface Props extends PropsWithChildren {
@@ -79,13 +76,7 @@ export const DayInteractionCoordinator: FC<Props> = ({
     onOpenEvent(event);
   };
 
-  const commitSavedMutation = (
-    result:
-      | DayAllDayDragCommitResult
-      | DayAllDayResizeCommitResult
-      | DayTimedDragCommitResult
-      | DayTimedResizeCommitResult,
-  ) => {
+  const commitSavedMutation = (result: InteractionCommitResult) => {
     if (!result.hasMoved) {
       openDayCalendarEvent(result.event);
       return;

@@ -7,20 +7,13 @@ import {
   GRID_EVENT_TITLE_LINE_HEIGHT,
 } from "@web/grid/grid.constants";
 import { createDraftEventMount } from "@web/grid/interaction/dom";
+import { type ViewInteractionEventType } from "@web/grid/interaction/view-interaction.bindings";
 import { FloatingDraftEvent } from "@web/interaction/dom/draft-event";
 import { GridEvent } from "@web/views/Week/components/Event/Grid/GridEvent/GridEvent";
 import { AllDayEventMemo } from "@web/views/Week/components/Grid/AllDayRow/AllDayEvent";
 import { type Measurements_Grid } from "@web/views/Week/hooks/grid/useGridLayout";
 import { type WeekProps } from "@web/views/Week/hooks/useWeek";
-import {
-  createWeekEventRegistry,
-  getWeekInteractionTargetAttributes,
-  useWeekEventRegistrationRef,
-  WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
-  WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE,
-  type WeekInteractionEventType,
-  weekEventRegistry,
-} from "./week-event.registry";
+import { weekInteractionBindings } from "./week-interaction.bindings";
 import {
   afterEach,
   beforeEach,
@@ -128,10 +121,10 @@ const RegistrationHarness = ({
   isEnabled = true,
 }: {
   eventId?: string;
-  eventType?: WeekInteractionEventType;
+  eventType?: ViewInteractionEventType;
   isEnabled?: boolean;
 }) => {
-  const ref = useWeekEventRegistrationRef({
+  const ref = weekInteractionBindings.useRegistrationRef({
     eventId,
     eventType,
     isEnabled,
@@ -139,7 +132,10 @@ const RegistrationHarness = ({
 
   return (
     <div
-      {...getWeekInteractionTargetAttributes({ eventId, eventType })}
+      {...weekInteractionBindings.getInteractionTargetAttributes({
+        eventId,
+        eventType,
+      })}
       ref={ref}
     >
       event
@@ -157,7 +153,7 @@ const RegisteredTimedEventHarness = ({
   event: GridEventEntity;
 }) => {
   const isEnabled = Boolean(event._id) && displayMode === "saved";
-  const ref = useWeekEventRegistrationRef({
+  const ref = weekInteractionBindings.useRegistrationRef({
     eventId: event._id,
     eventType: "timed",
     isEnabled,
@@ -169,7 +165,7 @@ const RegisteredTimedEventHarness = ({
       event={event}
       interactionAttributes={
         isEnabled
-          ? getWeekInteractionTargetAttributes({
+          ? weekInteractionBindings.getInteractionTargetAttributes({
               eventId: event._id,
               eventType: "timed",
             })
@@ -192,7 +188,7 @@ const RegisteredAllDayEventHarness = ({
   isPlaceholder?: boolean;
 }) => {
   const isEnabled = Boolean(event._id) && !isPlaceholder;
-  const ref = useWeekEventRegistrationRef({
+  const ref = weekInteractionBindings.useRegistrationRef({
     eventId: event._id,
     eventType: "all-day",
     isEnabled,
@@ -203,7 +199,7 @@ const RegisteredAllDayEventHarness = ({
       event={event}
       interactionAttributes={
         isEnabled
-          ? getWeekInteractionTargetAttributes({
+          ? weekInteractionBindings.getInteractionTargetAttributes({
               eventId: event._id,
               eventType: "all-day",
             })
@@ -221,13 +217,13 @@ const RegisteredAllDayEventHarness = ({
 
 afterEach(() => {
   setSystemTime();
-  weekEventRegistry.clear();
+  weekInteractionBindings.registry.clear();
   document.body.innerHTML = "";
 });
 
-describe("weekEventRegistry", () => {
+describe("weekInteractionBindings.registry", () => {
   it("keeps Week event attributes after registry extraction", () => {
-    const attributes = getWeekInteractionTargetAttributes({
+    const attributes = weekInteractionBindings.getInteractionTargetAttributes({
       eventId: "event-1",
       eventType: "timed",
     });
@@ -246,19 +242,23 @@ describe("weekEventRegistry", () => {
 
     const element = screen.getByRole("button", { name: /timed event/i });
 
-    expect(weekEventRegistry.resolve("timed-event", "timed")).toBe(element);
+    expect(
+      weekInteractionBindings.registry.resolve("timed-event", "timed"),
+    ).toBe(element);
     expect(element).toHaveAttribute(
-      WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
+      weekInteractionBindings.idAttribute,
       "timed-event",
     );
     expect(element).toHaveAttribute(
-      WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE,
+      weekInteractionBindings.typeAttribute,
       "timed",
     );
 
     unmount();
 
-    expect(weekEventRegistry.resolve("timed-event", "timed")).toBeNull();
+    expect(
+      weekInteractionBindings.registry.resolve("timed-event", "timed"),
+    ).toBeNull();
   });
 
   it("registers and unregisters saved all-day event elements", () => {
@@ -269,9 +269,11 @@ describe("weekEventRegistry", () => {
 
     const element = screen.getByRole("button", { name: /all-day event/i });
 
-    expect(weekEventRegistry.resolve("all-day-event", "all-day")).toBe(element);
+    expect(
+      weekInteractionBindings.registry.resolve("all-day-event", "all-day"),
+    ).toBe(element);
     expect(element).toHaveAttribute(
-      WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE,
+      weekInteractionBindings.typeAttribute,
       "all-day",
     );
     expect(
@@ -283,22 +285,30 @@ describe("weekEventRegistry", () => {
 
     unmount();
 
-    expect(weekEventRegistry.resolve("all-day-event", "all-day")).toBeNull();
+    expect(
+      weekInteractionBindings.registry.resolve("all-day-event", "all-day"),
+    ).toBeNull();
   });
 
   it("unregisters the old element when a render swaps event ids", () => {
     const { rerender } = render(<RegistrationHarness eventId="event-1" />);
 
-    expect(weekEventRegistry.resolve("event-1", "timed")).toBeTruthy();
+    expect(
+      weekInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeTruthy();
 
     rerender(<RegistrationHarness eventId="event-2" />);
 
-    expect(weekEventRegistry.resolve("event-1", "timed")).toBeNull();
-    expect(weekEventRegistry.resolve("event-2", "timed")).toBeTruthy();
+    expect(
+      weekInteractionBindings.registry.resolve("event-1", "timed"),
+    ).toBeNull();
+    expect(
+      weekInteractionBindings.registry.resolve("event-2", "timed"),
+    ).toBeTruthy();
   });
 
   it("rejects stale or mismatched registrations", () => {
-    const registry = createWeekEventRegistry();
+    const registry = weekInteractionBindings.createRegistry();
     const staleElement = document.createElement("div");
 
     document.body.append(staleElement);
@@ -320,7 +330,7 @@ describe("weekEventRegistry", () => {
       eventType: "timed",
     });
     mismatchedElement.setAttribute(
-      WEEK_INTERACTION_EVENT_ID_ATTRIBUTE,
+      weekInteractionBindings.idAttribute,
       "other-event",
     );
 
@@ -328,7 +338,7 @@ describe("weekEventRegistry", () => {
   });
 
   it("resolves a registered event from child pointer targets", () => {
-    const registry = createWeekEventRegistry();
+    const registry = weekInteractionBindings.createRegistry();
     const element = document.createElement("div");
     const child = document.createElement("span");
 
@@ -354,7 +364,9 @@ describe("weekEventRegistry", () => {
       <RegisteredTimedEventHarness displayMode="draft" event={draftEvent} />,
     );
 
-    expect(weekEventRegistry.resolve("draft-event", "timed")).toBeNull();
+    expect(
+      weekInteractionBindings.registry.resolve("draft-event", "timed"),
+    ).toBeNull();
   });
 
   it("renders a saved timed event with the preview text style", () => {
@@ -384,8 +396,8 @@ describe("createDraftEventMount", () => {
     source.className = "event-class transition-[background-color]";
     source.setAttribute("tabindex", "0");
     source.setAttribute("aria-describedby", "description-id");
-    source.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, "event-1");
-    source.setAttribute(WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE, "timed");
+    source.setAttribute(weekInteractionBindings.idAttribute, "event-1");
+    source.setAttribute(weekInteractionBindings.typeAttribute, "timed");
     source.style.width = "100px";
     source.getBoundingClientRect = () =>
       ({
@@ -396,7 +408,7 @@ describe("createDraftEventMount", () => {
       }) as DOMRect;
     child.id = "child-id";
     child.setAttribute("aria-controls", "menu-id");
-    child.setAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, "event-1");
+    child.setAttribute(weekInteractionBindings.idAttribute, "event-1");
     child.style.transition = "opacity 150ms ease";
     source.append(child);
 
@@ -419,17 +431,17 @@ describe("createDraftEventMount", () => {
     expect(mount.clone.getAttribute("tabindex")).toBeNull();
     expect(mount.clone.getAttribute("aria-describedby")).toBeNull();
     expect(
-      mount.clone.getAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE),
+      mount.clone.getAttribute(weekInteractionBindings.idAttribute),
     ).toBeNull();
     expect(
-      mount.clone.getAttribute(WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE),
+      mount.clone.getAttribute(weekInteractionBindings.typeAttribute),
     ).toBeNull();
     expect(mount.clone).toHaveAttribute("aria-hidden", "true");
     expect(mount.clone.style.transition).toBe("none");
     expect(clonedChild?.id).toBe("");
     expect(clonedChild?.getAttribute("aria-controls")).toBeNull();
     expect(
-      clonedChild?.getAttribute(WEEK_INTERACTION_EVENT_ID_ATTRIBUTE),
+      clonedChild?.getAttribute(weekInteractionBindings.idAttribute),
     ).toBeNull();
     expect(clonedChild?.style.transition).toBe("none");
     expect(draftEvent.getNode()?.style.width).toBe("140px");
