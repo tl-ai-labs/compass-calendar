@@ -19,6 +19,13 @@ const DRAFT_CLONE_STRIPPED_ATTRIBUTES = [
 
 export const EVENT_CONTENT_ATTRIBUTE = "data-calendar-event-content";
 export const EVENT_CONTENT_SELECTOR = `[${EVENT_CONTENT_ATTRIBUTE}='true']`;
+export const EVENT_INTERACTIVE_ATTRIBUTE = "data-calendar-event-interactive";
+export const EVENT_INTERACTIVE_SELECTOR = `[${EVENT_INTERACTIVE_ATTRIBUTE}='true']`;
+// Spread this on the affordance rather than writing the attribute by hand, so
+// the reader's selector and the writer's value cannot drift apart.
+export const interactiveAffordanceAttributes = {
+  [EVENT_INTERACTIVE_ATTRIBUTE]: "true",
+} as const;
 export const EVENT_RESIZE_HANDLE_ATTRIBUTE =
   "data-calendar-event-resize-handle";
 export const EVENT_TIME_LABEL_ATTRIBUTE = "data-calendar-event-time-label";
@@ -36,6 +43,20 @@ export const getResizeHandleEdge = (
   const edge = handle?.getAttribute(EVENT_RESIZE_HANDLE_ATTRIBUTE);
 
   return isResizeEdge(edge) ? edge : null;
+};
+
+// The grid's PointerCaptureBoundary owns pointerdown in the capture phase and
+// calls preventDefault() on it, so an inner interactive affordance (a link or
+// button inside a card) cannot defend itself with stopPropagation - capture at
+// an ancestor always precedes the target phase. It must instead be recognised
+// here, exactly as resize handles are, so the view adapters can decline to
+// resolve a drag target over it.
+export const isInteractiveAffordanceTarget = (
+  event: Pick<PointerEvent, "target">,
+): boolean => {
+  const pointerTarget = event.target instanceof Element ? event.target : null;
+
+  return Boolean(pointerTarget?.closest(EVENT_INTERACTIVE_SELECTOR));
 };
 
 export const updateDraftEventTimeLabel = (

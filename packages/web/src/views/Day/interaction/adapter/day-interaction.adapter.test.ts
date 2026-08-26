@@ -3,6 +3,7 @@ import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { gridEventDefaultPosition } from "@web/common/utils/event/event.util";
+import { EVENT_INTERACTIVE_ATTRIBUTE } from "@web/grid/interaction/dom";
 import { dayEventRegistry } from "../registry/day-event.registry";
 import {
   createDayInteractionAdapter,
@@ -660,6 +661,58 @@ describe("DayInteractionAdapter", () => {
         endDate: expect.stringContaining("13:00"),
         startDate: expect.stringContaining("09:00"),
       }),
+    });
+  });
+
+  // The Day view mounts the same cards behind the same PointerCaptureBoundary
+  // as the Week view, so the join link needs the same escape here. Delete the
+  // isInteractiveAffordanceTarget bail from getInteractionTarget and the first
+  // of these must fail.
+  it("declines to own a pointerdown originating on an interactive affordance inside a card", () => {
+    const { child } = registerEvent(timedEvent, "timed");
+    const { adapter } = createAdapter();
+
+    child.setAttribute(EVENT_INTERACTIVE_ATTRIBUTE, "true");
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: child, x: 160, y: 160 }),
+      ),
+    ).toEqual({
+      reason: "no-day-interaction-target",
+      shouldOwn: false,
+    });
+  });
+
+  it("owns the same pointerdown once the interactive opt-out is absent", () => {
+    // Negative control: identical event and target, attribute removed.
+    const { child } = registerEvent(timedEvent, "timed");
+    const { adapter } = createAdapter();
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: child, x: 160, y: 160 }),
+      ).shouldOwn,
+    ).toBe(true);
+  });
+
+  it("declines to own a pointerdown on an element nested inside an interactive affordance", () => {
+    // The glyph inside the link is the real pointer target, so the lookup has
+    // to be closest() rather than an equality check.
+    const { child } = registerEvent(timedEvent, "timed");
+    const { adapter } = createAdapter();
+    const glyph = document.createElement("svg");
+
+    child.setAttribute(EVENT_INTERACTIVE_ATTRIBUTE, "true");
+    child.append(glyph);
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: glyph, x: 160, y: 160 }),
+      ),
+    ).toEqual({
+      reason: "no-day-interaction-target",
+      shouldOwn: false,
     });
   });
 });

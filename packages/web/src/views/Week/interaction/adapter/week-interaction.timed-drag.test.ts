@@ -3,6 +3,7 @@ import {
   ID_GRID_MAIN,
 } from "@web/common/constants/web.constants";
 import { type GridEvent } from "@web/common/types/web.event.types";
+import { EVENT_INTERACTIVE_ATTRIBUTE } from "@web/grid/interaction/dom";
 import { createWeekInteractionAdapter } from "@web/views/Week/interaction/adapter/week-interaction.adapter";
 import { weekEventRegistry } from "@web/views/Week/interaction/registry/week-event.registry";
 import {
@@ -295,6 +296,66 @@ describe("WeekInteractionAdapter timed drag", () => {
 
     expect(onClickTimedEvent).toHaveBeenCalledWith(event);
     expect(onCommitTimedDrag).not.toHaveBeenCalled();
+  });
+
+  // The join affordance on an event card is a real link inside the card, and
+  // PointerCaptureBoundary claims pointerdown in the capture phase and
+  // preventDefault()s it whenever this adapter takes ownership - which would
+  // kill the link's own activation before it ever ran. The link therefore opts
+  // out by attribute, and getInteractionTarget must honor that. These two
+  // specs are the only thing pinning that: EventCard.test.tsx asserts the
+  // attribute is present in the markup, which is not the same as proving the
+  // adapter reads it. Delete the isInteractiveAffordanceTarget bail from
+  // getInteractionTarget and the first of these must fail.
+  it("declines to own a pointerdown originating on an interactive affordance inside a card", () => {
+    const { adapter, child, timerCallbacks } = createHarness();
+
+    child.setAttribute(EVENT_INTERACTIVE_ATTRIBUTE, "true");
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: child, x: 320, y: 1020 }),
+      ),
+    ).toEqual({
+      reason: "no-week-interaction-target",
+      shouldOwn: false,
+    });
+    expect(timerCallbacks.size).toBe(0);
+  });
+
+  it("owns the same pointerdown once the interactive opt-out is absent", () => {
+    // Negative control for the spec above: identical event, identical target,
+    // attribute removed. Without this pair, a bail that always returned null
+    // would still look green.
+    const { adapter, child } = createHarness();
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: child, x: 320, y: 1020 }),
+      ),
+    ).toEqual({
+      reason: "saved-timed-drag",
+      shouldOwn: true,
+    });
+  });
+
+  it("declines to own a pointerdown on an element nested inside an interactive affordance", () => {
+    // The glyph inside the link is the real pointer target, not the link
+    // itself, so the lookup has to be closest() rather than an equality check.
+    const { adapter, child } = createHarness();
+    const glyph = document.createElement("svg");
+
+    child.setAttribute(EVENT_INTERACTIVE_ATTRIBUTE, "true");
+    child.append(glyph);
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: glyph, x: 320, y: 1020 }),
+      ),
+    ).toEqual({
+      reason: "no-week-interaction-target",
+      shouldOwn: false,
+    });
   });
 
   it("does not own right-click, non-primary, or modifier pointerdowns", () => {

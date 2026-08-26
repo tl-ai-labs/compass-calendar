@@ -27,6 +27,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, getJoinableConference } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +76,10 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  const joinConference = getJoinableConference(
+    event.conference,
+    !isPlaceholder,
+  );
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -186,8 +191,12 @@ const AllDayEventCardBase = (
       )}
       <div
         className={cn("flex min-w-0 items-center", {
-          // Reserve room so a long title truncates before the bottom-right icon.
-          "pr-3.5": showRepeatIcon,
+          // Reserve room so a long title truncates before the bottom-right
+          // icon(s). Exhaustive over both indicators: whichever combination
+          // renders, exactly one reservation applies.
+          "pr-3.5": showRepeatIcon && !joinConference,
+          "pr-4": !!joinConference && !showRepeatIcon,
+          "pr-7": showRepeatIcon && !!joinConference,
         })}
       >
         <span
@@ -221,6 +230,14 @@ const AllDayEventCardBase = (
           onScalerMouseDown?.(event, e, "endDate");
         }}
       />
+      {joinConference && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          conference={joinConference}
+          hasRepeatIcon={showRepeatIcon}
+          title={event.title}
+        />
+      )}
     </div>
   );
 };

@@ -572,4 +572,457 @@ describe("EventCard", () => {
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
   });
+
+  // These specs render TimedEventCard and AllDayEventCard directly, with no
+  // PointerCaptureBoundary and no Week/Day interaction adapter mounted above
+  // them. That means they do not exercise the integrated plain-click path
+  // used in the real Week and Day views: that path is closed off by the
+  // data-calendar-event-interactive opt-out declared in
+  // grid/interaction/dom.ts, which both view adapters honor through
+  // isInteractiveAffordanceTarget, and none of that gating is exercised here.
+
+  it("renders a Join link with href, target, rel, and the interactive opt-out attribute for a timed saved event with a conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const link = screen.getByRole("link", {
+      name: "Join Planning block (meet.google.com)",
+    });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://meet.google.com/abc-defg-hij",
+    );
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(link).toHaveAttribute("data-calendar-event-interactive", "true");
+  });
+
+  it("renders a Join link with href, target, rel, and the interactive opt-out attribute for an all-day event with a conference", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const link = screen.getByRole("link", {
+      name: "Join Planning block (meet.google.com)",
+    });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://meet.google.com/abc-defg-hij",
+    );
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(link).toHaveAttribute("data-calendar-event-interactive", "true");
+  });
+
+  it("includes the conference label in the Join link's accessible name", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: "Google Meet",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", {
+        name: "Join Planning block via Google Meet (meet.google.com)",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("surfaces the destination host in the Join link's tooltip", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", {
+        name: "Join Planning block (meet.google.com)",
+      }),
+    ).toHaveAttribute("title", "meet.google.com");
+  });
+
+  it("renders no Join link for a timed event without a conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent()}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders no Join link for an all-day event without a conference", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("does not trigger onEventMouseDown from the Join link, but still does from the timed card itself", () => {
+    const onEventMouseDown = mock();
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    fireEvent.mouseDown(
+      screen.getByRole("link", {
+        name: "Join Planning block (meet.google.com)",
+      }),
+    );
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+
+    fireEvent.mouseDown(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    );
+    expect(onEventMouseDown).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not trigger onEventMouseDown from the Join link, but still does from the all-day card itself", () => {
+    const onEventMouseDown = mock();
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={false}
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    fireEvent.mouseDown(
+      screen.getByRole("link", {
+        name: "Join Planning block (meet.google.com)",
+      }),
+    );
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+
+    fireEvent.mouseDown(
+      screen.getByRole("button", { name: "All-day event: Planning block" }),
+    );
+    expect(onEventMouseDown).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not trigger onEventKeyDown when Enter is pressed on the timed card's Join link", () => {
+    const onEventKeyDown = mock();
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        onEventKeyDown={onEventKeyDown}
+        position={position}
+      />,
+    );
+
+    // fireEvent returns false when the default was prevented. Asserting true
+    // covers AC-5's second half: the card root must not preventDefault the
+    // link's own native activation on its way past.
+    expect(
+      fireEvent.keyDown(
+        screen.getByRole("link", {
+          name: "Join Planning block (meet.google.com)",
+        }),
+        {
+          key: "Enter",
+        },
+      ),
+    ).toBe(true);
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("does not trigger onEventKeyDown when Enter is pressed on the all-day card's Join link", () => {
+    const onEventKeyDown = mock();
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={false}
+        onEventKeyDown={onEventKeyDown}
+        position={position}
+      />,
+    );
+
+    // fireEvent returns false when the default was prevented. Asserting true
+    // covers AC-5's second half: the card root must not preventDefault the
+    // link's own native activation on its way past.
+    expect(
+      fireEvent.keyDown(
+        screen.getByRole("link", {
+          name: "Join Planning block (meet.google.com)",
+        }),
+        {
+          key: "Enter",
+        },
+      ),
+    ).toBe(true);
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("keeps the repeat icon in its right-1 slot and steps the timed Join link inboard to right-4 when both indicators collide", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(container.querySelector('svg[class*="right-1"]')).not.toBeNull();
+    const link = screen.getByRole("link", {
+      name: "Join Planning block (meet.google.com)",
+    });
+    expect(link.className).toContain("right-4");
+  });
+
+  it("keeps the repeat icon in its right-1 slot, steps the all-day Join link inboard to right-4, and reserves pr-7 title padding when both indicators collide", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(container.querySelector('svg[class*="right-1"]')).not.toBeNull();
+    const link = screen.getByRole("link", {
+      name: "Join Planning block (meet.google.com)",
+    });
+    expect(link.className).toContain("right-4");
+    const titleWrapper = container.querySelector(".flex.min-w-0.items-center");
+    expect(titleWrapper?.className).toContain("pr-7");
+  });
+
+  it("reserves pr-4 title padding for a conference-only all-day event", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const titleWrapper = container.querySelector(".flex.min-w-0.items-center");
+    expect(titleWrapper?.className).toContain("pr-4");
+  });
+
+  it("reserves pr-3.5 title padding for a repeat-only all-day event", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const titleWrapper = container.querySelector(".flex.min-w-0.items-center");
+    expect(titleWrapper?.className).toContain("pr-3.5");
+  });
+
+  it("renders no Join link for a timed draft event with a conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="draft"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders no Join link for a timed placeholder event with a conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="placeholder"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders no Join link for a placeholder all-day event with a conference", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        isPlaceholder={true}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders no Join link for a timed event whose conference url uses an unsafe protocol", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: { url: "javascript:alert(1)", label: null },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  // The scheme gate is an allowlist, not a denylist. Pinning it against a
+  // corpus (rather than only "javascript:") is what stops a future rewrite to
+  // something like `!url.startsWith("javascript:")` from passing while
+  // reopening data:, blob: and case-mangled variants. ConferenceSchema's
+  // z.url() accepts every one of these, so this component is the only gate.
+  it.each([
+    "javascript:alert(1)",
+    "JaVaScRiPt:alert(1)",
+    "  javascript:alert(1)",
+    "data:text/html,<script>alert(1)</script>",
+    "vbscript:msgbox(1)",
+    "blob:https://evil.test/abc",
+    "filesystem:https://evil.test/temporary/x",
+    "http://meet.google.com/abc-defg-hij",
+  ])("renders no Join link for a conference url of %p", (url) => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: { url, label: null } })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders no Join link for an all-day event whose conference url uses an unsafe protocol", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          conference: { url: "javascript:alert(1)", label: null },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
 });

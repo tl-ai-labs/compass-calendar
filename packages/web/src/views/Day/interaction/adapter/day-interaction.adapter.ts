@@ -10,6 +10,7 @@ import { getLocalMinutes } from "@web/grid/interaction/date";
 import {
   createDraftEventMount,
   getResizeHandleEdge,
+  isInteractiveAffordanceTarget,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
 import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
@@ -434,6 +435,14 @@ export const createDayInteractionAdapter = ({
   function getInteractionTarget(
     event: PointerEvent,
   ): DayInteractionTarget | null {
+    // An interactive affordance inside a card (e.g. the join link) opts out of
+    // every interaction kind, not just dragging: PointerCaptureBoundary owns
+    // pointerdown in the capture phase and preventDefault()s it, so the
+    // element cannot defend itself downstream.
+    if (isInteractiveAffordanceTarget(event)) {
+      return null;
+    }
+
     const allDayResizeTarget = getAllDayResizeTarget(event);
 
     if (allDayResizeTarget) {

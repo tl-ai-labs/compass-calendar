@@ -46,6 +46,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon, getJoinableConference } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -118,6 +119,11 @@ const TimedEventCardBase = (
     !isPlaceholder &&
     durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
     position.width >= REPEAT_ICON_MIN_WIDTH;
+
+  const joinConference = getJoinableConference(
+    event.conference,
+    displayMode === "saved",
+  );
 
   const showTimeLabel =
     !event.isAllDay &&
@@ -361,6 +367,14 @@ const TimedEventCardBase = (
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {joinConference && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          conference={joinConference}
+          hasRepeatIcon={showRepeatIcon}
+          title={event.title}
+        />
+      )}
     </div>
   );
 };
