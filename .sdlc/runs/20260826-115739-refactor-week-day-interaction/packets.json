@@ -1,0 +1,625 @@
+[
+  {
+    "id": "tp_s1_001",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "registry",
+    "stage": 1,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/view-interaction.module.ts",
+    "instruction": "Create the single per-view registry+targeting module (plan A1). Build a frozen VIEW_INTERACTION_MODULES = { day, week } at MODULE SCOPE from literal calls createViewInteractionRegistry(\"day\") and createViewInteractionRegistry(\"week\"). For each view also build its TARGET_SELECTOR as `[${idAttribute}][${typeAttribute}]` and one createGridEventTargeting call. Export ONLY the frozen constant and its types. Export NO function that mints a further registry — FR-2 requires exactly two instances for the process lifetime and this must be structurally unrepresentable. Do not edit view-event-registry.ts or event.targeting.ts.",
+    "inputs": [
+      { "path": "packages/web/src/grid/interaction/view-event-registry.ts", "lines": "1-128", "reason": "createViewInteractionRegistry factory being composed" },
+      { "path": "packages/web/src/grid/interaction/event.targeting.ts", "lines": "1-62", "reason": "createGridEventTargeting factory being composed" },
+      { "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts", "lines": "16-23", "reason": "TARGET_SELECTOR shape to preserve" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Literal strings \"week\" and \"day\" appear as arguments to createViewInteractionRegistry (AC-3 grep matches verbatim)",
+      "No exported function returns a new view module or registry (FR-2)",
+      "VIEW_INTERACTION_MODULES.week.registry !== VIEW_INTERACTION_MODULES.day.registry",
+      "Repeat property access returns a reference-identical registry"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s1_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "registry",
+    "stage": 1,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/view-interaction.module.test.ts",
+    "instruction": "New bun:test suite guarding FR-2 and FR-3 structurally (plan A2). Assert: registry reference identity is stable across repeat property access; the instance is identical to the one re-exported as weekEventRegistry / dayEventRegistry; week.registry !== day.registry; attribute strings are byte-exactly data-week-interaction-event-id/-type and data-day-interaction-event-id/-type. Follow .cursor/rules/web-testing.mdc conventions.",
+    "inputs": [
+      { "path": "packages/web/src/grid/interaction/view-interaction.module.ts", "lines": "all", "reason": "unit under test" },
+      { "path": "packages/web/src/grid/interaction/view-event-registry.test.ts", "lines": "1-40", "reason": "existing attribute-assertion conventions to mirror" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Fails if a fresh registry were minted per access",
+      "Asserts all four attribute strings literally, not via template interpolation",
+      "Green under `bun test src/grid/interaction`"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s1_003",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "registry",
+    "stage": 1,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts",
+    "instruction": "Repoint line 8 from `createViewInteractionRegistry(\"week\")` to `VIEW_INTERACTION_MODULES.week`. Keep all nine exports byte-identical in name and order: WEEK_INTERACTION_EVENT_ID_ATTRIBUTE, WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE, WeekInteractionEventType, WeekRegisteredEventTarget, WeekEventRegistry, getWeekInteractionTargetAttributes, createWeekEventRegistry, weekEventRegistry, useWeekEventRegistrationRef. createWeekEventRegistry MUST survive — week-event.registry.test.tsx:301,331 uses it to mint isolated test registries.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/registry/week-event.registry.ts", "lines": "1-24", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/view-interaction.module.ts", "lines": "all", "reason": "new source of the module" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "All nine export names present and in original order",
+      "week-event.registry.test.tsx (9 tests / 36 assertions) passes unedited",
+      "No behavioral code remains in the file — aliases only"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_s1_004",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "registry",
+    "stage": 1,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts",
+    "instruction": "Same as tp_s1_003 for Day: line 8 becomes VIEW_INTERACTION_MODULES.day. All nine Day* exports preserved in name and order, including createDayEventRegistry.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/registry/day-event.registry.ts", "lines": "1-24", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/view-interaction.module.ts", "lines": "all", "reason": "new source of the module" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "All nine Day* export names present and in original order",
+      "day-event.registry.test.tsx (6 tests / 12 assertions) passes unedited"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 }
+  },
+
+  {
+    "id": "tp_s2_001",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "targeting",
+    "stage": 2,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts",
+    "instruction": "Delete the local TARGET_SELECTOR (:17) and the local createGridEventTargeting call (:19-23). The four exported helpers become aliases onto VIEW_INTERACTION_MODULES.week.targeting. Preserve types WeekGridEventTargetType and WeekGridEventTarget, and exports getFocusedWeekGridEventTarget, getFirstVisibleWeekGridEventTarget, listVisibleWeekGridEventTargets, focusWeekGridEventTarget.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/targeting/week-event.targeting.ts", "lines": "1-35", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/view-interaction.module.ts", "lines": "all", "reason": "targeting now lives here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Four helper exports plus two type exports preserved",
+      "week-event.targeting.test.ts (4/4) passes unedited",
+      "Resolves against the SAME registry instance the cards register into (FR-2)"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_s2_002",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "targeting",
+    "stage": 2,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts",
+    "instruction": "Same as tp_s2_001 for Day. The Biome line-wrap artifact at :18-23 disappears with the code it wrapped.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/targeting/day-event.targeting.ts", "lines": "1-35", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/view-interaction.module.ts", "lines": "all", "reason": "targeting now lives here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Four Day* helper exports plus two type exports preserved",
+      "day-event.targeting.test.ts (4/4) passes unedited"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2000 }
+  },
+
+  {
+    "id": "tp_s3_001",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-types",
+    "stage": 3,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.types.ts",
+    "instruction": "Create the single declaration of the types currently declared twice character-for-character (plan A3): ViewInteractionPointerOwnership, ViewResolvedEventTarget, ViewAllDayDragTarget, ViewAllDayResizeTarget, ViewTimedDragTarget, ViewTimedResizeTarget, ViewInteractionTarget, ViewInteractionVisual, the four View*CommitResult interfaces, ViewInteractionCommitResult, ViewInteractionRuntimeBase, ViewInteractionAdapterBase. Source of truth: week-interaction.adapter.types.ts:19-137 and day-interaction.adapter.types.ts:20-137. NFR-5: no `any`, no `unknown` widening — the two views' target/visual/commit-result shapes are already structurally identical.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts", "lines": "1-149", "reason": "one of the two identical sources" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts", "lines": "1-149", "reason": "the other; diff must be confirmed before collapsing" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Type-only module; emits no JS",
+      "ViewInteractionRuntimeBase excludes getVisibleDays and getColumnKeys/getVisibleDate (those stay per-view)",
+      "ViewInteractionAdapterBase excludes rebuildLayoutAfterNavigation (Week-only, AC-6)",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s3_002",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-types",
+    "stage": 3,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts",
+    "instruction": "Collapse :19-22 and :50-136 into `export type X = ViewX;` aliases over A3. Keep as REAL declarations: WeekInteractionAdapterOptions (:24-28); WeekInteractionRuntime (:30-48) which extends ViewInteractionRuntimeBase and adds ONLY getVisibleDays(): string[] and onRequestWeekNavigation?; WeekEdgeNavigableVisual (:130); WeekInteractionAdapter (:138-149) which extends ViewInteractionAdapterBase adding ONLY rebuildLayoutAfterNavigation(): void. Every exported name must survive — zero emitted-JS diff.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.types.ts", "lines": "1-149", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.types.ts", "lines": "all", "reason": "aliases point here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Every previously exported name still exported",
+      "Week keeps getVisibleDays — FR-7 date-column semantics",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s3_003",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-types",
+    "stage": 3,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts",
+    "instruction": "Same collapse for Day. Real declarations kept: DayInteractionAdapterOptions (:25-38 including the getColumnKeys doc comment at :27-33), DayInteractionRuntime (extends ViewInteractionRuntimeBase, adds nothing), DayInteractionAdapter = ViewInteractionAdapterBase with NO rebuildLayoutAfterNavigation (AC-6).",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.types.ts", "lines": "1-149", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.types.ts", "lines": "all", "reason": "aliases point here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Every previously exported name still exported",
+      "Day keeps getColumnKeys + getVisibleDate — FR-7 calendarId-column semantics",
+      "DayInteractionAdapter has no rebuildLayoutAfterNavigation member (AC-6)",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 }
+  },
+
+  {
+    "id": "tp_s4_001",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-core",
+    "stage": 4,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.targets.ts",
+    "instruction": "Extract the target-resolution layer (plan A4) from week-interaction.adapter.ts:483-640 and day-interaction.adapter.ts:434-591, which are token-identical apart from the registry instance. Export createViewInteractionTargetResolver({ registry, runtime }) -> { getInteractionTarget }, preserving the EXACT precedence all-day-resize -> timed-resize -> timed-drag -> all-day-drag. Also export the shared predicates isViewAllDayTarget and isViewDragTarget (three duplicate copies today: week:755,760; day:604; day-layout.cache.ts:59,73). Preserve the isAllDay mismatch rejection and hadFormOpenBeforeInteraction defaulting to false when isFormOpen is absent. runtime() must be re-read per call, not captured.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "483-640,755-763", "reason": "extraction source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "434-591,604-607", "reason": "second copy; confirm token-identity before collapsing" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Resolution precedence byte-preserved",
+      "runtime() re-read on every getInteractionTarget call",
+      "No view-specific string or column semantics leak into this module",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 5000 }
+  },
+  {
+    "id": "tp_s4_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "adapter-core",
+    "stage": 4,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.targets.test.ts",
+    "instruction": "New direct coverage of the extracted resolver (plan A5): resize-handle precedence; isAllDay mismatch rejection (week:599 / day:550); hadFormOpenBeforeInteraction defaulting to false when isFormOpen is absent; per-call runtime() re-read.",
+    "inputs": [
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.targets.ts", "lines": "all", "reason": "unit under test" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Covers all four listed behaviors",
+      "Green under `bun test src/grid/interaction`"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s4_003",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-core",
+    "stage": 4,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.engine-members.ts",
+    "instruction": "Extract the three engine-adapter members that are literally identical in both adapters (week:342-349 / day:322-329) as NAMED STANDALONE FUNCTIONS: viewInteractionDraftEventMount, getViewInteractionSourceElement, getViewInteractionDraftEventMode. Do NOT export them as an object to spread — each adapter's engine-adapter literal must keep its alphabetical key order so Biome reformat stays a no-op (NFR-4).",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "342-349", "reason": "extraction source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "322-329", "reason": "identical copy" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Three named function exports, no spreadable aggregate object",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_s4_004",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-core",
+    "stage": 4,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.layout-state.ts",
+    "instruction": "Extract createViewInteractionLayoutState() -> { applySmartScroll, clear, getLayout, getScrollTop, setLayout } from week:659-666,731-741 and day:95-96,425-432 (identical). This module is the SINGLE OWNER of the only mutable state that can break updateVisual idempotence — scrollTop accumulates across invocations. State that invariant explicitly in a doc comment referencing FR-6/AC-8.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "659-666,731-741", "reason": "extraction source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "95-96,425-432", "reason": "identical copy" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Doc comment names the idempotence invariant (FR-6/AC-8)",
+      "Smart-scroll accumulation semantics unchanged from both sources",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_s4_005",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "adapter-core",
+    "stage": 4,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.core.ts",
+    "instruction": "Create createViewInteractionAdapterCore({ createEngineAdapter, engineOptions, onPointerDownAccepted?, onPointerClickSettled?, ownershipReasons, registry, runtime }) -> { adapter, engine, getInteractionTarget } (plan A8). It owns engine construction and the seven common methods: ownsPointer, connectCancellationEvents, handlePointerDown, handlePointerMove, handlePointerUp, handlePointerCancel, cancel. ownershipReasons carries the ownership strings VERBATIM (\"ineligible-week-pointer\"/\"no-week-interaction-target\" vs \"ineligible-day-pointer\"/\"no-day-interaction-target\"). onPointerDownAccepted is Week's setWeekInteractionMotionActive(true) (week:183); onPointerClickSettled is Week's setWeekInteractionMotionActive(false) (week:215). Day passes NEITHER — optional params are how AC-6 is enforced at the type level. Return the engine handle so Week can build rebuildLayoutAfterNavigation on it; Day never reads it. This module must not import motion.state, edge-navigation, or cross-row math.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "100-131,157-257", "reason": "extraction source incl. handlers and ownership strings" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "88-113,115-211", "reason": "second copy" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Ownership reason strings supplied by caller, never hardcoded per view",
+      "No import of motion.state, edge-navigation.ts or cross-row.drag (AC-6)",
+      "Both hooks optional; Day omits both",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 6000 }
+  },
+
+  {
+    "id": "tp_s5_001",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "week-adapter",
+    "stage": 5,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "instruction": "Rewrite 795 -> ~370 LOC against the shared core. REMOVE (now shared): :125-131, :157-197, :241-251, :483-640, :659-666, :731-741, :755-763, :767-781. RETAIN in place and unedited in substance: rebuildLayoutAfterNavigation (:133-155); the whole createEngineAdapter body (:253-481) including edge-nav wiring and the three \"Mismatched Week interaction target\" throws; updateEdgeNavigation (:668-703); getLayoutInput (:705-710); rebuildLayoutIfNeeded (:712-725); getDraftEventSize (:786-793); the type re-export block :83-90 (the coordinator imports commit-result types from here). New body: const core = createViewInteractionAdapterCore({...}); return { ...core.adapter, rebuildLayoutAfterNavigation };. The exported factory name and options shape MUST NOT change. Week's six adapter suites are FR-9-protected and must pass with a zero-byte diff.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "1-795", "reason": "file being rewritten" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.core.ts", "lines": "all", "reason": "new core being composed" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.layout-state.ts", "lines": "all", "reason": "layout/scroll state now lives here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "All six Week adapter suites (48 tests / 149 assertions) pass with those files unedited (FR-9/AC-5)",
+      "Edge navigation, cross-row drag, motion flag and rebuildLayoutAfterNavigation all still present (FR-8)",
+      "createWeekInteractionAdapter name and options shape unchanged",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 8000 }
+  },
+  {
+    "id": "tp_s5_002",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "week-adapter",
+    "stage": 5,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts",
+    "instruction": "Gain buildWeekLayoutCacheForTarget, moved from week-interaction.adapter.ts:767-781 with its comment at :765-766, so it mirrors Day's buildDayLayoutCacheForTarget. Re-export isViewDragTarget / isViewAllDayTarget from A4 for the adapter's use. Do NOT change any weekLayoutCacheOptions value — WEEK_EDGE_NAVIGATION_THRESHOLD_PX, ID_ALLDAY_COLUMNS and the smart-scroll tuning at :41-56 stay exactly as they are.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/geometry/week-layout.cache.ts", "lines": "1-73", "reason": "file being edited" },
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "765-781", "reason": "moved function" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "No numeric option value changed",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2500 }
+  },
+
+  {
+    "id": "tp_s6_001",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/geometry/day-columns.ts",
+    "instruction": "Verbatim extraction of day-interaction.adapter.ts:245-263 into resolveDayColumns({ getColumnKeys, target, visibleDate }) -> { columnKeys, initialColumnIndex, initialColumnKey }. Move the comment at :246-253 with it. Lives in geometry/ not interactions/ because its output feeds the layout-cache build, which happens before any per-interaction visual is created. Preserve the single-column fallback exactly (the one key is a date string that never changes).",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "245-263", "reason": "extraction source" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Column keys are calendar ids — FR-7 Day semantics preserved",
+      "Single-column fallback behavior identical",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_s6_002",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/interactions/all-day.drag.ts",
+    "instruction": "Lift Day's all-day drag to Week's one-module-per-interaction shape (plan A11). Export createAllDayDragInteractionVisual (from day:280-288), updateAllDayDragInteractionVisual (from day:339-351 — returns the BARE next visual, mirroring Week's own all-day.resize.ts:45-57; returning { event: null, visual } would imply a cross-row concept Day must not gain), and commitAllDayDragInteraction moved VERBATIM from commit/all-day.commit.ts:14-37 with signature (target, visual) unchanged. Day's own-dates semantics and the \"dayDate\" in visual guard move untouched (FR-7).",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "280-288,339-351", "reason": "create/update source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts", "lines": "14-37", "reason": "commit fn moved verbatim" },
+      { "path": "packages/web/src/views/Week/interaction/adapter/interactions/all-day.resize.ts", "lines": "45-57", "reason": "the Week precedent for returning a bare visual" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Day all-day drag keeps OWN-DATES semantics and changes only calendarId (FR-7/AC-7)",
+      "No commit argument added, removed, reordered or defaulted",
+      "No cross-row import (AC-6)",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s6_003",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/interactions/all-day.resize.ts",
+    "instruction": "Plan A12. Export createAllDayResizeInteractionVisual (from day:290-299 — note endDayIndex: 0 / startDayIndex: 0; Day does NOT use getVisibleAllDayRange), updateAllDayResizeInteractionVisual (from day:353-367), and commitAllDayResizeInteraction verbatim from commit/all-day.commit.ts:39-57 keeping signature (target, visual, visibleDate) AND keeping the visibleDate rewrite that FR-7 says stays as-is.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "290-299,353-367", "reason": "create/update source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts", "lines": "39-67", "reason": "commit fn + mapper moved verbatim" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "visibleDate rewrite preserved verbatim — this asymmetry is current behavior (FR-7)",
+      "Three-argument signature intact",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s6_004",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/interactions/timed.drag.ts",
+    "instruction": "Plan A13. Export createTimedDragInteractionVisual (from day:312-320), updateTimedDragInteractionVisual (from day:401-411 — returns { event, visual } like Week's, with event built by timedDragVisualToDayGridEvent), and commitTimedDragInteraction verbatim from commit/timed.commit.ts:17-33. Day column change = calendarId change via columnMoveCalendarId (FR-7).",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "312-320,401-411", "reason": "create/update source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts", "lines": "17-33,53-83", "reason": "commit fn + mapper + columnMoveCalendarId" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Day timed drag writes visibleDate + columnMoveCalendarId, never a Week-style absolute date (FR-7/AC-7)",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s6_005",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/interactions/timed.resize.ts",
+    "instruction": "Plan A14. Export createTimedResizeInteractionVisual (from day:301-310), updateTimedResizeInteractionVisual (from day:369-394 — returns { event, visual }), and commitTimedResizeInteraction verbatim from commit/timed.commit.ts:35-51.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "301-310,369-394", "reason": "create/update source" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts", "lines": "35-51,85-100", "reason": "commit fn + mapper" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "Resize does not change calendarId (only drag does) — preserved from source",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_s6_006",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+    "instruction": "Rewrite 607 -> ~230 LOC. REMOVE to shared core: :107-113, :115-145, :147-153, :155-205, :425-432, :434-591, :604-607. REMOVE to Day's own new modules: :245-263 -> A10; :280-320 -> A11-A14 createX; :339-420 -> A11-A14 updateX. RETAIN: the createEngineAdapter skeleton with its commit dispatch calling getVisibleDate() ONCE, UNCONDITIONALLY, BEFORE the branch (:219) exactly as today; the \"Mismatched Day interaction target\" throws; inertRuntime (:82-86); the type re-export block :73-80. createDayInteractionAdapter's name and options shape MUST NOT change — DayInteractionCoordinator.tsx constructs it and is out of scope. Day acquires NO edge-navigation, NO motion flag, NO cross-row math, NO rebuildLayoutAfterNavigation.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "lines": "1-607", "reason": "file being rewritten" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.core.ts", "lines": "all", "reason": "new core being composed" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "day-interaction.adapter.test.ts (14 tests / 39 assertions) passes with that file unedited",
+      "getVisibleDate() still called once unconditionally before the commit branch",
+      "grep for cross-row / motion.state / edge-navigation imports in Day returns nothing (AC-6)",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 7000 }
+  },
+  {
+    "id": "tp_s6_007",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts",
+    "instruction": "commitAllDayDragInteraction (:14-37) and commitAllDayResizeInteraction (:39-57) MOVE OUT to A11/A12. What remains becomes Week-shaped: export the previously private mapper allDayVisualToDayGridEvent (:59-67), and turn the two inline hasMoved expressions (:18-19, :44-46) into named exported predicates hasDayAllDayDragVisualMoved / hasDayAllDayResizeVisualChanged, mirroring Week's all-day.commit.ts:7,34. The \"dayDate\" in visual guard moves with its expression, untouched.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/all-day.commit.ts", "lines": "1-67", "reason": "file being edited" },
+      { "path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts", "lines": "1-65", "reason": "the target shape to mirror" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "\"dayDate\" in visual guard preserved character-for-character",
+      "No semantic change to either predicate",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_s6_008",
+    "phase": "refactor",
+    "task_type": "refactor_extract",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts",
+    "instruction": "commitTimedDragInteraction (:17-33) and commitTimedResizeInteraction (:35-51) MOVE OUT to A13/A14. RETAIN UNCHANGED: timedDragVisualToDayGridEvent (:53-69), columnMoveCalendarId (:71-83 including its doc comment), timedResizeVisualToDayGridEvent (:85-100), and the hasTimedDragVisualMoved / hasTimedResizeVisualMoved re-export (:4-7) — Week's timed.commit.ts:10 re-exports the same pair the same way.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts", "lines": "1-100", "reason": "file being edited" },
+      { "path": "packages/web/src/views/Week/interaction/adapter/commit/timed.commit.ts", "lines": "1-38", "reason": "the target shape to mirror" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "columnMoveCalendarId unchanged including doc comment — FR-7 calendarId semantics",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_s6_009",
+    "phase": "refactor",
+    "task_type": "patch_apply",
+    "module": "day-adapter",
+    "stage": 6,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts",
+    "instruction": "Delete the local isAllDayTarget (:59-62) and the local isDayDragTarget body (:73-76); isDayDragTarget becomes a one-line re-export of A4's isViewDragTarget so the import surface is untouched. Do NOT touch buildDayTimedLayoutCache / buildDayAllDayLayoutCache / buildDayLayoutCacheForTarget — Day's edgeThresholdPx: INTERACTION_EDGE_THRESHOLD_PX vs 0, and its deliberate absence of buildDragGridLayoutCache, are the mechanism by which Day has no cross-row drop and no edge navigation (AC-6).",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-layout.cache.ts", "lines": "1-76", "reason": "file being edited" },
+      { "path": "packages/web/src/grid/interaction/adapter/view-interaction.targets.ts", "lines": "all", "reason": "predicates now live here" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "buildDragGridLayoutCache still absent from Day (AC-6)",
+      "isDayDragTarget still exported under its original name",
+      "`bun run type-check` passes"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2000 }
+  },
+
+  {
+    "id": "tp_s7_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "coverage",
+    "stage": 7,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/grid/interaction/adapter/view-interaction.divergence.test.ts",
+    "instruction": "AC-7's dedicated artifact (plan A9). One file asserting the four essential divergences side by side: Week all-day drag applies a DAY DELTA to the event's own dates; Day all-day drag KEEPS the event's dates and changes only calendarId; Week timed drag writes an absolute DATE; Day timed drag writes visibleDate + columnMoveCalendarId. Imports both views' commit modules (test-only cross-tree import; both paths are inside the allowlist).",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/commit/all-day.commit.ts", "lines": "all", "reason": "Week delta semantics under test" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/commit/timed.commit.ts", "lines": "all", "reason": "Day calendarId semantics under test" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "All four divergences asserted in one file (AC-7)",
+      "A regression that normalized either view's semantics fails this suite",
+      "Green under `bun test src/grid/interaction`"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3500 }
+  },
+  {
+    "id": "tp_s7_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "coverage",
+    "stage": 7,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.interactions.test.ts",
+    "instruction": "New and STRICTLY ADDITIVE — Day's existing suite is not touched (plan A15). Cover the four newly extracted interaction modules plus resolveDayColumns: single-column fallback when the event's calendar is not among the rendered columns (day:254-262); columnMoveCalendarId on same-column vs cross-column drops; Day's \"dayDate\" in visual guard; Day all-day resize rewriting to visibleDate / visibleDate+1; and AC-8 updateVisual double-invocation idempotence for Day.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/geometry/day-columns.ts", "lines": "all", "reason": "unit under test" },
+      { "path": "packages/web/src/views/Day/interaction/adapter/interactions/all-day.drag.ts", "lines": "all", "reason": "unit under test" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "day-interaction.adapter.test.ts remains unedited (zero-byte diff)",
+      "AC-8 idempotence asserted for Day",
+      "Day coverage strictly increases"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 }
+  },
+  {
+    "id": "tp_s7_003",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "coverage",
+    "stage": 7,
+    "pass_id": "20260826-115739-refactor-week-day-interaction",
+    "intent": "refactor",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.idempotence.test.ts",
+    "instruction": "New 7th Week adapter grouping (plan A16). Exists as its OWN file precisely so none of the six FR-9-protected suites is edited — a git diff --stat proving those six untouched is the cheapest possible AC-5 audit. Content: AC-8 double-invocation of updateVisual with the same pointer yields an identical visual, for Week's timed drag and all-day drag paths.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "lines": "all", "reason": "unit under test" },
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.timed-drag.test.ts", "lines": "1-60", "reason": "harness/setup conventions to mirror" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "None of Week's six existing adapter suites is edited (FR-9/AC-5)",
+      "AC-8 asserted for Week — second updateVisual call is a no-op on the visual",
+      "Week adapter test file count goes 6 -> 7, test count 48 -> 48+"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 }
+  }
+]

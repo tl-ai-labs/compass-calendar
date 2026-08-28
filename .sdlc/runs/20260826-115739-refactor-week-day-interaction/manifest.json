@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "run_id": "20260826-115739-refactor-week-day-interaction",
+  "mode": "brownfield",
+  "intent": "refactor",
+  "policy": {
+    "name": "opus-only-v5",
+    "version": 1,
+    "models": [
+      "claude-opus-5"
+    ],
+    "adapter": "claude-cli",
+    "hard_cost_cap_usd": 50,
+    "stop_and_report_threshold_usd": 35
+  },
+  "auth_mode": "estimated",
+  "provenance_note": "All cost figures are in-session char/3.8 estimates at the policy's list rates, booking input_tokens_cached=0. They are NOT vendor-reported and are not comparable across policies.",
+  "branch": "CMP-104/opus-only-v5",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "gates": {
+    "gate_0": "approved (pre-run)",
+    "gate_1": "approved",
+    "gate_2": "approved + per-stage type-check added",
+    "gate_3": "approved",
+    "gate_4": "pending"
+  },
+  "packets": {
+    "planned": 28,
+    "executed": 28,
+    "refinement_executed": 5,
+    "failed": 0,
+    "retries": 6
+  },
+  "files": {
+    "source_changed": 29,
+    "source_new": 17,
+    "source_modified": 12,
+    "config_changed": [
+      ".gitignore"
+    ],
+    "call_sites_edited": 0
+  },
+  "verification": {
+    "full_suite": {
+      "command": "bun test:web",
+      "result": "2340 pass / 0 fail / 308 files",
+      "baseline": "2298 pass / 0 fail / 302 files",
+      "net": "+42 tests, +6 files, 0 regressions"
+    },
+    "seam_probe": {
+      "result": "201 pass / 0 fail / 30 files",
+      "baseline": "159 pass / 0 fail / 24 files"
+    },
+    "type_check": {
+      "command": "bun run type-check",
+      "result": "exit 0",
+      "note": "run as a gate after every stage per Gate 2; caught 8 errors at stage 7 that the passing test run did not"
+    },
+    "knip": {
+      "result": "exit 0"
+    },
+    "lint": {
+      "command": "bun run lint",
+      "result": "exit 1",
+      "errors": 2,
+      "warnings": 10,
+      "detail": "Both errors are tracked plugin-written .sdlc JSON files (.sdlc/baseline/current.json, .sdlc/pre-check-status.json), already dirty before this run. Zero errors and zero new warnings under packages/ and self-host/. Biome over only the 29 touched files: 0 diagnostics."
+    }
+  },
+  "acceptance": {
+    "AC-1": "pass",
+    "AC-2": "pass",
+    "AC-3": "pass",
+    "AC-4": "pass",
+    "AC-5": "pass",
+    "AC-6": "pass",
+    "AC-7": "pass",
+    "AC-8": "pass (after refinement; original test was non-discriminating)",
+    "AC-9": "pass"
+  },
+  "reviews": {
+    "senior": {
+      "verdict": "request-changes -> resolved",
+      "blockers": 2,
+      "refinements": 6,
+      "executed": 5
+    },
+    "security": {
+      "verdict": "pass-with-observations",
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 1,
+      "info": 1,
+      "introduced_by_run": 0
+    }
+  },
+  "telemetry": {
+    "by_phase": {
+      "requirements_analysis": {
+        "events": 1,
+        "input_tokens": 21600,
+        "output_tokens": 3500,
+        "cost_usd": 0.1955,
+        "retries": 0
+      },
+      "change_plan": {
+        "events": 2,
+        "input_tokens": 141900,
+        "output_tokens": 13500,
+        "cost_usd": 1.047,
+        "retries": 0
+      },
+      "plan_task_packets": {
+        "events": 1,
+        "input_tokens": 35000,
+        "output_tokens": 8000,
+        "cost_usd": 0.375,
+        "retries": 0
+      },
+      "execute_packets": {
+        "events": 34,
+        "input_tokens": 350000,
+        "output_tokens": 38400,
+        "cost_usd": 2.7093,
+        "retries": 5
+      },
+      "test_run": {
+        "events": 8,
+        "input_tokens": 53000,
+        "output_tokens": 4350,
+        "cost_usd": 0.3735,
+        "retries": 1
+      },
+      "senior_code_review": {
+        "events": 1,
+        "input_tokens": 152000,
+        "output_tokens": 14500,
+        "cost_usd": 1.1225,
+        "retries": 0
+      },
+      "security_review": {
+        "events": 1,
+        "input_tokens": 41000,
+        "output_tokens": 4800,
+        "cost_usd": 0.325,
+        "retries": 0
+      }
+    },
+    "totals": {
+      "events": 48,
+      "input_tokens": 794500,
+      "output_tokens": 87050,
+      "cost_usd": 6.1478,
+      "retries": 6,
+      "failures": 0
+    }
+  },
+  "known_issues": [
+    "provenance.json holds 36 records over 30 unique paths; 6 paths carry two records (stage write + refinement write). The EARLIEST record per path holds true pre-run state. If /mmo:revert resolves last-record-wins it will restore mid-run content instead of deleting a newly created file.",
+    "11 records carry a stale sha_after because `biome check --write` reformatted those files after the provenance helper stamped them.",
+    "change_plan.md is deliberately absent from provenance: it was written by the architect subagent with no preceding --before, and backfilling one would record post-write content as pre-run state, teaching revert to restore a file it should delete.",
+    "npm audit --omit=dev is ENOLOCK on this repo (Bun workspace, no package-lock.json), so the security checklist's audit step is silently unrunnable on every run here. bun audit --prod works: 69 vulnerabilities / 24 high, all pre-existing and advisory since deps are untouched.",
+    "bun run lint remains exit 1 on two tracked plugin-written .sdlc JSON files whose compact-array formatting Biome rejects; formatting them would regress on the next plugin run."
+  ],
+  "artifacts": [
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/SUMMARY.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/baseline.json",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/change_plan.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/discovery.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/intent_brief.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/manifest.json",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/packets.json",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/provenance.json",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/requirements.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/review.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/security_review.md",
+    ".sdlc/runs/20260826-115739-refactor-week-day-interaction/telemetry.jsonl"
+  ]
+}
