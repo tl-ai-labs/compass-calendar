@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "run_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/common/styles/attendee-status.styles.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:2790ae71008b29d27b531251482eb63d5a216eafaeafc545f137d8dfb8f8607c",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_pkt_001",
+      "written_at": "2026-08-29T15:30:08.978Z",
+      "write_count": 1,
+      "packet_ids": [
+        "tp_pkt_001"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:606390b9b031f38a728ba4a0a09d01482889c7cd45806513cb88373d799f82ab",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_pkt_004",
+      "written_at": "2026-08-29T15:30:09.087Z",
+      "write_count": 1,
+      "packet_ids": [
+        "tp_pkt_004"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:e670391074a8c0fbc4e0716dff8e2b641485529e9978e37c8b7ad21c25a6eebf",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_pkt_005",
+      "written_at": "2026-08-29T17:28:07.159Z",
+      "write_count": 2,
+      "packet_ids": [
+        "tp_pkt_005",
+        "tp_pkt_r01"
+      ]
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.styles.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:c0b85d608c8eb0dc2a479d7edded7a596fccfbf5e5646be84d6f00e7d605dfca",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_pkt_002",
+      "written_at": "2026-08-29T17:28:07.371Z",
+      "write_count": 2,
+      "packet_ids": [
+        "tp_pkt_002",
+        "tp_pkt_r05"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:aa01d3506a10e621b2b6e81afe7f968c1a2bd2346e06fc4a77bbb012e0241182",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_pkt_006",
+      "written_at": "2026-08-29T17:28:07.216Z",
+      "write_count": 2,
+      "packet_ids": [
+        "tp_pkt_006",
+        "tp_pkt_r02"
+      ]
+    },
+    {
+      "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:c93237b13900998de077528a17ad843cf284086f66c010bfd083747f134e6052",
+      "sha_after": "sha256:297968b7d9c0203bb365fe56859a2ff90e01dbd7131730ad0c22b9260ae93fa6",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_pkt_003",
+      "written_at": "2026-08-29T15:39:11.464Z",
+      "write_count": 1,
+      "packet_ids": [
+        "tp_pkt_003"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:6b8932d286550fb214955daf6b33513970b9f1b8a797e258257e222dedbec378",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_pkt_007",
+      "written_at": "2026-08-29T17:28:07.323Z",
+      "write_count": 2,
+      "packet_ids": [
+        "tp_pkt_007",
+        "tp_pkt_r04"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:5532dba603e439fade288575cb199893f4b43cfccda600f943637aa2a3d702d8",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_pkt_008",
+      "written_at": "2026-08-29T15:43:25.783Z",
+      "write_count": 1,
+      "packet_ids": [
+        "tp_pkt_008"
+      ]
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:fdf5bb22c60579dd09d24ab73a2d053a8851eb2221caa0b5a9b61cec848a4d4a",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_pkt_009",
+      "written_at": "2026-08-29T17:28:07.272Z",
+      "write_count": 2,
+      "packet_ids": [
+        "tp_pkt_009",
+        "tp_pkt_r03"
+      ]
+    }
+  ],
+  "dedupe_note": "Deduped at Gate 4 close-out: one entry per path. existed_before/tracked_in_git/sha_before/backup_path taken from the EARLIEST write, sha_after/written_at from the LATEST. Full append history preserved verbatim in provenance.raw.json. Before this, 5 paths carried two entries each (re-edited after Gate 3) and a naive revert could restore mid-run content instead of deleting a run-created file."
+}

@@ -1,0 +1,324 @@
+[
+  {
+    "id": "tp_pkt_001",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/common/styles/attendee-status.styles.ts",
+    "instruction": "Create the shared RSVP-status styling module exactly as specified in change_plan.md section 3 'Intended source'. Export ATTENDEE_STATUS_CLASSES (a total Record<AttendeeResponseStatus,{bg,ring}> with all eight class names written as WHOLE string literals - Tailwind v4 scans source text and never sees a template literal), plus two module-load projections ATTENDEE_STATUS_DOT (bg) and ATTENDEE_STATUS_RING (ring), plus attendeeStatusLabel. Type-only import of AttendeeResponseStatus from @core/types/event-attendance.contracts. No React, no store, no side effects. Keep the header comment that forbids template-literal class construction. Output the complete file body only.",
+    "inputs": [
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "content": "export const AttendeeResponseStatusSchema = z.enum([\n  \"needsAction\",\n  \"accepted\",\n  \"declined\",\n  \"tentative\",\n]);\nexport type AttendeeResponseStatus = z.infer<typeof AttendeeResponseStatusSchema>;",
+        "reason": "The four enum members the Record must be total over. Import-only; never edited."
+      },
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "content": "const ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> = {\n  accepted: \"bg-success\",\n  declined: \"bg-error\",\n  tentative: \"bg-warning\",\n  needsAction: \"bg-text-subtle\",\n};\n\nconst attendeeStatusLabel = (status: AttendeeResponseStatus): string =>\n  status === \"needsAction\" ? \"hasn't responded\" : status;",
+        "reason": "The inherited map and label helper being lifted. Values must be preserved byte-identically (FR-A1, FR-E3)."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exports ATTENDEE_STATUS_CLASSES, ATTENDEE_STATUS_DOT, ATTENDEE_STATUS_RING, attendeeStatusLabel",
+      "All 8 class names appear as whole literals: bg-success, ring-success, bg-error, ring-error, bg-warning, ring-warning, bg-text-subtle, ring-text-subtle",
+      "No template literal builds any class name anywhere in the file",
+      "ATTENDEE_STATUS_DOT values are byte-identical to the four inherited tokens (FR-A1)",
+      "AttendeeResponseStatus is a type-only import from @core/types/event-attendance.contracts (FR-A4)",
+      "No React import, no store access, no side effect beyond the two module-load projections (FR-A5)"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1600 }
+  },
+  {
+    "id": "tp_pkt_002",
+    "phase": "tests",
+    "task_type": "unit_test_pure_module",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/common/styles/attendee-status.styles.test.ts",
+    "instruction": "Write the colocated test for attendee-status.styles.ts per change_plan.md section 7.1. Runner is bun:test (import describe/expect/it from 'bun:test'); no vitest, no jest, no snapshots. Enumerate statuses from AttendeeResponseStatusSchema.options, falling back to Object.keys(AttendeeResponseStatusSchema.enum) if .options is not on the zod/v4 surface. Cover all six cases in the table: both variants present and correctly prefixed; ring === bg.replace('bg-','ring-') per status (the anti-drift assertion); ATTENDEE_STATUS_DOT toEqual the four inherited tokens; ring projection matches source; neither projection is missing a status; label wording including needsAction -> \"hasn't responded\". Output the complete file body only.",
+    "inputs": [
+      {
+        "path": "packages/web/src/common/styles/attendee-status.styles.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_001>",
+        "reason": "Module under test."
+      },
+      {
+        "path": "packages/web/src/common/styles/theme.util.test.ts",
+        "content": "<resolved at dispatch: import header only>",
+        "reason": "Repo precedent for bun:test import style in this directory."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Imports describe/expect/it from 'bun:test'",
+      "Asserts ring === bg.replace('bg-','ring-') for every status member",
+      "Asserts ATTENDEE_STATUS_DOT toEqual {accepted:'bg-success',declined:'bg-error',tentative:'bg-warning',needsAction:'bg-text-subtle'}",
+      "Asserts attendeeStatusLabel('needsAction') === \"hasn't responded\" and the other three round-trip",
+      "No DOM, no RTL, no snapshot"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_pkt_003",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "instruction": "Edit EventDetailsSection.tsx per change_plan.md section 6. DELETE exactly three things: the `import { type AttendeeResponseStatus } from \"@core/types/event-attendance.contracts\";` line (it becomes unused and would fail biome noUnusedImports), the local `const ATTENDEE_STATUS_DOT` declaration, and the local `attendeeStatusLabel` arrow function. ADD one import of ATTENDEE_STATUS_DOT and attendeeStatusLabel from @web/common/styles/attendee-status.styles. Change NOTHING else: MAX_VISIBLE_ATTENDEES stays local at 6, both call sites (statusText and the size-2.5 dot className template) stay verbatim, the organizer marking, the showAllAttendees state, the +N more button, and the color-only-signal comment all stay. Rendered output must be byte-identical. Output the complete new file body.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "content": "<resolved at dispatch: full 109-line file>",
+        "reason": "The file being edited; small enough to pass whole so the model cannot drift the untouched regions."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "No `const ATTENDEE_STATUS_DOT` remains; grep shows exactly two ATTENDEE_STATUS_DOT hits - the import specifier and the dot className usage (AC-6)",
+      "No local attendeeStatusLabel declaration remains",
+      "The `type AttendeeResponseStatus` import from @core is gone",
+      "MAX_VISIBLE_ATTENDEES = 6 still declared locally",
+      "Both call sites unchanged verbatim (FR-E2)",
+      "Every other line of the file is byte-identical to the input"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 2400 }
+  },
+  {
+    "id": "tp_pkt_004",
+    "phase": "codegen",
+    "task_type": "frontend_config",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+    "instruction": "Create the badge geometry constants module exactly as specified in change_plan.md section 4 'Constants'. Four exports: ATTENDEE_BADGE_MAX_VISIBLE = 3, ATTENDEE_BADGE_ROW_HEIGHT = 14, ATTENDEE_BADGE_MIN_WIDTH = 90, ATTENDEE_BADGE_MIN_HEIGHT = 52. Reproduce the header comment stating the ADR-3 split rule (grid.constants.ts = positioning-engine layout math; this file = presentational chrome thresholds) and each constant's doc comment including the pixel-budget arithmetic naming the grid.constants.ts value it is calibrated against. No imports - these are plain numbers, deliberately NOT imported from grid.constants.ts (see ADR-2 alternative b). Output the complete file body only.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/grid.constants.ts",
+        "content": "export const EVENT_ALLDAY_HEIGHT = 20;\nexport const GRID_EVENT_TIME_LABEL_LINE_HEIGHT = 13;\nexport const GRID_EVENT_TITLE_LINE_HEIGHT_PX = 16;\nexport const GRID_EVENT_TITLE_VERTICAL_SLACK_PX = 7;\nexport const COMPACT_EVENT_MAX_HEIGHT = 15;\nexport const MIN_EVENT_HEIGHT_FOR_TIME_LABEL = 36;\nexport const MIN_EVENT_WIDTH_FOR_TIME_LABEL = 90;",
+        "reason": "The calibration values quoted in the doc comments. This file is OFF-LIMITS for writes - reference by name in comments only, never import from it."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Exports exactly ATTENDEE_BADGE_MAX_VISIBLE=3, ATTENDEE_BADGE_ROW_HEIGHT=14, ATTENDEE_BADGE_MIN_WIDTH=90, ATTENDEE_BADGE_MIN_HEIGHT=52",
+      "No import statement of any kind",
+      "Header comment states the ADR-3 split rule",
+      "Each constant carries the budget arithmetic in its comment"
+    ],
+    "budget": { "maxInputTokens": 3000, "maxOutputTokens": 1200 }
+  },
+  {
+    "id": "tp_pkt_005",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+    "instruction": "Create EventAttendeeBadge exactly as specified in change_plan.md section 4 'Intended source', including the module-private attendeeInitials and attendeeBadgeLabel helpers from that section. Export the component only; keep `interface Props` module-private (EventRepeatIcon precedent). Return null - not an empty wrapper - when attendees is undefined or empty. Root div carries the aria-label and pointer-events-none; every circle and the +N chip carry aria-hidden=\"true\" and NO title attribute (ADR-4). No onClick, no tabIndex, no role, no focusable descendant. No useMemo, no useEffect, no store or context read. Use the exact class strings given in the plan. Output the complete file body only.",
+    "inputs": [
+      {
+        "path": "packages/web/src/common/styles/attendee-status.styles.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_001>",
+        "reason": "Source of ATTENDEE_STATUS_RING and attendeeStatusLabel."
+      },
+      {
+        "path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_004>",
+        "reason": "Source of ATTENDEE_BADGE_MAX_VISIBLE."
+      },
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "content": "import { darken } from \"@web/common/styles/color.utils\";\nimport { RepeatIcon } from \"@web/components/Icons/Repeat\";\n\ninterface Props {\n  baseColor: string;\n}\n\n/** ...doc comment... */\nexport const EventRepeatIcon = ({ baseColor }: Props) => (\n  <RepeatIcon aria-hidden=\"true\" className=\"pointer-events-none absolute right-1 bottom-0.5\" color={darken(baseColor, 30)} size={10} weight=\"bold\" />\n);",
+        "reason": "Sibling-component precedent: private `interface Props`, named arrow export, aria-hidden decorative chrome, pointer-events-none."
+      },
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "content": "export type Attendee = { email: string; displayName: string | null; responseStatus: AttendeeResponseStatus };",
+        "reason": "Attendee shape consumed by attendeeInitials/attendeeBadgeLabel. Type-only import."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Returns null for attendees === undefined and for attendees.length === 0 (FR-B1)",
+      "attendeeInitials: two-word name -> 2 uppercase chars, one-word -> 1, null displayName -> uppercased email[0], capped at 2 via .slice(0,2) before .map (FR-B3)",
+      "visible = attendees.slice(0, ATTENDEE_BADGE_MAX_VISIBLE); +N chip renders only when overflowCount > 0 (FR-B6)",
+      "Circle ring color comes from ATTENDEE_STATUS_RING[responseStatus]; ring-2 supplies width (FR-B5)",
+      "Root div has aria-label from attendeeBadgeLabel and class pointer-events-none (FR-B7, FR-B8)",
+      "Circles and chip are aria-hidden=\"true\" with no title attribute",
+      "No onClick, no tabIndex, no role attribute, no useMemo/useEffect/store/context (NFR-6)",
+      "GridEvent and Attendee are type-only imports; no card prop type is referenced"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2400 }
+  },
+  {
+    "id": "tp_pkt_006",
+    "phase": "tests",
+    "task_type": "component_unit_test",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+    "instruction": "Write the badge component test per change_plan.md section 7.2. bun:test + @testing-library/react + '@testing-library/jest-dom'. Include the local three-arg attendee() fixture helper. Cover every row of the plan's table: undefined and [] render nothing (toBeEmptyDOMElement); two-word/one-word/null-displayName initials; four-word name capped at two chars; per-status ring classes for all four statuses; the exact accessible label string; singular '1 guest: ' wording; overflow chip with ATTENDEE_BADGE_MAX_VISIBLE + 3 attendees showing '+3' with the 4th initials absent; exactly-the-cap producing no chip; pointer transparency asserted as a CLASS not a behavior. Add a code comment on the pointer-events case explaining jsdom does not implement pointer-events hit testing so a fireEvent.mouseDown assertion would prove nothing - so a future reader does not 'fix' it into a fake behavioral test. Reference ATTENDEE_BADGE_MAX_VISIBLE rather than hard-coding 3. Output the complete file body only.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "content": "<resolved at dispatch: the file written by tp_pkt_005>",
+        "reason": "Component under test."
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "content": "import { fireEvent, render, screen } from \"@testing-library/react\";\nimport { afterEach, describe, expect, it, mock } from \"bun:test\";\nimport \"@testing-library/jest-dom\";",
+        "reason": "Repo precedent for the test import header in grid/components."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Imports from 'bun:test' and '@testing-library/jest-dom'",
+      "Asserts empty render for both undefined and [] attendees",
+      "Asserts all four ring classes via getByText(initials).toHaveClass('ring-*') - single token, not the full className",
+      "Asserts the exact 3-guest accessible label string and the singular '1 guest: ' opening",
+      "Overflow case uses ATTENDEE_BADGE_MAX_VISIBLE + 3 and asserts '+3' plus absence of the 4th initials",
+      "Pointer-events asserted as a class with the jsdom-limitation comment present",
+      "No snapshot, no container.querySelector on a layout class"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3200 }
+  },
+  {
+    "id": "tp_pkt_007",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Edit TimedEventCard.tsx per change_plan.md section 5C. The ENTIRE diff must be exactly four things: (1) two added imports - the three ATTENDEE_BADGE_* constants from @web/grid/components/attendee-badge.constants and EventAttendeeBadge from './EventAttendeeBadge'; (2) one added `const showAttendeeBadge` immediately after the existing showTimeLabel block, gated on attendees length > 0 AND position.height >= ATTENDEE_BADGE_MIN_HEIGHT AND position.width >= ATTENDEE_BADGE_MIN_WIDTH, with NO !isPlaceholder clause; (3) the lineClamp useMemo body replaced by the reservedHeight form from the plan, with deps [position.height, showAttendeeBadge, showTimeLabel]; (4) one JSX line `{showAttendeeBadge && <EventAttendeeBadge attendees={event.attendees} />}` as the LAST child of the flex-col content wrapper, i.e. after the closing `)}` of the `{!event.isAllDay && (...)}` fragment and before that wrapper's `</div>`. Do NOT touch accessibleLabel, do NOT open TimedEventCardProps, do NOT reindent the !event.isAllDay branch or either resize handle, do NOT edit any existing className string. Output the complete new file body.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "content": "<resolved at dispatch: import block (lines 1-58), the showRepeatIcon/showTimeLabel/lineClamp region (lines 110-140), and the JSX content-wrapper region (lines 313-366)>",
+        "reason": "The three regions the diff touches, plus enough surrounding context to place them exactly."
+      },
+      {
+        "path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_004>",
+        "reason": "Names and values of the three gates consumed here."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "Diff is exactly 2 imports + 1 const + 1 useMemo body + 1 JSX line (reviewer gate from change_plan risk table)",
+      "showAttendeeBadge has no !isPlaceholder clause",
+      "lineClamp is arithmetically identical to the old ternary when showAttendeeBadge is false",
+      "The added JSX is a `cond && <.../>` expression - no wrapper element, no fragment (NFR-2)",
+      "accessibleLabel is not read, referenced, or concatenated anywhere in the diff (FR-C3)",
+      "TimedEventCardProps is byte-identical (FR-C4, AC-10)",
+      "No existing className string is edited"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 6000 }
+  },
+  {
+    "id": "tp_pkt_008",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Edit AllDayEventCard.tsx per change_plan.md section 5D. The ENTIRE diff must be exactly three things: (1) two added imports - ATTENDEE_BADGE_MIN_WIDTH from @web/grid/components/attendee-badge.constants and EventAttendeeBadge from './EventAttendeeBadge'; (2) one added `const showAttendeeBadge` after the existing showRepeatIcon line, gated on attendees length > 0 AND position.width >= ATTENDEE_BADGE_MIN_WIDTH ONLY - width-only, no height gate, with the plan's comment explaining that the fixed 20px EVENT_ALLDAY_HEIGHT means a height gate would suppress the badge on every all-day card; (3) one JSX expression `{showAttendeeBadge && (<EventAttendeeBadge attendees={event.attendees} className=\"ml-1\" />)}` inserted as the SECOND child of the existing single-row content div, immediately after the closing </span> of the title span. Do NOT add gap-1 or any other class to that row div's cn(...) call - spacing comes from the badge's own ml-1 (ADR-5). Do NOT touch accessibleLabel, eventStyle, scalerStyle, either resize handle, or AllDayEventCardProps. Note the title span ends with the literal {\"\\u00A0\"} - preserve it exactly. Output the complete new file body.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "content": "<resolved at dispatch: full 228-line file>",
+        "reason": "The file being edited; small enough to pass whole so untouched regions cannot drift."
+      },
+      {
+        "path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_004>",
+        "reason": "Source of ATTENDEE_BADGE_MIN_WIDTH."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "showAttendeeBadge gates on width only - ATTENDEE_BADGE_MIN_HEIGHT is not imported or referenced",
+      "The row div's cn(\"flex min-w-0 items-center\", {...}) call is byte-identical",
+      "The title span retains {\"\\u00A0\"} verbatim",
+      "The added JSX is a `cond && (...)` expression passing className=\"ml-1\"",
+      "AllDayEventCardProps is byte-identical (FR-D3, NFR-3, AC-10)",
+      "accessibleLabel, eventStyle, scalerStyle and both resize handles are untouched"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 4500 }
+  },
+  {
+    "id": "tp_pkt_009",
+    "phase": "tests",
+    "task_type": "integration_test_append",
+    "module": "attendee-badge",
+    "pass_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Append eight integration test cases to EventCard.test.tsx per change_plan.md section 7.3. APPEND-ONLY: do not modify any existing it() block, any existing query, or the createEvent factory - in particular do NOT add an `attendees` key to createEvent's default object, which would give every legacy card test a badge and destroy NFR-2's own coverage. Add the local three-arg attendee() helper next to createEvent, plus imports of `type Attendee` / `type AttendeeResponseStatus` from @core/types/event-attendance.contracts and ATTENDEE_BADGE_MAX_VISIBLE from './attendee-badge.constants'. Add all eight cases inside the existing describe(\"EventCard\") after the final all-day test. Cases: (1) timed card shows badge with per-status rings; (2) all-day card shows the same; (3) timed, attendees undefined -> no badge; (4) timed, attendees [] -> no badge; (5) all-day, both undefined and [] -> no badge; (6) cap+3 attendees -> '+3' chip, 4th initials absent, label ends '; 3 more'; (7) timed at height COMPACT_EVENT_MAX_HEIGHT -> no badge but title still present; (8) timed AND all-day at width 30 -> no badge in both. Anchor every class assertion to a user-visible string or the accessible label; assert single ring tokens; query badge absence via queryByLabelText(/guest/). Keep the existing afterEach as the only teardown. Output the complete new file body.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "content": "<resolved at dispatch: full 575-line file>",
+        "reason": "The file being appended to; passed whole so the 20 existing it() blocks are reproduced verbatim."
+      },
+      {
+        "path": "packages/web/src/grid/components/attendee-badge.constants.ts",
+        "content": "<resolved at dispatch: the file written by tp_pkt_004>",
+        "reason": "Source of ATTENDEE_BADGE_MAX_VISIBLE, referenced instead of hard-coding 3."
+      },
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "content": "<resolved at dispatch: the file written by tp_pkt_005>",
+        "reason": "The label format and ring class contract the integration assertions must match."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "All pre-existing it() blocks are byte-identical",
+      "createEvent's default object has no attendees key",
+      "Exactly eight new it() blocks added inside the existing describe",
+      "Case 6 references ATTENDEE_BADGE_MAX_VISIBLE rather than literal 3",
+      "Badge absence is queried via queryByLabelText(/guest/), not by counting DOM nodes",
+      "Ring assertions use toHaveClass with a single token",
+      "The existing afterEach edge-focus reset is the only teardown"
+    ],
+    "budget": { "maxInputTokens": 24000, "maxOutputTokens": 12000 }
+  }
+]

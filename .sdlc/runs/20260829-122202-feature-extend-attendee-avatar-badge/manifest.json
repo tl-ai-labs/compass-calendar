@@ -1,0 +1,189 @@
+{
+  "run_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-sonnet",
+  "auth_mode": "estimated",
+  "branch": "CMP-105/opus-plus-sonnet",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "committed": false,
+  "generated_at": "2026-08-29T17:31:53.844Z",
+  "gates": {
+    "gate_0": "passed",
+    "gate_1": "approved",
+    "gate_2": "approved",
+    "gate_3": "approved",
+    "gate_4": "accepted"
+  },
+  "phases_run": [
+    "requirements_analysis",
+    "architecture_design",
+    "plan_task_packets",
+    "codegen",
+    "tests",
+    "senior_code_review",
+    "security_review",
+    "execute_packets"
+  ],
+  "cost": {
+    "total_usd": 4.6625,
+    "input_tokens": 458172,
+    "output_tokens": 96645,
+    "caveat": "auth_mode=estimated. Premium-tier phases ran in-session and their token splits are inferred, not vendor-reported; cached is booked at 0 throughout. One codegen event (tp_pkt_009) recorded success=false / cost_usd=0 after a claude-cli 300s transport timeout even though its write completed, so the total is a slight UNDERCOUNT. Cross-policy cost comparison from these numbers is not valid.",
+    "by_phase": {
+      "requirements_analysis": {
+        "events": 1,
+        "cost_usd": 0.1815,
+        "input_tokens": 16300,
+        "output_tokens": 4000
+      },
+      "architecture_design": {
+        "events": 1,
+        "cost_usd": 0.694,
+        "input_tokens": 75300,
+        "output_tokens": 12700
+      },
+      "plan_task_packets": {
+        "events": 1,
+        "cost_usd": 0.3025,
+        "input_tokens": 28000,
+        "output_tokens": 6500
+      },
+      "codegen": {
+        "events": 6,
+        "cost_usd": 1.3702,
+        "input_tokens": 115237,
+        "output_tokens": 32995
+      },
+      "tests": {
+        "events": 3,
+        "cost_usd": 0.847,
+        "input_tokens": 52335,
+        "output_tokens": 23958
+      },
+      "senior_code_review": {
+        "events": 1,
+        "cost_usd": 0.6137,
+        "input_tokens": 85000,
+        "output_tokens": 7547
+      },
+      "security_review": {
+        "events": 1,
+        "cost_usd": 0.2936,
+        "input_tokens": 40000,
+        "output_tokens": 3745
+      },
+      "execute_packets": {
+        "events": 1,
+        "cost_usd": 0.36,
+        "input_tokens": 46000,
+        "output_tokens": 5200
+      }
+    },
+    "by_model": {
+      "claude-opus-5": {
+        "events": 6,
+        "cost_usd": 2.4453
+      },
+      "claude-sonnet-5": {
+        "events": 9,
+        "cost_usd": 2.2172
+      }
+    }
+  },
+  "verification": {
+    "bun test:web": {
+      "result": "pass",
+      "passed": 2326,
+      "failed": 0,
+      "baseline": 2298,
+      "delta": "+28"
+    },
+    "bun lint (scoped to write-contract allowlist)": {
+      "result": "pass",
+      "exit_code": 0,
+      "rationale": "AC-7 scoped to allowlist per Gate 3 decision 4. Repo-root `bun lint` still exits 1 solely from 3 .sdlc/** bookkeeping JSON files (state.json re-dirties every phase); .sdlc/** is off-limits in the write contract and out of scope."
+    },
+    "check-semantic-colors": {
+      "result": "pass",
+      "exit_code": 0
+    },
+    "emitted-CSS ring-* literal check": {
+      "result": "pass",
+      "detail": "Built the real bundle; .ring-success/.ring-error/.ring-warning/.ring-text-subtle/.ring-border-strong/.ring-2 all present in build/web/index.css bound to var() theme tokens, so NFR-7 light/dark holds."
+    },
+    "AC-6": {
+      "result": "pass",
+      "note": "Local ATTENDEE_STATUS_DOT declaration removed; only the shared import and unchanged call site remain. The AC text as written is defective - its literal grep matches the import that FR-E2 requires."
+    }
+  },
+  "files_touched": [
+    "packages/web/src/common/styles/attendee-status.styles.ts",
+    "packages/web/src/grid/components/attendee-badge.constants.ts",
+    "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+    "packages/web/src/common/styles/attendee-status.styles.test.ts",
+    "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+    "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "packages/web/src/grid/components/TimedEventCard.tsx",
+    "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "packages/web/src/grid/components/EventCard.test.tsx"
+  ],
+  "review": {
+    "senior": {
+      "verdict": "CHANGES REQUIRED -> resolved",
+      "blocker": 1,
+      "major": 0,
+      "minor": 5
+    },
+    "security": {
+      "verdict": "MEDIUM (bounded)",
+      "medium": 2,
+      "low": 1,
+      "informational": 1,
+      "resolved": [
+        "F-1",
+        "F-3"
+      ],
+      "open": [
+        "F-2",
+        "F-4"
+      ]
+    }
+  },
+  "artifacts": [
+    "requirements.md",
+    "change_plan.md",
+    "packets.json",
+    "senior_review.md",
+    "security_review.md",
+    "provenance.json",
+    "telemetry.jsonl",
+    "manifest.json",
+    "provenance.raw.json"
+  ],
+  "known_issues": [
+    "RESOLVED at close-out: provenance.json deduped to 9 entries (was 14 across 9 paths). Raw append history preserved in provenance.raw.json.",
+    "M-2 (lint/nursery/useSortedClasses on EventAttendeeBadge.tsx) left unfixed - biome classes it an unsafe fix and it was not in the Gate 3 scope. Warning-level; does not fail lint.",
+    "F-2 PostHog has no masking/capture-suppression config. Fixing F-1 removes this feature from the exposure path, but the app-wide gap is unresolved and needs its own ticket plus a check of the server-side session-replay setting.",
+    "ADR-4 a11y gap is now accurately recorded, not fixed: the badge is decorative-only to assistive technology and FR-B7 is knowingly unmet at the AT level. Follow-up ticket required.",
+    "attendee-badge.constants.ts sits in grid/components/ only because the allowlist is frozen; accepted at Gate 2 as a follow-up.",
+    "bun audit --prod reports 69 vulns (24 high) - none attributable to this run, no manifest changed. npm audit cannot run (ENOLOCK, Bun repo).",
+    "Repo-root `bun lint` was GREEN at HEAD 2d81253a - verified by checking all non-run offender files together (exit 0, warnings only). .sdlc/CLAUDE-SDLC.md claims lint 'Fails repo-wide at baseline'; that claim is STALE for this commit and was corrected at close-out. It matters because it invites future runs to dismiss genuine lint regressions as inherited noise - this run's own senior review nearly did exactly that.",
+    "Side effect of the provenance backup mechanism: .sdlc/runs/<run-id>/backups/ holds copies of source files (5 here) that biome lints as ordinary source. They are unformatted mid-run snapshots, so they contribute error-level format findings to a repo-root `bun lint`. Cosmetic, but it is why repo-root lint is red at close-out while the allowlist is clean."
+  ],
+  "status": "accepted",
+  "provenance_note": "provenance.json was DEDUPED at Gate 4 close-out to one entry per path (9 entries: 5 new => revert deletes, 4 pre-existing => revert restores from git). The full 14-entry append history is preserved verbatim in provenance.raw.json. /mmo:revert is safe for this run.",
+  "decisions": {
+    "eventdetailssection_left_unchanged": "Gate 4 decision 2: EventDetailsSection.tsx lines 63/74 deliberately NOT changed. The `name` binding at line 63 feeds BOTH the aria-label (line 74) and the VISIBLE list text (line 82). Changing line 63 would strip the only identifier an unnamed attendee has from a panel the user deliberately opened; changing only line 74 would desync the accessible name from visible text, harming screen-reader users (cuts against WCAG 2.5.3 Label in Name). Security finding F-1 explicitly names the form as the acceptable on-demand interaction boundary, so leaving it unchanged IS the coherent one-policy outcome, not an omission. Do not re-raise."
+  },
+  "followups_open": [
+    "ADR-4: give the grid attendee badge a real accessible representation (choose role, decide announced wording, replace attribute-presence assertions with AT-reachability ones)",
+    "F-2: PostHog session-replay masking policy, and verify the server-side replay setting",
+    "attendee-badge.constants.ts placement (grid/ consolidation) - deferred at Gate 2",
+    "M-2: biome lint/nursery/useSortedClasses on EventAttendeeBadge.tsx (unsafe fix, deferred)",
+    "bun/npm audit tooling gap: npm audit ENOLOCK on a Bun repo; bun audit --prod reports 69 vulns (24 high), none from this run",
+    "AC-6 wording defect in requirements.md: its literal grep matches the very import FR-E2 requires"
+  ],
+  "summary_note": "SUMMARY.md was not written: the environment guardrail blocks agent-authored report .md files. The narrative summary was delivered in the Gate 4 / final report response; manifest.json is the machine-readable record of this run."
+}

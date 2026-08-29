@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.6.0",
+  "built_at": "2026-08-29T12:25:28Z",
+  "run_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+  "mode": "refresh",
+  "refresh_decision": "incremental",
+  "refresh_reason": "9 files changed since baseline (2 commits); all under .sdlc/ plus .gitignore. No stack manifest changed, no new AI configs. Re-scanned groups 1, 6, 7 and the gitignore-derived off-limits; groups 2-5, 8 carried forward from 2026-08-20 baseline after spot-verification.",
+  "baseline_carried_from": {
+    "built_at": "2026-08-20T04:32:08Z",
+    "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
+    "git_head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "age_commits": 2
+  },
+
+  "git": {
+    "head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "branch": "CMP-105/opus-plus-sonnet",
+    "dirty": false,
+    "dirty_note": "Working tree fully clean, including .sdlc/ (now tracked).",
+    "remotes": [
+      { "name": "origin", "url": "git@github.com:tl-ai-labs/compass-calendar.git" }
+    ],
+    "gitignore_covers_sdlc": false,
+    "gitignore_sdlc_detail": "Only two narrow .sdlc subpaths are ignored: '.sdlc/**/_gemini_worker_save/' and '.sdlc/local/debug.log'. The .sdlc/ tree itself is TRACKED as of commit 2d81253a ('chore(sdlc): track the project-level SDLC layer on main'). .sdlc/runs/** is NOT ignored on this branch.",
+    "tracked_file_count": 1590
+  },
+
+  "topology": {
+    "top_level_dirs": [
+      ".agents", ".claude", ".codex", ".cursor", ".github", ".hook-logs",
+      "build", "docs", "e2e", "logs", "packages", "patches", "self-host"
+    ],
+    "top_level_dirs_note": "build/ and logs/ are gitignored build output; .hook-logs/ is gitignored plugin hook noise. Tracked source layout is unchanged from the 2026-08-20 baseline.",
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ]
+  },
+
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "node-typescript",
+      "runtime": "bun@1.3.14",
+      "node_engine": ">=24.0.0",
+      "typescript": "7.0.2",
+      "detected_frameworks": [
+        "react-18", "tanstack-react-router", "tanstack-react-query",
+        "zustand", "zod", "tailwind-4", "express", "playwright", "biome"
+      ]
+    },
+    {
+      "manifest": "packages/web/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": [
+        "react-18", "zustand", "tanstack-react-router", "tiptap",
+        "dexie", "zod", "tailwind-4", "testing-library", "msw"
+      ]
+    },
+    {
+      "manifest": "packages/backend/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["express", "supertokens", "mongodb"]
+    },
+    {
+      "manifest": "packages/core/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["zod"]
+    },
+    {
+      "manifest": "packages/sync/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": ["googleapis"]
+    },
+    {
+      "manifest": "packages/scripts/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": []
+    }
+  ],
+
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
+    "adaptive_profile_recommended": true,
+    "adaptive_profile_status": "cached",
+    "adaptive_profile_path": ".sdlc/baseline/stack-profile.md",
+    "adaptive_profile_note": "No stack manifest changed since the profile was built; reused rather than rebuilt. Refresh with --refresh-profile if codegen output drifts from repo conventions."
+  },
+
+  "test_command_proposed": "bun test:web",
+  "test_command_source": "package.json#scripts.test:web (+ AGENTS.md Validation defaults)",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun test:web",
+    "core": "bun test:core",
+    "type_check": "bun type-check",
+    "type_check_web_tests": "bun run type-check:web-tests",
+    "lint": "bun lint",
+    "e2e": "bun test:e2e",
+    "diff_aware": "bun run verify"
+  },
+  "test_command_notes": "AGENTS.md: 'Avoid defaulting to bun test; use the focused package test first.' This intent touches packages/web only, so bun test:web is the correct scoped default. Note bun lint also runs check-semantic-colors.ts, which rejects raw Tailwind palette classes - the RSVP badge must use semantic tokens. Gate 0 must confirm.",
+
+  "test_baseline": {
+    "command": "bun test:web",
+    "captured_at": "2026-08-29T12:24:00Z",
+    "pass": 2298,
+    "fail": 0,
+    "expect_calls": 5775,
+    "files": 302,
+    "duration_seconds": 83.0,
+    "exit_code": 0,
+    "green": true,
+    "noise_note": "Suite emits React act() warnings from SettingsModal and provider trees. These are pre-existing stderr noise, not failures; do not treat their presence as regression signal."
+  },
+
+  "docs_present": [
+    { "path": "README.md", "kind": "readme" },
+    { "path": "AGENTS.md", "kind": "agent-instructions" },
+    { "path": "CONTRIBUTING.md", "kind": "contributing" },
+    { "path": "SECURITY.md", "kind": "security" },
+    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
+    { "path": "docs/README.md", "kind": "docs-index" },
+    { "path": "docs/architecture", "kind": "architecture-dir" },
+    { "path": "docs/frontend", "kind": "docs-subdir" },
+    { "path": "docs/features", "kind": "docs-subdir" },
+    { "path": "docs/development/testing-playbook.md", "kind": "testing-playbook" }
+  ],
+
+  "ai_configs_detected": [
+    { "path": ".claude/settings.json", "type": "claude-code" },
+    { "path": ".claude/settings.local.json", "type": "claude-code-local" },
+    { "path": ".cursor/rules/", "type": "cursor", "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing" },
+    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    { "path": ".cursor/hooks/format-after-edit.ts", "type": "cursor-hook-script" },
+    { "path": ".codex/config.toml", "type": "codex" },
+    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    { "path": ".agents/skills/", "type": "shared-agent-skills", "detail": "9 skills incl. ship, simplify, verify-change, a11y-audit" },
+    { "path": ".agents/skills/chaos/agents/openai.yaml", "type": "external-model-agent-config" },
+    { "path": "AGENTS.md", "type": "agent-instructions" }
+  ],
+  "ai_configs_absent": [
+    ".mcp.json (gitignored, not present on disk)",
+    "CLAUDE.md",
+    "CLAUDE.local.md",
+    ".cursorrules",
+    ".aider.conf.yml",
+    ".continue/",
+    ".github/copilot-instructions.md",
+    ".roo/",
+    "routing-policy.yaml"
+  ],
+  "ai_configs_delta_since_baseline": "none",
+
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL", "COMPASS_BUILD_REF", "GOOGLE_CLIENT_ID",
+    "NODE_ENV", "PORT", "POSTHOG_HOST", "POSTHOG_KEY", "TZ"
+  ],
+
+  "monorepo": {
+    "type": "lerna+bun-workspaces",
+    "workspace_globs": ["packages/*"],
+    "packages": [
+      { "name": "@compass/web", "root": "packages/web", "manifest": "packages/web/package.json", "test_command": "bun test:web" },
+      { "name": "@compass/backend", "root": "packages/backend", "manifest": "packages/backend/package.json", "test_command": "bun test:backend" },
+      { "name": "@compass/core", "root": "packages/core", "manifest": "packages/core/package.json", "test_command": "bun test:core" },
+      { "name": "@compass/sync", "root": "packages/sync", "manifest": "packages/sync/package.json", "test_command": "bun test:sync" },
+      { "name": "@compass/scripts", "root": "packages/scripts", "manifest": "packages/scripts/package.json", "test_command": "bun test:scripts" }
+    ],
+    "path_aliases": {
+      "@web/*": "packages/web/src/*",
+      "@core/*": "packages/core/src/*",
+      "@compass/backend": "packages/backend/src",
+      "@compass/sync": "packages/sync/src",
+      "@compass/scripts": "packages/scripts/src"
+    }
+  },
+
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+
+  "infra_hints": {
+    "dockerfile": false,
+    "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "github_workflow_count": 11,
+    "gitlab_ci": false,
+    "circleci": false,
+    "jenkins": false
+  },
+
+  "off_limits_proposed": [
+    ".git/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".agents/**",
+    "AGENTS.md",
+    ".mcp.json",
+    "compass.yaml",
+    ".playwright-compass.yaml",
+    "*.env*",
+    ".env",
+    ".env.*",
+    "node_modules/**",
+    "build/**",
+    "buildcache/**",
+    "logs/**",
+    ".hook-logs/**",
+    "packages/*/build/**",
+    "packages/*/node_modules/**",
+    "bun.lock",
+    "patches/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".github/workflows/**"
+  ],
+
+  "regulated_repo_signals": [
+    { "kind": "security-policy", "path": "SECURITY.md" }
+  ],
+  "regulated_repo_warning_required": false,
+
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (web-styles.mdc, web-testing.mdc are both in-scope globs for packages/web/**) - untouched by default, but they encode the conventions codegen must match.",
+    "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). Files this plugin writes may be reformatted out-of-band by Biome.",
+    ".gitignore does NOT cover .sdlc/, and as of 2d81253a the .sdlc/ tree is TRACKED. Run artifacts under .sdlc/runs/ will appear as new files in a tracked directory and are picked up by git add -A.",
+    ".gitignore contains repo-wide '*.mjs' and '*.env*' rules - any .mjs the plugin emits into user source, or any file whose name contains '.env', would be silently untracked (verified: packages/web/src/x.env.ts matches).",
+    ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
+    "No repo-local routing-policy.yaml - shipped policy applies."
+  ],
+
+  "repo_state_risks": [
+    { "kind": "gitignore_missing_sdlc", "severity": "medium", "detail": ".sdlc/ is tracked and .sdlc/runs/** is not ignored on this branch; git add -A will stage run artifacts including backups/ echoes of source." },
+    { "kind": "aggressive_gitignore", "severity": "medium", "detail": "'*.mjs' and '*.env*' are repo-wide ignore globs; plugin-emitted files matching these would be invisible to git." },
+    { "kind": "external_format_hooks", "severity": "low", "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output." },
+    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use (.gitattributes has no lfs filters)." },
+    { "kind": "submodules", "severity": "none", "detail": "No .gitmodules; no submodules." },
+    { "kind": "dirty_tree", "severity": "none", "detail": "Working tree clean at scan time." },
+    { "kind": "failing_pretests", "severity": "none", "detail": "bun test:web green: 2298 pass / 0 fail across 302 files." },
+    { "kind": "branch_mismatch", "severity": "low", "detail": "Session start snapshot reported branch CMP-105/opus-only-v5; actual branch at scan time is CMP-105/opus-plus-sonnet. Confirm the intended working branch at Gate 0." }
+  ],
+
+  "intent_scope": {
+    "hint": "feature-extend-attendee-avatar-badge",
+    "primary_package": "packages/web",
+    "summary": "Add an attendee-avatar badge to grid event cards, reusing the RSVP-status styling currently local to EventDetailsSection.",
+    "data_available_on_card": true,
+    "data_note": "GridEvent already carries optional readonly attendees[] (each with responseStatus), organizer and conference - projected by event.view-model.ts gridEventsFrom. Both grid cards receive the full event object, so NO type or view-model widening is required to read RSVP data at the card.",
+    "key_files": {
+      "timed_card": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "allday_card": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "card_tests": "packages/web/src/grid/components/EventCard.test.tsx",
+      "rsvp_styling_source": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+      "attendee_contract": "packages/core/src/types/event-attendance.contracts.ts",
+      "grid_event_type": "packages/web/src/common/types/web.event.types.ts",
+      "view_model": "packages/web/src/events/queries/event.view-model.ts",
+      "semantic_tokens": "packages/web/src/index.css"
+    },
+    "shared_style_extraction_candidate": {
+      "symbol": "ATTENDEE_STATUS_DOT",
+      "current_location": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx:12-17",
+      "note": "Record<AttendeeResponseStatus, string> mapping to semantic Tailwind tokens (bg-success, bg-error, bg-warning, bg-text-subtle). Module-private today; must be lifted to a shared module for the grid card to reuse it without a cross-view import from grid/ into views/Forms/."
+    }
+  }
+}
