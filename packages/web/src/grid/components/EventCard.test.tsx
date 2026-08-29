@@ -1,4 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import {
+  type Attendee,
+  type AttendeeResponseStatus,
+} from "@core/types/event-attendance.contracts";
 import { getEventPalette } from "@web/common/styles/theme.util";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import {
@@ -15,6 +19,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
 
 import { AllDayEventCard } from "./AllDayEventCard";
+import { ATTENDEE_BADGE_MAX_VISIBLE } from "./attendee-badge.constants";
 import { TimedEventCard } from "./TimedEventCard";
 
 const createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
@@ -36,6 +41,12 @@ const createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
     title: "Planning block",
     ...overrides,
   }) as GridEvent;
+
+const attendee = (
+  displayName: string | null,
+  email: string,
+  responseStatus: AttendeeResponseStatus = "accepted",
+): Attendee => ({ displayName, email, responseStatus });
 
 const position = {
   height: 60,
@@ -571,5 +582,187 @@ describe("EventCard", () => {
     expect(card).toHaveAttribute("data-edge-focus", "endDate");
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
+  });
+
+  it("shows the attendee badge with per-status rings on a timed card", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          attendees: [
+            attendee("Ada Lovelace", "ada@x.com", "accepted"),
+            attendee("Bob Stone", "bob@x.com", "declined"),
+            attendee("Cara Diaz", "cara@x.com", "tentative"),
+          ],
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.getByText("AL")).toHaveClass("ring-success");
+    expect(screen.getByText("BS")).toHaveClass("ring-error");
+    expect(screen.getByText("CD")).toHaveClass("ring-warning");
+    expect(screen.getByLabelText(/^3 guests:/)).toBeInTheDocument();
+  });
+
+  it("shows the attendee badge on an all-day card", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          attendees: [
+            attendee("Ada Lovelace", "ada@x.com", "accepted"),
+            attendee("Bob Stone", "bob@x.com", "declined"),
+            attendee("Cara Diaz", "cara@x.com", "tentative"),
+          ],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.getByText("AL")).toHaveClass("ring-success");
+    expect(screen.getByText("BS")).toHaveClass("ring-error");
+    expect(screen.getByText("CD")).toHaveClass("ring-warning");
+    expect(screen.getByLabelText(/^3 guests:/)).toBeInTheDocument();
+  });
+
+  it("renders no badge when a timed event has no attendees", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: undefined })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+  });
+
+  it("renders no badge for an empty attendee list", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+  });
+
+  it("renders no all-day badge without attendees", () => {
+    const { unmount } = render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, attendees: undefined })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+
+    unmount();
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, attendees: [] })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+  });
+
+  it("collapses attendees past the cap into a +N chip", () => {
+    const roster = [
+      ["Ada Lovelace", "ada@x.com"],
+      ["Bob Stone", "bob@x.com"],
+      ["Cara Diaz", "cara@x.com"],
+      ["Dan Frost", "dan@x.com"],
+      ["Eve Marsh", "eve@x.com"],
+      ["Finn Wade", "finn@x.com"],
+    ] as const;
+    const attendees = roster
+      .slice(0, ATTENDEE_BADGE_MAX_VISIBLE + 3)
+      .map(([displayName, email]) => attendee(displayName, email));
+    // Hard-coded rather than recomputed from the production algorithm. The
+    // roster above is a local literal, so "DF" (Dan Frost, the first entry past
+    // ATTENDEE_BADGE_MAX_VISIBLE) is knowable by inspection. A local
+    // re-implementation used to derive this drifted from attendeeInitials - it
+    // omitted .slice(0, 2) and .trim() - and agreed only because every roster
+    // name happens to be two words. Adding a three-word name would have made
+    // queryByText search for a string the DOM never contains, so the assertion
+    // would pass for the wrong reason.
+    const hiddenInitials = "DF";
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.getByText("+3")).toBeInTheDocument();
+    // The first attendee past the visible cap is folded into the chip, not
+    // drawn as its own circle.
+    expect(screen.queryByText(hiddenInitials)).toBeNull();
+    expect(screen.getByLabelText(/; 3 more$/)).toBeInTheDocument();
+  });
+
+  it("hides the badge on a card too short for it", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          attendees: [
+            attendee("Ada Lovelace", "ada@x.com", "accepted"),
+            attendee("Bob Stone", "bob@x.com", "declined"),
+            attendee("Cara Diaz", "cara@x.com", "tentative"),
+          ],
+        })}
+        motionMode="idle"
+        position={{ ...position, height: COMPACT_EVENT_MAX_HEIGHT }}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+    expect(screen.getByText("Planning block")).toBeInTheDocument();
+  });
+
+  it("hides the badge on a card too narrow for it", () => {
+    const guests = [
+      attendee("Ada Lovelace", "ada@x.com", "accepted"),
+      attendee("Bob Stone", "bob@x.com", "declined"),
+      attendee("Cara Diaz", "cara@x.com", "tentative"),
+    ];
+    const narrow = { ...position, width: 30 };
+
+    const { unmount } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: guests })}
+        motionMode="idle"
+        position={narrow}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
+
+    unmount();
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, attendees: guests })}
+        isPlaceholder={false}
+        position={narrow}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/guest/)).toBeNull();
   });
 });

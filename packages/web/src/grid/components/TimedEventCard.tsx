@@ -18,6 +18,11 @@ import { type GridEvent } from "@web/common/types/web.event.types";
 import { getTimesLabel } from "@web/common/utils/datetime/web.date.util";
 import { getLineClamp } from "@web/common/utils/grid/grid.util";
 import {
+  ATTENDEE_BADGE_MIN_HEIGHT,
+  ATTENDEE_BADGE_MIN_WIDTH,
+  ATTENDEE_BADGE_ROW_HEIGHT,
+} from "@web/grid/components/attendee-badge.constants";
+import {
   calendarAccentAccessibleSuffix,
   calendarAccentStyle,
   eventEdgeFocusShadow,
@@ -46,6 +51,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventAttendeeBadge } from "./EventAttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -125,18 +131,23 @@ const TimedEventCardBase = (
     position.height >= MIN_EVENT_HEIGHT_FOR_TIME_LABEL &&
     position.width >= MIN_EVENT_WIDTH_FOR_TIME_LABEL;
 
+  const showAttendeeBadge =
+    (event.attendees?.length ?? 0) > 0 &&
+    position.height >= ATTENDEE_BADGE_MIN_HEIGHT &&
+    position.width >= ATTENDEE_BADGE_MIN_WIDTH;
+
   // Clamp the title against the height the label leaves behind, not the whole
   // card. Clamping against the full height lets a wrapping title occupy every
   // line the card has and shove the label past the card's clipped edge.
-  const lineClamp = useMemo(
-    () =>
-      getLineClamp(
-        showTimeLabel
-          ? position.height - GRID_EVENT_TIME_LABEL_LINE_HEIGHT
-          : position.height,
-      ),
-    [position.height, showTimeLabel],
-  );
+  const lineClamp = useMemo(() => {
+    // Reserve the rows the title must not eat: the time label's line box and the
+    // badge row. Clamping against the full height lets a wrapping title occupy
+    // every line the card has and shove them past the card's clipped edge.
+    const reservedHeight =
+      (showTimeLabel ? GRID_EVENT_TIME_LABEL_LINE_HEIGHT : 0) +
+      (showAttendeeBadge ? ATTENDEE_BADGE_ROW_HEIGHT : 0);
+    return getLineClamp(position.height - reservedHeight);
+  }, [position.height, showAttendeeBadge, showTimeLabel]);
 
   const { base: baseColor, hover: hoverColor } = useEventPalette(
     event.color,
@@ -358,6 +369,9 @@ const TimedEventCardBase = (
               }}
             />
           </>
+        )}
+        {showAttendeeBadge && (
+          <EventAttendeeBadge attendees={event.attendees} />
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}

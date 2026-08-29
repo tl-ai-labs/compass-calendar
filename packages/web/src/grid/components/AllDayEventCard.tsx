@@ -14,6 +14,7 @@ import { brighten, darken, isDark } from "@web/common/styles/color.utils";
 import { theme } from "@web/common/styles/theme";
 import { useEventPalette } from "@web/common/styles/theme.util";
 import { type GridEvent } from "@web/common/types/web.event.types";
+import { ATTENDEE_BADGE_MIN_WIDTH } from "@web/grid/components/attendee-badge.constants";
 import {
   calendarAccentAccessibleSuffix,
   calendarAccentStyle,
@@ -27,6 +28,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventAttendeeBadge } from "./EventAttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +77,13 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  // Width-only gate. An all-day row is a fixed EVENT_ALLDAY_HEIGHT (20px), which
+  // always clears the 14px badge - applying the timed card's
+  // ATTENDEE_BADGE_MIN_HEIGHT (52) here would suppress the badge on every all-day
+  // card that will ever render.
+  const showAttendeeBadge =
+    (event.attendees?.length ?? 0) > 0 &&
+    position.width >= ATTENDEE_BADGE_MIN_WIDTH;
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -197,6 +206,9 @@ const AllDayEventCardBase = (
           {event.title}
           {"\u00A0"}
         </span>
+        {showAttendeeBadge && (
+          <EventAttendeeBadge attendees={event.attendees} className="ml-1" />
+        )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}

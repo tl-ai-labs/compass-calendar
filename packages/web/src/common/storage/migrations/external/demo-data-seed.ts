@@ -135,7 +135,11 @@ function generateDemoData() {
       schedule: {
         kind: "timed",
         start: todayAt(9, 0),
-        end: todayAt(9, 30),
+        // 90 minutes - long enough that the grid card clears the attendee
+        // badge's size gates (ATTENDEE_BADGE_MIN_HEIGHT/WIDTH), so the RSVP
+        // avatar badge this event's attendees drive is actually visible on
+        // the card. Also, per the description, an on-theme standup length.
+        end: todayAt(10, 30),
         timeZone,
       },
       // Showcases the meeting-link and attendee UI (normally only populated
@@ -175,8 +179,10 @@ function generateDemoData() {
         "Welcome! Click any empty time slot to create an event, or press C. When you're ready to sync Google Calendar, use the Connect Google Calendar button in the sidebar.",
       schedule: {
         kind: "timed",
-        start: todayAt(10, 0),
-        end: todayAt(11, 0),
+        // 11:00-12:00 so it sits clear of the now-90-minute Morning standup
+        // (9:00-10:30) above it and Exercise (12:00) below.
+        start: todayAt(11, 0),
+        end: todayAt(12, 0),
         timeZone,
       },
     }),
