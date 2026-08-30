@@ -344,3 +344,71 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260829-122202-feature-extend-attendee-avatar-badge`
+
+**CMP-105 · `feature-extend` · `opus-plus-sonnet` · `estimated` · branch `CMP-105/opus-plus-sonnet` ·
+$4.6625 · 9 files · +28 tests · 2326 pass / 0 fail · uncommitted, anchor `2d81253a`.**
+
+Grid event cards gained an attendee avatar badge: initials-in-a-circle per attendee, ringed by RSVP
+status, collapsing to a `+N` chip past a cap of 3. The RSVP-status colour map was deduplicated out of
+`EventDetailsSection` into `common/styles/attendee-status.styles.ts`, so the form's dots and the grid's
+rings now share one source of truth. **Resumed mid-run from a persisted checkpoint** — phases 1–5 ran
+in an earlier session — so wall-clock and cost are not comparable with single-session rows.
+
+**The row's real finding is that two reviewers converged on the same defect from opposite directions,
+and neither the tests nor the design doc could see it.** The badge root is a role-less `div`. ARIA does
+not permit `aria-label` on the implicit `generic` role, and every child carries `aria-hidden="true"` —
+so the badge contributes **nothing** to the accessibility tree. ADR-4 had recorded the opposite as
+settled fact ("reachable in browse mode and by tooling"), and Gate 2 accepted the feature partly on
+that basis. The tests agreed with ADR-4 because RTL's `getByLabelText` matches the **attribute**
+regardless of role — a green suite that proved only that a string existed in the DOM. Security arrived
+at the same node by a different route: that label embedded **raw attendee email addresses** when
+`displayName` was null. So the one element that assistive technology could not see was also the one
+leaking PII into the always-rendered grid.
+
+**The exposure delta was measured, not asserted.** `git grep "attendees" HEAD -- packages/web/src/grid/`
+returned nothing; the working tree returns 19. Attendee identity genuinely moved from click-to-open
+into the default view. **F-1 fixed** (non-identifying `"Guest"` fallback), and the same `?.trim() ||`
+edit closed **F-3**. **F-2 stays open**: `posthog.init` sets no masking options, so under `posthog-js`
+defaults session replay captures an `aria-label` verbatim — though whether replay is enabled is a
+server-side setting invisible to this repo, and the reviewer correctly declined to assert a leak.
+
+**Gate 3 chose to record the a11y gap accurately rather than paper over it or fix it blind.** ADR-4 was
+amended to state that the badge is decorative-only to AT and that **FR-B7 is knowingly unmet**;
+`role="img"` was *not* added, because it is a behavioural a11y change deserving its own pass — the more
+so now that F-1 changed what the label says. A caveat comment sits above the `getByLabelText`
+assertions so a future reader cannot mistake them for an accessibility guarantee. ADR-4's stated reason
+for rejecting `role="img"` (a `useSemanticElements` diagnostic) was also disproven by probe.
+
+**Two evidence failures are worth more than the feature.** First, `senior_review.md` claimed the
+`.sdlc/**` lint errors pre-dated the run, evidenced with `biome check --stdin-file-path` exit codes —
+**which are unusable**: a file clean on disk also exits 1 and prints "The contents aren't fixed". By
+byte-for-byte round-trip, HEAD's `.sdlc/baseline/current.json` is format-clean, so those errors *were*
+this run's. Second, and compounding it, `CLAUDE-SDLC.md` asserts `bun lint` "fails repo-wide at
+baseline"; checking every non-run offender together exits **0** (warnings only), so lint was **green**
+at `2d81253a`. Both claims point the same way — toward dismissing a real regression as inherited noise,
+which is very nearly what happened here. The fingerprint was corrected at close-out.
+
+**`/mmo:revert` would have been wrong for this run until close-out fixed it.** Provenance appended a
+*second* entry for each of the 5 files re-edited after Gate 3 — the same pattern row twelve logged.
+Entry 0 says `existed_before:false` (⇒ delete); entry 1 says `existed_before:true` with a `backup_path`
+(⇒ restore). A naive iteration would therefore **restore a run-created file instead of deleting it**,
+and the backup holds *mid-run* content — the pre-F-1 version with attendee emails still in the label.
+Deduped to 9 entries (5 new, 4 pre-existing); the full 14-entry history is preserved in
+`provenance.raw.json`. Related: the backup mechanism drops lintable copies of source into
+`.sdlc/runs/<run-id>/backups/`, which is why repo-root lint is red at close-out while the allowlist is
+clean.
+
+**One instruction was deliberately not executed.** Gate 3 asked for the F-1 fix to be mirrored into
+`EventDetailsSection.tsx:63,74`. It was held and re-gated instead: `name` at line 63 feeds the
+**visible** list text at line 82 as well as the label, so changing it strips an unnamed attendee's only
+identifier from a panel the user opened on purpose, while changing only the label desyncs the
+accessible name from visible text (WCAG 2.5.3). F-1's own remediation names the form as the acceptable
+*on-demand boundary* — so leaving it is the coherent policy, and Gate 4 confirmed. `tp_pkt_009`'s
+`success=false / $0` telemetry was likewise a transport artifact only: 28 `it()` blocks (20 + 8) prove
+the file was neither truncated nor duplicated by the resume, and the run total is a slight undercount.
+
+Manual browser verification (light/dark, narrow and short cards) is **still outstanding** — jsdom
+cannot resolve Tailwind, so the emitted-CSS `ring-*` grep against a real build is substitute evidence
+for the ring colours, not a visual check.

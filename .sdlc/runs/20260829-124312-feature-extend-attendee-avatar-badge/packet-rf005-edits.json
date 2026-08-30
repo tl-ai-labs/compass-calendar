@@ -1,0 +1,37 @@
+{
+  "_note": "RF-05. Edits for two source files. The docblock example was corrected by the orchestrator: flash emitted \"3 guests: 2 yes, 1 no\", but ATTENDEE_STATUS_COUNT_NOUN maps accepted->\"accepted\" and declined->\"declined\"; \"yes\"/\"no\" appear nowhere. Restored to the accurate \"3 guests: 2 accepted, 1 declined\".",
+  "attendee-status.ts": [
+    {
+      "label": "add ATTENDEE_STATUS_COUNT_NOUN and ATTENDEE_STATUS_DISPLAY_ORDER",
+      "old_string": "export const attendeeStatusLabel = (status: AttendeeResponseStatus): string =>\n  status === \"needsAction\" ? \"hasn't responded\" : status;",
+      "new_string": "export const attendeeStatusLabel = (status: AttendeeResponseStatus): string =>\n  status === \"needsAction\" ? \"hasn't responded\" : status;\n\n/**\n * Aggregate noun phrase used after a count in the grid badge's group label.\n * Deliberately separate from attendeeStatusLabel, which is per-attendee prose:\n * reusing that after a count yields the ungrammatical \"4 hasn't responded\".\n * The explicit Record annotation makes a future addition to the core enum a\n * compile error here rather than a silently missing entry in the label.\n */\nexport const ATTENDEE_STATUS_COUNT_NOUN: Record<AttendeeResponseStatus, string> =\n  {\n    accepted: \"accepted\",\n    declined: \"declined\",\n    tentative: \"tentative\",\n    needsAction: \"no response\",\n  };\n\n/**\n * The badge lists statuses in this order, most-actionable first. That is\n * deliberately NOT the order of AttendeeResponseStatusSchema.options, which\n * starts with needsAction and would put \"no response\" ahead of \"accepted\".\n * Order is taken from the Record's own insertion order, which the language\n * guarantees for non-numeric string keys, so the Record above is the single\n * source of both exhaustiveness and ordering. The one narrow cast is needed\n * only because Object.keys is typed as string[].\n */\nexport const ATTENDEE_STATUS_DISPLAY_ORDER = Object.keys(\n  ATTENDEE_STATUS_COUNT_NOUN,\n) as AttendeeResponseStatus[];"
+    }
+  ],
+  "EventAttendeeBadge.tsx": [
+    {
+      "label": "update imports - drop attendeeStatusLabel, add noun map and display order",
+      "old_string": "import {\n  ATTENDEE_STATUS_DOT,\n  attendeeStatusLabel,\n} from \"@web/common/styles/attendee-status\";",
+      "new_string": "import {\n  ATTENDEE_STATUS_COUNT_NOUN,\n  ATTENDEE_STATUS_DISPLAY_ORDER,\n  ATTENDEE_STATUS_DOT,\n} from \"@web/common/styles/attendee-status\";"
+    },
+    {
+      "label": "delete the hand-maintained STATUS_ORDER tuple",
+      "old_string": "const STATUS_ORDER = [\n  \"accepted\",\n  \"declined\",\n  \"tentative\",\n  \"needsAction\",\n] as const;\n\n",
+      "new_string": ""
+    },
+    {
+      "label": "rewrite MONOGRAM_CHARACTER comment - scope the claim, drop the packet id",
+      "old_string": "/** A monogram is a single letter or digit. Anything else - punctuation, an\n *  emoji, whitespace-only, or null - falls back to the person glyph. That is\n *  what keeps the rendered monogram free of \"@\": no attendee-supplied character\n *  that is not \\p{L} or \\p{N} reaches the rendered text. The per-avatar title\n *  attribute was removed in RF-01, so no attendee-supplied text reaches the DOM\n *  at all - not merely no \"@\". */",
+      "new_string": "/** A monogram is a single letter or digit. Anything else - punctuation, an\n *  emoji, whitespace-only, or null - falls back to the person glyph. The\n *  precise invariant: exactly one attendee-supplied character can reach the\n *  DOM - the uppercased first code point - and only when it matches \\p{L} or\n *  \\p{N}. So no attendee-supplied string longer than one character, and no\n *  \"@\", can reach the rendered monogram or any label. The per-avatar title\n *  attribute was removed, so no other attendee-supplied text reaches the DOM.\n *  Do not restate this as \"no attendee-supplied text reaches the DOM\": the\n *  monogram is attendee-supplied, and that overclaim was a review finding. */"
+    },
+    {
+      "label": "reword docblock overclaim, keep the corrected example",
+      "old_string": " * which carries the full breakdown (\"3 guests: 2 accepted, 1 declined\") and\n * omits zero-count statuses. Individual identities are never announced and no\n * attendee-supplied text is written to the DOM; attendee email is used only as\n * a React key.",
+      "new_string": " * which carries the full breakdown (\"3 guests: 2 accepted, 1 declined\") and\n * omits zero-count statuses. Individual identities are never announced, and no\n * attendee-supplied string is written to the DOM beyond the single whitelisted\n * monogram character; attendee email is used only as a React key."
+    },
+    {
+      "label": "use the aggregate nouns and the derived display order",
+      "old_string": "  const countDetails = STATUS_ORDER.filter((status) => counts[status] > 0)\n    .map((status) => `${counts[status]} ${attendeeStatusLabel(status)}`)\n    .join(\", \");",
+      "new_string": "  const countDetails = ATTENDEE_STATUS_DISPLAY_ORDER.filter(\n    (status) => counts[status] > 0,\n  )\n    .map((status) => `${counts[status]} ${ATTENDEE_STATUS_COUNT_NOUN[status]}`)\n    .join(\", \");"
+    }
+  ]
+}

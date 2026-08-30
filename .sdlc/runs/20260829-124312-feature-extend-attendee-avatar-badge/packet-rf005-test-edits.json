@@ -1,0 +1,39 @@
+{
+  "_note": "RF-05 test edits. Flash output reflowed by the orchestrator to biome's 80-col style. The 'aggregate label' test in EventAttendeeBadge.test.tsx was ADDED by the orchestrator, not flash: without it N-1 (the '4 hasn't responded' grammar bug) has no regression lock, and the whole point of RF-05 is that N-1 was shipped once already.",
+  "attendee-status.test.ts": [
+    {
+      "label": "import the two new constants",
+      "old_string": "import { ATTENDEE_STATUS_DOT, attendeeStatusLabel } from \"./attendee-status\";",
+      "new_string": "import {\n  ATTENDEE_STATUS_COUNT_NOUN,\n  ATTENDEE_STATUS_DISPLAY_ORDER,\n  ATTENDEE_STATUS_DOT,\n  attendeeStatusLabel,\n} from \"./attendee-status\";"
+    },
+    {
+      "label": "append aggregate-noun, exhaustiveness and ordering tests",
+      "old_string": "  it(\"gives needsAction readable prose and passes other statuses through\", () => {\n    expect(attendeeStatusLabel(\"needsAction\")).toBe(\"hasn't responded\");\n    expect(attendeeStatusLabel(\"accepted\")).toBe(\"accepted\");\n    expect(attendeeStatusLabel(\"declined\")).toBe(\"declined\");\n    expect(attendeeStatusLabel(\"tentative\")).toBe(\"tentative\");\n  });\n});",
+      "new_string": "  it(\"gives needsAction readable prose and passes other statuses through\", () => {\n    expect(attendeeStatusLabel(\"needsAction\")).toBe(\"hasn't responded\");\n    expect(attendeeStatusLabel(\"accepted\")).toBe(\"accepted\");\n    expect(attendeeStatusLabel(\"declined\")).toBe(\"declined\");\n    expect(attendeeStatusLabel(\"tentative\")).toBe(\"tentative\");\n  });\n\n  it(\"gives every status an aggregate noun that reads correctly after a count\", () => {\n    // \"no response\" is what makes \"4 guests: 4 no response\" grammatical.\n    // attendeeStatusLabel would have produced \"4 hasn't responded\".\n    expect(ATTENDEE_STATUS_COUNT_NOUN.accepted).toBe(\"accepted\");\n    expect(ATTENDEE_STATUS_COUNT_NOUN.declined).toBe(\"declined\");\n    expect(ATTENDEE_STATUS_COUNT_NOUN.tentative).toBe(\"tentative\");\n    expect(ATTENDEE_STATUS_COUNT_NOUN.needsAction).toBe(\"no response\");\n  });\n\n  it(\"is exhaustive over AttendeeResponseStatusSchema for aggregate nouns\", () => {\n    for (const status of AttendeeResponseStatusSchema.options) {\n      expect(typeof ATTENDEE_STATUS_COUNT_NOUN[status]).toBe(\"string\");\n      expect(ATTENDEE_STATUS_COUNT_NOUN[status].length).toBeGreaterThan(0);\n    }\n    expect(Object.keys(ATTENDEE_STATUS_COUNT_NOUN).length).toBe(\n      AttendeeResponseStatusSchema.options.length,\n    );\n  });\n\n  it(\"orders the display sequence most-actionable first, not enum order\", () => {\n    expect(ATTENDEE_STATUS_DISPLAY_ORDER).toEqual([\n      \"accepted\",\n      \"declined\",\n      \"tentative\",\n      \"needsAction\",\n    ]);\n    // The enum itself starts with needsAction; the badge must not.\n    expect(ATTENDEE_STATUS_DISPLAY_ORDER).not.toEqual(\n      AttendeeResponseStatusSchema.options,\n    );\n    for (const status of AttendeeResponseStatusSchema.options) {\n      expect(ATTENDEE_STATUS_DISPLAY_ORDER).toContain(status);\n    }\n  });\n});"
+    }
+  ],
+  "EventAttendeeBadge.test.tsx": [
+    {
+      "label": "update 1-guest label to the aggregate noun",
+      "old_string": "      screen.getByRole(\"img\", { name: \"1 guest: 1 hasn't responded\" }),",
+      "new_string": "      screen.getByRole(\"img\", { name: \"1 guest: 1 no response\" }),"
+    },
+    {
+      "label": "update 3-guest label to the aggregate noun",
+      "old_string": "      name: \"3 guests: 2 accepted, 1 hasn't responded\",",
+      "new_string": "      name: \"3 guests: 2 accepted, 1 no response\","
+    },
+    {
+      "label": "add the N-1 grammar regression lock",
+      "old_string": "  it(\"applies the shared status token class to each avatar\", () => {",
+      "new_string": "  it(\"uses aggregate nouns so an all-one-status label stays grammatical\", () => {\n    // Regression lock for the bug this label shipped with once: reusing\n    // attendeeStatusLabel after a count rendered \"4 guests: 4 hasn't responded\".\n    const attendees = Array.from({ length: 4 }, (_, i) =>\n      attendee({\n        email: `a${i}@example.com`,\n        displayName: `User ${i}`,\n        responseStatus: \"needsAction\",\n      }),\n    );\n    render(<EventAttendeeBadge attendees={attendees} baseColor=\"#82A0B2\" />);\n    expect(\n      screen.getByRole(\"img\", { name: \"4 guests: 4 no response\" }),\n    ).toBeInTheDocument();\n    cleanup();\n\n    // Ordering is most-actionable first, not the enum's needsAction-first order.\n    render(\n      <EventAttendeeBadge\n        attendees={[\n          attendee({ email: \"n@example.com\", responseStatus: \"needsAction\" }),\n          attendee({ email: \"a@example.com\", responseStatus: \"accepted\" }),\n          attendee({ email: \"d@example.com\", responseStatus: \"declined\" }),\n        ]}\n        baseColor=\"#82A0B2\"\n      />,\n    );\n    expect(\n      screen.getByRole(\"img\", {\n        name: \"3 guests: 1 accepted, 1 declined, 1 no response\",\n      }),\n    ).toBeInTheDocument();\n  });\n\n  it(\"applies the shared status token class to each avatar\", () => {"
+    }
+  ],
+  "EventCard.test.tsx": [
+    {
+      "label": "update 2-guest label to the aggregate noun",
+      "old_string": "        name: \"2 guests: 1 accepted, 1 hasn't responded\",",
+      "new_string": "        name: \"2 guests: 1 accepted, 1 no response\","
+    }
+  ]
+}

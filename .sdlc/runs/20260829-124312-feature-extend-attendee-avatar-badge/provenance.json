@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "run_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/common/styles/attendee-status.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:16212cce28bb89befa63ca9c76d5d17e7035a7971c1a9ecca142226217920305",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_001",
+      "written_at": "2026-08-29T22:16:42.539Z"
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:e0baaf6c7c80025ff944104b79d93414734c950b972d50342df3c6b089a97c88",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_tests_002",
+      "written_at": "2026-08-29T22:17:27.315Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:8f9a5e25fddd10e5b6dcccb1b85fc005b937d12b6b9c37e78b36fc73e5247e5a",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_003_r1",
+      "written_at": "2026-08-29T22:22:52.261Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:cb633777af6453a0aca3ae35ca436b81884935a5e0ee7d8f168712e413b02ea2",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_tests_004",
+      "written_at": "2026-08-29T22:24:32.247Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:7d7a365ec7d6c0022758b08083c52b0848c1ad5a5114432125aa9eb84749ce26",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_005",
+      "written_at": "2026-08-29T22:37:58.195Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:612cbb2ba4c76923978a85f26621f84d82157156c22e12c7c00f090b079acc87",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_006_r2",
+      "written_at": "2026-08-29T22:55:25.611Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:9553ba2f73f4b003c8f78b8de23bd97570ce912346b425443cdabfa5088b306b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_tests_007",
+      "written_at": "2026-08-29T22:59:38.830Z"
+    },
+    {
+      "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:c93237b13900998de077528a17ad843cf284086f66c010bfd083747f134e6052",
+      "sha_after": "sha256:5b03f669d16bc1b0bc5f39d4fd530b31d82938a9d42a7a122b4ef9bacaf714a1",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_008",
+      "written_at": "2026-08-30T03:24:12.487Z"
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:e0baaf6c7c80025ff944104b79d93414734c950b972d50342df3c6b089a97c88",
+      "sha_after": "sha256:5f075f18cae357548448b0ff370dc327ed1a3763e8242b6b54ce4c546c75e4cd",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__common__styles__attendee-status.test.ts",
+      "packet_id": "tp_format_009",
+      "written_at": "2026-08-30T03:28:01.420Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:cb633777af6453a0aca3ae35ca436b81884935a5e0ee7d8f168712e413b02ea2",
+      "sha_after": "sha256:e9ae444be135eab9be99814908abb3cc423b5a587b475796dddbb0843551ccd7",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.test.tsx",
+      "packet_id": "tp_format_009",
+      "written_at": "2026-08-30T03:28:01.474Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:8f9a5e25fddd10e5b6dcccb1b85fc005b937d12b6b9c37e78b36fc73e5247e5a",
+      "sha_after": "sha256:1207ea10f8e925aba4c023ad71b9014b2b1e99add81d5aa2c42e4af1fcf366b0",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.tsx",
+      "packet_id": "tp_format_009",
+      "written_at": "2026-08-30T03:28:01.526Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:1207ea10f8e925aba4c023ad71b9014b2b1e99add81d5aa2c42e4af1fcf366b0",
+      "sha_after": "sha256:7995877824b02a490bb0754e319bb191d600bd993292cee174e1664b126570f2",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.tsx",
+      "packet_id": "tp_rf_001",
+      "written_at": "2026-08-30T04:04:07.501Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:e9ae444be135eab9be99814908abb3cc423b5a587b475796dddbb0843551ccd7",
+      "sha_after": "sha256:f7e5b2925c18ad43d919a11b4d5099b425acad6fb50312cc89ac2220c8acc773",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.test.tsx",
+      "packet_id": "tp_rf_002a",
+      "written_at": "2026-08-30T04:10:00.608Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:9553ba2f73f4b003c8f78b8de23bd97570ce912346b425443cdabfa5088b306b",
+      "sha_after": "sha256:17c5c36b735ee4cf182b73def37894455e9594c0f09044afbf780c9c3057694e",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventCard.test.tsx",
+      "packet_id": "tp_rf_002b",
+      "written_at": "2026-08-30T04:10:00.674Z"
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.ts",
+      "existed_before": true,
+      "sha_before": "sha256:16212cce28bb89befa63ca9c76d5d17e7035a7971c1a9ecca142226217920305",
+      "sha_after": "sha256:b4e3647a90cf6e8d48fb16fb6ee6d59d7e284bfc893b765d364ced8cf892f721",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__common__styles__attendee-status.ts",
+      "packet_id": "tp_rf_005",
+      "written_at": "2026-08-30T08:35:48.588Z"
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5f075f18cae357548448b0ff370dc327ed1a3763e8242b6b54ce4c546c75e4cd",
+      "sha_after": "sha256:0e881a7cd0346269a884dad68e9772caf910d2f315b7b7ff0de8802f17f72ad0",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__common__styles__attendee-status.test.ts",
+      "packet_id": "tp_rf_005",
+      "written_at": "2026-08-30T08:35:48.647Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:7995877824b02a490bb0754e319bb191d600bd993292cee174e1664b126570f2",
+      "sha_after": "sha256:0494436742d22b26607e146b82c580ea9043f131133764d0840626310d4dc18d",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.tsx",
+      "packet_id": "tp_rf_005",
+      "written_at": "2026-08-30T08:35:48.713Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:46e3f80f0de2b1994da3ea551f21617b65d1ce95c99cb84558646384ed5c1d82",
+      "sha_after": "sha256:bdad6642f570440103a0fc9a26fde34d49b8c95ce66f0b35f93be947654c71cd",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventAttendeeBadge.test.tsx",
+      "packet_id": "tp_rf_005",
+      "written_at": "2026-08-30T08:35:48.777Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:17c5c36b735ee4cf182b73def37894455e9594c0f09044afbf780c9c3057694e",
+      "sha_after": "sha256:e4f8410f93cd4150b42b6e1a1eb5c253c04de7f24640a29a88c9d288fdd8f3ec",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__grid__components__EventCard.test.tsx",
+      "packet_id": "tp_rf_005",
+      "written_at": "2026-08-30T08:35:48.839Z"
+    },
+    {
+      "path": "packages/web/src/common/styles/attendee-status.ts",
+      "existed_before": true,
+      "sha_before": "sha256:b4e3647a90cf6e8d48fb16fb6ee6d59d7e284bfc893b765d364ced8cf892f721",
+      "sha_after": "sha256:925fa6356a939f6f1a75550e3315ae3668531979032c2b582b229da24f0a02d0",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/backups/packages__web__src__common__styles__attendee-status.ts",
+      "packet_id": "tp_rf_005_biome_reflow",
+      "written_at": "2026-08-30T08:35:56.000Z",
+      "_correction": "BACKFILLED BY THE ORCHESTRATOR after senior_review-pass3 nit N-10. The biome reflow of the Record<AttendeeResponseStatus, string> annotation was applied via Edit AFTER the tp_rf_005 --after call had already run, so it was never bracketed by a --before/--after pair and the tp_rf_005 record's sha_after described a state that no longer existed on disk. sha_before here is the tp_rf_005 sha_after (the true pre-reflow state); sha_after is the actual current disk hash. Recorded rather than silently corrected in place, so the gap is auditable. Backup is intact and /mmo:revert is unaffected: this file is run-created, so its earliest record has existed_before:false and revert must DELETE it regardless of any later hash."
+    }
+  ]
+}

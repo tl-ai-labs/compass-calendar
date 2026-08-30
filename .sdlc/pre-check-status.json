@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-25T04:44:41.674Z",
+  "updated_at": "2026-08-29T19:42:29.364Z",
   "steps": {
     "discovery_smoke": {
       "status": "pass",
@@ -12,8 +12,11 @@
     },
     "dispatch_smoke": {
       "status": "pass",
-      "tiers_tested": ["opus (claude-cli)", "sonnet (claude-cli)"],
-      "note": "Re-run after 2026-08-24 policy switch to opus-plus-sonnet; prior cache covered v37 tiers only. Both OK. Sonnet returned fenced JSON -> {raw:...} fallback, no adapter strips fences."
+      "tiers_tested": [
+        "opus (claude-cli)",
+        "flash-completion (gemini-3.7-flash / vertex-adc, ai-studies-console/global)"
+      ],
+      "note": "Re-run 2026-08-29 after policy switch back to opus-plus-flash-v37. opus smoke->OK (cache hit, $0.11); flash-completion smoke->OK ($0.0012, 3.3s). Vertex ADC path exercised end-to-end for the first time this session."
     },
     "write_contract_smoke": {
       "status": "pass",

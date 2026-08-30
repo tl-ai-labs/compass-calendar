@@ -1,0 +1,22 @@
+[
+  {
+    "label": "import AttendeeResponseStatusSchema and ATTENDEE_STATUS_DOT",
+    "old_string": "import { cleanup, render, screen } from \"@testing-library/react\";\nimport { type Attendee } from \"@core/types/event-attendance.contracts\";\nimport { afterEach, describe, expect, it } from \"bun:test\";\nimport \"@testing-library/jest-dom\";\n\nimport { EventAttendeeBadge } from \"./EventAttendeeBadge\";",
+    "new_string": "import { cleanup, render, screen } from \"@testing-library/react\";\nimport {\n  AttendeeResponseStatusSchema,\n  type Attendee,\n} from \"@core/types/event-attendance.contracts\";\nimport { afterEach, describe, expect, it } from \"bun:test\";\nimport \"@testing-library/jest-dom\";\nimport { ATTENDEE_STATUS_DOT } from \"@web/common/styles/attendee-status\";\n\nimport { EventAttendeeBadge } from \"./EventAttendeeBadge\";"
+  },
+  {
+    "label": "update test for attendee with no display name",
+    "old_string": "  it(\"labels an attendee with no display name as Guest\", () => {\n    const attendees = [\n      attendee({\n        email: \"guest@example.com\",\n        displayName: null,\n        responseStatus: \"needsAction\",\n      }),\n    ];\n    render(<EventAttendeeBadge attendees={attendees} baseColor=\"#82A0B2\" />);\n    const avatar = screen.getByTitle(\"Guest, hasn't responded\");\n    expect(avatar).toBeInTheDocument();\n    expect(avatar.querySelector(\"svg\")).not.toBeNull();\n    expect(avatar.textContent).toBe(\"\");\n  });",
+    "new_string": "  it(\"renders the neutral glyph and no text for an attendee with no display name\", () => {\n    const attendees = [\n      attendee({\n        email: \"guest@example.com\",\n        displayName: null,\n        responseStatus: \"needsAction\",\n      }),\n    ];\n    render(<EventAttendeeBadge attendees={attendees} baseColor=\"#82A0B2\" />);\n    const avatar = screen.getByTestId(\"event-attendee-avatar\");\n    expect(avatar).toBeInTheDocument();\n    expect(avatar.querySelector(\"svg\")).not.toBeNull();\n    expect(avatar.textContent).toBe(\"\");\n    // \"Guest\" is no longer a rendered string anywhere (RF-01 removed the\n    // per-avatar title); identity placeholders are group-level only.\n    expect(\n      screen.getByRole(\"img\", { name: \"1 guest: 1 hasn't responded\" }),\n    ).toBeInTheDocument();\n  });"
+  },
+  {
+    "label": "update 3-guest summary label expectation",
+    "old_string": "    const badge = screen.getByRole(\"img\", { name: \"3 guests, 2 accepted\" });",
+    "new_string": "    const badge = screen.getByRole(\"img\", {\n      name: \"3 guests: 2 accepted, 1 hasn't responded\",\n    });"
+  },
+  {
+    "label": "append status token class and email display name tests",
+    "old_string": "    const symbolAvatar = screen.getByTestId(\"event-attendee-avatar\");\n    expect(symbolAvatar.textContent).toBe(\"\");\n    expect(symbolAvatar.querySelector(\"svg\")).not.toBeNull();\n  });\n});",
+    "new_string": "    const symbolAvatar = screen.getByTestId(\"event-attendee-avatar\");\n    expect(symbolAvatar.textContent).toBe(\"\");\n    expect(symbolAvatar.querySelector(\"svg\")).not.toBeNull();\n  });\n\n  it(\"applies the shared status token class to each avatar\", () => {\n    for (const status of AttendeeResponseStatusSchema.options) {\n      const attendees = [\n        attendee({\n          email: \"test@example.com\",\n          displayName: \"Test User\",\n          responseStatus: status,\n        }),\n      ];\n      render(<EventAttendeeBadge attendees={attendees} baseColor=\"#82A0B2\" />);\n      expect(screen.getByTestId(\"event-attendee-avatar\").className).toContain(\n        ATTENDEE_STATUS_DOT[status],\n      );\n      cleanup();\n    }\n  });\n\n  it(\"keeps @ out of the DOM when a display name looks like an email\", () => {\n    const attendees = [\n      attendee({\n        email: \"victim@corp.com\",\n        displayName: \"victim@corp.com\",\n        responseStatus: \"accepted\",\n      }),\n    ];\n    const { container } = render(\n      <EventAttendeeBadge attendees={attendees} baseColor=\"#82A0B2\" />,\n    );\n    expect(container.textContent).not.toContain(\"@\");\n    for (const el of container.querySelectorAll(\"*\")) {\n      for (const attr of el.getAttributeNames()) {\n        expect(el.getAttribute(attr)).not.toContain(\"@\");\n      }\n    }\n  });\n});"
+  }
+]

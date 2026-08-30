@@ -1,0 +1,357 @@
+[
+  {
+    "id": "tp_codegen_001",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "module": "attendee-status",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/common/styles/attendee-status.ts",
+    "instruction": "Create packages/web/src/common/styles/attendee-status.ts exactly as specified in design.md section 2. Export ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> with accepted:'bg-success', declined:'bg-error', tentative:'bg-warning', needsAction:'bg-text-subtle' in that key order, and attendeeStatusLabel = (status) => status === 'needsAction' ? \"hasn't responded\" : status. Import the type from @core/types/event-attendance.contracts. Keep both symbol names verbatim - they are the reason EventDetailsSection needs zero JSX edits. Explicit type annotation, NOT `satisfies`, NOT `as`, no index signature. No default export, no other exports. Include the JSDoc comments from the design.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Section 2 gives the full intended file content, verbatim.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "reason": "Source of truth for the map values (L12-20) being extracted.",
+        "content": ""
+      },
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "reason": "AttendeeResponseStatus type definition.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "File exports exactly two symbols: ATTENDEE_STATUS_DOT and attendeeStatusLabel",
+      "ATTENDEE_STATUS_DOT is annotated Record<AttendeeResponseStatus, string> (not satisfies, not as)",
+      "Map values are bg-success / bg-error / bg-warning / bg-text-subtle, key order accepted, declined, tentative, needsAction",
+      "attendeeStatusLabel body is verbatim from EventDetailsSection L20",
+      "No raw Tailwind palette class anywhere (NFR-1)",
+      "No default export"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_tests_002",
+    "phase": "tests",
+    "task_type": "unit_test",
+    "module": "attendee-status",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/common/styles/attendee-status.test.ts",
+    "instruction": "Create packages/web/src/common/styles/attendee-status.test.ts covering AC-10 and AC-11 per design.md section 2. Use bun:test (describe/it/expect). Test 1 'maps every response status to its semantic token': four explicit assertions accepted->bg-success, declined->bg-error, tentative->bg-warning, needsAction->bg-text-subtle. Test 2 'is exhaustive over AttendeeResponseStatusSchema': import the VALUE AttendeeResponseStatusSchema from @core/types/event-attendance.contracts, iterate AttendeeResponseStatusSchema.options asserting each ATTENDEE_STATUS_DOT[status] is defined and attendeeStatusLabel(status) is a string, then assert Object.keys(ATTENDEE_STATUS_DOT).length equals AttendeeResponseStatusSchema.options.length. Also assert attendeeStatusLabel('needsAction') === \"hasn't responded\" and attendeeStatusLabel('accepted') === 'accepted'. No React, no testing-library - this is a pure module test.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Section 2 specifies the exhaustiveness assertions.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/common/styles/attendee-status.ts",
+        "reason": "The module under test (produced by tp_codegen_001).",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/common/styles/color.utils.test.ts",
+        "reason": "House style for a bun:test module test in this directory.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "Uses bun:test imports (describe, it, expect)",
+      "Asserts all four status->token mappings explicitly (AC-10)",
+      "Iterates AttendeeResponseStatusSchema.options and asserts key-count equality (AC-11)",
+      "Does not import React or @testing-library",
+      "Passes under bun test:web"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_codegen_003",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+    "instruction": "Create packages/web/src/grid/components/EventAttendeeBadge.tsx exactly per design.md sections 3 and 4. Include: the five exported constants from 3.1 (MAX_VISIBLE_ATTENDEES=3, ATTENDEE_BADGE_LINE_HEIGHT=16, MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE=52, MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE=90, MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE=120) with their comments; the props interface from 3.2 (attendees: readonly Attendee[] | undefined, baseColor: string, className?: string); the derivation in 3.3 using strictly `>` not `>=`; monogramFor and MONOGRAM_CHARACTER from 3.4; countAccepted and groupLabel from section 4; and the exact JSX from 3.6. Use UserIcon (NOT the deprecated User) from @phosphor-icons/react. NO cast, no spread-copy of attendees. No useMemo, no React.memo, no forwardRef. No event handlers of any kind. Keep the biome-ignore comment on role=\"img\".",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Sections 3, 4, 8, 9, 10 are fully prescriptive for this file.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "reason": "House pattern for a small presentational grid sub-component taking baseColor.",
+        "content": ""
+      },
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "reason": "Attendee type.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/common/styles/attendee-status.ts",
+        "reason": "The shared map and label helper this component consumes.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "Returns null when attendees is undefined or empty (FR-5)",
+      "Cap logic uses `attendees.length > MAX_VISIBLE_ATTENDEES` (strictly greater), avatars = cap-1 when overflowing",
+      "Total rendered elements never exceed 3; avatars + N === attendees.length when a chip renders",
+      "The token `email` appears exactly once in the file, inside key={...}",
+      "No literal color class; status class comes only from ATTENDEE_STATUS_DOT (FR-7)",
+      "Root has pointer-events-none, select-none, role=img, aria-label; no tabIndex, no handlers, no stopPropagation (FR-12)",
+      "aria-label interpolates only numbers and string literals - never displayName or email (FR-10)",
+      "monogramFor only ever receives displayName; regex /^[\\p{L}\\p{N}]$/u gates the character",
+      "data-testid values: event-attendee-badge, event-attendee-avatar, event-attendee-overflow",
+      "Overflow chip text is a single template literal `+${overflowCount}`",
+      "No cast (`as`) on the attendees prop; type-check:web-tests passes"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 4000 }
+  },
+  {
+    "id": "tp_tests_004",
+    "phase": "tests",
+    "task_type": "unit_test",
+    "module": "attendee-badge",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventAttendeeBadge.test.tsx",
+    "instruction": "Create packages/web/src/grid/components/EventAttendeeBadge.test.tsx per design.md section 11 (AC-7, AC-8, AC-9) plus the section 3.3 truth table. Use bun:test + @testing-library/react + the side-effect import \"@testing-library/jest-dom\", matching EventCard.test.tsx L1-18. Define a local attendee factory as specified in section 11 'Fixture conventions' and always pass baseColor=\"#82A0B2\". Required tests: (a) truth table - lengths 1, 2, 3, 4, 6 asserting avatar count, chip presence, and chip text, with length 3 = 3 avatars and NO chip and length 6 = 2 avatars + '+4'; (b) 'never renders an @ anywhere when every displayName is null' - 3 attendees all displayName null with @-bearing emails, assert container.textContent has no @ and every [title]/[aria-label] attribute has no @; (c) 'labels an attendee with no display name as Guest' - getByTitle(\"Guest, hasn't responded\"), avatar contains an svg and no text; (d) returns null for undefined and for [].",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Section 3.3 truth table and section 11 AC mapping are normative.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "reason": "Test harness conventions (imports, bun:test + RTL setup) to match.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "reason": "The component under test (produced by tp_codegen_003).",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "Covers attendee-list lengths 1, 2, 3, 4 and 6 (the section 3.3 truth table)",
+      "Length 3 asserts three avatars and zero overflow chips - this is the >= vs > guard",
+      "Length 6 asserts two avatars and one chip reading '+4' (AC-7)",
+      "All-null-displayName test asserts no @ in textContent and in every title/aria-label (AC-8)",
+      "Guest test uses getByTitle and asserts an svg glyph is present (AC-9)",
+      "Asserts null render for undefined and for []",
+      "Passes under bun test:web"
+    ],
+    "budget": { "maxInputTokens": 25000, "maxOutputTokens": 5000 }
+  },
+  {
+    "id": "tp_codegen_005",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "grid-cards",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "MODIFY packages/web/src/grid/components/TimedEventCard.tsx with EXACTLY FOUR hunks per design.md sections 5, 6 and 7. (1) Add an import of EventAttendeeBadge plus ATTENDEE_BADGE_LINE_HEIGHT, MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE, MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE from ./EventAttendeeBadge. (2) After the showTimeLabel block, add attendeeCount and showAttendeeBadge exactly as in section 5. (3) Replace the lineClamp useMemo body and dependency array exactly as in section 6, adding showAttendeeBadge to the deps. (4) Add {showAttendeeBadge && (<EventAttendeeBadge attendees={event.attendees} baseColor={bgColor} />)} as the LAST child of the content div, after the closing )} of the {!event.isAllDay && (...)} fragment and before </div>. CHANGE NOTHING ELSE. Do not touch TimedEventCardProps. Do not alter accessibleLabel. Do not alter any class string. Preserve every existing comment verbatim. Return the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Sections 5, 6, 7 give exact insertion points and the lineClamp expression.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "reason": "The file being modified; must be reproduced byte-identically apart from the four hunks.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "reason": "Exported constant and component names to import.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "git diff vs 2d81253a shows exactly four hunks",
+      "TimedEventCardProps (L60-83) is textually unchanged (AC-14)",
+      "accessibleLabel construction is unchanged (FR-17)",
+      "lineClamp expression subtracts the badge term only when showAttendeeBadge is true, so the no-attendee path is numerically identical (R1)",
+      "showAttendeeBadge includes the attendeeCount > 0 term",
+      "Badge JSX uses the {cond && <X/>} idiom with no wrapper and no {\" \"} spacer (FR-16)",
+      "All pre-existing comments preserved verbatim",
+      "EventCard.test.tsx line-clamp assertions at L128 ('3') and L147 ('1') still pass"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 8000 }
+  },
+  {
+    "id": "tp_codegen_006",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "grid-cards",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "MODIFY packages/web/src/grid/components/AllDayEventCard.tsx with EXACTLY THREE hunks per design.md sections 5, 6 and 7. (1) Add an import of EventAttendeeBadge and MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE from ./EventAttendeeBadge. (2) After showRepeatIcon, add attendeeCount and showAttendeeBadge = attendeeCount > 0 && position.width >= MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE (no height term). (3) Insert {showAttendeeBadge && (<EventAttendeeBadge attendees={event.attendees} baseColor={bgColor} className=\"ml-1\" />)} as the second child of the flex min-w-0 items-center row, immediately after the closing </span> of the title span. CRITICAL CORRECTION to design.md section 6: the title span's trailing character is {\"\\u00A0\"} (a non-breaking space) at live line 198. design.md renders it as {\" \"} - that is a transcription error. You MUST preserve {\"\\u00A0\"} exactly. Do not touch AllDayEventCardProps, the row's cn(...) call, the pr-3.5 condition, or any class string. Preserve every comment verbatim. Return the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Sections 5, 6, 7 give the gate and insertion point.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "reason": "The file being modified; note the non-breaking space at L198.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "reason": "Exported constant and component names to import.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "git diff vs 2d81253a shows exactly three hunks",
+      "The title span still contains {\"\\u00A0\"} - a literal non-breaking space escape, NOT {\" \"} (N4 correction)",
+      "AllDayEventCardProps (L34-52) is textually unchanged (AC-14)",
+      "accessibleLabel construction is unchanged (FR-17)",
+      "showAttendeeBadge has no height term and includes attendeeCount > 0",
+      "The row's cn(...) call and pr-3.5 condition are unchanged",
+      "Badge JSX uses the {cond && <X/>} idiom, className=\"ml-1\"",
+      "All pre-existing comments preserved verbatim"
+    ],
+    "budget": { "maxInputTokens": 25000, "maxOutputTokens": 6000 }
+  },
+  {
+    "id": "tp_tests_007",
+    "phase": "tests",
+    "task_type": "unit_test",
+    "module": "grid-cards",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Emit ONLY the new test block to be appended inside the existing describe(\"EventCard\", ...) in EventCard.test.tsx. Do NOT reproduce the existing file. Output just the new it(...) blocks, correctly indented at two spaces, ready to insert before the file's final closing });. Write five tests per design.md section 11: (1) 'renders the attendee badge on a timed event with attendees' - default position, getByRole('img', { name: '2 guests, 1 accepted' }); (2) 'renders the attendee badge on an all-day event with attendees' - default position, AllDayEventCard; (3) 'renders no attendee badge when an event has no attendees' - timed and all-day, attendees undefined and [], each asserting queryByTestId('event-attendee-badge') is null; (4) 'hides the attendee badge on a short timed event' - position {...position, height: 40} with 2 attendees, badge absent; (5) 'keeps the timed title line clamp unchanged when an event has no attendees' - long title, no attendees, default position, assert webkitLineClamp '3'; then same event WITH 2 attendees, assert '2'. Reuse the file's existing createEvent helper and shared position object; pass attendees through overrides. Do not modify createEvent.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Section 11 names each test and its assertions.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "reason": "Existing helpers (createEvent, position) and conventions to reuse; must NOT be reproduced in the output.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/grid/components/EventAttendeeBadge.tsx",
+        "reason": "data-testid values and the aria-label format to assert against.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "test_block": { "type": "string" } },
+      "required": ["test_block"]
+    },
+    "acceptance": [
+      "Output is ONLY the new it(...) blocks - no imports, no describe wrapper, no existing tests reproduced (N3)",
+      "Indented two spaces to sit directly inside describe(\"EventCard\", ...)",
+      "Covers AC-4, AC-5, AC-6 plus the size-gate negative and the line-clamp regression",
+      "The line-clamp test asserts '3' without attendees and '2' with attendees (locks R1 in both directions)",
+      "Reuses the existing createEvent helper and shared position object unmodified",
+      "Passes under bun test:web"
+    ],
+    "budget": { "maxInputTokens": 30000, "maxOutputTokens": 5000 }
+  },
+  {
+    "id": "tp_codegen_008",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "module": "event-form",
+    "pass_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "instruction": "MODIFY packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx as a pure behavior-preserving refactor per design.md section 2 and FR-19/FR-20. Delete the module-private ATTENDEE_STATUS_DOT (L12-17) and attendeeStatusLabel (L19-20) definitions, and delete the now-unused `import { type AttendeeResponseStatus } from \"@core/types/event-attendance.contracts\";` if nothing else uses it. Add `import { ATTENDEE_STATUS_DOT, attendeeStatusLabel } from \"@web/common/styles/attendee-status\";`. THAT IS THE ENTIRE CHANGE. Keep MAX_VISIBLE_ATTENDEES = 6 exactly where it is - it does NOT move to the shared module. Keep `const name = attendee.displayName ?? attendee.email;` on L70 exactly as is; that email fallback is deliberate form-panel behavior and must NOT be extracted or altered. Do not reformat the JSX. Do not touch the component body, any class string, any aria-label or title. Return the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+        "reason": "Section 2 and risk R3 define the permitted diff exactly.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "reason": "The file being modified.",
+        "content": ""
+      },
+      {
+        "path": "packages/web/src/common/styles/attendee-status.ts",
+        "reason": "The module now supplying both symbols.",
+        "content": ""
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"]
+    },
+    "acceptance": [
+      "Only two changes: local definitions deleted, one import added (plus removal of a now-unused type import)",
+      "MAX_VISIBLE_ATTENDEES = 6 remains in this file",
+      "`const name = attendee.displayName ?? attendee.email;` is unchanged (R3, requirements PII section)",
+      "Component body, JSX structure, class strings, aria-label and title values are byte-identical",
+      "The literal 'bg-text-subtle' and the word 'needsAction' no longer appear in this file (FR-4)",
+      "EventForm.test.tsx L1444-1502 still passes without any edit to that file (AC-12)"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 4000 }
+  }
+]

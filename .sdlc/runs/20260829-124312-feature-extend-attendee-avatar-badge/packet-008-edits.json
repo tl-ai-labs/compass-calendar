@@ -1,0 +1,12 @@
+[
+  {
+    "label": "update-imports",
+    "old_string": "import { UsersIcon, VideoCameraIcon } from \"@phosphor-icons/react\";\nimport { useState } from \"react\";\nimport { type EventContent } from \"@core/types/event.contracts\";\nimport { type AttendeeResponseStatus } from \"@core/types/event-attendance.contracts\";",
+    "new_string": "import { UsersIcon, VideoCameraIcon } from \"@phosphor-icons/react\";\nimport { useState } from \"react\";\nimport { type EventContent } from \"@core/types/event.contracts\";\nimport {\n  ATTENDEE_STATUS_DOT,\n  attendeeStatusLabel,\n} from \"@web/common/styles/attendee-status\";"
+  },
+  {
+    "label": "remove-local-attendee-status-definitions",
+    "old_string": "const ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> = {\n  accepted: \"bg-success\",\n  declined: \"bg-error\",\n  tentative: \"bg-warning\",\n  needsAction: \"bg-text-subtle\",\n};\n\nconst attendeeStatusLabel = (status: AttendeeResponseStatus): string =>\n  status === \"needsAction\" ? \"hasn't responded\" : status;\n\nconst MAX_VISIBLE_ATTENDEES = 6;",
+    "new_string": "const MAX_VISIBLE_ATTENDEES = 6;"
+  }
+]

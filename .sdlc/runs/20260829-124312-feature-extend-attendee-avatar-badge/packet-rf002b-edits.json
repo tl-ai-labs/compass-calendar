@@ -1,0 +1,12 @@
+[
+  {
+    "label": "update attendee badge aria-label assertion to full status breakdown",
+    "old_string": "    expect(\n      screen.getByRole(\"img\", { name: \"2 guests, 1 accepted\" }),\n    ).toBeInTheDocument();",
+    "new_string": "    expect(\n      screen.getByRole(\"img\", {\n        name: \"2 guests: 1 accepted, 1 hasn't responded\",\n      }),\n    ).toBeInTheDocument();"
+  },
+  {
+    "label": "add tests hiding attendee badge on narrow timed and all-day events",
+    "old_string": "        motionMode=\"idle\"\n        position={{ ...position, height: 40 }}\n      />,\n    );\n\n    expect(screen.queryByTestId(\"event-attendee-badge\")).toBeNull();\n  });",
+    "new_string": "        motionMode=\"idle\"\n        position={{ ...position, height: 40 }}\n      />,\n    );\n\n    expect(screen.queryByTestId(\"event-attendee-badge\")).toBeNull();\n  });\n\n  it(\"hides the attendee badge on a narrow timed event\", () => {\n    // Width 80 is below MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE (90).\n    render(\n      <TimedEventCard\n        displayMode=\"saved\"\n        event={createEvent({\n          attendees: [\n            {\n              displayName: \"Ada\",\n              email: \"ada@example.com\",\n              responseStatus: \"accepted\",\n            },\n            {\n              displayName: \"Bo\",\n              email: \"bo@example.com\",\n              responseStatus: \"needsAction\",\n            },\n          ],\n        })}\n        motionMode=\"idle\"\n        position={{ ...position, width: 80 }}\n      />,\n    );\n\n    expect(screen.queryByTestId(\"event-attendee-badge\")).toBeNull();\n  });\n\n  it(\"hides the attendee badge on a narrow all-day event\", () => {\n    // Width 110 is below MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE (120).\n    render(\n      <AllDayEventCard\n        event={createEvent({\n          isAllDay: true,\n          attendees: [\n            {\n              displayName: \"Ada\",\n              email: \"ada@example.com\",\n              responseStatus: \"accepted\",\n            },\n            {\n              displayName: \"Bo\",\n              email: \"bo@example.com\",\n              responseStatus: \"needsAction\",\n            },\n          ],\n        })}\n        focusColor=\"#3b82f6\"\n        isPlaceholder={false}\n        position={{ ...position, width: 110 }}\n      />,\n    );\n\n    expect(screen.queryByTestId(\"event-attendee-badge\")).toBeNull();\n  });"
+  }
+]

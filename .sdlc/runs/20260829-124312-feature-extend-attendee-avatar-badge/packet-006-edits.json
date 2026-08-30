@@ -1,0 +1,17 @@
+[
+  {
+    "label": "import-attendee-badge",
+    "old_string": "import { type EventPosition } from \"@web/grid/types/grid.types\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";",
+    "new_string": "import { type EventPosition } from \"@web/grid/types/grid.types\";\nimport {\n  EventAttendeeBadge,\n  MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE,\n} from \"./EventAttendeeBadge\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";"
+  },
+  {
+    "label": "attendee-badge-gate",
+    "old_string": "  const showRepeatIcon =\n    isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;",
+    "new_string": "  const showRepeatIcon =\n    isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;\n\n  const attendeeCount = event.attendees?.length ?? 0;\n  const showAttendeeBadge =\n    attendeeCount > 0 && position.width >= MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE;"
+  },
+  {
+    "label": "attendee-badge-jsx",
+    "old_string": "        <span\n          className=\"relative min-w-0 truncate text-xs\"\n          style={{ color: titleColor }}\n        >\n          {event.title}\n          {\"\\u00A0\"}\n        </span>\n      </div>",
+    "new_string": "        <span\n          className=\"relative min-w-0 truncate text-xs\"\n          style={{ color: titleColor }}\n        >\n          {event.title}\n          {\"\\u00A0\"}\n        </span>\n        {showAttendeeBadge && (\n          <EventAttendeeBadge\n            attendees={event.attendees}\n            baseColor={bgColor}\n            className=\"ml-1\"\n          />\n        )}\n      </div>"
+  }
+]

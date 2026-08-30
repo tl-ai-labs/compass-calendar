@@ -18,7 +18,7 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 |---|---|
 | `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
 | `bun type-check` | Clean as of 2026-08-20. |
-| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
+| `bun lint` | **CORRECTED 2026-08-29 — it does NOT fail at baseline.** At `2d81253a`, checking every non-run offender file together exits **0**: the repo carries ~12 biome findings but they are all **warning**-level (`useExhaustiveDependencies`, `noUnusedVariables`, `noExplicitAny`, `noArrayIndexKey`), and warnings do not gate the exit code. Only `format` and `assist/source/organizeImports` findings are error-level. **Treat a red `bun lint` as YOUR regression until proven otherwise** — the old "fails at baseline" wording invited exactly the opposite reflex, and the 2026-08-29 run's senior review nearly dismissed 4 self-inflicted errors because of it. Two gotchas when checking: (a) `biome check --stdin-file-path` **exit codes are unusable** — a file clean on disk also exits 1 and prints "The contents aren't fixed"; compare emitted content to input instead; (b) an active run makes repo-root lint red via its own `.sdlc/**` bookkeeping, including source copies in `.sdlc/runs/<run-id>/backups/`. Scope lint to the write-contract allowlist while a run is open. |
 | `bun run verify` | Diff-aware. |
 | `bun test:e2e` | Playwright. |
 
@@ -330,6 +330,25 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
 ## Runs
 
 See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
+
+**Latest: row thirteen — `20260829-122202-feature-extend-attendee-avatar-badge`** (CMP-105,
+`feature-extend`, `opus-plus-sonnet`, `estimated`, branch `CMP-105/opus-plus-sonnet`, anchor
+`2d81253a`, $4.6625, 9 files, 2326 pass / 0 fail, **uncommitted**). Attendee avatar badge on grid
+event cards. Three things from it are worth carrying forward:
+
+- **A green `getByLabelText` test does not mean a11y works.** RTL matches the `aria-label`
+  *attribute* regardless of whether the element's role supports it. A role-less `div` (implicit role
+  `generic`) with `aria-hidden` children is invisible to assistive technology while every such
+  assertion passes. This defeated both the design doc (ADR-4 asserted the opposite) and the test
+  suite; it took two independent reviewers to surface. Assert AT reachability, not attribute presence.
+- **Provenance appends a second entry per re-edited file, and it breaks `/mmo:revert`.** Seen in rows
+  twelve *and* thirteen, so treat it as the norm on any run with post-gate fixes: entry 0 says
+  `existed_before:false` (delete), entry 1 says `existed_before:true` + `backup_path` (restore), and
+  the backup holds **mid-run** content. Dedupe by path — earliest entry for
+  `existed_before`/`tracked_in_git`/`sha_before`, latest for `sha_after` — and keep the raw history
+  beside it before trusting a revert.
+- **`bun lint` is green at baseline** — see the Validation table above for the corrected claim and the
+  two measurement gotchas.
 
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added

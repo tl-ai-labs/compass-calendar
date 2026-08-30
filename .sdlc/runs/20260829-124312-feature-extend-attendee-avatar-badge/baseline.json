@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "plugin_version": "0.6.0",
-  "built_at": "2026-08-29T12:25:28Z",
-  "run_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+  "built_at": "2026-08-29T19:45:54Z",
+  "run_id": "20260829-124312-feature-extend-attendee-avatar-badge",
   "mode": "refresh",
-  "refresh_decision": "incremental",
-  "refresh_reason": "9 files changed since baseline (2 commits); all under .sdlc/ plus .gitignore. No stack manifest changed, no new AI configs. Re-scanned groups 1, 6, 7 and the gitignore-derived off-limits; groups 2-5, 8 carried forward from 2026-08-20 baseline after spot-verification.",
+  "refresh_decision": "cached",
+  "refresh_reason": "discovery-refresh.mjs returned 'cached': git HEAD unchanged (2d81253a, 0 commits behind) and no stack manifest mtime changed since the living baseline. No re-scan performed; the living baseline was copied verbatim and spot-verified.",
   "baseline_carried_from": {
     "built_at": "2026-08-20T04:32:08Z",
     "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
@@ -16,7 +16,7 @@
     "head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
     "branch": "CMP-105/opus-plus-flash-v37",
     "dirty": true,
-    "dirty_note": "Dirty only under .sdlc/ (7 modified plugin files + untracked .sdlc/local/). No user source modified; 2d81253a is a clean rollback anchor for packages/**.",
+    "dirty_note": "Dirty, but exclusively under .sdlc/: 7 modified (.sdlc/CLAUDE-SDLC.md, baseline/current.json, baseline/discovery.md, ledger.json, ledger.md, pre-check-status.json, project.json) plus untracked .sdlc/local/. Zero user-source modifications — the pre-run tree is clean for rollback purposes.",
     "remotes": [
       {
         "name": "origin",
@@ -377,26 +377,139 @@
       "detail": "No .gitmodules; no submodules."
     },
     {
-      "kind": "dirty_tree",
-      "severity": "low",
-      "detail": "Working tree dirty but 100% confined to .sdlc/. No user source is dirty."
-    },
-    {
       "kind": "failing_pretests",
       "severity": "none",
       "detail": "bun test:web green: 2298 pass / 0 fail across 302 files."
     },
     {
+      "kind": "dirty_tree",
+      "severity": "low",
+      "detail": "Working tree dirty but 100% confined to .sdlc/ (7 modified + .sdlc/local/ untracked). No user source is dirty; rollback anchor 2d81253a is clean for packages/**."
+    },
+    {
       "kind": "branch_mismatch",
       "severity": "none",
-      "detail": "Resolved 2026-08-29: actual branch is CMP-105/opus-plus-flash-v37, cut from the same HEAD 2d81253a as the previously recorded CMP-105/opus-plus-sonnet."
+      "detail": "Resolved. Baseline said CMP-105/opus-plus-sonnet; actual is CMP-105/opus-plus-flash-v37 at the same HEAD. Living baseline corrected in this run."
+    },
+    {
+      "kind": "prior_art_on_sibling_branch",
+      "severity": "low",
+      "detail": "Commit c96863ec on CMP-105/opus-plus-sonnet implements this same feature and is NOT an ancestor of HEAD. Confirm at Gate 0 that a clean re-implementation (not a cherry-pick) is intended."
     }
   ],
-  "refreshed_by_run": "20260829-122202-feature-extend-attendee-avatar-badge",
-  "last_verified": {
-    "at": "2026-08-29T19:47:32Z",
-    "by_run": "20260829-124312-feature-extend-attendee-avatar-badge",
-    "refresh_decision": "cached",
-    "verdict": "Baseline still accurate. Spot-verified stacks, test commands, monorepo layout, submodules, LFS, AI configs, gitignore shape and the semantic-color guard — all unchanged. Only git.branch and git.dirty drifted; corrected in place. No re-scan performed."
+  "refreshed_by_run": "20260829-124312-feature-extend-attendee-avatar-badge",
+  "baseline_source": {
+    "path": ".sdlc/baseline/current.json",
+    "built_at": "2026-08-29T12:25:28Z",
+    "run_id": "20260829-122202-feature-extend-attendee-avatar-badge",
+    "git_head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "age_commits": 0,
+    "age_hours": 0.3
+  },
+  "spot_verification": {
+    "performed_at": "2026-08-29T19:45:54Z",
+    "method": "Independent re-read of the load-bearing facts rather than trusting the cached record.",
+    "confirmed": [
+      "stacks — root package.json still bun@1.3.14 / workspaces [\"packages/*\"]; lerna.json still packages/* + useWorkspaces; all 5 workspace manifests present.",
+      "test commands — root scripts.test:web still \"bun packages/scripts/src/testing/test-parallel.ts web --\"; test/test:core/test:backend/test:sync/test:scripts/type-check/lint/verify all unchanged.",
+      "monorepo — @compass/{web,backend,core,sync,scripts} under packages/*; path aliases @web/* and @core/* still resolve.",
+      "submodules — no .gitmodules (confirmed absent).",
+      "lfs — .gitattributes has no lfs filter/diff/merge entries.",
+      "ai configs — .claude/, .cursor/, .codex/, .agents/, AGENTS.md present; .mcp.json, CLAUDE.md, .cursorrules, .continue/, .roo/, copilot-instructions still absent; no repo-local routing-policy.yaml anywhere at depth <= 3.",
+      "gitignore — still only two narrow .sdlc subpaths ignored; git check-ignore confirms .sdlc/runs/, .sdlc/local/, .sdlc/baseline/ are NOT ignored on this branch.",
+      "gitignore aggressive globs — '*.env*' (line 4), '*.mjs' (line 6), '*.log', '*.tsbuildinfo' still repo-wide.",
+      "semantic-color guard — packages/scripts/src/testing/check-semantic-colors.ts still runs as the first half of `bun lint` and hard-fails on raw Tailwind palette classes."
+    ],
+    "drift_found": [
+      "git.branch: baseline recorded 'CMP-105/opus-plus-sonnet'; actual checked-out branch is 'CMP-105/opus-plus-flash-v37' (same HEAD 2d81253a, identical tree). Living baseline updated.",
+      "git.dirty: baseline recorded clean; working tree now has 7 modified files + .sdlc/local/ untracked, ALL under .sdlc/. No user source is dirty. Living baseline updated."
+    ],
+    "drift_material_to_scope": false
+  },
+  "task_scope": {
+    "intent": "feature-extend",
+    "summary": "Show an attendee avatar badge on grid event cards, reusing EventDetailsSection's RSVP-status styling.",
+    "prior_art": {
+      "commit": "c96863ec",
+      "subject": "feat(web): attendee avatar badge on grid event cards",
+      "is_ancestor_of_head": false,
+      "note": "This exact feature was already implemented on the sibling branch CMP-105/opus-plus-sonnet and is NOT in this branch history (branch cut from main at 2d81253a). Treat as a policy-comparison re-run: the feature is genuinely absent here (no EventAttendeeBadge.tsx, no attendee-status.styles.ts, no *avatar* file exists at HEAD). Do not read c96863ec as already-done work.",
+      "files_touched_by_prior_art": [
+        "packages/web/src/common/styles/attendee-status.styles.ts (+ .test.ts)",
+        "packages/web/src/grid/components/EventAttendeeBadge.tsx (+ .test.tsx)",
+        "packages/web/src/grid/components/attendee-badge.constants.ts",
+        "packages/web/src/grid/components/TimedEventCard.tsx",
+        "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "packages/web/src/grid/components/EventCard.test.tsx",
+        "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "packages/web/src/common/storage/migrations/external/demo-data-seed.ts"
+      ]
+    },
+    "likely_touched_files": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "lines": 368,
+        "role": "grid card — timed events; renders title, time label, EventRepeatIcon"
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "lines": 228,
+        "role": "grid card — all-day / multi-day row; same title + repeat-icon shape"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "lines": 575,
+        "role": "existing shared test file for both grid cards — extend here"
+      },
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "lines": 109,
+        "role": "source of the RSVP-status styling to reuse (ATTENDEE_STATUS_DOT)"
+      }
+    ],
+    "reference_points": {
+      "rsvp_status_styling": {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "symbol": "ATTENDEE_STATUS_DOT",
+        "lines": "12-20",
+        "shape": "Record<AttendeeResponseStatus, string> mapping accepted->bg-success, declined->bg-error, tentative->bg-warning, needsAction->bg-text-subtle; plus attendeeStatusLabel() which renders needsAction as \"hasn't responded\".",
+        "dot_class": "size-2.5 shrink-0 rounded-full ${ATTENDEE_STATUS_DOT[...]}  (line 86)",
+        "note": "Currently a module-private const. Reusing it on grid cards means extracting it to a shared module (prior art put it in packages/web/src/common/styles/attendee-status.styles.ts)."
+      },
+      "attendee_data_shape": {
+        "contract": "packages/core/src/types/event-attendance.contracts.ts",
+        "types": {
+          "Attendee": "{ email: string(1..320), displayName: string(1..256) | null, responseStatus: AttendeeResponseStatus }  (z.strictObject)",
+          "AttendeeResponseStatus": "\"needsAction\" | \"accepted\" | \"declined\" | \"tentative\"",
+          "Organizer": "{ email, displayName: string | null }"
+        },
+        "note": "strictObject — do not add fields to the contract; derive display data in the web layer."
+      },
+      "grid_event_type": {
+        "path": "packages/web/src/common/types/web.event.types.ts",
+        "symbol": "GridEventSchema / GridEvent",
+        "lines": "47-90",
+        "finding": "GridEvent ALREADY carries organizer (OrganizerSchema.nullable().optional()) and attendees (z.array(AttendeeSchema).readonly().optional()) at lines 86-88. No data plumbing or type widening is required to reach the grid cards — the badge can read event.attendees directly."
+      },
+      "view_model": {
+        "path": "packages/web/src/events/queries/event.view-model.ts",
+        "lines": "92-93",
+        "note": "Already maps details?.organizer and details?.attendees onto the grid event."
+      },
+      "demo_seed": {
+        "path": "packages/web/src/common/storage/migrations/external/demo-data-seed.ts",
+        "note": "Contains attendee fixtures; prior art adjusted it so the badge is visible in demo mode."
+      }
+    },
+    "constraints": [
+      "SEMANTIC COLORS ONLY. `bun lint` runs packages/scripts/src/testing/check-semantic-colors.ts BEFORE biome and hard-fails (exit 1) on any raw Tailwind palette class (bg-blue-300, text-zinc-900, --color-red-500, darkBlue-*) anywhere under packages/web/src. Use bg-success / bg-error / bg-warning / bg-text-subtle — these are declared in packages/web/src/index.css lines 114-125.",
+      "Cursor rule .cursor/rules/web-styles.mdc has glob packages/web/**/*.{tsx,css} and restates the semantic-color rule; .cursor/rules/web-testing.mdc governs the test file.",
+      "Grid cards are dense, size-constrained UI. TimedEventCard already gates the repeat icon on duration >= 15min and width >= 40px (REPEAT_ICON_MIN_DURATION_MINUTES / REPEAT_ICON_MIN_WIDTH) — an avatar badge needs equivalent space gating.",
+      "AllDayEventCard reserves pr-3.5 when the repeat icon shows so the title truncates first; a badge must participate in the same reservation logic.",
+      "Both cards use `cn` (classnames) + Tailwind 4 utility strings and @web/* path aliases."
+    ],
+    "test_command": "bun test:web",
+    "test_command_scope_note": "AGENTS.md: 'Avoid defaulting to bun test; use the focused package test first.' This intent is packages/web only.",
+    "secondary_checks": ["bun lint", "bun run type-check:web-tests"]
   }
 }

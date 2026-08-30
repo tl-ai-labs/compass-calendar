@@ -1,0 +1,42 @@
+[
+  {
+    "label": "import AttendeeResponseStatus",
+    "old_string": "import { type Attendee } from \"@core/types/event-attendance.contracts\";",
+    "new_string": "import {\n  type Attendee,\n  type AttendeeResponseStatus,\n} from \"@core/types/event-attendance.contracts\";"
+  },
+  {
+    "label": "STATUS_ORDER and updated MONOGRAM_CHARACTER comment",
+    "old_string": "/** A monogram is a single letter or digit. Anything else - punctuation, an\n *  emoji, whitespace-only, or null - falls back to the person glyph. That is\n *  what makes the no-@ guarantee airtight: no attendee-supplied character that\n *  is not \\p{L} or \\p{N} can ever reach the DOM, so \"@\" cannot, even from a\n *  displayName that looks like an email address. */\nconst MONOGRAM_CHARACTER = /^[\\p{L}\\p{N}]$/u;",
+    "new_string": "const STATUS_ORDER = [\n  \"accepted\",\n  \"declined\",\n  \"tentative\",\n  \"needsAction\",\n] as const;\n\n/** A monogram is a single letter or digit. Anything else - punctuation, an\n *  emoji, whitespace-only, or null - falls back to the person glyph. That is\n *  what keeps the rendered monogram free of \"@\": no attendee-supplied character\n *  that is not \\p{L} or \\p{N} reaches the rendered text. The per-avatar title\n *  attribute was removed in RF-01, so no attendee-supplied text reaches the DOM\n *  at all - not merely no \"@\". */\nconst MONOGRAM_CHARACTER = /^[\\p{L}\\p{N}]$/u;"
+  },
+  {
+    "label": "replace countAccepted with countByStatus",
+    "old_string": "/** Walks the full list once with a plain integer accumulator. Deliberately not\n *  .filter(...).length - that allocates an intermediate array on the grid's hot\n *  path. Do not \"optimize\" this into a filter. */\nconst countAccepted = (attendees: readonly Attendee[]): number => {\n  let accepted = 0;\n  for (const attendee of attendees) {\n    if (attendee.responseStatus === \"accepted\") accepted += 1;\n  }\n  return accepted;\n};",
+    "new_string": "/** Walks the full list once with a plain integer accumulator per status.\n *  Deliberately not a per-status .filter(...).length - that would allocate one\n *  intermediate array per status on the grid's hot path. Do not \"optimize\" this\n *  into filters. */\nconst countByStatus = (\n  attendees: readonly Attendee[],\n): Record<AttendeeResponseStatus, number> => {\n  const counts: Record<AttendeeResponseStatus, number> = {\n    accepted: 0,\n    declined: 0,\n    tentative: 0,\n    needsAction: 0,\n  };\n  for (const attendee of attendees) {\n    counts[attendee.responseStatus] += 1;\n  }\n  return counts;\n};"
+  },
+  {
+    "label": "replace groupLabel computation",
+    "old_string": "  const acceptedCount = countAccepted(attendees);\n  const groupLabel = `${attendees.length} ${\n    attendees.length === 1 ? \"guest\" : \"guests\"\n  }, ${acceptedCount} accepted`;",
+    "new_string": "  const counts = countByStatus(attendees);\n  const countDetails = STATUS_ORDER.filter((status) => counts[status] > 0)\n    .map((status) => `${counts[status]} ${attendeeStatusLabel(status)}`)\n    .join(\", \");\n  const groupLabel = `${attendees.length} ${\n    attendees.length === 1 ? \"guest\" : \"guests\"\n  }: ${countDetails}`;"
+  },
+  {
+    "label": "delete avatar statusText and title attribute",
+    "old_string": "        const statusText = attendeeStatusLabel(attendee.responseStatus);\n        const monogram = monogramFor(attendee.displayName);",
+    "new_string": "        const monogram = monogramFor(attendee.displayName);"
+  },
+  {
+    "label": "delete avatar title attribute",
+    "old_string": "            data-testid=\"event-attendee-avatar\"\n            title={`${attendee.displayName ?? \"Guest\"}, ${statusText}`}\n          >",
+    "new_string": "            data-testid=\"event-attendee-avatar\"\n          >"
+  },
+  {
+    "label": "delete overflow chip title attribute",
+    "old_string": "          style={{ backgroundColor: discColor, color: discTextColor }}\n          title={`${overflowCount} more`}\n        >",
+    "new_string": "          style={{ backgroundColor: discColor, color: discTextColor }}\n        >"
+  },
+  {
+    "label": "delete biome-ignore comment",
+    "old_string": "    // biome-ignore lint/a11y/useSemanticElements: A decorative avatar row is an\n    // image for a11y purposes, not an <img> with a src.\n",
+    "new_string": ""
+  }
+]

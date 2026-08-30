@@ -1,0 +1,22 @@
+[
+  {
+    "label": "import attendee badge components",
+    "old_string": "import { type EventPosition } from \"@web/grid/types/grid.types\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";",
+    "new_string": "import { type EventPosition } from \"@web/grid/types/grid.types\";\nimport {\n  ATTENDEE_BADGE_LINE_HEIGHT,\n  EventAttendeeBadge,\n  MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE,\n  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,\n} from \"./EventAttendeeBadge\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";"
+  },
+  {
+    "label": "compute attendee badge visibility gate",
+    "old_string": "  const showTimeLabel =\n    !event.isAllDay &&\n    (isDraft || !isInPast) &&\n    position.height >= MIN_EVENT_HEIGHT_FOR_TIME_LABEL &&\n    position.width >= MIN_EVENT_WIDTH_FOR_TIME_LABEL;",
+    "new_string": "  const showTimeLabel =\n    !event.isAllDay &&\n    (isDraft || !isInPast) &&\n    position.height >= MIN_EVENT_HEIGHT_FOR_TIME_LABEL &&\n    position.width >= MIN_EVENT_WIDTH_FOR_TIME_LABEL;\n\n  const attendeeCount = event.attendees?.length ?? 0;\n  const showAttendeeBadge =\n    attendeeCount > 0 &&\n    position.height >= MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE &&\n    position.width >= MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE;"
+  },
+  {
+    "label": "update line clamp calculation for attendee badge",
+    "old_string": "  // Clamp the title against the height the label leaves behind, not the whole\n  // card. Clamping against the full height lets a wrapping title occupy every\n  // line the card has and shove the label past the card's clipped edge.\n  const lineClamp = useMemo(\n    () =>\n      getLineClamp(\n        showTimeLabel\n          ? position.height - GRID_EVENT_TIME_LABEL_LINE_HEIGHT\n          : position.height,\n      ),\n    [position.height, showTimeLabel],\n  );",
+    "new_string": "  // Clamp the title against the height the label leaves behind, not the whole\n  // card. Clamping against the full height lets a wrapping title occupy every\n  // line the card has and shove the label past the card's clipped edge.\n  const lineClamp = useMemo(\n    () =>\n      getLineClamp(\n        position.height -\n          (showTimeLabel ? GRID_EVENT_TIME_LABEL_LINE_HEIGHT : 0) -\n          (showAttendeeBadge ? ATTENDEE_BADGE_LINE_HEIGHT : 0),\n      ),\n    [position.height, showAttendeeBadge, showTimeLabel],\n  );"
+  },
+  {
+    "label": "render attendee badge in event card content",
+    "old_string": "          </>\n        )}\n      </div>\n      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}",
+    "new_string": "          </>\n        )}\n        {showAttendeeBadge && (\n          <EventAttendeeBadge attendees={event.attendees} baseColor={bgColor} />\n        )}\n      </div>\n      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}"
+  }
+]
