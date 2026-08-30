@@ -46,6 +46,12 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import {
+  ATTENDEE_BADGE_LINE_HEIGHT,
+  EventAttendeeBadge,
+  MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE,
+  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,
+} from "./EventAttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -125,17 +131,23 @@ const TimedEventCardBase = (
     position.height >= MIN_EVENT_HEIGHT_FOR_TIME_LABEL &&
     position.width >= MIN_EVENT_WIDTH_FOR_TIME_LABEL;
 
+  const attendeeCount = event.attendees?.length ?? 0;
+  const showAttendeeBadge =
+    attendeeCount > 0 &&
+    position.height >= MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE &&
+    position.width >= MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE;
+
   // Clamp the title against the height the label leaves behind, not the whole
   // card. Clamping against the full height lets a wrapping title occupy every
   // line the card has and shove the label past the card's clipped edge.
   const lineClamp = useMemo(
     () =>
       getLineClamp(
-        showTimeLabel
-          ? position.height - GRID_EVENT_TIME_LABEL_LINE_HEIGHT
-          : position.height,
+        position.height -
+          (showTimeLabel ? GRID_EVENT_TIME_LABEL_LINE_HEIGHT : 0) -
+          (showAttendeeBadge ? ATTENDEE_BADGE_LINE_HEIGHT : 0),
       ),
-    [position.height, showTimeLabel],
+    [position.height, showAttendeeBadge, showTimeLabel],
   );
 
   const { base: baseColor, hover: hoverColor } = useEventPalette(
@@ -358,6 +370,9 @@ const TimedEventCardBase = (
               }}
             />
           </>
+        )}
+        {showAttendeeBadge && (
+          <EventAttendeeBadge attendees={event.attendees} baseColor={bgColor} />
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}

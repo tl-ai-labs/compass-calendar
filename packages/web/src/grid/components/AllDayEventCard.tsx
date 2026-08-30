@@ -27,6 +27,10 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import {
+  EventAttendeeBadge,
+  MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE,
+} from "./EventAttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +79,10 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+
+  const attendeeCount = event.attendees?.length ?? 0;
+  const showAttendeeBadge =
+    attendeeCount > 0 && position.width >= MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE;
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -197,6 +205,13 @@ const AllDayEventCardBase = (
           {event.title}
           {"\u00A0"}
         </span>
+        {showAttendeeBadge && (
+          <EventAttendeeBadge
+            attendees={event.attendees}
+            baseColor={bgColor}
+            className="ml-1"
+          />
+        )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
