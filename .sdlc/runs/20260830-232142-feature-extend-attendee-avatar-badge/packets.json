@@ -1,0 +1,209 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/common/styles/attendee-status.ts",
+    "depends_on": [],
+    "instruction": "Create packages/web/src/common/styles/attendee-status.ts. Import type AttendeeResponseStatus from @core/types/event-attendance.contracts. Export ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> with mappings: accepted: 'bg-success', declined: 'bg-error', tentative: 'bg-warning', needsAction: 'bg-text-subtle'. Export attendeeStatusLabel = (status: AttendeeResponseStatus): string => status === 'needsAction' ? \"hasn't responded\" : status.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "reason": "The two definitions being extracted, verbatim. Values must not drift.",
+        "content": "const ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> = {\n  accepted: \"bg-success\",\n  declined: \"bg-error\",\n  tentative: \"bg-warning\",\n  needsAction: \"bg-text-subtle\",\n};\n\nconst attendeeStatusLabel = (status: AttendeeResponseStatus): string =>\n  status === \"needsAction\" ? \"hasn't responded\" : status;"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "packages/web/src/common/styles/attendee-status.ts is created and exports ATTENDEE_STATUS_DOT and attendeeStatusLabel.",
+      "ATTENDEE_STATUS_DOT maps accepted to 'bg-success', declined to 'bg-error', tentative to 'bg-warning', and needsAction to 'bg-text-subtle'.",
+      "attendeeStatusLabel returns \"hasn't responded\" for 'needsAction' and the raw status string for all other values.",
+      "Type definitions and exports compile cleanly without TypeScript or Biome errors."
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_cg_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "depends_on": ["tp_cg_001"],
+    "instruction": "Edit packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx to import ATTENDEE_STATUS_DOT and attendeeStatusLabel from @web/common/styles/attendee-status. Remove the local definitions of ATTENDEE_STATUS_DOT and attendeeStatusLabel. Remove the now-unused import of AttendeeResponseStatus from @core/types/event-attendance.contracts. Keep MAX_VISIBLE_ATTENDEES = 6 and leave all JSX markup and form behavior unchanged.",
+    "inputs": [
+      {
+        "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+        "reason": "Edit target. Everything below the consts must remain byte-identical.",
+        "content": "Lines 12-20 hold the two consts; line 22 const MAX_VISIBLE_ATTENDEES = 6 STAYS. Line 4 imports AttendeeResponseStatus and becomes unused once the consts leave. The per-attendee <li> markup and the dot <span> must not change by a single character."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "ATTENDEE_STATUS_DOT and attendeeStatusLabel are imported from @web/common/styles/attendee-status.",
+      "Local definitions of ATTENDEE_STATUS_DOT and attendeeStatusLabel are removed.",
+      "Unused AttendeeResponseStatus type import from @core/types/event-attendance.contracts is removed.",
+      "MAX_VISIBLE_ATTENDEES = 6 is retained and existing JSX rendering remains byte-for-byte identical."
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_cg_003",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AttendeeBadge.tsx",
+    "depends_on": ["tp_cg_001"],
+    "instruction": "Create packages/web/src/grid/components/AttendeeBadge.tsx per the plan's TSX skeleton. Import cn from classnames, type Attendee from @core/types/event-attendance.contracts, and ATTENDEE_STATUS_DOT, attendeeStatusLabel from @web/common/styles/attendee-status. Define MAX_BADGE_ATTENDEES = 3 and export AttendeeBadgeProps { attendees?: readonly Attendee[] | null; className?: string }. Export AttendeeBadge component: return null when !attendees || attendees.length === 0. Slice visibleAttendees up to MAX_BADGE_ATTENDEES and compute overflowCount. Compute summaryLabel as `Attendees: ${attendees.map(a => `${a.displayName ?? a.email} (${attendeeStatusLabel(a.responseStatus)})`).join(\", \")}`. Render container with role=\"group\", aria-label={summaryLabel}, and className cn(\"inline-flex items-center gap-0.5 shrink-0 select-none\", className). Inside, map visible attendees to spans with key={attendee.email}, aria-hidden=\"true\", title={`${name}: ${statusText}`}, and className cn(\"size-1.5 rounded-full ring-1 ring-background/60 shrink-0\", ATTENDEE_STATUS_DOT[attendee.responseStatus]). When overflowCount > 0, render an overflow span with aria-hidden=\"true\", className \"text-[9px] font-medium leading-none opacity-80 pl-0.5\", and text `+${overflowCount}`.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-232142-feature-extend-attendee-avatar-badge/change_plan.md",
+        "reason": "The approved TSX skeleton this file must reproduce.",
+        "content": "See change_plan.md 'Component Contract' section for the full skeleton, decisions D-3 (size-1.5 dots, MAX_BADGE_ATTENDEES=3, +N overflow pill), D-4 (ring-1 ring-background/60), D-6 (null return), D-7 (role=group + summary aria-label)."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "AttendeeBadge returns null when attendees is undefined, null, or empty.",
+      "Badge container renders with role=\"group\" and aria-label formatted as 'Attendees: <Name> (<Status>), ...'.",
+      "Renders at most 3 dot spans with className cn('size-1.5 rounded-full ring-1 ring-background/60 shrink-0', ATTENDEE_STATUS_DOT[attendee.responseStatus]) and key={attendee.email}.",
+      "Each dot span has aria-hidden=\"true\" and title={`${name}: ${statusText}`}.",
+      "When attendees.length > 3, renders an overflow span with className 'text-[9px] font-medium leading-none opacity-80 pl-0.5' and text `+${overflowCount}`."
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_cg_004",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "depends_on": ["tp_cg_003"],
+    "instruction": "Edit packages/web/src/grid/components/TimedEventCard.tsx to import { AttendeeBadge } from \"./AttendeeBadge\". Inside the content wrapper div carrying EVENT_CONTENT_ATTRIBUTE, conditionally render {event.attendees && event.attendees.length > 0 && <AttendeeBadge attendees={event.attendees} />} immediately after the time label element and before the resize handles fragment. Change nothing else.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+        "reason": "Edit target and its existing sibling-import convention.",
+        "content": "Sibling import style: import { EventRepeatIcon } from \"./EventRepeatIcon\";\nContent wrapper: <div className=\"flex flex-col flex-wrap items-start\" style={{ color: contentColor }} {...{ [EVENT_CONTENT_ATTRIBUTE]: \"true\" }}> holding the title span, then a !event.isAllDay fragment containing the showTimeLabel span and the two resize-handle divs."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "AttendeeBadge is imported from './AttendeeBadge'.",
+      "AttendeeBadge is conditionally rendered with {event.attendees && event.attendees.length > 0 && <AttendeeBadge attendees={event.attendees} />} inside the EVENT_CONTENT_ATTRIBUTE container.",
+      "The badge is placed after the time label and before the resize handle elements.",
+      "When event.attendees is undefined or empty, no AttendeeBadge element is rendered."
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_cg_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "depends_on": ["tp_cg_003"],
+    "instruction": "Edit packages/web/src/grid/components/AllDayEventCard.tsx to import { AttendeeBadge } from \"./AttendeeBadge\". Update the title row container div className to cn(\"flex min-w-0 items-center gap-1\", { \"pr-3.5\": showRepeatIcon }). Render {event.attendees && event.attendees.length > 0 && <AttendeeBadge attendees={event.attendees} />} inline inside that title row div immediately following the title span. Change nothing else.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+        "reason": "Edit target. NOTE: the unconditional gap-1 addition is known defect C-1, retained deliberately per the Gate 2 as-written approval.",
+        "content": "<div className={cn(\"flex min-w-0 items-center\", { \"pr-3.5\": showRepeatIcon })}>\n  <span className=\"relative min-w-0 truncate text-xs\" style={{ color: titleColor }}>{event.title}{\"\\u00a0\"}</span>\n</div>"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "AttendeeBadge is imported from './AttendeeBadge'.",
+      "The title row container className is updated to cn(\"flex min-w-0 items-center gap-1\", { \"pr-3.5\": showRepeatIcon }).",
+      "AttendeeBadge is conditionally rendered with {event.attendees && event.attendees.length > 0 && <AttendeeBadge attendees={event.attendees} />} immediately after the title span.",
+      "When event.attendees is undefined or empty, no AttendeeBadge element is rendered."
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 }
+  },
+  {
+    "id": "tp_cg_006",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-attendee-badge",
+    "pass_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "depends_on": ["tp_cg_004", "tp_cg_005"],
+    "instruction": "Edit packages/web/src/grid/components/EventCard.test.tsx to append tests covering the five plan test cases using bun:test and @testing-library/react: (1) Zero-attendee DOM invariance: render TimedEventCard and AllDayEventCard with attendees: undefined and attendees: [], asserting querySelector('[role=\"group\"]') is null; (2) Badge rendering & status dots: render an event with 2 attendees (accepted, declined) and verify 2 dots with bg-success and bg-error classes and matching title tooltips; (3) Overflow handling: render an event with 5 attendees and verify exactly 3 dots, a '+2' overflow text element, and role=\"group\" aria-label listing all 5 names and statuses; (4) Accessibility contract: verify role=\"group\" and summary aria-label=\"Attendees: ...\" presence; (5) Interaction non-interference: verify firing mousedown on a card rendering a badge still triggers onEventMouseDown and onScalerMouseDown handlers. Append only; do not modify or delete any existing test.",
+    "inputs": [
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx",
+        "reason": "Existing 575-line harness the new cases must reuse, not replace.",
+        "content": "Harness: createEvent(overrides) factory returning a GridEvent cast; const position = { height: 60, left: 10, top: 20, width: 140 }; describe(\"EventCard\") with afterEach resetting useEdgeFocusStore. Imports: { fireEvent, render, screen } from @testing-library/react, { afterEach, describe, expect, it, mock } from bun:test, \"@testing-library/jest-dom\", ./AllDayEventCard, ./TimedEventCard. AllDayEventCard requires isPlaceholder; TimedEventCard requires displayMode and motionMode."
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "written": { "type": "boolean" },
+        "summary": { "type": "string" }
+      },
+      "required": ["artifact_path", "written", "summary"]
+    },
+    "acceptance": [
+      "Test case verifies zero-attendee invariance with attendees undefined and [] on both TimedEventCard and AllDayEventCard.",
+      "Test case verifies 2 attendee status dots render with bg-success and bg-error classes and correct title tooltips.",
+      "Test case verifies 5 attendees render exactly 3 dots, a '+2' text indicator, and a complete summary aria-label naming all 5 attendees.",
+      "Test case verifies role=\"group\" and comprehensive summary aria-label=\"Attendees: ...\" on the badge container.",
+      "Test case verifies onEventMouseDown and onScalerMouseDown continue to fire on card mousedown when a badge is present.",
+      "All test suites in packages/web/src/grid/components/EventCard.test.tsx pass successfully."
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 4000 }
+  }
+]

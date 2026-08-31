@@ -1,0 +1,31 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 27229,
+    "cached_content_token_count": 11019,
+    "candidates_token_count": 737,
+    "thoughts_token_count": 2182,
+    "total_token_count": 30148,
+    "service_tier": null
+  },
+  "tool_call_count": 1,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"verdict\": \"pass with notes\",\n  \"findings\": [\n    {\n      \"id\": \"F-1\",\n      \"severity\": \"minor\",\n      \"category\": \"PII Exposure\",\n      \"file\": \"packages/web/src/grid/components/AttendeeBadge.tsx\",\n      \"what\": \"AttendeeBadge falls back to raw email addresses (`a.displayName ?? a.email`) in the hover `title` attribute and accessibility `aria-label` when displayName is null.\",\n      \"why_it_matters\": \"Calendar grids are frequently screen-shared during meetings. Hovering over badge dots on the always-visible grid can unintentionally broadcast attendee email addresses to screen-share viewers, whereas this data previously required an explicit click to open the event form.\",\n      \"fix\": \"Avoid falling back to raw email addresses in grid tooltips/aria-labels; fall back to a generic placeholder (e.g. 'Attendee') or truncate/mask the email address.\",\n      \"inside_allowlist\": true\n    },\n    {\n      \"id\": \"F-2\",\n      \"severity\": \"minor\",\n      \"category\": \"Resource / DoS\",\n      \"file\": \"packages/web/src/grid/components/AttendeeBadge.tsx\",\n      \"what\": \"The `summaryLabel` in AttendeeBadge iterates and maps over the entire `attendees` array without a cap to construct the `aria-label` string on every render.\",\n      \"why_it_matters\": \"For events with large attendee lists (e.g., 500+ attendees), performing uncapped string transformations on every drag or resize re-render frame can degrade main-thread rendering performance across multiple event cards.\",\n      \"fix\": \"Cap the `summaryLabel` attendee iteration to `MAX_BADGE_ATTENDEES` and summarize overflow (e.g. `Attendees: Alice (accepted), Bob (declined) and 498 others`), or summarize with counts.\",\n      \"inside_allowlist\": true\n    }\n  ],\n  \"pii_assessment\": \"Attendee identity data (display names and fallback email addresses) is now rendered on the main calendar grid within DOM `title` tooltips and `aria-label` attributes. While the underlying attendee data was already accessible to the client in memory, moving it from behind a click in the event edit form to the persistently visible grid creates an accidental exposure vector during screen-sharing or shoulder-surfing when hovering over status dots. Furthermore, the `aria-label` enumerates all attendee statuses rather than only visible indicators. A Gate ruling should determine whether displaying raw fallback emails on grid hover is acceptable or if fallback masking/generic labelling should be enforced on high-visibility surfaces.\",\n  \"clean_categories\": [\n    \"Injection (XSS / CSS / URL Sink)\",\n    \"Dependencies / Supply Chain\"\n  ],\n  \"required_before_signoff\": \"Address the raw email fallback in AttendeeBadge tooltip and cap the summaryLabel aria-label generation to prevent performance issues with large attendee lists before final release.\"\n}"
+}

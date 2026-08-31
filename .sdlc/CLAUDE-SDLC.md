@@ -16,9 +16,9 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 
 | Command | Notes |
 |---|---|
-| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
-| `bun type-check` | Clean as of 2026-08-20. |
-| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
+| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. Baseline at `main@2d81253a` re-measured 2026-08-31: **2298 pass / 0 fail / 302 files**, ~95s. |
+| `bun type-check` | Clean as of 2026-08-31 (re-verified at `2d81253a` + 6 changed files). Note it is a **separate** gate — `bun test:web` does not type-check. |
+| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. Scoped `bunx biome check <files>` is the reliable per-run gate and exits 0 on warnings. |
 | `bun run verify` | Diff-aware. |
 | `bun test:e2e` | Playwright. |
 
@@ -331,6 +331,13 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
 
 See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
 
+Latest on this branch: **row thirteen** — `20260830-232142-feature-extend-attendee-avatar-badge`
+(CMP-105, `flash-agsdk-only`, the single-tier floor; $2.23, 6 files, 2303/0, accepted with 6
+follow-ups, uncommitted). First run in this repo where **no premium tier participated at any phase**,
+and the first deliberately executed with known Gate-2 defects left unfixed to measure uncorrected
+output — its 3-of-6 acceptance-criteria pass rate is therefore **not** comparable to arms where the
+orchestrator corrected the plan. Row numbers collide across branches; see the warning above.
+
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added
     **both** missing lines to `.gitignore` — `.sdlc/` *and* `.hook-logs/` — closing the half of
@@ -431,3 +438,57 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+> **Numbering collision warning.** Follow-ups are numbered per-branch. This file is at `main@2d81253a`
+> where the list ends at 29, so `CMP-103/opus-plus-flash-v37-t2` and this branch both add a "30" and a
+> "31" independently. Renumber on merge; do not cite these numbers across branches.
+
+30. **Structured output can silently lose content by emitting two concatenated JSON objects (HIGH,
+    open) — `PN-MULTI-OBJECT-TRUNCATION`.** Run `20260830-232142…`, packet `tp_design_001`: the
+    worker returned **two** JSON objects back to back, the first truncated mid-sentence inside
+    decision D-5. The adapter could not parse that against `outputSchema`, so it handed the whole
+    thing back as a `raw` string and reported `success: true`. The orchestrator salvaged the complete
+    second object — but the two objects **differed**: the truncated first one listed
+    `attendee-status.test.ts` and `AttendeeBadge.test.tsx` in `files_to_change`; the second had
+    silently dropped both. Those two files are required by AC-1 and AC-4, so **a serialization
+    failure became a blocker defect wearing the costume of a design decision**, and the resulting
+    `change_plan.md` gave no hint that anything had gone missing. Cheap durable fix: when the adapter
+    falls back to `raw`, detect multiple top-level JSON values and fail the packet rather than
+    returning `success: true` with an unvalidated blob — a schema miss should never be reported as a
+    success. Cross-reference follow-up 26 (artifact reported delivered before it existed): both are
+    the same failure class, *the record asserting more than the run actually achieved*.
+
+31. **`provenance.json` multi-entry replay makes `/mmo:revert` restore a file it should delete (HIGH,
+    open) — `PN-REVERT-LAST-ENTRY-WINS`.** Same run. `files_touched` is an append-only list, so a
+    path written twice gets **two entries**. `AttendeeBadge.tsx` was created by `tp_cg_003_r2`
+    (`existed_before: false`) and then edited by the refinement packet `tp_refine_r1`, whose entry
+    records `existed_before: true` **plus a `backup_path`** — because by then the file did exist and
+    was untracked-dirty. Result: 7 entries for 6 unique paths. A reverter keying on the **last** entry
+    per path would restore that backup instead of deleting the file, leaving a pre-refinement
+    `AttendeeBadge.tsx` on disk and reporting success. Correct semantics are **first-entry-wins for
+    `existed_before`, last-entry-wins for content** — i.e. if the *earliest* entry for a path says
+    `existed_before: false`, revert must DELETE regardless of later entries. Worth stating explicitly
+    in `revert.md` §1 and asserting in `--finalize`. Note the record itself was *accurate* here (all
+    six `sha_after` matched the real files, 0 mismatches) precisely because the orchestrator drove
+    `--before`/`--after` manually around each dispatch rather than trusting the adapter — so this is
+    a replay-semantics bug, not a data-integrity one.
+
+32. **Gate 0's "add `.sdlc/` to `.gitignore`" default is wrong for this repo (low, resolved
+    locally).** The prompt template offers a blanket `.sdlc/` ignore when
+    `baseline.gitignore_covers_sdlc` is false. This repo **deliberately tracks** `.sdlc/` reports —
+    see the existing gitignore comment "keep the reports, drop the blobs" and the `chore(sdlc): track
+    the project-level SDLC layer on main` commit — so accepting the default would untrack the very
+    run record the pipeline exists to produce. Resolved on `CMP-105/flash-agsdk-only` with a narrower
+    fix: ignore `.sdlc/runs/*/backups/` (backups echo source content and are regenerable) and
+    `.sdlc/local/` (transient, per-branch, machine-local), keeping run reports tracked. **The generic
+    default should not be offered blindly in this repo again.** Supersedes the framing in follow-up
+    21, which treated the blanket `.sdlc/` line as the desired end state.
+
+33. **The write-contract hook is live — re-probed 2026-08-31 (info).** At close-out of run
+    `20260830-232142…`, a real `Write` to `packages/backend/HOOK_PROBE_DELETE_ME.txt` was **denied**
+    with the expected off-limits message and left no file on disk. Writes to `.sdlc/ledger.md` and
+    `.sdlc/ledger.json` succeed via the SDLC carve-out, **not** because the hook is dead — a
+    distinction worth probing rather than assuming, since a silently-dead hook and a working carve-out
+    look identical from inside a successful write. This run's "0 write-contract violations" is
+    therefore backed by live enforcement, not only orchestrator discipline. Keep re-probing after
+    every `/plugin update`.

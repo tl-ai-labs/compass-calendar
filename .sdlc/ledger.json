@@ -829,6 +829,103 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+      "date": "2026-08-31",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "flash-agsdk-only",
+      "auth_mode": "estimated",
+      "ticket": "CMP-105",
+      "status": "accepted_with_followups",
+      "commit_strategy": "uncommitted by explicit Gate 4 instruction; working tree left for the human",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-105/flash-agsdk-only",
+      "commits": 0,
+      "files_written": 6,
+      "files_written_detail": [
+        "packages/web/src/common/styles/attendee-status.ts (new)",
+        "packages/web/src/grid/components/AttendeeBadge.tsx (new)",
+        "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx (edit, pure extraction, zero JSX change)",
+        "packages/web/src/grid/components/TimedEventCard.tsx (edit)",
+        "packages/web/src/grid/components/AllDayEventCard.tsx (edit)",
+        "packages/web/src/grid/components/EventCard.test.tsx (edit, 218 pure insertions)"
+      ],
+      "files_allowlisted_untouched": [
+        "packages/web/src/views/Forms/EventForm/EventForm.test.tsx",
+        "packages/web/src/common/utils/attendee/**",
+        "packages/web/src/events/attendance/**",
+        "packages/web/src/common/styles/attendee-status.test.ts (allowlisted but never written - defect C-2)",
+        ".gitignore (changed by the human outside the pipeline, not by a packet)"
+      ],
+      "tests": {
+        "command": "bun test:web",
+        "baseline_pass": 2298,
+        "baseline_files": 302,
+        "post_pass": 2303,
+        "post_fail": 0,
+        "post_files": 302,
+        "delta": "+5 tests, +0 files",
+        "type_check_exit": 0,
+        "biome_touched_files_exit": 0,
+        "caveat": "Green suite is NOT evidence of correctness here: 3 of 6 acceptance criteria fail while all 2303 tests pass."
+      },
+      "cost_usd": 2.2306,
+      "cost_split": {
+        "gemini_3_7_flash_usd": 2.2306,
+        "premium_usd": 0
+      },
+      "cost_note": "Single-tier floor: every phase routed to one gemini-3.7-flash Antigravity worker; no premium tier ran at all, so unlike the mixed arms there is NO character-count estimate mixed in. Priced from the flash-agsdk-only YAML pricing block. Still NOT comparable to sibling arms, whose Opus halves are heuristic estimates booking cached=0. Two failed packets cost $0.",
+      "known_findings_open": [
+        "C-1/R-2 blocker: unconditional gap-1 on AllDayEventCard title row breaks AC-3 byte-identity",
+        "C-2/R-4 blocker: attendee-status.test.ts and AttendeeBadge.test.tsx never written; AC-1 and AC-4 unmet",
+        "F-1 minor: displayName ?? email leaks a raw email into the grid hover tooltip",
+        "F-2 minor: summaryLabel maps over ALL attendees uncapped on every render",
+        "R-5 minor: interaction test fires on the card root, never the badge",
+        "C-5/R-6 minor: no height gate; badge silently clipped on short events"
+      ],
+      "artifacts_dir": ".sdlc/runs/20260830-232142-feature-extend-attendee-avatar-badge",
+      "gates": {
+        "gate_1": "approved; avatar rendering style deliberately left open for the design phase",
+        "gate_2": "approved AS-WRITTEN with 5 known defects (2 blockers) carried into codegen unfixed, to measure uncorrected floor-policy output",
+        "gate_3": "approved; C-3/R-3 accepted as debt with the accessibleLabel fix explicitly OVERRULED; F-1/F-2 accepted as debt; C-6 resolved with a narrower gitignore fix",
+        "gate_4": "accept; finalize and close out, do not commit"
+      },
+      "senior_review": {
+        "verdict": "request_changes",
+        "acs_met": "3 of 6 (AC-2, AC-5, AC-6-after-refinement)",
+        "headline": "Not told about C-1..C-5, the same Flash model independently rediscovered four of them, added the Biome blocker its own codegen had introduced and a weak-test finding - for $0.18, cheaper than the trivial extraction edit at $0.36.",
+        "refinement_applied": "tp_refine_r1 only: Biome format + useSortedClasses. The useSemanticElements warning was deliberately PRESERVED because it is the lint engine objecting to the very role=group frozen at Gate 2."
+      },
+      "security_review": {
+        "verdict": "pass with notes",
+        "blockers": [],
+        "majors": [],
+        "minors": ["F-1 PII raw-email fallback on a screen-shared surface", "F-2 uncapped aria-label map on every render"],
+        "clean": ["injection (XSS/CSS/URL sink)", "dependencies/supply chain - no manifest changed"],
+        "headline": "The a11y bug was the only thing limiting the privacy leak: R-3's inert role=group suppresses the aria-label half of F-1, so the reviewer's proposed R-3 fix would have WIDENED F-1. Gate 3 ruled them together."
+      },
+      "manual_verification": {
+        "performed": false,
+        "note": "No browser check this run. Badge rendering on short/narrow cards (C-5/R-6) and the F-1 hover tooltip are both unverified in a live app."
+      },
+      "scope_amendments": [
+        "C-6 .gitignore: Gate 0's generic 'add .sdlc/' default was found WRONG for this repo, which deliberately tracks .sdlc/ reports. The human applied a narrower fix outside the pipeline - ignoring .sdlc/runs/*/backups/ and .sdlc/local/ - keeping run reports tracked. The template default should not be offered blindly here again."
+      ],
+      "process_notes": [
+        "DESIGN-PHASE SERIALIZATION FAILURE produced a blocker: the design packet returned two concatenated JSON objects, the first truncated mid-decision. Its files_to_change DID list both missing test files; the complete second object had dropped them. C-2 is therefore a serialization artifact wearing the costume of a design decision, and change_plan.md gave no hint content went missing. Salvaged rather than paying ~$0.38 to re-roll.",
+        "COST IS DOMINATED BY REPO EXPLORATION, NOT REASONING: the two-line extraction edit cost $0.355, the whole badge component $0.056; the difference was ~617k cached input tokens of unprompted exploration. Quoting file contents inline cut one packet from ~$0.36 to $0.056. Input discipline is the cost lever on this adapter and it is invisible in a per-phase total.",
+        "INFRASTRUCTURE NEARLY ENDED THE RUN: two codegen attempts died with AntigravityExecutionError model unreachable (WSL resolver flapping, 5/12 success over 96s), both at $0. The orchestrator REFUSED to hand the packet to its own tier - the floor policy forbids escalation and doing so would have silently converted this arm into an Opus arm - and waited for 8 consecutive clean DNS probes instead.",
+        "PROVENANCE ACCURATE, REVERT UNSAFE: all 6 sha_after match the files on disk (the orchestrator drove --before/--after manually rather than trusting the adapter), but the record holds 7 entries for 6 paths with AttendeeBadge.tsx double-recorded, the second entry carrying existed_before:true plus a backup. A last-entry-wins reverter would RESTORE that backup instead of DELETING the file. Use git.",
+        "WRITE-CONTRACT HOOK RE-PROBED LIVE at close-out: a real Write to packages/backend/ was DENIED with the expected off-limits message and left no file. The .sdlc/ ledger writes succeed via the SDLC carve-out, not because the hook is dead. 0 violations across the run is therefore backed by live enforcement, not just orchestrator discipline.",
+        "LEDGER ROW-NUMBER COLLISION: this ledger is per-branch. Cut from main@2d81253a where it ends at row twelve, so at least four sibling branches each call their run 'row thirteen'. Renumber on merge.",
+        "SUMMARY.md NOT WRITTEN: the orchestrator subagent's harness forbids writing report/summary .md files (same block as run 20260830-164154; CLAUDE-SDLC follow-up 28). Report returned as text; manifest.json carries the same facts."
+      ],
+      "followups_open": 6,
+      "tags": ["cmp-105", "feature-extend", "flash-agsdk-only", "single-tier-floor", "uncorrected-output-experiment", "no-premium-tier", "green-suite-failing-acs", "serialization-failure-became-blocker", "a11y-vs-pii-tradeoff"],
+      "compare_baseline_tag": "cmp-105",
+      "compare_note": "Third CMP-105 arm and the only single-tier floor. Siblings: opus-plus-flash-v37 (branch CMP-105/opus-plus-flash-v37, committed 649aea0c) and opus-only-v5_1. Uniquely this arm ran the SAME model for judgment and mechanical work, so its senior review is Flash-on-Flash - it still caught 4 of 5 planted defects plus 2 new ones. Deliberately run with Gate 2 defects UNFIXED, so its AC pass rate (3 of 6) measures uncorrected output and is NOT comparable to arms where the orchestrator corrected the plan."
     }
   ]
 }

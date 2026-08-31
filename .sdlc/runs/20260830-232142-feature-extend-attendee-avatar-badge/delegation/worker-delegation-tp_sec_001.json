@@ -1,0 +1,57 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_sec_001",
+  "phase": "security_review",
+  "task_type": "changed_files_review",
+  "module": "grid-attendee-badge",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-31T07:34:30.251Z",
+  "duration_ms": 33534,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.052239,
+  "tokens": {
+    "input": 16210,
+    "input_cached": 11019,
+    "output": 2919,
+    "output_reasoning": 2182
+  },
+  "tool_calls": {
+    "count": 1,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1589,
+    "scanned": 1589,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_sec_001.md",
+    "usage": "worker-usage-tp_sec_001.json"
+  }
+}

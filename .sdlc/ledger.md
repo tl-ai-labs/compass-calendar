@@ -344,3 +344,82 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260830-232142-feature-extend-attendee-avatar-badge` (CMP-105, the single-tier floor)
+
+> **Row-number collision, by construction.** This ledger is per-branch. `CMP-105/flash-agsdk-only` was
+> cut from `main@2d81253a`, where the ledger ends at row twelve — so at least four sibling branches
+> (`CMP-103/opus-plus-flash-v37-t2`, `CMP-105/opus-plus-flash-v37`, `CMP-105/opus-only-v5_1`, and this
+> one) each independently call their run "row thirteen". Renumber on merge; do not assume these rows
+> are ordered.
+
+**CMP-105 · `feature-extend` · `flash-agsdk-only` · `estimated` · branch `CMP-105/flash-agsdk-only` ·
+$2.23 · 6 files · +5 tests · 2303 pass / 0 fail · uncommitted, accepted with follow-ups.**
+
+The floor arm: a single-tier policy where **every** phase — requirements, design, packet planning,
+codegen, tests, senior review, security review — routes to one `gemini-3.7-flash` Antigravity worker.
+No premium tier participated at any point, and the debug rule explicitly forbids escalation. The
+feature was the attendee avatar badge on both grid event cards, reusing the RSVP-status styling
+extracted out of `EventDetailsSection`.
+
+**This run was deliberately built to measure uncorrected output.** At Gate 2 the user approved the
+change plan *as-written* after being told it carried five defects, two of them blockers. The
+orchestrator was instructed not to fix them, and the decomposition packet was told in so many words
+not to add the two missing test files. Everything downstream is therefore a clean read on what the
+floor policy produces without a stronger model editing its homework.
+
+**The headline finding is that a blocker was born from a serialization failure, not a decision.** The
+design packet returned **two concatenated JSON objects**, the first truncated mid-decision. Its
+`files_to_change` *did* list `attendee-status.test.ts` and `AttendeeBadge.test.tsx`; the complete
+second object had silently dropped them. That omission is defect C-2 — and nothing in the resulting
+`change_plan.md` would have told a reader that content went missing. The orchestrator salvaged the
+second object rather than paying ~$0.38 to re-roll.
+
+**A green suite proved almost nothing.** 2303 tests passed while **three of six acceptance criteria
+failed**. The appended tests assert `[role="group"]` is null for the empty case — which C-1's
+unconditional `gap-1` passes straight through — and assert the `role` *DOM attribute* rather than the
+accessibility tree, which is precisely why C-3 stays invisible. The suite was green, the type-check
+clean, and AC-1, AC-3 and AC-4 all unmet.
+
+**Its own senior review was the best phase, at the lowest price.** Not told about C-1..C-5, the same
+Flash model independently rediscovered four of them (R-2=C-1, R-3=C-3, R-4=C-2, R-6=C-5), added the
+Biome blocker the codegen had introduced and a weak-test finding, and returned an honest
+`request_changes` — for **$0.18**, cheaper than the trivial constant-extraction edit at $0.36.
+
+**Cost is dominated by repo exploration, not reasoning.** The two-line extraction edit cost $0.355;
+the whole badge component cost $0.056. The difference was ~617k cached input tokens of unprompted
+exploration. Quoting file contents inline instead of letting the worker roam cut one packet from
+~$0.36 to $0.056 — on this adapter, **input discipline is the cost lever**, and it is not visible in
+a per-phase total.
+
+**An a11y bug was the only thing limiting a privacy leak.** Security found F-1: `displayName ?? email`
+puts a **raw email** into a grid hover tooltip, moving attendee identity from behind-a-click onto the
+always-visible, commonly screen-shared grid. Senior review found R-3: the badge's `role="group"` is
+inert inside a `role="button"` card. The reviewer's proposed R-3 fix — folding attendee detail into
+the card's `accessibleLabel` — would have **widened F-1**. Gate 3 ruled the two together: badge stays
+`aria-hidden`, RSVP detail stays behind a click, R-3 accepted as debt. The reviewer's own
+`fix_suggestion` was explicitly overruled.
+
+**Infrastructure, not the model, nearly ended the run.** Two codegen attempts died on
+`AntigravityExecutionError: model unreachable` — the WSL resolver flapping at 5/12 success over 96s.
+Both cost $0. The orchestrator **refused to hand the packet to its own tier**, since the floor policy
+has no escalation and doing so would have silently converted this arm into an Opus arm; it waited for
+eight consecutive clean DNS probes and retried instead.
+
+**Provenance was accurate and the revert path still unsafe.** All six `sha_after` values match the
+files on disk — because the orchestrator drove `--before`/`--after` manually around each dispatch
+rather than trusting the adapter. But the record holds **7 entries for 6 paths**: `AttendeeBadge.tsx`
+is double-recorded, the second entry carrying `existed_before: true` and a backup. A last-entry-wins
+reverter would **restore that backup instead of deleting the file**. Rollback is `git`, not
+`/mmo:revert`.
+
+**A Gate 0 template default was found wrong for this repo.** The plugin proposes adding `.sdlc/` to
+`.gitignore`; this repo deliberately *tracks* `.sdlc/` reports ("keep the reports, drop the blobs").
+The user replaced it with a narrower fix — ignoring `.sdlc/runs/*/backups/` and `.sdlc/local/` — which
+closes the backup-echoes-source gap without untracking the run record. The generic default should not
+be offered blindly here again.
+
+**Do not rank this $2.23 against the sibling arms.** This arm's figures are internally consistent (no
+Opus tier ran, so no character-count estimates are mixed in), but the `opus-plus-flash-v37` and
+`opus-only` arms book their Opus halves as heuristic estimates with `cached=0`. The totals are not
+comparable.

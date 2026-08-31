@@ -38,3 +38,8 @@ tmp/
 .sdlc/**/_gemini_worker_save/
 .sdlc/local/debug.log
 .hook-logs/
+# Per-run pre-change backups echo source content and are recreated every run;
+# git history is the real rollback anchor. Transient orchestrator state is
+# per-branch and machine-local.
+.sdlc/runs/*/backups/
+.sdlc/local/

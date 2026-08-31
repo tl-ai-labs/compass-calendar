@@ -1,0 +1,67 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 82472,
+    "cached_content_token_count": 54833,
+    "candidates_token_count": 513,
+    "thoughts_token_count": 961,
+    "total_token_count": 83946,
+    "service_tier": null
+  },
+  "tool_call_count": 5,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check --write packages/web/src/grid/components/AttendeeBadge.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check --write --unsafe packages/web/src/grid/components/AttendeeBadge.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check packages/web/src/grid/components/AttendeeBadge.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AttendeeBadge.tsx",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\n  \"artifact_path\": \"packages/web/src/grid/components/AttendeeBadge.tsx\",\n  \"written\": true,\n  \"summary\": \"Formatted AttendeeBadge.tsx and sorted Tailwind CSS classes using Biome while preserving the role=\\\"group\\\" attribute and its useSemanticElements lint warning unchanged.\",\n  \"remaining_diagnostics\": \"packages/web/src/grid/components/AttendeeBadge.tsx:35:7 lint/a11y/useSemanticElements\"\n}"
+}

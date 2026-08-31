@@ -1,0 +1,57 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_plan_001",
+  "phase": "plan_task_packets",
+  "task_type": "decomposition",
+  "module": "grid-attendee-badge",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-08-31T06:52:33.893Z",
+  "duration_ms": 58992,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.094649,
+  "tokens": {
+    "input": 21299,
+    "input_cached": 11320,
+    "output": 6778,
+    "output_reasoning": 4262
+  },
+  "tool_calls": {
+    "count": 1,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260830-232142-feature-extend-attendee-avatar-badge/change_plan.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260830-232142-feature-extend-attendee-avatar-badge/change_plan.md",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1587,
+    "scanned": 1587,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_plan_001.md",
+    "usage": "worker-usage-tp_plan_001.json"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "run_id": "20260830-232142-feature-extend-attendee-avatar-badge",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "flash-agsdk-only",
+  "policy_version": 1,
+  "auth_mode": "estimated",
+  "branch": "CMP-105/flash-agsdk-only",
+  "git_anchor": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits_made": 0,
+  "acceptance": "accepted",
+  "outcome": "accepted_with_followups",
+  "accepted_at": "2026-08-31T08:20:00Z",
+  "closed_at": "2026-08-31T08:20:00Z",
+  "gate_4": "accept — finalize manifest, complete close-out, do NOT commit",
+  "comparison": {
+    "study": "CMP-105 policy comparison",
+    "arm": "flash-agsdk-only (single-tier floor)",
+    "siblings": [
+      "CMP-105/opus-plus-flash-v37 (committed 649aea0c)",
+      "earlier attendee-badge arm"
+    ]
+  },
+  "models": [
+    {
+      "model": "gemini-3.7-flash",
+      "model_id": "flash-agsdk-worker",
+      "adapter": "antigravity-worker",
+      "backend": "vertex-adc",
+      "vertex_project": "ai-studies-console",
+      "vertex_location": "global",
+      "sdk": "google-antigravity 0.1.12"
+    }
+  ],
+  "cost": {
+    "total_usd": 2.2306,
+    "cap_usd": 50,
+    "by_phase": {
+      "requirements_analysis": { "packets": 1, "usd": 0.2688 },
+      "architecture_design": { "packets": 1, "usd": 0.3762 },
+      "plan_task_packets": { "packets": 1, "usd": 0.0946 },
+      "codegen": { "packets": 8, "usd": 0.8223 },
+      "tests": { "packets": 1, "usd": 0.4341 },
+      "senior_code_review": { "packets": 1, "usd": 0.1823 },
+      "security_review": { "packets": 1, "usd": 0.0522 }
+    },
+    "caveat": "auth_mode=estimated. Every event here is vendor-token-derived from the antigravity-worker (provenance vendor), priced from the flash-agsdk-only YAML pricing block (input 1.5 / input_cached 0.15 / output 9 per Mtok). No Opus tier participated in this run at all, so unlike the mixed-policy arms there is no character-count estimate mixed in. Cross-policy cost ranking is still invalid per the standing caveat: the sibling arms' Opus figures ARE estimates."
+  },
+  "tokens": {
+    "input": 811470,
+    "input_cached": 2505200,
+    "output": 70846
+  },
+  "telemetry": {
+    "events": 14,
+    "success": 12,
+    "failed": 2,
+    "failed_detail": "tp_cg_003 and tp_cg_003_r1 both died with AntigravityExecutionError: model unreachable (WSL resolver 10.255.255.254 flapping; DNS measured 5/12 over 96s). Zero tokens, zero cost. Succeeded on tp_cg_003_r2 after waiting for 8 consecutive clean DNS probes."
+  },
+  "suites": {
+    "baseline_pre_change": { "command": "bun test:web", "pass": 2298, "fail": 0, "files": 302, "exit": 0 },
+    "post_change": { "command": "bun test:web", "pass": 2303, "fail": 0, "files": 302, "exit": 0 },
+    "delta": "+5 tests, +0 files, 0 failures, no pre-existing test modified",
+    "type_check": { "command": "bun type-check", "exit": 0 },
+    "biome_touched_files": { "exit": 0, "warnings": 1, "detail": "lint/a11y/useSemanticElements on the role=\"group\" div, deliberately retained" }
+  },
+  "follow_ups_must_fix_before_merge": [
+    { "id": "C-1 / R-2", "severity": "blocker", "what": "Unconditional gap-1 on AllDayEventCard's title row breaks AC-3 byte-identical zero-attendee DOM.", "fix": "Make gap-1 conditional on attendee presence, or move spacing onto AttendeeBadge." },
+    { "id": "C-2 / R-4", "severity": "blocker", "what": "attendee-status.test.ts and AttendeeBadge.test.tsx were never written; AC-1 and AC-4 unmet. No tentative-status coverage, no AllDayEventCard-with-attendees test.", "fix": "Add both files plus the missing cases. Both paths are already in the allowlist." },
+    { "id": "F-1", "severity": "minor", "what": "displayName ?? email leaks a raw email into the grid hover title on a commonly screen-shared surface.", "fix": "Generic placeholder or masked form; do not print the raw address on the grid." },
+    { "id": "F-2", "severity": "minor", "what": "summaryLabel maps over ALL attendees uncapped on every render while only 3 dots draw.", "fix": "Cap at MAX_BADGE_ATTENDEES and summarise the remainder." },
+    { "id": "R-5", "severity": "minor", "what": "The interaction test fires mouseDown on the card root, never on the badge, so it does not prove what it claims.", "fix": "Dispatch on the badge element itself." },
+    { "id": "C-5 / R-6", "severity": "minor", "what": "No height/width gate for the badge on TimedEventCard; it is silently clipped on short events by the card's overflow-hidden.", "fix": "Gate on height, or use a compact layout when constrained." }
+  ],
+  "accepted_as_debt": [
+    { "id": "C-3 / R-3", "what": "role=group + aria-label nested inside a role=button card is inert under ARIA presentational-children, so the attendee summary is not announced.", "ruling": "Accepted as debt at Gate 3. Keep the badge aria-hidden; do NOT fold attendee detail into accessibleLabel, because that trades an inert-a11y bug for a live PII broadcast. RSVP detail stays behind a click in EventDetailsSection." },
+    { "id": "C-4", "what": "The change plan's test plan called for snapshot comparison, a pattern absent from packages/web/src.", "ruling": "Never reached the code: codegen quietly declined to use snapshots. No action." }
+  ],
+  "files_changed": [
+    { "path": "packages/web/src/common/styles/attendee-status.ts", "kind": "new", "packet": "tp_cg_001" },
+    { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "kind": "new", "packet": "tp_cg_003_r2 + tp_refine_r1" },
+    { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "kind": "edit", "packet": "tp_cg_002" },
+    { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "kind": "edit", "packet": "tp_cg_004" },
+    { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "kind": "edit", "packet": "tp_cg_005" },
+    { "path": "packages/web/src/grid/components/EventCard.test.tsx", "kind": "edit", "packet": "tp_cg_006" }
+  ],
+  "write_contract": {
+    "violations": 0,
+    "detail": "All 6 changed paths are inside the frozen allowlist. Full-repo git status shows no write outside packages/web/** and .sdlc/**. Verified after every packet, not just at the end."
+  },
+  "acceptance_criteria": {
+    "AC-1_shared_module_tests": "NOT MET",
+    "AC-2_extraction_output_unchanged": "MET",
+    "AC-3_zero_attendee_byte_identical": "NOT MET",
+    "AC-4_test_coverage": "NOT MET",
+    "AC-5_suite_green_no_existing_tests_modified": "MET",
+    "AC-6_biome_clean": "MET (after refinement tp_refine_r1; NOT met on first-shot output)",
+    "summary": "3 of 6 met. AC-6 required a refinement pass; AC-1, AC-3 and AC-4 remain unmet by the Gate 2 as-written ruling."
+  },
+  "gate_rulings": {
+    "gate_1": "approved. Avatar rendering style deliberately left open for the design phase.",
+    "gate_2": "approved AS-WRITTEN. All 5 defects C-1..C-5, including 2 blockers, carried into codegen unfixed, to measure what flash-agsdk-only produces without orchestrator correction.",
+    "gate_3": {
+      "response": "approved",
+      "C-3_R-3_a11y": {
+        "ruling": "ACCEPTED AS DEBT. Keep the badge aria-hidden. Do NOT fold attendee detail into either card's accessibleLabel.",
+        "rationale": "That fix would trade an inert-a11y bug for a live PII broadcast (F-1) on a screen-shared surface. RSVP detail behind a click, in EventDetailsSection, is the right altitude.",
+        "supersedes": "The senior reviewer's own fix_suggestion for R-3, which proposed exactly the accessibleLabel fold now ruled against."
+      },
+      "F-1_F-2": "Accepted as debt for this arm. Listed as must-fix-before-merge alongside C-1 and C-2.",
+      "C-6_gitignore": {
+        "ruling": "RESOLVED with a NARROWER fix than Gate 0 proposed, applied by the user outside the pipeline.",
+        "what_gate_0_proposed": "The plugin's generic default: add `.sdlc/` to .gitignore.",
+        "why_that_was_wrong": "This repo deliberately TRACKS .sdlc/ reports. See the existing gitignore comment 'keep the reports, drop the blobs' and the 'track the project-level SDLC layer' commit on main. The blanket default would have untracked the run record this pipeline exists to produce.",
+        "what_was_done_instead": "Added `.sdlc/runs/*/backups/` and `.sdlc/local/` to the existing SDLC ignore block, closing the 'backup echoes source content / transient state gets staged' gap while keeping run reports tracked.",
+        "action_item": "The Gate 0 template default conflicts with this repo's SDLC-tracking policy and should not be offered blindly here on future runs."
+      }
+    }
+  },
+  "artifacts": {
+    "requirements": "requirements.md",
+    "change_plan": "change_plan.md",
+    "known_defects": "known-defects-entering-codegen.md",
+    "packets": "packets.json",
+    "senior_review": "review.md",
+    "security_review": "security_review.md",
+    "telemetry": "telemetry.jsonl",
+    "provenance": "provenance.json",
+    "delegation_evidence": "delegation/"
+  },
+  "rollback": {
+    "use_mmo_revert": false,
+    "reason": "provenance.json holds 7 entries for 6 unique paths: AttendeeBadge.tsx appears twice (created by tp_cg_003_r2, then edited by tp_refine_r1). The second entry records existed_before:true with a backup_path. A reverter keying on the LAST entry per path would RESTORE that backup instead of DELETING the file, leaving a pre-refinement AttendeeBadge.tsx on disk. This is the known antigravity-worker provenance hazard, reproduced concretely.",
+    "verified": "All 6 sha_after values were checked against the real files on disk: 0 mismatches. The record is accurate; it is the multi-entry replay semantics that are unsafe.",
+    "use_instead": [
+      "git checkout -- packages/web/src/grid/components/TimedEventCard.tsx packages/web/src/grid/components/AllDayEventCard.tsx packages/web/src/grid/components/EventCard.test.tsx packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+      "rm packages/web/src/common/styles/attendee-status.ts packages/web/src/grid/components/AttendeeBadge.tsx"
+    ],
+    "anchor": "Branch CMP-105/flash-agsdk-only, cut from main at 2d81253a. Nothing was committed, so `git checkout -- packages/` plus removing the two new files restores the pre-run tree exactly."
+  }
+}
