@@ -27,6 +27,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { AttendeeBadge } from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -185,7 +186,7 @@ const AllDayEventCardBase = (
         />
       )}
       <div
-        className={cn("flex min-w-0 items-center", {
+        className={cn("flex min-w-0 items-center gap-1", {
           // Reserve room so a long title truncates before the bottom-right icon.
           "pr-3.5": showRepeatIcon,
         })}
@@ -197,6 +198,9 @@ const AllDayEventCardBase = (
           {event.title}
           {"\u00A0"}
         </span>
+        {event.attendees && event.attendees.length > 0 && (
+          <AttendeeBadge attendees={event.attendees} />
+        )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}

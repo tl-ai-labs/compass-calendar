@@ -1,23 +1,16 @@
 import { UsersIcon, VideoCameraIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { type EventContent } from "@core/types/event.contracts";
-import { type AttendeeResponseStatus } from "@core/types/event-attendance.contracts";
+import {
+  ATTENDEE_STATUS_DOT,
+  attendeeStatusLabel,
+} from "@web/common/styles/attendee-status";
 
 type EventDetails = Extract<EventContent, { kind: "details" }>;
 
 interface EventDetailsSectionProps {
   details: Pick<EventDetails, "organizer" | "attendees" | "conference">;
 }
-
-const ATTENDEE_STATUS_DOT: Record<AttendeeResponseStatus, string> = {
-  accepted: "bg-success",
-  declined: "bg-error",
-  tentative: "bg-warning",
-  needsAction: "bg-text-subtle",
-};
-
-const attendeeStatusLabel = (status: AttendeeResponseStatus): string =>
-  status === "needsAction" ? "hasn't responded" : status;
 
 const MAX_VISIBLE_ATTENDEES = 6;
 

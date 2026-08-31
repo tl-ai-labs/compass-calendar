@@ -46,6 +46,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { AttendeeBadge } from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -334,6 +335,9 @@ const TimedEventCardBase = (
               >
                 {timeRange}
               </span>
+            )}
+            {event.attendees && event.attendees.length > 0 && (
+              <AttendeeBadge attendees={event.attendees} />
             )}
             {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
             <div

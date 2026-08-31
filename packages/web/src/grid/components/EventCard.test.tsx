@@ -573,3 +573,221 @@ describe("EventCard", () => {
     expect(card.className).not.toContain("ring-accent");
   });
 });
+
+describe("EventCard attendee badge", () => {
+  it("renders no badge when the event has no attendees", () => {
+    const { container: timedUndefined } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees: undefined,
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+    expect(timedUndefined.querySelector('[role="group"]')).toBeNull();
+
+    const { container: timedEmpty } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees: [],
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+    expect(timedEmpty.querySelector('[role="group"]')).toBeNull();
+
+    const { container: allDayUndefined } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          startDate: "2099-01-15T00:00:00.000Z",
+          endDate: "2099-01-15T23:59:59.000Z",
+          attendees: undefined,
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(allDayUndefined.querySelector('[role="group"]')).toBeNull();
+
+    const { container: allDayEmpty } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          startDate: "2099-01-15T00:00:00.000Z",
+          endDate: "2099-01-15T23:59:59.000Z",
+          attendees: [],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(allDayEmpty.querySelector('[role="group"]')).toBeNull();
+  });
+
+  it("renders a status dot per attendee with the shared colour mapping", () => {
+    const attendees = [
+      {
+        email: "alice@example.com",
+        displayName: "Alice",
+        responseStatus: "accepted" as const,
+      },
+      {
+        email: "bob@example.com",
+        displayName: "Bob",
+        responseStatus: "declined" as const,
+      },
+    ];
+
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees,
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const badge = container.querySelector('[role="group"]');
+    expect(badge).not.toBeNull();
+
+    const dots = badge?.querySelectorAll("span[title]");
+    expect(dots).toHaveLength(2);
+
+    expect(dots?.[0]?.className).toContain("bg-success");
+    expect(dots?.[0]).toHaveAttribute("title", "Alice: accepted");
+
+    expect(dots?.[1]?.className).toContain("bg-error");
+    expect(dots?.[1]).toHaveAttribute("title", "Bob: declined");
+  });
+
+  it("caps the dots at three and shows an overflow count", () => {
+    const attendees = [
+      {
+        email: "a@example.com",
+        displayName: "Alice",
+        responseStatus: "accepted" as const,
+      },
+      {
+        email: "b@example.com",
+        displayName: "Bob",
+        responseStatus: "accepted" as const,
+      },
+      {
+        email: "c@example.com",
+        displayName: "Charlie",
+        responseStatus: "accepted" as const,
+      },
+      {
+        email: "d@example.com",
+        displayName: "Diana",
+        responseStatus: "accepted" as const,
+      },
+      {
+        email: "e@example.com",
+        displayName: "Evan",
+        responseStatus: "accepted" as const,
+      },
+    ];
+
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees,
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const badge = container.querySelector('[role="group"]');
+    expect(badge).not.toBeNull();
+
+    const dots = badge?.querySelectorAll("span[title]");
+    expect(dots).toHaveLength(3);
+
+    expect(badge?.textContent).toContain("+2");
+
+    const ariaLabel = badge?.getAttribute("aria-label") ?? "";
+    expect(ariaLabel).toContain("Alice");
+    expect(ariaLabel).toContain("Bob");
+    expect(ariaLabel).toContain("Charlie");
+    expect(ariaLabel).toContain("Diana");
+    expect(ariaLabel).toContain("Evan");
+  });
+
+  it("exposes the attendee summary as an accessible group label", () => {
+    const attendees = [
+      {
+        email: "charlie@example.com",
+        displayName: "Charlie",
+        responseStatus: "needsAction" as const,
+      },
+    ];
+
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees,
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const badge = container.querySelector('[role="group"]');
+    expect(badge).not.toBeNull();
+    expect(badge).toHaveAttribute("role", "group");
+
+    const ariaLabel = badge?.getAttribute("aria-label") ?? "";
+    expect(ariaLabel.startsWith("Attendees: ")).toBe(true);
+    expect(ariaLabel).toContain("hasn't responded");
+  });
+
+  it("does not block card interaction", () => {
+    const onEventMouseDown = mock();
+    const attendees = [
+      {
+        email: "alice@example.com",
+        displayName: "Alice",
+        responseStatus: "accepted" as const,
+      },
+    ];
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          startDate: "2099-01-15T09:00:00.000Z",
+          endDate: "2099-01-15T10:00:00.000Z",
+          attendees,
+        })}
+        motionMode="idle"
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    fireEvent.mouseDown(card);
+    expect(onEventMouseDown).toHaveBeenCalledTimes(1);
+  });
+});
