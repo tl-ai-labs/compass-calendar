@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "run_id": "20260830-164154-feature-extend-one-click-join",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/grid/components/event-join-url.util.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:36066e2add7824477db9634dfb344bcfc9f700f0c0be01540faa2a23b7f14c04",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_001",
+      "written_at": "2026-08-30T17:10:58.013Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/event-join-url.util.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:aaa3ac726810fca02abc2c70117c57de323909ae7f4bfc9794186616aecbc06e",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_tests_001",
+      "written_at": "2026-08-30T17:12:42.702Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:d1943b6beb17d5b13d01aa7da25e42d7dca635cf1e1409bc2f22e0c26dc76ca7",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_codegen_002",
+      "written_at": "2026-08-30T17:12:42.760Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:9cdd9c5bede80d6f357b2a05ecb147cd0cd4653ddd8db19cf552ebfd22573373",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_003",
+      "written_at": "2026-08-30T17:15:28.154Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:a4be17aadaf085fc66aad200fa77a2622e1ab4ccf698e6107e0f60bab5b8dccd",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_codegen_004",
+      "written_at": "2026-08-30T17:15:28.213Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:ab137f1d31296b999aa4e29389bf207eaa1840e70a787ed8ef352f17575eb9a3",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_tests_002",
+      "written_at": "2026-08-30T17:20:50.299Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d1943b6beb17d5b13d01aa7da25e42d7dca635cf1e1409bc2f22e0c26dc76ca7",
+      "sha_after": "sha256:e0a4b8f201a3594992a3116dfb8ac126d2be4ddf4be903da2c80c35058d8e167",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventJoinIcon.tsx",
+      "packet_id": "tp_refine_r2a",
+      "written_at": "2026-08-30T18:47:31.682Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/event-join-url.util.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:aaa3ac726810fca02abc2c70117c57de323909ae7f4bfc9794186616aecbc06e",
+      "sha_after": "sha256:7568d7b220f0f46fc1a0bc49e6a078c22c07689e72468efee6306fdc1f421ee9",
+      "tracked_in_git": false,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__event-join-url.util.test.ts",
+      "packet_id": "tp_refine_r3",
+      "written_at": "2026-08-30T18:47:31.740Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:9cdd9c5bede80d6f357b2a05ecb147cd0cd4653ddd8db19cf552ebfd22573373",
+      "sha_after": "sha256:8e40fc66b188e4f1e44aa657bfc144476c4ea9cbac05c602e49f2b8d735ccad2",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__TimedEventCard.tsx",
+      "packet_id": "tp_refine_r2bc",
+      "written_at": "2026-08-30T18:50:48.261Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:a4be17aadaf085fc66aad200fa77a2622e1ab4ccf698e6107e0f60bab5b8dccd",
+      "sha_after": "sha256:2ef366e2613fc72a664d25601fa126461003320068ce7631c408e9727194421e",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__AllDayEventCard.tsx",
+      "packet_id": "tp_refine_r2bc",
+      "written_at": "2026-08-30T18:50:48.318Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:ab137f1d31296b999aa4e29389bf207eaa1840e70a787ed8ef352f17575eb9a3",
+      "sha_after": "sha256:21cc3dadf8e34e5ebafe2b1a8118ff3f784aec1489dcfa1deb362183df38bd01",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventCard.test.tsx",
+      "packet_id": "tp_refine_r2e",
+      "written_at": "2026-08-30T18:50:48.202Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:21cc3dadf8e34e5ebafe2b1a8118ff3f784aec1489dcfa1deb362183df38bd01",
+      "sha_after": "sha256:9322ff771297d8fb06da4e318e94de180dd71db5760bab6a07a96061260d1f2e",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventCard.test.tsx",
+      "packet_id": "tp_debug_r6",
+      "written_at": "2026-08-30T18:55:31.471Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:9322ff771297d8fb06da4e318e94de180dd71db5760bab6a07a96061260d1f2e",
+      "sha_after": "sha256:01cf75e77b63386c52920bc18ec702a742168159f91b4d6b4666adbd09051a67",
+      "tracked_in_git": true,
+      "backup_path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/backups/packages__web__src__grid__components__EventCard.test.tsx",
+      "packet_id": "tp_refine_f2",
+      "written_at": "2026-08-30T19:15:13.172Z"
+    }
+  ]
+}

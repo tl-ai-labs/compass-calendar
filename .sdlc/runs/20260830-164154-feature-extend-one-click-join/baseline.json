@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "plugin_version": "0.6.0",
+  "built_at": "2026-08-30T16:43:51Z",
+  "run_id": "20260830-164154-feature-extend-one-click-join",
+  "mode": "refresh",
+
+  "refresh": {
+    "decision": "incremental",
+    "reason": "9 files changed since baseline (2 commits) — all under .sdlc/ plus .gitignore. Zero source/manifest delta.",
+    "git_head_baseline": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "git_head_current": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "baseline_age_commits": 2,
+    "manifests_changed": [],
+    "policy_changed": false,
+    "groups_rescanned": [1, 6, 7],
+    "groups_carried_forward": [2, 3, 4, 5, 8, 9],
+    "source_delta_since_baseline": [],
+    "living_baseline_updated": true,
+    "living_baseline_update_scope": "git block + gitignore-derived risks/coexistence only"
+  },
+
+  "git": {
+    "head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "branch": "CMP-103/opus-plus-flash-v37-t2",
+    "dirty": true,
+    "dirty_note": "Modified: .sdlc/pre-check-status.json, .sdlc/project.json. Untracked: .sdlc/local/. No tracked source-file modifications.",
+    "dirty_source_files": [],
+    "remotes": [
+      { "name": "origin", "url": "git@github.com:tl-ai-labs/compass-calendar.git" }
+    ],
+    "gitignore_covers_sdlc": false,
+    "gitignore_sdlc_rules": [
+      ".sdlc/**/_gemini_worker_save/",
+      ".sdlc/local/debug.log"
+    ],
+    "sdlc_runs_gitignored_on_this_branch": false,
+    "tracked_file_count": 1590
+  },
+
+  "topology": {
+    "top_level_dirs": [
+      ".agents", ".claude", ".codex", ".cursor", ".github",
+      "docs", "e2e", "packages", "patches", "self-host"
+    ],
+    "entry_points": [
+      "packages/web/src/index.tsx",
+      "packages/backend/src/app.ts",
+      "packages/sync/src/app.ts",
+      "packages/scripts/src/cli.ts"
+    ]
+  },
+
+  "stacks": [
+    {
+      "manifest": "package.json",
+      "stack": "node-typescript",
+      "runtime": "bun@1.3.14",
+      "node_engine": ">=24.0.0",
+      "typescript": "7.0.2",
+      "detected_frameworks": [
+        "react-18", "tanstack-react-router", "tanstack-react-query",
+        "zustand", "zod", "tailwind-4", "express", "playwright", "biome"
+      ]
+    },
+    {
+      "manifest": "packages/web/package.json",
+      "stack": "node-typescript",
+      "detected_frameworks": [
+        "react-18", "zustand", "tanstack-react-router", "tiptap",
+        "dexie", "zod", "tailwind-4", "testing-library", "msw",
+        "phosphor-icons"
+      ]
+    },
+    { "manifest": "packages/backend/package.json", "stack": "node-typescript", "detected_frameworks": ["express", "supertokens", "mongodb"] },
+    { "manifest": "packages/core/package.json", "stack": "node-typescript", "detected_frameworks": ["zod"] },
+    { "manifest": "packages/sync/package.json", "stack": "node-typescript", "detected_frameworks": ["googleapis"] },
+    { "manifest": "packages/scripts/package.json", "stack": "node-typescript", "detected_frameworks": [] }
+  ],
+
+  "adapter_match": {
+    "preauthored_adapter": "generic.md",
+    "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
+    "adaptive_profile_recommended": true,
+    "adaptive_profile_path": ".sdlc/baseline/stack-profile.md",
+    "adaptive_profile_reused": true,
+    "adaptive_profile_built_at": "2026-08-26T01:26:00Z",
+    "adaptive_profile_reason_reused": "Cached profile present; no stack-manifest change since it was built (manifests last modified 2026-08-19). Refresh decision was incremental, not full."
+  },
+
+  "test_command_proposed": "bun test:web",
+  "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
+  "test_command_alternatives": {
+    "full_suite": "bun test",
+    "web_only": "bun test:web",
+    "core": "bun test:core",
+    "type_check": "bun type-check",
+    "lint": "bun lint",
+    "e2e": "bun test:e2e",
+    "diff_aware": "bun run verify"
+  },
+  "test_command_notes": "AGENTS.md line 16: 'Avoid defaulting to bun test; use the focused package test first.' This intent touches packages/web only (grid card components), so bun test:web is the correct scoped default. .cursor/rules/web-testing.mdc forbids adding --parallel to test:web. Gate 0 must confirm.",
+  "baseline_test_status": "unverified",
+  "baseline_test_status_note": "Tier 1 is cheap local reads only; the suite was not executed. Phase 7 must capture a pre-change green/red baseline before judging any new failure as caused by this run.",
+
+  "docs_present": [
+    { "path": "README.md", "kind": "readme" },
+    { "path": "AGENTS.md", "kind": "agent-instructions" },
+    { "path": "CONTRIBUTING.md", "kind": "contributing" },
+    { "path": "SECURITY.md", "kind": "security" },
+    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
+    { "path": "docs/README.md", "kind": "docs-index" },
+    { "path": "docs/architecture", "kind": "architecture-dir" },
+    { "path": "docs/frontend", "kind": "docs-subdir" },
+    { "path": "docs/features", "kind": "docs-subdir" },
+    { "path": "docs/development/testing-playbook.md", "kind": "testing-playbook" }
+  ],
+
+  "ai_configs_detected": [
+    { "path": ".claude/settings.json", "type": "claude-code" },
+    { "path": ".claude/settings.local.json", "type": "claude-code-local", "detail": "NEW since baseline; gitignored via '**/.claude/settings.local.json'." },
+    { "path": ".claude/launch.json", "type": "claude-code" },
+    { "path": ".cursor/rules/", "type": "cursor", "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing" },
+    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    { "path": ".cursor/hooks/format-after-edit.ts", "type": "cursor-hook-script" },
+    { "path": ".codex/config.toml", "type": "codex" },
+    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    { "path": ".agents/skills/", "type": "shared-agent-skills", "detail": "9 skills incl. ship, simplify, verify-change, a11y-audit" },
+    { "path": ".agents/skills/chaos/agents/openai.yaml", "type": "external-model-agent-config" },
+    { "path": "AGENTS.md", "type": "agent-instructions" }
+  ],
+  "ai_configs_absent": [
+    ".mcp.json (gitignored, not present on disk)",
+    "CLAUDE.md",
+    "CLAUDE.local.md",
+    ".cursorrules",
+    ".aider.conf.yml",
+    ".continue/",
+    ".github/copilot-instructions.md",
+    ".roo/",
+    "routing-policy.yaml (searched to depth 3 — none)"
+  ],
+
+  "env_keys_by_file": {},
+  "env_keys_all": [],
+  "env_keys_note": "No .env* files exist on disk (re-verified this run). Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template. No encrypted-secret tooling (sops/age/git-crypt/ansible-vault) detected.",
+  "env_keys_referenced_in_code": [
+    "API_BASEURL", "COMPASS_BUILD_REF", "GOOGLE_CLIENT_ID",
+    "NODE_ENV", "PORT", "POSTHOG_HOST", "POSTHOG_KEY", "TZ"
+  ],
+
+  "monorepo": {
+    "type": "lerna+bun-workspaces",
+    "workspace_globs": ["packages/*"],
+    "packages": [
+      { "name": "@compass/web", "root": "packages/web", "manifest": "packages/web/package.json", "test_command": "bun test:web" },
+      { "name": "@compass/backend", "root": "packages/backend", "manifest": "packages/backend/package.json", "test_command": "bun test:backend" },
+      { "name": "@compass/core", "root": "packages/core", "manifest": "packages/core/package.json", "test_command": "bun test:core" },
+      { "name": "@compass/sync", "root": "packages/sync", "manifest": "packages/sync/package.json", "test_command": "bun test:sync" },
+      { "name": "@compass/scripts", "root": "packages/scripts", "manifest": "packages/scripts/package.json", "test_command": "bun test:scripts" }
+    ],
+    "path_aliases": {
+      "@web/*": "packages/web/src/*",
+      "@core/*": "packages/core/src/*",
+      "@compass/backend": "packages/backend/src",
+      "@compass/sync": "packages/sync/src",
+      "@compass/scripts": "packages/scripts/src"
+    }
+  },
+
+  "submodules": [],
+  "lfs": false,
+  "lfs_patterns": [],
+
+  "infra_hints": {
+    "dockerfile": false,
+    "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
+    "docker_compose": false,
+    "terraform": false,
+    "github_workflows": true,
+    "github_workflow_count": 11,
+    "gitlab_ci": false,
+    "circleci": false,
+    "jenkins": false
+  },
+
+  "off_limits_proposed": [
+    ".git/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".agents/**",
+    "AGENTS.md",
+    ".mcp.json",
+    "compass.yaml",
+    ".playwright-compass.yaml",
+    "*.env*",
+    ".env",
+    ".env.*",
+    "node_modules/**",
+    "build/**",
+    "buildcache/**",
+    "packages/*/build/**",
+    "packages/*/node_modules/**",
+    "bun.lock",
+    "patches/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".github/workflows/**"
+  ],
+
+  "regulated_repo_signals": [
+    { "kind": "security-policy", "path": "SECURITY.md" }
+  ],
+  "regulated_repo_warning_required": false,
+
+  "coexistence_notes": [
+    "Cursor rules at .cursor/rules/ (4 .mdc files). web-styles.mdc and web-testing.mdc both glob packages/web/**/*.{ts,tsx} and therefore govern every file this run will touch. Untouched by the plugin, but codegen must match them.",
+    "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md line 17 states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
+    ".gitignore does NOT cover .sdlc/ — it only ignores .sdlc/**/_gemini_worker_save/ and .sdlc/local/debug.log. Run artifacts (packets.json, changes.md, backups/) are visible to git add -A.",
+    ".sdlc/runs/ is NOT gitignored on this branch (CMP-103/opus-plus-flash-v37-t2) — plain 'git add .sdlc' will pick run artifacts up here, unlike on several sibling branches.",
+    ".gitignore contains repo-wide '*.mjs' and '*.env*' rules — any .mjs the plugin emits into user source would be silently untracked.",
+    ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
+    "No repo-local routing-policy.yaml — shipped policy applies.",
+    ".claude/settings.local.json appeared since the baseline; it is gitignored and off-limits."
+  ],
+
+  "repo_state_risks": [
+    { "kind": "lfs", "severity": "none", "detail": "No .gitattributes LFS filters. No Git-LFS in use." },
+    { "kind": "submodules", "severity": "none", "detail": "No .gitmodules. No submodules." },
+    { "kind": "encrypted_secrets", "severity": "none", "detail": "No .env* files, no sops/age/git-crypt/ansible-vault markers. Runtime config is compass.yaml (gitignored) from compass.example.yaml." },
+    { "kind": "gitignore_missing_sdlc", "severity": "medium", "detail": ".sdlc/ untracked but visible to git add -A; only two narrow sub-rules exist." },
+    { "kind": "aggressive_gitignore", "severity": "medium", "detail": "'*.mjs', '*.env*', '*.log' are repo-wide ignore globs. Not a hazard for this run (only .tsx/.ts under packages/web are in scope)." },
+    { "kind": "external_format_hooks", "severity": "low", "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output between write and verify." },
+    { "kind": "dirty_tree", "severity": "low", "detail": "Two modified .sdlc/ bookkeeping files plus untracked .sdlc/local/. No tracked source file is modified, so the rollback anchor at 2d81253a is clean for source purposes." },
+    { "kind": "pre_existing_test_failures", "severity": "unknown", "detail": "Not measured — Tier 1 does not run the suite. Phase 7 must record a pre-change baseline result for 'bun test:web' before attributing failures to this run." },
+    { "kind": "sibling_branch_divergence", "severity": "medium", "detail": "Branch CMP-105/opus-plus-flash-v37 (commit 649aea0c, already pushed) adds an attendee avatar badge to these exact two files. This branch's HEAD 2d81253a predates it, so that badge is ABSENT here. Both runs add a badge/icon affordance to the same render region of TimedEventCard.tsx and AllDayEventCard.tsx — expect a merge conflict, and expect EventCard.test.tsx to conflict too." }
+  ],
+
+  "intent_scope": {
+    "hint": "feature-extend",
+    "job": "Add a one-click join icon to TimedEventCard and AllDayEventCard for events that have a conference link (event.conference).",
+    "primary_package": "packages/web",
+    "data_available": true,
+    "data_note": "GridEventSchema in packages/web/src/common/types/web.event.types.ts already carries 'conference: ConferenceSchema.nullable().optional()', and event.view-model.ts line 94 maps details?.conference onto it. So event.conference?.url is directly reachable inside both cards with no plumbing change.",
+    "conference_shape": "{ url: z.url(), label: z.string().trim().min(1).max(256).nullable() } — packages/core/src/types/event-attendance.contracts.ts:31",
+    "prior_art": "packages/web/src/components/Sidebar/UpNextCard/UpNextBanner.tsx already implements a join affordance: window.open(conferenceUrl, '_blank', 'noopener,noreferrer'), label 'Join', bound to the 'V' shortcut, falling back to 'Open' when no conference. useUpNextEvent.ts:68-71 is the existing conferenceUrl selector.",
+    "icon_library": "@phosphor-icons/react ^2.1.7",
+    "likely_files": [
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "role": "primary-edit", "lines": 368, "note": "Render root is a role=button div with a biome-ignore for useSemanticElements; accessibleLabel is composed ~line 268. A nested interactive element needs event.stopPropagation() against the card's own onMouseDown/onKeyDown drag+open handlers." },
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "role": "primary-edit", "lines": 228, "note": "Same role=button div pattern; onMouseDown already calls e.stopPropagation() to protect against the all-day row create handler." },
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "role": "primary-test", "lines": 575, "note": "Shared test file covering both cards — this is where the new coverage belongs." },
+      { "path": "packages/web/src/components/Sidebar/UpNextCard/UpNextBanner.tsx", "role": "reference-only", "note": "Join-button prior art; do not modify." },
+      { "path": "packages/web/src/components/Sidebar/UpNextCard/useUpNextEvent.ts", "role": "reference-only", "note": "conferenceUrl selector prior art; do not modify." },
+      { "path": "packages/web/src/common/types/web.event.types.ts", "role": "read-only-contract", "note": "GridEvent already has conference; no change expected." },
+      { "path": "packages/core/src/types/event-attendance.contracts.ts", "role": "read-only-contract", "note": "ConferenceSchema source of truth; no change expected." },
+      { "path": "packages/web/src/grid/components/EventRepeatIcon.tsx", "role": "pattern-reference", "note": "Existing in-card icon component — closest structural precedent for a new in-card join icon." },
+      { "path": ".cursor/rules/web-styles.mdc", "role": "convention-constraint", "note": "Off-limits to write; governs Tailwind/semantic-color usage in the edit." },
+      { "path": ".cursor/rules/web-testing.mdc", "role": "convention-constraint", "note": "Off-limits to write; RTL + semantic-query conventions for the new tests." }
+    ],
+    "open_questions_for_gate0": [
+      "Does the join icon open in a new tab (matching UpNextBanner's window.open with noopener,noreferrer) or navigate in place?",
+      "Should the icon be always visible on cards with a conference, or hover/focus-revealed? Card heights go down to min-h-2.5, so a permanently visible icon may not fit short events.",
+      "Accessibility: a nested <button> inside a role=button div is an a11y nesting problem. Ruling needed — mirror the CMP-105 'Guest' precedent where the affordance was folded into the group-level aria-label, or introduce a real nested control with stopPropagation.",
+      "Is 'bun test:web' the right scope, or should 'bun type-check' be added given the shared contract read?"
+    ]
+  }
+}

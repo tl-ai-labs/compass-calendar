@@ -344,3 +344,85 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+---
+
+## Row thirteen — `20260830-164154-feature-extend-one-click-join` (CMP-103 turn-2, correctly-named `opus-plus-flash-v37` arm, resumed mid-run)
+
+**CMP-103 · `feature-extend` · `opus-plus-flash-v37` · `estimated` · branch
+`CMP-103/opus-plus-flash-v37-t2` · anchor `2d81253a` · $3.37 · 6 files · +30 tests ·
+2328 pass / 0 fail · uncommitted by the human's explicit choice.**
+
+Grid event cards carrying a `conference` object gained a one-click **join** glyph at the
+bottom-right, one slot left of the repeat icon. Click or Enter/Space calls
+`window.open(url, "_blank", "noopener,noreferrer")`. Turn-2 re-run of the `20260821-113930` arm under
+the correctly-named shipped policy — which is the entire point of the row.
+
+**The security review is the row's headline, and it is a real result rather than a rubber stamp.**
+The reviewer proved *against the repo's own zod 4.5.4* that `z.url()` **accepts** `javascript:`,
+`data:`, `vbscript:` and `file:`, and that `ConferenceSchema.safeParse` at
+`google-event.normalizer.ts:169` is the only ingest validation and carries **no scheme constraint**.
+So `isJoinableUrl` is **load-bearing, not decorative**: without it, raw provider-controlled schemes
+would reach `window.open`. A 42-input adversarial probe found no bypass — whitespace, C0 controls,
+embedded newlines, tabs *inside* the scheme and mixed case are all blocked, because `new URL` applies
+the same stripping the browser's own navigation does. **The feature closes a gap the codebase did not
+previously have.** It also surfaced N-1: two *pre-existing* sinks — `UpNextCard.tsx:89` and
+`UpNextBanner.tsx:32` — consume the same provider URL with **no scheme check at all**. Outside the
+allowlist; deferred to its own run.
+
+**R-1 was accepted as documented debt, deliberately, and the allowlist was not widened.** The join
+button's bubble-phase `stopPropagation()` is **dead code**: `PointerCaptureBoundary`'s capture-phase
+`onPointerDownCapture` runs ancestor-first and takes the pointer. The real fix is an opt-out for
+nested interactive controls in `grid/interaction/dom.ts` plus the Week/Day adapters — all frozen. This
+mirrors the `20260821` arm's SR-02, also left documented-not-structural, so the two arms remain
+comparable. The security reviewer **agreed it fails safe but corrected the reasoning**: per spec,
+cancelling `pointerdown` does not suppress `click`, so the symptom is either the form *or* the form
+**and** the meeting — unconfirmed without a browser. It also found a consequence **neither the senior
+review nor the change plan noted**: a pointerdown on the glyph *arms a drag of the underlying event*,
+so a slip could reschedule the meeting — bounded by `INTERACTION_MOVE_THRESHOLD_PX = 25` against a
+10×10 button. Security-wise it is orthogonal: only `isJoinableUrl`-validated values can ever reach
+`window.open`.
+
+**The most transferable lesson is that the suite was asserting a false invariant and passing.** Two
+tests titled "…without selecting the card" rendered the cards **bare**, outside the very boundary that
+defeats them in production — so they asserted the *opposite* of R-1 and went green. Gate 3 ruled them
+the one thing to fix: `tp_refine_f2` retitled both to "…stops mousedown bubbling **in an isolated
+tree**", added a `SCOPE:` comment naming R-1, and annotated the assertion, while leaving the keyboard,
+scheme-guard and `window.open` three-argument coverage untouched (zero deletions in the diff). **CI no
+longer advertises a false invariant, but still cannot *detect* R-1** — only a test inside a real
+`PointerCaptureBoundary` firing `pointerDown` could.
+
+**Two reviewer claims were checked and found wrong — both by the orchestrator, downstream.**
+`review.md` V-10 asserted, as an *executed* verification, that `@phosphor-icons/react` forwards
+`className` **verbatim**; it does not — `IconBase` prepends `c-icon`, so the hardened R-6 assertion
+failed on first run and needed a debug packet (`toBe` → `toContain`). And R-2's "`bun lint` now fails
+where it was previously clean" holds only for `grid/components/`, **not** for the repo-wide script:
+`biome.json` includes `**` with no `.sdlc` exclusion and `.sdlc/baseline/current.json` is *already*
+unformatted at the anchor, so repo-wide `bun lint` exited 1 before this run wrote anything. Proved by
+round-trip format compare, because biome's `--stdin-file-path` exit code is unusable.
+
+**Routing discipline was verified per-dispatch rather than asserted.** All **24** mechanical events
+carry `model_id=flash-completion` with `select.overridden=false`; `SDLC_SELECT` was never set and the
+strings `agsdk`/`antigravity` appear nowhere in the telemetry. 23 successful dispatches, 6 output-cap
+retries all recovered on the doubled ceiling, **zero terminal failures and zero escalations to the
+premium tier** — notable given the policy escalates `debug` after two mechanical failures.
+
+**This was a resumed run**, restarted after a user pause that killed the process mid-phase; the
+senior review was complete on disk while `state.json`'s checkpoint still read
+`senior-reviewer-delegated`. The resume read the existing `review.md` rather than re-dispatching the
+subagent, and back-filled the missing `senior_code_review` telemetry event. **Cost is not a
+policy-comparison number:** under `estimated` the five opus events are heuristics booking `cached=0`,
+two of them derived from subagent-reported totals.
+
+**Manual browser check performed 2026-08-30 (human, `dev:web` @ `localhost:9080`) — R-1 (b) and (c)
+both confirmed.** Mouse **click** on the join glyph opens the event's right-hand details panel and
+does **not** open the meeting — R-1 (b) symptom **(i)**, the form only; the meeting tab does not also
+open. **Keyboard** activation (Tab → Enter) opens the Meet tab correctly — the keyboard path is
+unaffected by R-1, exactly as predicted. A press-and-**drag** starting on the glyph **moves /
+reschedules the underlying event** — R-1 (c) confirmed reproducible with a deliberate drag gesture.
+Net: as-shipped the mouse-click join is **non-functional** (opens the panel, not the meeting), the
+keyboard join works, and drag-from-glyph is a data-integrity footgun. Fails safe security-wise (only
+`isJoinableUrl`-validated values ever reach `window.open`), but the primary interaction does not work.
+The fix is the R-1 (a) work in `grid/interaction/dom.ts` + the Week/Day adapters — outside this run's
+allowlist, so it needs its own run. The code remains **uncommitted**, so this is an A/B data point,
+not a shipped regression.

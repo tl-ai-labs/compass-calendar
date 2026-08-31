@@ -17,8 +17,8 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 | Command | Notes |
 |---|---|
 | `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
-| `bun type-check` | Clean as of 2026-08-20. |
-| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
+| `bun type-check` | Clean as of **2026-08-30** (exit 0, re-verified at run `20260830-164154` close-out). |
+| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. Re-proved at `2d81253a` on 2026-08-30: `biome.json` `files.includes` is `["**"]` with no `.sdlc` exclusion, and `.sdlc/baseline/current.json` is already unformatted **at the anchor**, so the failure predates any run. Do not chase it; scope lint checks to changed source files. |
 | `bun run verify` | Diff-aware. |
 | `bun test:e2e` | Playwright. |
 
@@ -331,6 +331,15 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
 
 See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
 
+**Latest — row thirteen:** [`20260830-164154-feature-extend-one-click-join`](./runs/20260830-164154-feature-extend-one-click-join/manifest.json)
+· CMP-103 · `feature-extend` · `opus-plus-flash-v37` · `estimated` · branch
+`CMP-103/opus-plus-flash-v37-t2` · anchor `2d81253a` · **$3.37** · 6 files · +30 tests ·
+2328 pass / 0 fail · **uncommitted**. Turn-2 re-run of the `20260821-113930` arm under the correctly
+named shipped policy. Blocker **R-1 accepted as documented debt, allowlist NOT widened**; security
+verdict **pass with notes** with the key result that `isJoinableUrl` is *load-bearing* — `z.url()`
+empirically accepts `javascript:`/`data:`/`vbscript:`/`file:` and ingest applies no scheme filter.
+See follow-ups **30** and **31**, both first recorded from this run.
+
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added
     **both** missing lines to `.gitignore` — `.sdlc/` *and* `.hook-logs/` — closing the half of
@@ -431,3 +440,37 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **A green suite can actively advertise a FALSE invariant (HIGH, partially mitigated) —
+    `PN-FALSE-INVARIANT`.** Run `20260830-164154-feature-extend-one-click-join` shipped two tests
+    titled *"opens the … conference link **without selecting the card**"* that rendered the cards
+    **bare**, outside the `PointerCaptureBoundary` that wraps every card in the real Week/Day views.
+    In production that boundary's **capture-phase** listener runs ancestor-first and defeats the
+    button's bubble-phase `stopPropagation` entirely — so the tests asserted the **opposite** of
+    reality and passed. This is worse than missing coverage: a reader, a reviewer and CI all take a
+    green assertion as evidence, and here the assertion's *title* was the load-bearing claim of the
+    whole feature. Both reviewers caught it independently (senior R-1, security F-2). **The general
+    lesson: when a test's subject is normally mounted inside a wrapper that changes event routing,
+    rendering it bare does not simplify the test — it inverts it.** Mitigation applied at Gate 3
+    (retitled to "…in an isolated tree", `SCOPE:` comment naming R-1, assertion annotated, zero
+    deletions). **Still open:** nothing in CI can *detect* the underlying bug; that needs a test
+    rendering inside a real `PointerCaptureBoundary` and firing `pointerDown`, not `mouseDown`.
+
+31. **Reviewers present reasoned claims as executed verifications (medium, open) —
+    `PN-REVIEW-EVIDENCE-DRIFT`.** Same run, two instances in one `review.md`, both caught downstream
+    by the orchestrator rather than at the gate:
+    - **V-10** was listed in the "commands I actually ran" table and claimed
+      `@phosphor-icons/react` spreads `className` onto the `<svg>` **verbatim**. It does not —
+      `IconBase` prepends `c-icon`. A refinement packet built on that claim failed immediately
+      (`expected "pointer-events-none absolute right-1 bottom-0.5"`, `received "c-icon …"`) and
+      needed a debug packet to switch `toBe` → `toContain`.
+    - **R-2** claimed "`bun lint` now fails where it was previously clean." Its own stash test (V-6)
+      only ever covered `packages/web/src/grid/components/`, but the finding generalised to the
+      repo-wide `bun lint` **script**. `biome.json` includes `**` with no `.sdlc` exclusion and
+      `.sdlc/baseline/current.json` is already unformatted at the anchor, so repo-wide `bun lint`
+      exited 1 *before the run wrote anything*.
+
+    Both are the same failure: **a conclusion whose evidence covers a narrower scope than the claim.**
+    Cheap defence — when a review asserts a regression, re-derive the baseline at the anchor before
+    acting on it. (Verifying the second one required a **round-trip format compare**, because
+    `biome check --stdin-file-path` exits 1 even on a clean file and its exit code cannot be trusted.)

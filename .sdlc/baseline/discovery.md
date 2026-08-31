@@ -305,3 +305,32 @@ lifecycle rather than introducing new state.
 
 Scan completed within the Tier 1 timebox. No sampling fallback was needed
 (1,582 tracked files). No files outside `.sdlc/` were written.
+
+---
+
+## Incremental refresh — 2026-08-30 (run `20260830-164154-feature-extend-one-click-join`)
+
+`discovery-refresh.mjs` returned **`incremental`**: 9 files changed across 2 commits since the baseline
+anchor `4189de1`. All 9 are `.sdlc/` bookkeeping plus `.gitignore`; `git diff 4189de1..HEAD -- packages/ e2e/`
+is empty and `manifests_changed` is empty. Stacks, topology, monorepo layout, test commands, entry points,
+env findings, infra hints and off-limits are therefore **unchanged and carried forward verbatim**.
+
+Merged deltas:
+
+- **`.gitignore` changed** (commit `44db7f45`). It now carries `.sdlc/**/_gemini_worker_save/` and
+  `.sdlc/local/debug.log` — but still does **not** cover `.sdlc/` as a whole, so
+  `gitignore_covers_sdlc` remains `false`. Whether `.sdlc/runs/` is ignored varies by branch; verify
+  per run with `git check-ignore`. (On `CMP-103/opus-plus-flash-v37-t2` it is *not* ignored.)
+- **`.claude/settings.local.json` now present** — gitignored via `**/.claude/settings.local.json`,
+  added to `ai_configs_detected`, off-limits.
+- **`plugin_version`** bumped `0.5.0` → `0.6.0`.
+- Tracked file count `1582` → `1590`.
+
+The baseline **anchor stays at `main@4189de1`** on purpose. This run is on a short-lived feature branch;
+moving the anchor onto it would make the next run's cross-branch delta meaningless.
+
+The cached adaptive stack profile (`stack-profile.md`, 2026-08-26) was **not** rebuilt — no manifest
+changed and the decision was not `full`.
+
+Per-run snapshot for this refresh:
+`.sdlc/runs/20260830-164154-feature-extend-one-click-join/{baseline.json,discovery.md}`

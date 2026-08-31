@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "run_id": "20260830-164154-feature-extend-one-click-join",
+  "date": "2026-08-30",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "ticket": "CMP-103",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "status": "complete",
+  "outcome": "accepted_with_followups",
+  "committed": false,
+  "branch": "CMP-103/opus-plus-flash-v37-t2",
+  "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "anchor_commit_short": "2d81253a",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "code_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "output_dir": ".sdlc/runs/20260830-164154-feature-extend-one-click-join",
+  "routing": {
+    "premium_tier": {
+      "model": "claude-opus-5",
+      "adapter": "claude-cli",
+      "note": "Pro login, no ANTHROPIC_API_KEY"
+    },
+    "mechanical_tier": {
+      "model": "gemini-3.7-flash",
+      "model_id": "flash-completion",
+      "adapter": "mcp:model-dispatch",
+      "backend": "vertex-adc",
+      "project": "ai-studies-console",
+      "location": "global"
+    },
+    "door_discipline": "flash-completion on EVERY mechanical packet. SDLC_SELECT was never set; flash-agsdk-worker / antigravity-worker was never selected and appears under preflight not_selected. Verified per-dispatch: all 24 mechanical events carry select.chosen=flash-completion, overridden=false.",
+    "hard_cost_cap_usd": 50
+  },
+  "files_written": 6,
+  "files_written_detail": "3 modified (packages/web/src/grid/components/TimedEventCard.tsx, AllDayEventCard.tsx, EventCard.test.tsx), 3 new (EventJoinIcon.tsx 77 lines, event-join-url.util.ts 34 lines, event-join-url.util.test.ts 73 lines). Tracked-file delta vs anchor: +425/-9 across 3 files; new files add 184 lines. 13 provenance entries across the 6 files (repeat entries where several packets touched one file). Every path inside the allowlist packages/web/src/grid/components/**; the allowlist was never widened.",
+  "allowlist": [
+    "packages/web/src/grid/components/**"
+  ],
+  "allowlist_widened": false,
+  "tests": {
+    "before": {
+      "pass": 2298,
+      "fail": 0,
+      "files": 302
+    },
+    "after": {
+      "pass": 2328,
+      "fail": 0,
+      "files": 303
+    },
+    "new_failures": 0,
+    "tests_added": 30,
+    "verification": "bun test:web (no --parallel) 2328 pass / 0 fail across 303 files, exit 0 -- RE-RUN BY THE ORCHESTRATOR AT CLOSE-OUT, not relayed. 2328-30=2298 reconciles exactly to the pre-change baseline, so zero regressions. bun type-check exit 0 (separate gate: the suite does not type-check). biome exit 0 with ZERO diagnostics of any severity on the 6 changed files and on all 16 files of packages/web/src/grid/components/.",
+    "expect_count_note": "The whole-suite expect() total moved 5823 -> 5822 across two runs of an unchanged in-scope set. Investigated rather than waved through: the two in-scope files are byte-stable at 96 static expect( occurrences / 112 runtime expect() calls / 50 tests before and after the F-2 packet, and the F-2 diff contains zero deletions. The 1-call delta therefore comes from a nondeterministic test elsewhere in the 303-file suite and is NOT attributable to this run."
+  },
+  "lint": {
+    "source_status": "clean",
+    "repo_wide_bun_lint": "exit 1 -- PRE-EXISTING, NOT A REGRESSION",
+    "evidence": "biome.json files.includes is ['**'] with no .sdlc exclusion, and .sdlc/baseline/current.json is ALREADY unformatted at anchor 2d81253a (proved by round-trip format compare on git show 2d81253a:.sdlc/baseline/current.json, since biome's --stdin-file-path exit code is unusable). So repo-wide bun lint also exited 1 at the anchor, before this run wrote anything. Every remaining error is under .sdlc/** bookkeeping, including the provenance backups this run created; every non-.sdlc diagnostic is a pre-existing WARNING in files this run never touched (DescriptionEditor.tsx, ShortcutKeys.tsx, GridEvent.tsx, two packages/sync db tests, recurrence store test, shortcuts data test, self-host/docker-compose.test.ts).",
+    "correction_to_senior_review": "review.md R-2 states 'bun lint now fails where it was previously clean'. That is true of packages/web/src/grid/components/ (its V-6 stash test proved that directory was exit-0 at baseline) but NOT of the repo-wide bun lint script. The distinction was not drawn in review.md and is recorded here."
+  },
+  "gates": {
+    "gate-0": "approved before orchestrator invocation (intent feature-extend, auth_mode estimated, allowlist packages/web/src/grid/components/**, strict)",
+    "gate-1": "approved - OQ-1 keep window.open + scheme guard (no nested <a>); OQ-2 use conference.url; OQ-3 reuse existing width gates 40 timed / 60 all-day",
+    "gate-2": "approved - change_plan.md accepted as written",
+    "gate-3": "approved - R-1 ACCEPTED as a documented known limitation (final, allowlist NOT widened); fix F-2 only; defer F-1, F-3, N-1 to follow-ups",
+    "gate-4": "approved - close out, do NOT commit or push"
+  },
+  "senior_review": {
+    "artifact": "review.md",
+    "verdict": "request changes",
+    "resolved": [
+      "R-2",
+      "R-3",
+      "R-4",
+      "R-5",
+      "R-6",
+      "R-7",
+      "R-8",
+      "R-9"
+    ],
+    "accepted_not_fixed": [
+      "R-1 (blocker, out of allowlist)"
+    ],
+    "no_action_by_design": [
+      "R-10"
+    ],
+    "credit": "The right-1 selector-collision invariant (ADR-4) is correctly implemented and T-9 genuinely proves it; EventRepeatIcon behaviour is bit-for-bit unchanged across all four icon states. Both were specifically flagged for scrutiny and both held.",
+    "reviewer_error_found_downstream": "review.md V-10 asserted that @phosphor-icons/react forwards className VERBATIM to the <svg>. It does not -- IconBase prepends its own 'c-icon' class. The hardened R-6 assertion built on that claim failed on first run (expected 'pointer-events-none absolute right-1 bottom-0.5', received 'c-icon pointer-events-none absolute right-1 bottom-0.5') and needed debug packet tp_debug_r6 to switch toBe -> toContain. Recorded because the reviewer presented V-10 as an executed verification."
+  },
+  "security_review": {
+    "artifact": "security_review.md",
+    "verdict": "pass with notes",
+    "required_before_signoff": "none",
+    "blockers": 0,
+    "majors": 0,
+    "minors": [
+      "F-1 parse/use divergence",
+      "F-2 misleading drag-suppression tests (FIXED this run)",
+      "F-3 weak preventDefault evidence"
+    ],
+    "info": [
+      "F-4 no destination transparency",
+      "F-5 guard lives in a leaf UI dir"
+    ],
+    "advisory_out_of_scope": [
+      "N-1 two unguarded sinks for the same provider URL",
+      "N-2 dependency debt 69 advisories / 24 high"
+    ],
+    "headline": "The scheme guard is load-bearing, not decorative. The reviewer proved against the repo's own zod 4.5.4 that z.url() ACCEPTS javascript:, data:, vbscript: and file:, and that ConferenceSchema.safeParse at google-event.normalizer.ts:169 is the only ingest validation and carries no scheme constraint. Without isJoinableUrl, raw provider-controlled schemes would reach window.open. This feature closes a gap the codebase did not previously cover.",
+    "probe": "42 adversarial URLs run through the exact guard body: no scheme bypass found. Leading/trailing whitespace, C0 controls, embedded newlines, tabs inside the scheme, and mixed case are all correctly blocked because new URL applies the same stripping the browser's own navigation does. Non-ASCII pseudo-whitespace and RTL-override hosts throw and fail closed.",
+    "npm_audit_caveat": "npm audit --omit=dev could NOT run as the checklist specifies (Bun workspace, no package-lock.json, hard ENOLOCK). The reviewer substituted bun audit --prod rather than writing a lockfile into a frozen repo, and flagged the substitution instead of implying the item passed."
+  },
+  "cost": {
+    "total_usd": 3.3714,
+    "cap_usd": 50,
+    "by_model": {
+      "claude-opus-5": 2.8482,
+      "gemini-3.7-flash": 0.5232
+    },
+    "by_phase_usd": {
+      "requirements_analysis": 0.258,
+      "change_plan": 0.6461,
+      "plan_task_packets": 0.4725,
+      "codegen": 0.1156,
+      "tests": 0.4023,
+      "debug": 0.0053,
+      "senior_code_review": 0.7675,
+      "security_review": 0.7041
+    },
+    "events": 29,
+    "successful_dispatches": 23,
+    "failed_attempts": 6,
+    "failed_attempt_note": "All 6 are output-cap retries on the mechanical tier (retry_reason=output_cap), every one recovered on the doubled ceiling. Zero terminal failures, zero timeouts, zero escalations to the premium tier.",
+    "caveat": "auth_mode=estimated. The FIVE claude-opus-5 events are character-count heuristics booking input_tokens_cached=0, and two of them (senior_code_review, security_review) are derived from the subagents' own reported totals, not vendor-reported. The gemini-3.7-flash figures come from the policy YAML pricing block. These are NOT vendor-authoritative numbers and MUST NOT be used to rank policies against other arms."
+  },
+  "packets": {
+    "codegen_and_tests": 6,
+    "refinement": 8,
+    "refinement_ids": [
+      "tp_refine_r2a",
+      "tp_refine_r2bc",
+      "tp_refine_r3",
+      "tp_refine_r2e",
+      "tp_refine_r5nits",
+      "tp_refine_r7",
+      "tp_debug_r6",
+      "tp_refine_f2"
+    ],
+    "all_mechanical_tier": true
+  },
+  "known_limitations": [
+    "R-1 (a) The join button's bubble-phase stopPropagation is dead code against PointerCaptureBoundary's capture-phase onPointerDownCapture, which runs ancestor-first and takes pointer capture. Real fix is an opt-out for nested interactive controls in packages/web/src/grid/interaction/dom.ts plus the Week and Day adapters -- all OUTSIDE the frozen allowlist.",
+    "R-1 (b) CONFIRMED by manual browser check 2026-08-30 (human, dev:web @ localhost:9080): a mouse CLICK on the join glyph opens the event's right-hand details panel and does NOT open the meeting -- symptom (i), the form only. Not symptom (ii): the meeting tab does NOT also open. So the mouse-click join path is non-functional in production. Keyboard activation (Tab -> Enter) DOES open the Meet tab correctly, as predicted -- keyboard fires click on the button directly, no pointerdown, so PointerCaptureBoundary never intercepts.",
+    "R-1 (c) CONFIRMED by manual browser check 2026-08-30 (human): a press-and-drag starting on the join glyph MOVES / reschedules the underlying event. Reproducible with a deliberate drag gesture. A pure click (movement < INTERACTION_MOVE_THRESHOLD_PX=25) still does not trip it, but an imprecise click-drag on the 10x10 target does. Correctness / data-integrity defect, not security.",
+    "R-1 security status: fails safe. Only isJoinableUrl-validated values can reach window.open, so R-1 cannot cause navigation to an unvalidated URL, cannot change which URL opens, and cannot strip noopener,noreferrer. The security property is orthogonal to R-1, not protected by it.",
+    "CI still cannot DETECT R-1. The F-2 packet stopped the suite advertising the false invariant, but only a test rendering inside a real PointerCaptureBoundary and firing pointerDown could catch a regression."
+  ],
+  "artifacts": {
+    "requirements": "requirements.md",
+    "change_plan": "change_plan.md",
+    "discovery": "discovery.md",
+    "baseline": "baseline.json",
+    "packets": "packets.json",
+    "senior_review": "review.md",
+    "security_review": "security_review.md",
+    "telemetry": "telemetry.jsonl",
+    "provenance": "provenance.json",
+    "manifest": "manifest.json",
+    "summary": null,
+    "orchestrator_log": "orchestrator.log"
+  },
+  "summary_artifact_note": "SUMMARY.md was NOT written. The orchestrator subagent's harness blocks it from writing summary/report .md files, so the close-out summary was returned as text to the parent session instead. manifest.json (this file) carries the same facts in structured form and is the authoritative machine-readable record. If SUMMARY.md is wanted on disk, create it from the parent session's close-out output.",
+  "tags": [
+    "policy-ab",
+    "feature-extend",
+    "no-commit",
+    "flash-completion-door",
+    "resumed-run",
+    "known-limitation-accepted",
+    "estimated-cost-axis",
+    "allowlist-not-widened"
+  ],
+  "compare_baseline_tag": "20260821-113930-feature-extend-one-click-join",
+  "compare_note": "Turn-2 re-run of the 20260821-113930 arm under the correctly-named shipped policy opus-plus-flash-v37, which is the entire purpose of this run. Its equivalent blocker SR-02 was also left documented-not-structural, so the R-1 disposition here is consistent with the arm it re-runs. COST IS NOT COMPARABLE ACROSS ARMS: this run is auth_mode=estimated with a heuristic opus half.",
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-08-30",
+    "env": "bun run dev:web @ http://localhost:9080",
+    "click": "opened the event details panel (right side); meeting did NOT open -> R-1(b) symptom (i), form only",
+    "keyboard_tab_enter": "opened the Meet tab correctly -> keyboard path unaffected by R-1, works",
+    "drag_from_glyph": "moved / rescheduled the event -> R-1(c) confirmed reproducible",
+    "net": "As-shipped: mouse-click join is broken (opens panel, not meeting); keyboard join works; drag-from-glyph reschedules the event. Fails safe security-wise (no bad navigation), but the primary interaction does not work and there is a data-integrity footgun. Fixing needs the R-1(a) work in grid/interaction/dom.ts + Week/Day adapters -- outside this run's allowlist."
+  }
+}

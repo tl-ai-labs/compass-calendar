@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
-  "plugin_version": "0.5.0",
+  "plugin_version": "0.6.0",
   "built_at": "2026-08-20T04:32:08Z",
   "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
   "mode": "first-time",
-
   "git": {
     "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
     "branch": "main",
@@ -17,9 +16,13 @@
       }
     ],
     "gitignore_covers_sdlc": false,
-    "tracked_file_count": 1582
+    "tracked_file_count": 1590,
+    "gitignore_sdlc_rules": [
+      ".sdlc/**/_gemini_worker_save/",
+      ".sdlc/local/debug.log"
+    ],
+    "sdlc_runs_gitignored_varies_by_branch": true
   },
-
   "topology": {
     "top_level_dirs": [
       ".agents",
@@ -40,7 +43,6 @@
       "packages/scripts/src/cli.ts"
     ]
   },
-
   "stacks": [
     {
       "manifest": "package.json",
@@ -78,17 +80,25 @@
     {
       "manifest": "packages/backend/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["express", "supertokens", "mongodb"]
+      "detected_frameworks": [
+        "express",
+        "supertokens",
+        "mongodb"
+      ]
     },
     {
       "manifest": "packages/core/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["zod"]
+      "detected_frameworks": [
+        "zod"
+      ]
     },
     {
       "manifest": "packages/sync/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["googleapis"]
+      "detected_frameworks": [
+        "googleapis"
+      ]
     },
     {
       "manifest": "packages/scripts/package.json",
@@ -96,13 +106,11 @@
       "detected_frameworks": []
     }
   ],
-
   "adapter_match": {
     "preauthored_adapter": "generic.md",
     "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
     "adaptive_profile_recommended": true
   },
-
   "test_command_proposed": "bun test:web",
   "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
   "test_command_alternatives": {
@@ -115,34 +123,79 @@
     "diff_aware": "bun run verify"
   },
   "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
-
   "docs_present": [
-    { "path": "README.md", "kind": "readme" },
-    { "path": "AGENTS.md", "kind": "agent-instructions" },
-    { "path": "CONTRIBUTING.md", "kind": "contributing" },
-    { "path": "SECURITY.md", "kind": "security" },
-    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
-    { "path": "docs/README.md", "kind": "docs-index" },
-    { "path": "docs/architecture", "kind": "architecture-dir" },
-    { "path": "docs/frontend", "kind": "docs-subdir" },
-    { "path": "docs/features", "kind": "docs-subdir" }
+    {
+      "path": "README.md",
+      "kind": "readme"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "agent-instructions"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "kind": "contributing"
+    },
+    {
+      "path": "SECURITY.md",
+      "kind": "security"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "kind": "code-of-conduct"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "docs-index"
+    },
+    {
+      "path": "docs/architecture",
+      "kind": "architecture-dir"
+    },
+    {
+      "path": "docs/frontend",
+      "kind": "docs-subdir"
+    },
+    {
+      "path": "docs/features",
+      "kind": "docs-subdir"
+    }
   ],
-
   "ai_configs_detected": [
-    { "path": ".claude/settings.json", "type": "claude-code" },
-    { "path": ".claude/launch.json", "type": "claude-code" },
+    {
+      "path": ".claude/settings.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".claude/settings.local.json",
+      "type": "claude-code-local",
+      "detail": "Appeared 2026-08-30; gitignored via '**/.claude/settings.local.json'."
+    },
+    {
+      "path": ".claude/launch.json",
+      "type": "claude-code"
+    },
     {
       "path": ".cursor/rules/",
       "type": "cursor",
       "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing"
     },
-    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    {
+      "path": ".cursor/hooks.json",
+      "type": "cursor-hooks"
+    },
     {
       "path": ".cursor/hooks/format-after-edit.ts",
       "type": "cursor-hook-script"
     },
-    { "path": ".codex/config.toml", "type": "codex" },
-    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    {
+      "path": ".codex/config.toml",
+      "type": "codex"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "type": "codex-hooks"
+    },
     {
       "path": ".agents/skills/",
       "type": "shared-agent-skills",
@@ -152,7 +205,10 @@
       "path": ".agents/skills/chaos/agents/openai.yaml",
       "type": "external-model-agent-config"
     },
-    { "path": "AGENTS.md", "type": "agent-instructions" }
+    {
+      "path": "AGENTS.md",
+      "type": "agent-instructions"
+    }
   ],
   "ai_configs_absent": [
     ".mcp.json (gitignored, not present on disk)",
@@ -164,7 +220,6 @@
     ".roo/",
     "routing-policy.yaml"
   ],
-
   "env_keys_by_file": {},
   "env_keys_all": [],
   "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
@@ -178,10 +233,11 @@
     "POSTHOG_KEY",
     "TZ"
   ],
-
   "monorepo": {
     "type": "lerna+bun-workspaces",
-    "workspace_globs": ["packages/*"],
+    "workspace_globs": [
+      "packages/*"
+    ],
     "packages": [
       {
         "name": "@compass/web",
@@ -222,11 +278,9 @@
       "@compass/scripts": "packages/scripts/src"
     }
   },
-
   "submodules": [],
   "lfs": false,
   "lfs_patterns": [],
-
   "infra_hints": {
     "dockerfile": false,
     "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
@@ -238,7 +292,6 @@
     "circleci": false,
     "jenkins": false
   },
-
   "off_limits_proposed": [
     ".git/**",
     ".claude/**",
@@ -264,26 +317,27 @@
     "blob-report/**",
     ".github/workflows/**"
   ],
-
   "regulated_repo_signals": [
-    { "kind": "security-policy", "path": "SECURITY.md" }
+    {
+      "kind": "security-policy",
+      "path": "SECURITY.md"
+    }
   ],
   "regulated_repo_warning_required": false,
-
   "coexistence_notes": [
     "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) — untouched by default, but they encode the conventions codegen must match.",
     "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
-    ".gitignore does NOT cover .sdlc/ — run artifacts are visible to git add -A.",
+    ".gitignore does NOT cover .sdlc/ - it only ignores .sdlc/**/_gemini_worker_save/ and .sdlc/local/debug.log. Run artifacts are visible to git add -A. Whether .sdlc/runs/ is ignored varies by branch; check per run.",
     ".gitignore contains a repo-wide '*.mjs' rule — any .mjs the plugin emits into user source would be silently untracked.",
     ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
-    "No repo-local routing-policy.yaml — shipped policy applies."
+    "No repo-local routing-policy.yaml — shipped policy applies.",
+    ".claude/settings.local.json present since 2026-08-30; gitignored and off-limits."
   ],
-
   "repo_state_risks": [
     {
       "kind": "gitignore_missing_sdlc",
       "severity": "medium",
-      "detail": ".sdlc/ untracked but visible to git add -A."
+      "detail": ".sdlc/ untracked but visible to git add -A; only two narrow sub-rules exist (_gemini_worker_save/, local/debug.log). Ignore status of .sdlc/runs/ varies by branch."
     },
     {
       "kind": "aggressive_gitignore",
@@ -295,20 +349,42 @@
       "severity": "low",
       "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
     },
-    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use." },
-    { "kind": "submodules", "severity": "none", "detail": "No submodules." },
+    {
+      "kind": "lfs",
+      "severity": "none",
+      "detail": "No Git-LFS in use."
+    },
+    {
+      "kind": "submodules",
+      "severity": "none",
+      "detail": "No submodules."
+    },
     {
       "kind": "dirty_tree",
       "severity": "none",
       "detail": "Clean apart from untracked .sdlc/."
     }
   ],
-
   "intent_scope": {
     "hint": "feature-extend-weekbody-multiday-drag",
     "primary_package": "packages/web",
     "weekbody_component_exists": false,
     "weekbody_note": "No component named WeekBody exists. The week-view body is composed by Grid.tsx via AllDayRow > MainGrid > EventGrid.",
     "key_gap": "All-day row creation is click-only (useAllDayDraftCreation creates a fixed 1-day draft on mousedown). The timed grid has true drag-create via useTimedDraftCreation. Multi-day drag-create in the all-day row does not exist."
+  },
+  "last_incremental_refresh": {
+    "at": "2026-08-30T16:43:51Z",
+    "run_id": "20260830-164154-feature-extend-one-click-join",
+    "decision": "incremental",
+    "observed_head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "observed_branch": "CMP-103/opus-plus-flash-v37-t2",
+    "anchor_unchanged_reason": "Zero source/manifest delta vs main@4189de1; anchor deliberately left on main so future cross-branch refresh deltas stay meaningful.",
+    "merged": [
+      "git.gitignore facts",
+      "ai_configs_detected",
+      "coexistence_notes",
+      "repo_state_risks",
+      "plugin_version"
+    ]
   }
 }

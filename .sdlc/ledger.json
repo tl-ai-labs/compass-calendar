@@ -41,7 +41,9 @@
           "subject": "CMP-101: opus-plus-flash-v37 pass"
         }
       ],
-      "tags": ["CMP-101-with-orchestration/opus-flash-v37"],
+      "tags": [
+        "CMP-101-with-orchestration/opus-flash-v37"
+      ],
       "compare_baseline_tag": "CMP-101-before-orchestration"
     },
     {
@@ -551,7 +553,10 @@
         "SEC-02 (low, not applied)",
         "CFG-02 (info)"
       ],
-      "tags": ["A/B-third-arm", "CMP-103"],
+      "tags": [
+        "A/B-third-arm",
+        "CMP-103"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "THIRD arm of the CMP-103 A/B, same feature and same anchor 4189de1 as rows seven and eight, on a third branch and a third policy. $5.32 (opus-only-v5) vs $5.46 (flash-agsdk-only) vs $5.71 (opus-cli-plus-flash-adc) \u2014 and this is the only one of the three that is BOTH fully loaded and clean: every phase priced (unlike flash-agsdk-only, which prices no orchestration) and no dispatch lost to timeout (unlike opus-cli-plus-flash-adc's four $0 rows). The all-premium single-tier policy came in cheapest of the three while producing the most thorough result. That is the fifth confirmation of the cost inversion first noted on row two: the mechanical tier's savings are eaten by the agent adapter re-exploring the repo on every dispatch. Separately, and NOT verified against the other two arms: this arm's senior review caught B-1, a capture-phase defect that green tests could not see because the automated suite asserts the mechanism rather than the symptom. Whether rows seven and eight carry the same latent defect was not checked \u2014 their implementations differ (row seven shipped an anchor, not a button) and no one has run the R-1 browser check against them. Worth checking before either is trusted as a working comparison point; it is a question this ledger raises, not a finding it records."
     },
@@ -679,7 +684,11 @@
         "FR-4 (deferred mid-execution, own ticket)",
         "FR-6 (deferred at Gate 2, own ticket)"
       ],
-      "tags": ["CMP-104", "first-vendor-auth-run", "first-refactor-intent"],
+      "tags": [
+        "CMP-104",
+        "first-vendor-auth-run",
+        "first-refactor-intent"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "NOT COMPARABLE to any existing row, on three independent axes, and it should not be read as a policy datapoint. (1) FIRST refactor-intent run in this ledger \u2014 every prior row is feature-extend or docs. A no-behaviour-change refactor has a different phase profile: full-suite verification with ZERO tests added, and a codegen phase that is 23 of 30 dispatches (76.8% of spend) because the work is a mechanical type-threading sweep across 24 files rather than a handful of feature packets. (2) FIRST auth_mode:vendor run \u2014 all 30 events carry real vendor-reported tokens, where all nine prior rows are char/3.8 estimates. Comparing $4.94 vendor-metered against, say, row nine's $5.32 estimated is comparing two different kinds of number. (3) It carries the SAME WARNING as rows two, five and eight: flash-agsdk-only prices no Claude orchestration, so the figure is Flash-dispatched-only and structurally understated, additionally by $0.25\u20130.36 of unrecoverable 429/TLS-killed spend. WHAT IT DOES CONFIRM is the agent-adapter exploration floor first noted on row two and now on its FIFTH confirmation: per-dispatch input ran 25k\u2013335k tokens across 30 calls for what is, in the end, a types-only change of net -45 LOC. Threading a generic parameter through 24 files cost $4.94 of dispatched Flash tokens plus unpriced orchestration. Whether a mixed or premium policy would have done it cheaper is UNTESTED \u2014 there is no sibling arm for this task, and one would be needed before drawing any conclusion."
     },
@@ -829,6 +838,111 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260830-164154-feature-extend-one-click-join",
+      "date": "2026-08-30",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "opus-plus-flash-v37",
+      "auth_mode": "estimated",
+      "ticket": "CMP-103",
+      "status": "accepted_with_followups",
+      "commit_strategy": "NONE at close-out - nothing committed, staged or pushed, no branch operation. HEAD still 2d81253a with 0 commits. The human's manual in-app verification comes first. Close-out touched .sdlc/ bookkeeping and the ledger only.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-103/opus-plus-flash-v37-t2",
+      "commits": [],
+      "committed": false,
+      "mechanical_door": "flash-completion",
+      "files_written": 6,
+      "files_written_detail": "3 new (grid/components/EventJoinIcon.tsx 77 lines, event-join-url.util.ts 34, event-join-url.util.test.ts 73), 3 modified (grid/components/TimedEventCard.tsx, AllDayEventCard.tsx, EventCard.test.tsx). Tracked delta vs anchor +425/-9 across the 3 modified files; new files add 184 lines. 13 provenance entries across the 6 files (repeat entries where several packets touched one file). Every path inside the allowlist; the allowlist was NEVER widened.",
+      "allowlist": [
+        "packages/web/src/grid/components/**"
+      ],
+      "allowlist_widened": false,
+      "tests": {
+        "before": {
+          "pass": 2298,
+          "fail": 0,
+          "files": 302
+        },
+        "after": {
+          "pass": 2328,
+          "fail": 0,
+          "files": 303
+        },
+        "new_failures": 0,
+        "tests_added": 30,
+        "verification": "bun test:web (no --parallel) 2328 pass / 0 fail across 303 files, exit 0, RE-RUN AT CLOSE-OUT not relayed. 2328-30=2298 reconciles exactly to baseline, so zero regressions. bun type-check exit 0 (separate gate - the suite does not type-check). biome exit 0 with ZERO diagnostics of any severity on the 6 changed files AND on all 16 files of packages/web/src/grid/components/.",
+        "expect_count_note": "Whole-suite expect() total moved 5823 -> 5822 across two runs of an unchanged in-scope set. Investigated: the two in-scope files are byte-stable at 96 static / 112 runtime expect() and 50 tests before and after the F-2 packet, and the F-2 diff has zero deletions. The delta is a nondeterministic test elsewhere in the 303-file suite, NOT attributable to this run."
+      },
+      "cost_usd": 3.3714,
+      "cost_split": {
+        "claude-opus-5": 2.8482,
+        "gemini-3.7-flash": 0.5232
+      },
+      "cost_note": "29 telemetry events: 23 successful dispatches + 6 output-cap retries, every retry recovered on the doubled ceiling. ZERO terminal failures, zero timeouts, zero escalations to the premium tier (notable: the policy escalates debug after 2 mechanical failures and that never fired). auth_mode=estimated, so the FIVE claude-opus-5 events are character-count heuristics booking input_tokens_cached=0 - two of them (senior_code_review, security_review) derived from the subagents' own reported totals - while the 24 gemini-3.7-flash events use the policy YAML pricing block. NOT vendor-authoritative; MUST NOT be used to rank policies against other arms.",
+      "routing_verification": "Verified per-dispatch from telemetry, not asserted: all 24 mechanical events carry model_id=flash-completion with routing.select.chosen=flash-completion and overridden=false. 0 deviations. SDLC_SELECT was never set; the strings 'agsdk' and 'antigravity' appear nowhere in the telemetry; preflight listed flash-agsdk-worker under not_selected.",
+      "known_findings_open": [
+        "R-1 (a): the join button's bubble-phase stopPropagation is DEAD CODE against PointerCaptureBoundary's capture-phase onPointerDownCapture, which runs ancestor-first, resolves the card via a bare closest() with no opt-out for nested interactive controls, and calls preventDefault()+stopPropagation(). Real fix is in packages/web/src/grid/interaction/dom.ts plus the Week and Day adapters - all OUTSIDE the frozen allowlist. Accepted as documented debt at Gate 3; mirrors the 20260821 arm's SR-02.",
+        "R-1 (b): per spec, cancelling pointerdown does NOT suppress click, so the production symptom is either (i) the event form opens instead of the meeting or (ii) the form AND the meeting open. UNCONFIRMED without a browser.",
+        "R-1 (c): a pointerdown on the join button also ARMS A DRAG of the underlying event, so a slip could reschedule the meeting. Bounded by INTERACTION_MOVE_THRESHOLD_PX=25 vs a 10x10 button. Correctness/data-integrity, not security. Noted by NEITHER the senior review nor the change plan.",
+        "CI still cannot DETECT R-1. The F-2 packet stopped the suite advertising the false invariant, but only a test rendering inside a real PointerCaptureBoundary and firing pointerDown could catch a regression.",
+        "F-1: parse/use divergence in isJoinableUrl. new URL(x) is called with NO base while window.open(x) resolves against the document base, so 'https:foo' validates as https://foo/ but navigates to https://<app-origin>/foo. Bounded (always same-origin, always http(s), no scheme escalation). Deferred at Gate 3. INSIDE the allowlist.",
+        "F-3: the Enter/Space toHaveBeenCalledTimes(1) assertion is weak evidence against double-open - jsdom does not synthesise button keyboard activation, so the count stays 1 even if preventDefault() were deleted. Deferred at Gate 3. INSIDE the allowlist.",
+        "F-4: no destination transparency - button + window.open gives no status-bar preview or copy-link, and the only pre-click signal is the provider-controlled label. Optional host-only title suggested.",
+        "F-5: the guard lives in a leaf UI directory (grid/components/), which is what makes it un-importable by the N-1 consumers that need it.",
+        "N-1 (highest-value follow-up, OUTSIDE the allowlist): two PRE-EXISTING sinks consume the same provider-sourced conference.url with NO scheme check at all - packages/web/src/components/Sidebar/UpNextCard/UpNextCard.tsx:89 (href=) and UpNextBanner.tsx:32 (window.open). Proven that z.url() accepts javascript:/data:/vbscript:/file: and the Google normalizer applies no scheme filter, so both sinks genuinely receive raw provider schemes. Needs its own run / widened contract.",
+        "N-2: dependency debt - bun audit --prod reports 69 advisories / 24 high across qs, dompurify, postcss, ws, nanoid, axios, nodemailer and others. None involve @phosphor-icons/react and no manifest changed this run. dompurify arrives partly via posthog-js, i.e. a RUNTIME dep - prioritise that subset.",
+        "biome.json still has no .sdlc exclusion, so repo-wide bun lint exits 1 on run bookkeeping. PRE-EXISTING - proved unformatted at the anchor. Recurring per-run tax; same finding as row twelve."
+      ],
+      "artifacts_dir": ".sdlc/runs/20260830-164154-feature-extend-one-click-join",
+      "gates": {
+        "gate-0": "approved before orchestrator invocation (intent feature-extend, auth_mode estimated, allowlist packages/web/src/grid/components/** strict)",
+        "gate-1": "approved - OQ-1 keep window.open + scheme guard (no nested <a>); OQ-2 use conference.url; OQ-3 reuse existing width gates 40 timed / 60 all-day, do not widen",
+        "gate-2": "approved - change_plan.md accepted as written",
+        "gate-3": "approved - R-1 ACCEPTED as a documented known limitation (final ruling, allowlist NOT widened); fix F-2 only; defer F-1, F-3 and N-1 to follow-ups",
+        "gate-4": "approved - close out, do NOT commit or push"
+      },
+      "senior_review": "request changes. 1 blocker (R-1), 2 majors (R-2 lint regression, R-3 gratuitous `as any`), 7 minors/nits. All EIGHT in-allowlist findings R-2..R-9 fixed via mechanical-tier refinement packets; R-1 accepted not fixed; R-10 needs no action by design. Credit where due: the right-1 selector-collision invariant (ADR-4) is correctly implemented and T-9 genuinely proves it, and EventRepeatIcon is bit-for-bit unchanged across all four icon states - both were specifically flagged for scrutiny and both held. REVIEWER ERROR CAUGHT DOWNSTREAM: V-10 claimed as an EXECUTED verification that @phosphor-icons/react forwards className verbatim; it does not - IconBase prepends 'c-icon', so the hardened R-6 assertion failed on first run and needed debug packet tp_debug_r6 (toBe -> toContain).",
+      "security_review": "pass with notes, changed-files-only per the Intent matrix. 0 blockers, 0 majors, 'required before sign-off: none'. 3 minors (F-1, F-2 fixed this run, F-3), 2 info (F-4, F-5), 2 advisory out-of-scope (N-1, N-2). HEADLINE: the scheme guard is LOAD-BEARING, not decorative - the reviewer proved against the repo's own zod 4.5.4 that z.url() ACCEPTS javascript:/data:/vbscript:/file: and that ConferenceSchema.safeParse at google-event.normalizer.ts:169 is the only ingest validation with no scheme constraint, so without isJoinableUrl raw provider schemes would reach window.open. A 42-input adversarial probe found NO scheme bypass. Verified rather than assumed: conference.url never reaches the DOM, logs, telemetry, error reporters, accessible names, drag clones or any persistence payload; noopener,noreferrer is exact and pinned by verbatim assertions; the guard is applied at four independent layers with no bypass under re-render. Reviewer DISCLOSED that npm audit --omit=dev could not run (Bun workspace, ENOLOCK) and substituted bun audit --prod rather than writing a lockfile into a frozen repo.",
+      "manual_verification": {
+        "date": "2026-08-30",
+        "by": "human",
+        "click": "R-1(b) symptom (i) confirmed: opens details panel, not meeting",
+        "keyboard": "works: Tab+Enter opens Meet tab",
+        "drag_from_glyph": "R-1(c) confirmed: moves/reschedules the event",
+        "net": "mouse-click join non-functional; keyboard works; drag reschedules. Fails safe, primary interaction broken. Fix outside allowlist -> own run. Uncommitted."
+      },
+      "scope_amendments": "NONE. The allowlist packages/web/src/grid/components/** was never widened, despite the senior review's blocker R-1 requiring files outside it. Gate 3 chose to accept R-1 as documented debt rather than widen scope. F-1, F-3 and N-1 deferred at the same gate.",
+      "process_notes": "RESUMED RUN. The user paused after Phase 5 and the process was killed mid-phase, leaving state.json's checkpoint at 'senior-reviewer-delegated' while review.md was in fact COMPLETE on disk (6 sections, verdict request-changes). The resume read the existing artifact instead of re-dispatching the senior-reviewer subagent, and back-filled the missing senior_code_review telemetry event with an explicit BACKFILLED note. A second bookkeeping correction: the security_review telemetry event was first logged from a pre-estimate (142000/13000 tokens) and was rewritten to the subagent's OWN reported total (92816 over 44 tool_uses / 655s) once known, with the supersession recorded in the note rather than left as an inflated figure. THE ROW'S REAL LESSON: two tests titled '...without selecting the card' rendered the cards BARE, outside the PointerCaptureBoundary that defeats them in production - so they asserted the OPPOSITE of R-1 and passed. A green suite was actively advertising a false invariant. Gate 3 made fixing that the single required change; the F-2 packet retitled both to '...in an isolated tree', added a SCOPE comment naming R-1 and annotated the assertion, with ZERO deletions so no working coverage moved.",
+      "followups_open": [
+        "R-1 (a/b/c) - pointer isolation for nested interactive controls; needs a widened contract (grid/interaction/dom.ts + Week/Day adapters) and a regression test inside a real PointerCaptureBoundary firing pointerDown",
+        "R-1 manual browser verification (settles (b) and (c)) - highest value",
+        "F-1 parse/use divergence in isJoinableUrl (one-line authority check, or parse with the document base) - inside allowlist",
+        "F-3 assert defaultPrevented on Enter/Space rather than relying on the call count - inside allowlist",
+        "F-4 host-only title for destination transparency (expose host ONLY, never the full URL - it is the bearer secret)",
+        "F-5 + N-1 hoist isJoinableUrl to a shared module and apply it at UpNextCard.tsx:89 and UpNextBanner.tsx:32 - HIGHEST-VALUE security item, outside the allowlist, needs its own run",
+        "N-2 dependency remediation, prioritising the runtime subset (dompurify via posthog-js)",
+        "biome.json .sdlc exclusion (recurring per-run tax, same as row twelve)",
+        "R-4 double-click can open two tabs (no debounce) - accepted debt, now also un-pinned on the keyboard path per F-3",
+        "R-5 the 10x10 hit target is below WCAG 2.2 SC 2.5.8's 24x24 - accessibility, consistent with the EventRepeatIcon precedent",
+        "R-6 each joinable card adds a tab stop",
+        "SUMMARY.md was not written for this run - the orchestrator subagent's harness blocks summary/report .md writes; manifest.json carries the same facts in structured form"
+      ],
+      "tags": [
+        "policy-ab",
+        "feature-extend",
+        "no-commit",
+        "flash-completion-door",
+        "resumed-run",
+        "known-limitation-accepted",
+        "estimated-cost-axis",
+        "allowlist-not-widened",
+        "false-invariant-in-green-suite"
+      ],
+      "compare_baseline_tag": "20260821-113930-feature-extend-one-click-join",
+      "compare_note": "TURN-2 re-run of the 20260821-113930 arm under the correctly-named shipped policy opus-plus-flash-v37 - that naming is the entire purpose of this run. Consistency with the arm it re-runs is preserved on the key judgement call: the 20260821 arm's equivalent blocker SR-02 was also left documented-not-structural, and R-1 was disposed of the same way here. COST IS NOT LIKE-FOR-LIKE across arms: this run is auth_mode=estimated with a heuristic opus half (5 events, cached booked at 0) and a policy-YAML-priced flash half (24 events). What IS supported: 24/24 mechanical dispatches went through the flash-completion door with zero escalations and zero terminal failures, at $0.52 for the entire mechanical tier."
     }
   ]
 }

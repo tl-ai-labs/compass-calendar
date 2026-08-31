@@ -1,0 +1,343 @@
+[
+  {
+    "id": "tp_codegen_001",
+    "phase": "codegen",
+    "task_type": "frontend_util",
+    "subtype": "new_file_add",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/event-join-url.util.ts",
+    "instruction": "Create a new TypeScript module that exports a URL-scheme guard for conference links on calendar grid cards. Export exactly two named consts, no default export.\n\n1) `isJoinableUrl` — a type predicate `(url: string | null | undefined): url is string`. Return false for falsy input. Otherwise `new URL(url)` inside try/catch; return true only when `protocol` is `\"http:\"` or `\"https:\"`; return false from the catch.\n\n2) `getJoinableConferenceUrl` — `(conference: GridEvent[\"conference\"]): string | null`. Body: read `conference?.url`, return it UNCHANGED when `isJoinableUrl` passes, else null. Never return `new URL(url).href` — normalization would rewrite the provider's URL.\n\nImport the type with `import { type GridEvent } from \"@web/common/types/web.event.types\";`. Type-only import; do not import from @core.\n\nWrite a TSDoc block above each export explaining WHY (provider-sourced URLs may carry javascript:/data: schemes), in the voice of the EventRepeatIcon.tsx comment supplied in inputs. Arrow-function consts, Biome formatting, double-quoted strings, semicolons. Output the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#5",
+        "reason": "The authoritative spec for this file: exports, implementation shape, and the behaviour table the unit tests will assert.",
+        "content": "### 5.1 Exports\nexport const isJoinableUrl = (url: string | null | undefined): url is string => { ... };\nexport const getJoinableConferenceUrl = (conference: GridEvent[\"conference\"]): string | null => { ... };\n- isJoinableUrl is a type predicate so getJoinableConferenceUrl narrows without a cast.\n- getJoinableConferenceUrl body: const url = conference?.url; return isJoinableUrl(url) ? url : null;\n- GridEvent[\"conference\"] is `Conference | null | undefined`, so no separate @core import is needed.\n\n### 5.2 isJoinableUrl implementation shape\nif (!url) return false;\ntry {\n  const { protocol } = new URL(url);\n  return protocol === \"http:\" || protocol === \"https:\";\n} catch {\n  return false;\n}\n\n### 5.3 Behaviour table\n| \"https://meet.google.com/abc-defg-hij\" | true |\n| \"http://meet.example.com/x\" | true |\n| \"HTTPS://Meet.Example.com\" | true |\n| \"javascript:alert(1)\" | false |\n| \"data:text/html,<script>x</script>\" | false |\n| \"vbscript:msgbox(1)\" | false |\n| \"file:///etc/passwd\" | false |\n| \"//meet.google.com/x\" | false (new URL throws without a base) |\n| \"meet.google.com/x\" | false (throws) |\n| \"\" | false (short-circuits on !url) |\n| null / undefined | false |\n\n### 5.5 Return the original string, not the normalized one\ngetJoinableConferenceUrl returns conference.url UNCHANGED, never new URL(url).href. new URL(\"https://zoom.us\").href is \"https://zoom.us/\"; normalizing would silently rewrite the provider's URL."
+      },
+      {
+        "path": "packages/core/src/types/event-attendance.contracts.ts",
+        "reason": "The Conference type this guard consumes. url is a string, label is string | null.",
+        "content": "export const ConferenceSchema = z.strictObject({\n  url: z.url(),\n  label: z.string().trim().min(1).max(256).nullable(),\n});\nexport type Conference = z.infer<typeof ConferenceSchema>;"
+      },
+      {
+        "path": "packages/web/src/common/types/web.event.types.ts#88",
+        "reason": "Shows conference is nullable AND optional on GridEvent, so the guard must accept null | undefined.",
+        "content": "  conference: ConferenceSchema.nullable().optional(),"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "reason": "House style for the TSDoc voice: explains why the thing exists, not what the code does.",
+        "content": "import { darken } from \"@web/common/styles/color.utils\";\nimport { RepeatIcon } from \"@web/components/Icons/Repeat\";\n\ninterface Props {\n  baseColor: string;\n}\n\n/**\n * The recurrence indicator shared by the timed and all-day grid cards: a small\n * repeat glyph pinned to the card's bottom-right, tinted a darker shade of the\n * event color so it complements the card instead of a loud fixed white.\n * Keeping it in one place stops the two cards from drifting apart.\n * Decorative — the recurring state is announced via each card's aria-label.\n */\nexport const EventRepeatIcon = ({ baseColor }: Props) => (\n  <RepeatIcon\n    aria-hidden=\"true\"\n    className=\"pointer-events-none absolute right-1 bottom-0.5\"\n    color={darken(baseColor, 30)}\n    size={10}\n    weight=\"bold\"\n  />\n);"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The complete contents of event-join-url.util.ts"
+        }
+      },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Exports exactly two named consts: isJoinableUrl and getJoinableConferenceUrl; no default export",
+      "isJoinableUrl is declared as a type predicate returning `url is string`",
+      "isJoinableUrl returns true only for http: and https: protocols and false from a catch block",
+      "getJoinableConferenceUrl returns the original conference.url string, never new URL(url).href",
+      "Imports GridEvent with a type-only import from @web/common/types/web.event.types",
+      "Each export carries a TSDoc block explaining why the guard exists",
+      "File is valid TypeScript with no JSX and no React import"
+    ],
+    "budget": { "maxInputTokens": 4000, "maxOutputTokens": 1500 }
+  },
+  {
+    "id": "tp_tests_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/event-join-url.util.test.ts",
+    "instruction": "Write a bun:test unit-test file for the URL-scheme guard supplied in inputs. No React, no @testing-library, no DOM.\n\nImport `{ describe, expect, it } from \"bun:test\"` and the two functions from \"./event-join-url.util\".\n\ndescribe(\"isJoinableUrl\") — one `it` per row of the behaviour table in inputs, covering all of: https URL true, plain http true, uppercase HTTPS true, javascript: false, data: false, vbscript: false, file: false, protocol-relative \"//meet.google.com/x\" false, bare \"meet.google.com/x\" false, empty string false, null false, undefined false.\n\ndescribe(\"getJoinableConferenceUrl\") — undefined returns null; null returns null; a valid https conference returns the ORIGINAL string (assert with toBe against the same string constant, which pins the no-normalization rule); a javascript: conference returns null.\n\nCast conference fixtures as needed to satisfy the parameter type. Keep each `it` title a plain descriptive sentence. Output the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#5.3",
+        "reason": "The exact behaviour matrix to assert, one it() per row.",
+        "content": "| \"https://meet.google.com/abc-defg-hij\" | true |\n| \"http://meet.example.com/x\" | true |\n| \"HTTPS://Meet.Example.com\" | true |\n| \"javascript:alert(1)\" | false |\n| \"data:text/html,<script>x</script>\" | false |\n| \"vbscript:msgbox(1)\" | false |\n| \"file:///etc/passwd\" | false |\n| \"//meet.google.com/x\" | false |\n| \"meet.google.com/x\" | false |\n| \"\" | false |\n| null / undefined | false |\n\n### 9.3 event-join-url.util.test.ts\nOne describe(\"isJoinableUrl\") with a table-driven set of its over the ten rows, plus describe(\"getJoinableConferenceUrl\") covering: undefined -> null, null -> null, { url: \"https://...\", label: \"x\" } -> the ORIGINAL string (assert identity with the input string), and { url: \"javascript:alert(1)\", label: null } -> null."
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayGridRow.test.tsx#1-12",
+        "reason": "House test style: bun:test imports, describe/it nesting, no test framework globals.",
+        "content": "import { describe, expect, it } from \"bun:test\";\nimport \"@testing-library/jest-dom\";"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The complete contents of event-join-url.util.test.ts"
+        }
+      },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Imports describe, expect, it from bun:test",
+      "Covers all 12 isJoinableUrl cases from the behaviour table including null and undefined",
+      "Asserts getJoinableConferenceUrl returns the original string with toBe, pinning no-normalization",
+      "Contains no React, JSX, DOM or @testing-library usage",
+      "Every assertion targets only the two exported functions"
+    ],
+    "budget": { "maxInputTokens": 3000, "maxOutputTokens": 2000 }
+  },
+  {
+    "id": "tp_codegen_002",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "subtype": "new_file_add",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "instruction": "Create the shared join-button component for the calendar grid cards, exactly per the contract in inputs. Named export `EventJoinIcon`, arrow-function const, no forwardRef, no memo, no default export.\n\nProps interface exactly: `{ baseColor: string; label?: string | null; url: string }`.\n\nFirst statement in the body: `if (!isJoinableUrl(url)) return null;` — before any hooks or JSX.\n\nRender a `<button type=\"button\">` carrying the aria-label, the exact className string from the contract, and `style={{ zIndex: ZIndex.LAYER_5 }}`. Its only child is `<VideoCameraIcon aria-hidden=\"true\" className=\"pointer-events-none\" color={darken(baseColor, 30)} size={10} weight=\"bold\" />`.\n\nCRITICAL: the svg must receive className exactly \"pointer-events-none\" and NO positioning class. No element other than the repeat glyph may carry a class containing the substring \"right-1\".\n\nImplement all four handlers exactly as the handler table specifies. Add the TSDoc block from the contract above the component. Output the complete file.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#4",
+        "reason": "The complete, authoritative component contract: props, imports, element tree, exact classes, accessible name, guard, handlers, TSDoc.",
+        "content": "### 4.1 Props\ninterface Props {\n  /** The card's resolved fill (bgColor), not the raw palette base. */\n  baseColor: string;\n  /** conference.label; null/absent falls back to \"Join meeting\". */\n  label?: string | null;\n  /** Already scheme-checked by the card; re-checked here (fail closed). */\n  url: string;\n}\nExported as a named const: export const EventJoinIcon = ({ baseColor, label, url }: Props) => {\n\n### 4.2 Imports\nimport { VideoCameraIcon } from \"@phosphor-icons/react\";\nimport { ZIndex } from \"@web/common/constants/web.constants\";\nimport { darken } from \"@web/common/styles/color.utils\";\nimport { isJoinableUrl } from \"./event-join-url.util\";\n\n### 4.3 Rendered element tree\n<button type=\"button\" aria-label={accessibleLabel} class=... style={{ zIndex: ZIndex.LAYER_5 }} ...handlers>\n  <VideoCameraIcon aria-hidden=\"true\" className=\"pointer-events-none\" color={darken(baseColor, 30)} size={10} weight=\"bold\" />\n</button>\n\nExact classes on the <button>:\n\"absolute right-4.5 bottom-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-xs focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-(--event-focus-color)\"\n\n- --event-focus-color is already set as an inline CSS variable on both card roots, so the button inherits the card's focus chrome.\n- style={{ zIndex: ZIndex.LAYER_5 }} — the timed card's bottom resize handle is LAYER_4 and overlaps the button's bottom ~2px.\n- NO positioning class on the <svg>. Its class attribute is exactly \"pointer-events-none\".\n\n### 4.4 Accessible name\nconst accessibleLabel = label ? `Join ${label}` : \"Join meeting\";\n\n### 4.5 Fail-closed render guard\nFirst statement in the component body, before any JSX:\nif (!isJoinableUrl(url)) return null;\nNo hooks precede it, so there is no conditional-hook hazard.\n\n### 4.6 Activation\nconst openConference = () => {\n  if (!isJoinableUrl(url)) return;\n  window.open(url, \"_blank\", \"noopener,noreferrer\");\n};\nThe URL passed to window.open is the ORIGINAL provider string, not new URL(url).href.\n\n### 4.7 Full handler set\nonMouseDown: e.stopPropagation();   // cards drive drag/selection from mousedown, not click. No preventDefault - that would suppress focus.\nonPointerDown: e.stopPropagation(); // defense in depth\nonClick: e.stopPropagation(); openConference();   // no preventDefault needed; type=\"button\"\nonKeyDown: if (e.key !== \"Enter\" && e.key !== \" \") return; e.stopPropagation(); e.preventDefault(); openConference();\n  // stopPropagation stops the card's own Enter/Space handler; preventDefault suppresses the native button click-on-Enter so the link opens exactly once, and suppresses Space-scroll. Non-Enter/Space keys deliberately fall through.\nEverything else (blur/focus/mouseenter/mouseleave) is left alone.\ntype=\"button\" is mandatory and must be written explicitly.\n\n### 4.8 TSDoc (required)\nThe one-click join affordance shared by the timed and all-day grid cards. It is a real <button> rather than part of the card's own click target because the card's mousedown starts a drag - a nested control with its own name is the only way to offer \"join\" without also meaning \"select and drag this event\". Sits one slot left of the repeat glyph and borrows its size/weight/tint so the two read as one icon family rather than two competing badges. The URL is re-checked here, not just at the call site, because conference.url is provider-sourced and a control that can be tricked into opening a javascript: URL is worse than no control."
+      },
+      {
+        "path": "packages/web/src/grid/components/EventRepeatIcon.tsx",
+        "reason": "The sibling glyph this component mirrors: same size/weight/darken(baseColor, 30) treatment, same TSDoc voice.",
+        "content": "import { darken } from \"@web/common/styles/color.utils\";\nimport { RepeatIcon } from \"@web/components/Icons/Repeat\";\n\ninterface Props {\n  baseColor: string;\n}\n\n/**\n * The recurrence indicator shared by the timed and all-day grid cards: a small\n * repeat glyph pinned to the card's bottom-right, tinted a darker shade of the\n * event color so it complements the card instead of a loud fixed white.\n * Keeping it in one place stops the two cards from drifting apart.\n * Decorative — the recurring state is announced via each card's aria-label.\n */\nexport const EventRepeatIcon = ({ baseColor }: Props) => (\n  <RepeatIcon\n    aria-hidden=\"true\"\n    className=\"pointer-events-none absolute right-1 bottom-0.5\"\n    color={darken(baseColor, 30)}\n    size={10}\n    weight=\"bold\"\n  />\n);"
+      },
+      {
+        "path": "packages/web/src/components/Sidebar/UpNextCard/UpNextCard.tsx#87-97",
+        "reason": "Precedent for importing VideoCameraIcon from the package root and the Join wording this must stay consistent with.",
+        "content": "          {upNext.conference && (\n            <a\n              href={upNext.conference.url}\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n              className=\"c-focus-ring relative z-10 flex w-fit items-center gap-1 text-accent text-xs hover:underline\"\n            >\n              <VideoCameraIcon size={12} />\n              Join\n            </a>\n          )}"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The complete contents of EventJoinIcon.tsx"
+        }
+      },
+      "required": ["content"]
+    },
+    "acceptance": [
+      "Named export EventJoinIcon; no default export, no forwardRef, no memo",
+      "Props are exactly { baseColor: string; label?: string | null; url: string }",
+      "First statement in the body is the fail-closed `if (!isJoinableUrl(url)) return null;` guard",
+      "Root element is <button type=\"button\"> with aria-label `Join ${label}` or \"Join meeting\"",
+      "Button className is the exact string from the contract and contains right-4.5, not right-1",
+      "The VideoCameraIcon svg receives className exactly \"pointer-events-none\" and no positioning class",
+      "Button carries style={{ zIndex: ZIndex.LAYER_5 }}",
+      "All four handlers (onMouseDown, onPointerDown, onClick, onKeyDown) call stopPropagation; only onKeyDown calls preventDefault",
+      "window.open is called with exactly (url, \"_blank\", \"noopener,noreferrer\")",
+      "A TSDoc block above the component explains why it is a button rather than part of the card"
+    ],
+    "budget": { "maxInputTokens": 5000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_codegen_003",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "subtype": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Produce a set of exact search/replace edits for TimedEventCard.tsx. Do NOT output the whole file — output only the edits.\n\nReturn `edits` as an array of { old_string, new_string, reason }. Each old_string MUST be copied byte-for-byte from the file slices in inputs, including indentation, and MUST be unique in the file. Apply the four edits described in the change_plan slice: (a) add the two relative imports next to the existing EventRepeatIcon import; (b) rename REPEAT_ICON_MIN_DURATION_MINUTES -> CARD_ICON_MIN_DURATION_MINUTES and REPEAT_ICON_MIN_WIDTH -> CARD_ICON_MIN_WIDTH at both their declarations and both their uses, keeping the values 15 and 40 UNCHANGED, and amend only the first comment sentence; (c) add joinUrl + showJoinIcon after showRepeatIcon; (d) mount EventJoinIcon after the EventRepeatIcon line.\n\nDo not change any other behaviour, prop, style or gate value. Do not add a title-padding reservation to this card.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#6",
+        "reason": "The authoritative delta for this file: the four edits, verbatim replacement code, and the implementer notes.",
+        "content": "**(a) Import — after line 49 (import { EventRepeatIcon } from \"./EventRepeatIcon\";)**\nimport { getJoinableConferenceUrl } from \"./event-join-url.util\";\nimport { EventJoinIcon } from \"./EventJoinIcon\";\n(Keep both relative-path imports adjacent at the end of the import block.)\n\n**(b) Constants — lines 51-58.** Rename both module-local constants:\n- REPEAT_ICON_MIN_DURATION_MINUTES -> CARD_ICON_MIN_DURATION_MINUTES (declaration line 57, use line 119)\n- REPEAT_ICON_MIN_WIDTH -> CARD_ICON_MIN_WIDTH (declaration line 58, use line 120)\n- Values are unchanged: 15 and 40.\n- Amend the FIRST sentence of the block comment from\n  \"// Gate the repeat indicator on the event's duration, not its rendered pixel\"\n  to\n  \"// Gate the card's corner indicators on the event's duration, not its rendered pixel\"\n  Leave the rest of the comment byte-identical.\n\n**(c) Derived state — immediately after showRepeatIcon**\nconst joinUrl = getJoinableConferenceUrl(event.conference);\nconst showJoinIcon =\n  joinUrl !== null &&\n  !isPlaceholder &&\n  durationMinutes >= CARD_ICON_MIN_DURATION_MINUTES &&\n  position.width >= CARD_ICON_MIN_WIDTH;\n\n**(d) JSX mount — replace the single repeat-icon line**\n{showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}\n{showJoinIcon && joinUrl && (\n  <EventJoinIcon\n    baseColor={bgColor}\n    label={event.conference?.label ?? null}\n    url={joinUrl}\n  />\n)}\n\nNotes:\n- The join mount is the LAST child of the card root, immediately after the repeat icon and outside the EVENT_CONTENT_ATTRIBUTE wrapper.\n- The redundant-looking `&& joinUrl` is deliberate: it gives TypeScript a direct string narrowing at the prop site. Do not simplify it away.\n- baseColor={bgColor} — the card's resolved fill, matching how EventRepeatIcon is called.\n- NO title-padding reservation is added to the timed card."
+      },
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx#44-58",
+        "reason": "Exact byte-for-byte anchor text for edits (a) and (b).",
+        "content": "import {\n  selectEdgeForEvent,\n  useEdgeFocusStore,\n} from \"@web/grid/shortcuts/edge-focus.store\";\nimport { type EventPosition } from \"@web/grid/types/grid.types\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";\n\n// Gate the repeat indicator on the event's duration, not its rendered pixel\n// height: a true 15-minute event and one resized down to 15 minutes are laid\n// out through different height paths that straddle a pixel threshold, so the\n// same 15-minute event would show the icon in one case and hide it in the\n// other. Duration is the same regardless of render path. 15 min is the minimum\n// event length, so every recurring timed event qualifies.\nconst REPEAT_ICON_MIN_DURATION_MINUTES = 15;\nconst REPEAT_ICON_MIN_WIDTH = 40;"
+      },
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx#110-126",
+        "reason": "Exact byte-for-byte anchor text for edit (c).",
+        "content": "  const isInPast = dayjs().isAfter(dayjs(event.endDate));\n  const isRecurring = isRecurringEvent(event);\n  const durationMinutes = dayjs(event.endDate).diff(\n    dayjs(event.startDate),\n    \"minute\",\n  );\n  const showRepeatIcon =\n    isRecurring &&\n    !isPlaceholder &&\n    durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&\n    position.width >= REPEAT_ICON_MIN_WIDTH;\n\n  const showTimeLabel ="
+      },
+      {
+        "path": "packages/web/src/grid/components/TimedEventCard.tsx#360-366",
+        "reason": "Exact byte-for-byte anchor text for edit (d). This repeat-icon line is unique in the file.",
+        "content": "      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}\n    </div>\n  );\n};\n\nexport const TimedEventCard = forwardRef(TimedEventCardBase);"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "old_string": { "type": "string" },
+              "new_string": { "type": "string" },
+              "reason": { "type": "string" }
+            },
+            "required": ["old_string", "new_string", "reason"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "Every old_string is copied byte-for-byte from the supplied slices and is unique in the file",
+      "Both relative imports are added adjacent to the existing EventRepeatIcon import",
+      "Constants renamed to CARD_ICON_MIN_DURATION_MINUTES and CARD_ICON_MIN_WIDTH at declaration and use",
+      "Constant values remain exactly 15 and 40",
+      "Only the first sentence of the constants block comment changes",
+      "showJoinIcon mirrors showRepeatIcon's predicate with joinUrl !== null substituted for isRecurring",
+      "The EventJoinIcon mount retains the `showJoinIcon && joinUrl &&` double guard",
+      "No title padding is added and no other card behaviour changes"
+    ],
+    "budget": { "maxInputTokens": 5000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_codegen_004",
+    "phase": "codegen",
+    "task_type": "react_component",
+    "subtype": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Produce a set of exact search/replace edits for AllDayEventCard.tsx. Do NOT output the whole file — output only the edits.\n\nReturn `edits` as an array of { old_string, new_string, reason }. Each old_string MUST be copied byte-for-byte from the file slices in inputs, including indentation, and MUST be unique in the file. Apply the five edits in the change_plan slice: (a) two relative imports; (b) rename REPEAT_ICON_MIN_WIDTH -> CARD_ICON_MIN_WIDTH at declaration and use, value 60 UNCHANGED; (c) joinUrl + showJoinIcon after showRepeatIcon; (d) replace the title-row cn object so padding is pr-3.5 when repeat-only and pr-7 whenever the join icon shows; (e) mount EventJoinIcon after the EventRepeatIcon line, still before the two resize handles.\n\nDo not change the width gate value, any handler, or any other style.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#7",
+        "reason": "The authoritative delta for this file: five edits with verbatim replacement code and the padding arithmetic.",
+        "content": "**(a) Import — after line 30**\nimport { getJoinableConferenceUrl } from \"./event-join-url.util\";\nimport { EventJoinIcon } from \"./EventJoinIcon\";\n\n**(b) Constant — line 32.** Rename REPEAT_ICON_MIN_WIDTH -> CARD_ICON_MIN_WIDTH (declaration line 32, use line 77). Value unchanged: 60.\n\n**(c) Derived state — immediately after showRepeatIcon**\nconst joinUrl = getJoinableConferenceUrl(event.conference);\nconst showJoinIcon =\n  joinUrl !== null && !isPlaceholder && position.width >= CARD_ICON_MIN_WIDTH;\n\n**(d) Title-row reservation — replace the cn object**\n<div\n  className={cn(\"flex min-w-0 items-center\", {\n    // Reserve room so a long title truncates before the bottom-right icons.\n    // The join glyph sits further left than the repeat glyph, so it needs the\n    // wider reservation whether or not the repeat glyph is also showing.\n    \"pr-3.5\": showRepeatIcon && !showJoinIcon,\n    \"pr-7\": showJoinIcon,\n  })}\n>\nArithmetic: the repeat glyph occupies 4->14px from the right edge, so one icon needs pr-3.5 (14px, unchanged from today). The join glyph occupies 18->28px, so ANY state that shows the join icon needs pr-7 (28px) - including \"join only\", because the join icon keeps its left slot even when the repeat slot is empty.\n\n**(e) JSX mount — replace the repeat-icon line**\n{showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}\n{showJoinIcon && joinUrl && (\n  <EventJoinIcon\n    baseColor={bgColor}\n    label={event.conference?.label ?? null}\n    url={joinUrl}\n  />\n)}\nMount point stays BEFORE the two resize handles, same as the repeat icon."
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx#25-32",
+        "reason": "Exact byte-for-byte anchor text for edits (a) and (b).",
+        "content": "import {\n  selectEdgeForEvent,\n  useEdgeFocusStore,\n} from \"@web/grid/shortcuts/edge-focus.store\";\nimport { type EventPosition } from \"@web/grid/types/grid.types\";\nimport { EventRepeatIcon } from \"./EventRepeatIcon\";\n\nconst REPEAT_ICON_MIN_WIDTH = 60;"
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx#74-78",
+        "reason": "Exact byte-for-byte anchor text for edit (c).",
+        "content": "  const isInPast = dayjs().isAfter(dayjs(event.endDate));\n  const isRecurring = isRecurringEvent(event);\n  const showRepeatIcon =\n    isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;"
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx#187-201",
+        "reason": "Exact byte-for-byte anchor text for edits (d) and (e).",
+        "content": "      <div\n        className={cn(\"flex min-w-0 items-center\", {\n          // Reserve room so a long title truncates before the bottom-right icon.\n          \"pr-3.5\": showRepeatIcon,\n        })}\n      >\n        <span\n          className=\"relative min-w-0 truncate text-xs\"\n          style={{ color: titleColor }}\n        >\n          {event.title}\n          {\"\\u00A0\"}\n        </span>\n      </div>\n      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "old_string": { "type": "string" },
+              "new_string": { "type": "string" },
+              "reason": { "type": "string" }
+            },
+            "required": ["old_string", "new_string", "reason"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "Every old_string is copied byte-for-byte from the supplied slices and is unique in the file",
+      "Both relative imports are added adjacent to the existing EventRepeatIcon import",
+      "REPEAT_ICON_MIN_WIDTH is renamed CARD_ICON_MIN_WIDTH at declaration and use, value still 60",
+      "showJoinIcon is joinUrl !== null && !isPlaceholder && position.width >= CARD_ICON_MIN_WIDTH",
+      "Title row uses \"pr-3.5\": showRepeatIcon && !showJoinIcon and \"pr-7\": showJoinIcon",
+      "EventJoinIcon mounts after EventRepeatIcon and before both resize handles",
+      "The card's existing unconditional onMouseDown stopPropagation is untouched"
+    ],
+    "budget": { "maxInputTokens": 5000, "maxOutputTokens": 2500 }
+  },
+  {
+    "id": "tp_tests_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260830-164154-feature-extend-one-click-join",
+    "intent": "feature-extend",
+    "retry_count": 0,
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Produce exact search/replace edits that add join-icon coverage to the existing EventCard.test.tsx. Do NOT output the whole file.\n\nReturn `edits` as { old_string, new_string, reason }[]. old_string must be byte-for-byte from the supplied slices and unique.\n\nEdit 1 — after the existing `position` const, add the `conference` fixture, `originalWindowOpen`, and the `stubWindowOpen` helper from the test-plan slice.\nEdit 2 — append `window.open = originalWindowOpen;` inside the existing afterEach.\nEdit 3 — insert the 13 new `it(...)` cases T-1..T-13 exactly as specified in the test-plan table, immediately before the closing `});` of the describe block.\n\nRules: select the join control ONLY with getByRole/queryAllByRole by accessible name — never a class-substring query. Do NOT modify the two existing tests that call a bare screen.getByRole(\"button\"), and never give those events a conference. Use the existing createEvent helper, passing `conference` through overrides. T-9 must assert container.querySelectorAll('svg[class*=\"right-1\"]') has length 1.",
+    "inputs": [
+      {
+        "path": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/change_plan.md#9.1-9.2",
+        "reason": "The authoritative fixture/stub wiring and the full 13-case test table with queries and assertions.",
+        "content": "### 9.1 Shared fixtures + window.open stubbing\nAdd after the existing position const:\nconst conference = {\n  url: \"https://meet.google.com/abc-defg-hij\",\n  label: \"Google Meet\",\n};\nconst originalWindowOpen = window.open;\nconst stubWindowOpen = () => {\n  const openMock = mock(() => null);\n  window.open = openMock as unknown as typeof window.open;\n  return openMock;\n};\n`mock` is already imported from bun:test. Restore in the EXISTING afterEach by appending one line:\nafterEach(() => {\n  useEdgeFocusStore.setState(initialEdgeFocusState, true);\n  window.open = originalWindowOpen;\n});\nQuery convention: always getByRole(\"button\", { name: ... }) / queryAllByRole(\"button\", { name: /^Join/ }). NEVER a class-substring query for the join control. The cards themselves are role=\"button\", so a bare screen.getByRole(\"button\") is ambiguous on a card that has a conference. The two existing bare-getByRole(\"button\") call sites render events with NO conference - do not add a conference to those events.\n\n### 9.2 New cases\nT-1 \"renders a join control on a timed event with a conference link\" (AC-1): screen.getByRole(\"button\", { name: \"Join Google Meet\" }) -> toBeInTheDocument()\nT-2 \"renders no join control on a timed event without a conference link\" (AC-2): render twice - conference: undefined and conference: null - then screen.queryAllByRole(\"button\", { name: /^Join/ }) -> toHaveLength(0)\nT-3 \"renders a join control on an all-day event with a conference link\" (AC-3): same query on AllDayEventCard (isAllDay: true, isPlaceholder={false})\nT-4 \"renders no join control on an all-day event without a conference link\" (AC-3): queryAllByRole after undefined + null renders -> toHaveLength(0)\nT-5 \"opens the timed event conference link without selecting the card\" (AC-4): const openMock = stubWindowOpen(); const join = screen.getByRole(\"button\", { name: \"Join Google Meet\" }); fireEvent.mouseDown(join); fireEvent.click(join); -> expect(openMock).toHaveBeenCalledWith(\"https://meet.google.com/abc-defg-hij\", \"_blank\", \"noopener,noreferrer\"); expect(openMock).toHaveBeenCalledTimes(1); expect(onEventMouseDown).not.toHaveBeenCalled()\nT-6 \"opens the all-day event conference link without selecting the card\" (AC-3, AC-4): same on AllDayEventCard with an onEventMouseDown mock; same three assertions\nT-7 \"opens the conference link on Enter without triggering the card's open handler\" (AC-5): wrap the card in <div onKeyDown={onParentKeyDown}> as the existing keyboard tests do; fireEvent.keyDown(join, { key: \"Enter\" }) -> expect(openMock).toHaveBeenCalledTimes(1); expect(onEventKeyDown).not.toHaveBeenCalled(); expect(onParentKeyDown).not.toHaveBeenCalled()\nT-8 \"refuses to render a join control for a non-http conference url\" (AC-6): render conference: { url: \"javascript:alert(1)\", label: \"Sketchy\" } and a second card with { url: \"data:text/html,x\", label: null }; queryAllByRole -> toHaveLength(0) AND expect(openMock).not.toHaveBeenCalled()\nT-9 \"places the join glyph clear of the repeat glyph when an event is both recurring and joinable\" (AC-7): expect(container.querySelectorAll('svg[class*=\"right-1\"]')).toHaveLength(1); plus expect(join.className).toContain(\"right-4.5\") and expect(join.className).not.toContain(\"right-1\")\nT-10 \"reserves title room for both bottom-right icons on an all-day card\" (AC-7, FR-6): screen.getByText(\"Conference\").parentElement across three renders: recurrence-only -> pr-3.5; conference-only -> pr-7; both -> pr-7 (use it-local renders with distinct titles) -> toHaveClass per case\nT-11 \"hides the join control on a too-narrow or too-short timed event\" (AC-8): render { ...position, width: 30 } with a conference, and a second card with endDate 10 minutes after startDate at full width; queryAllByRole -> toHaveLength(0)\nT-12 \"hides the join control on a too-narrow or placeholder all-day event\" (AC-8): render { ...position, width: 50 } with a conference, and a second card at full width with isPlaceholder; queryAllByRole -> toHaveLength(0)\nT-13 \"names the join control from the conference label\" (AC-9): two renders, label: \"Google Meet\" and label: null -> getByRole(\"button\", { name: \"Join Google Meet\" }) and getByRole(\"button\", { name: \"Join meeting\" }) both resolve"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx#20-51",
+        "reason": "Byte-for-byte anchors for edits 1 and 2: the createEvent helper, the position const, and the existing afterEach.",
+        "content": "const createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>\n  ({\n    _id: \"event-1\",\n    endDate: \"2024-01-15T10:00:00.000Z\",\n    isAllDay: false,\n    position: {\n      dragOffset: { x: 0, y: 0 },\n      horizontalOrder: 0,\n      initialX: null,\n      initialY: null,\n      isOverlapping: false,\n      totalEventsInGroup: 1,\n      widthMultiplier: 1,\n    },\n    recurrence: undefined,\n    startDate: \"2024-01-15T09:00:00.000Z\",\n    title: \"Planning block\",\n    ...overrides,\n  }) as GridEvent;\n\nconst position = {\n  height: 60,\n  left: 10,\n  top: 20,\n  width: 140,\n};\n\ndescribe(\"EventCard\", () => {\n  afterEach(() => {\n    useEdgeFocusStore.setState(initialEdgeFocusState, true);\n  });"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx#268-288",
+        "reason": "Shows the existing repeat-icon test style and the svg[class*=\"right-1\"] selector T-9 must keep resolving to exactly one element.",
+        "content": "  it(\"places the repeat indicator bottom-right\", () => {\n    const { container } = render(\n      <TimedEventCard\n        displayMode=\"saved\"\n        event={createEvent({\n          recurrence: { eventId: \"series-1\", rule: [\"RRULE:FREQ=WEEKLY\"] },\n        })}\n        motionMode=\"idle\"\n        position={position}\n      />,\n    );\n    const icon = container.querySelector('svg[class*=\"right-1\"]');\n\n    expect(icon).not.toBeNull();\n    const iconClass = icon?.getAttribute(\"class\") ?? \"\";\n    expect(iconClass).not.toContain(\"left-1\");\n    expect(iconClass).not.toContain(\"text-muted\");\n  });"
+      },
+      {
+        "path": "packages/web/src/grid/components/EventCard.test.tsx#223-245",
+        "reason": "The existing keyboard-test pattern T-7 must follow, and one of the two bare getByRole(\"button\") sites that must not be touched.",
+        "content": "  it(\"keeps timed event keyboard activation from reaching parent shortcuts\", () => {\n    const onEventKeyDown = mock();\n    const onParentKeyDown = mock();\n\n    render(\n      <div onKeyDown={onParentKeyDown}>\n        <TimedEventCard\n          displayMode=\"saved\"\n          event={createEvent()}\n          motionMode=\"idle\"\n          onEventKeyDown={onEventKeyDown}\n          position={position}\n        />\n      </div>,\n    );\n\n    fireEvent.keyDown(screen.getByRole(\"button\"), { key: \"Enter\" });\n\n    expect(onEventKeyDown).toHaveBeenCalledTimes(1);\n    expect(onParentKeyDown).not.toHaveBeenCalled();\n  });"
+      },
+      {
+        "path": "packages/web/src/grid/components/AllDayEventCard.tsx#34-52",
+        "reason": "AllDayEventCard's prop shape, so the new all-day cases pass the right required props (isPlaceholder is required).",
+        "content": "export interface AllDayEventCardProps {\n  calendarIdentity?: CalendarCardIdentity | null;\n  event: GridEvent;\n  focusColor?: string | null;\n  interactionAttributes?: Record<string, string | undefined>;\n  isPlaceholder: boolean;\n  onEventKeyDown?: (event: GridEvent) => void;\n  onEventMouseDown?: (e: MouseEvent, event: GridEvent) => void;\n  onMouseEnter?: (e: MouseEvent<HTMLDivElement>) => void;\n  onMouseLeave?: (e: MouseEvent<HTMLDivElement>) => void;\n  onScalerMouseDown?: (\n    event: GridEvent,\n    e: MouseEvent,\n    dateToChange: \"startDate\" | \"endDate\",\n  ) => void;\n  position: EventPosition;\n}"
+      }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "old_string": { "type": "string" },
+              "new_string": { "type": "string" },
+              "reason": { "type": "string" }
+            },
+            "required": ["old_string", "new_string", "reason"]
+          }
+        }
+      },
+      "required": ["edits"]
+    },
+    "acceptance": [
+      "Every old_string is copied byte-for-byte from the supplied slices and is unique in the file",
+      "Adds the conference fixture, originalWindowOpen and stubWindowOpen helper after the position const",
+      "Appends window.open = originalWindowOpen to the existing afterEach rather than adding a second afterEach",
+      "Adds exactly 13 new it(...) cases T-1 through T-13 with the titles from the test plan",
+      "The join control is selected only via getByRole/queryAllByRole by accessible name",
+      "T-9 asserts container.querySelectorAll('svg[class*=\"right-1\"]') has length 1",
+      "The two existing bare screen.getByRole(\"button\") tests are unmodified and their events have no conference",
+      "No existing test case is deleted or renamed"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 6000 }
+  }
+]

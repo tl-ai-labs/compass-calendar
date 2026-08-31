@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-25T04:44:41.674Z",
+  "updated_at": "2026-08-30T16:41:31.494Z",
   "steps": {
     "discovery_smoke": {
       "status": "pass",
@@ -12,8 +12,11 @@
     },
     "dispatch_smoke": {
       "status": "pass",
-      "tiers_tested": ["opus (claude-cli)", "sonnet (claude-cli)"],
-      "note": "Re-run after 2026-08-24 policy switch to opus-plus-sonnet; prior cache covered v37 tiers only. Both OK. Sonnet returned fenced JSON -> {raw:...} fallback, no adapter strips fences."
+      "tiers_tested": [
+        "opus (claude-cli)",
+        "flash-completion (mcp:model-dispatch / vertex-adc)"
+      ],
+      "note": "t2 re-check for opus-plus-flash-v37: preflight_dispatch(vendor) ok:true both adapters; flash-completion dispatch smoke returned OK ($0.002). antigravity-worker not selected."
     },
     "write_contract_smoke": {
       "status": "pass",
