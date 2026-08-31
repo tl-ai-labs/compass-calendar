@@ -46,16 +46,18 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
+import { getJoinableConferenceUrl } from "./event-join-url.util";
 
-// Gate the repeat indicator on the event's duration, not its rendered pixel
+// Gate the card's corner indicators on the event's duration, not its rendered pixel
 // height: a true 15-minute event and one resized down to 15 minutes are laid
 // out through different height paths that straddle a pixel threshold, so the
 // same 15-minute event would show the icon in one case and hide it in the
 // other. Duration is the same regardless of render path. 15 min is the minimum
 // event length, so every recurring timed event qualifies.
-const REPEAT_ICON_MIN_DURATION_MINUTES = 15;
-const REPEAT_ICON_MIN_WIDTH = 40;
+const CARD_ICON_MIN_DURATION_MINUTES = 15;
+const CARD_ICON_MIN_WIDTH = 40;
 
 interface TimedEventCardProps {
   boxShadow?: CSSProperties["boxShadow"];
@@ -116,8 +118,14 @@ const TimedEventCardBase = (
   const showRepeatIcon =
     isRecurring &&
     !isPlaceholder &&
-    durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
-    position.width >= REPEAT_ICON_MIN_WIDTH;
+    durationMinutes >= CARD_ICON_MIN_DURATION_MINUTES &&
+    position.width >= CARD_ICON_MIN_WIDTH;
+  const joinUrl = getJoinableConferenceUrl(event.conference);
+  const showJoinIcon =
+    joinUrl !== null &&
+    !isPlaceholder &&
+    durationMinutes >= CARD_ICON_MIN_DURATION_MINUTES &&
+    position.width >= CARD_ICON_MIN_WIDTH;
 
   const showTimeLabel =
     !event.isAllDay &&
@@ -361,6 +369,13 @@ const TimedEventCardBase = (
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {showJoinIcon && joinUrl && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          label={event.conference?.label ?? null}
+          url={joinUrl}
+        />
+      )}
     </div>
   );
 };

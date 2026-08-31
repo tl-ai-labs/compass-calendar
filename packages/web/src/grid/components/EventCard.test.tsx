@@ -44,9 +44,21 @@ const position = {
   width: 140,
 };
 
+const conference = {
+  url: "https://meet.google.com/abc-defg-hij",
+  label: "Google Meet",
+};
+const originalWindowOpen = window.open;
+const stubWindowOpen = () => {
+  const openMock = mock(() => null);
+  window.open = openMock as unknown as typeof window.open;
+  return openMock;
+};
+
 describe("EventCard", () => {
   afterEach(() => {
     useEdgeFocusStore.setState(initialEdgeFocusState, true);
+    window.open = originalWindowOpen;
   });
 
   it("renders timed event details, interaction attributes, and resize handles", () => {
@@ -571,5 +583,379 @@ describe("EventCard", () => {
     expect(card).toHaveAttribute("data-edge-focus", "endDate");
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
+  });
+
+  it("renders a join control on a timed event with a conference link", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Join Google Meet" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders no join control on a timed event without a conference link", () => {
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: undefined })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference: null })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+  });
+
+  it("renders a join control on an all-day event with a conference link", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Join Google Meet" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders no join control on an all-day event without a conference link", () => {
+    const { rerender } = render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference: undefined })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+
+    rerender(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference: null })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+  });
+
+  it("opens the timed event conference link and stops mousedown bubbling in an isolated tree", () => {
+    // SCOPE: this renders the card bare, so it proves only that the button's
+    // bubble-phase stopPropagation works when no capture-phase ancestor is present.
+    // It is NOT evidence that clicking Join avoids selecting the card in the running
+    // app. Known limitation R-1: PointerCaptureBoundary's capture-phase
+    // onPointerDownCapture fires ancestor-first and takes the pointer, so the card is
+    // still selected in production. Fixing it needs an opt-out for nested interactive
+    // controls in grid/interaction/dom.ts + the Week/Day adapters. Re-scope this test
+    // to render inside the interaction coordinator when R-1 is fixed.
+    const openMock = stubWindowOpen();
+    const onEventMouseDown = mock();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference })}
+        motionMode="idle"
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    const join = screen.getByRole("button", { name: "Join Google Meet" });
+    fireEvent.mouseDown(join);
+    fireEvent.click(join);
+
+    expect(openMock).toHaveBeenCalledWith(
+      "https://meet.google.com/abc-defg-hij",
+      "_blank",
+      "noopener,noreferrer",
+    );
+    expect(openMock).toHaveBeenCalledTimes(1);
+    // Holds in this isolated tree only -- see SCOPE above (R-1).
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+  });
+
+  it("opens the all-day event conference link and stops mousedown bubbling in an isolated tree", () => {
+    // SCOPE: this renders the card bare, so it proves only that the button's
+    // bubble-phase stopPropagation works when no capture-phase ancestor is present.
+    // It is NOT evidence that clicking Join avoids selecting the card in the running
+    // app. Known limitation R-1: PointerCaptureBoundary's capture-phase
+    // onPointerDownCapture fires ancestor-first and takes the pointer, so the card is
+    // still selected in production. Fixing it needs an opt-out for nested interactive
+    // controls in grid/interaction/dom.ts + the Week/Day adapters. Re-scope this test
+    // to render inside the interaction coordinator when R-1 is fixed.
+    const openMock = stubWindowOpen();
+    const onEventMouseDown = mock();
+
+    render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference })}
+        isPlaceholder={false}
+        onEventMouseDown={onEventMouseDown}
+        position={position}
+      />,
+    );
+
+    const join = screen.getByRole("button", { name: "Join Google Meet" });
+    fireEvent.mouseDown(join);
+    fireEvent.click(join);
+
+    expect(openMock).toHaveBeenCalledWith(
+      "https://meet.google.com/abc-defg-hij",
+      "_blank",
+      "noopener,noreferrer",
+    );
+    expect(openMock).toHaveBeenCalledTimes(1);
+    // Holds in this isolated tree only -- see SCOPE above (R-1).
+    expect(onEventMouseDown).not.toHaveBeenCalled();
+  });
+
+  it("opens the conference link on Enter without triggering the card's open handler", () => {
+    const openMock = stubWindowOpen();
+    const onEventKeyDown = mock();
+    const onParentKeyDown = mock();
+
+    render(
+      // biome-ignore lint/a11y/noStaticElementInteractions: test wrapper simulates a parent shortcut listener.
+      <div onKeyDown={onParentKeyDown}>
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({ conference })}
+          motionMode="idle"
+          onEventKeyDown={onEventKeyDown}
+          position={position}
+        />
+      </div>,
+    );
+
+    fireEvent.keyDown(
+      screen.getByRole("button", { name: "Join Google Meet" }),
+      {
+        key: "Enter",
+      },
+    );
+
+    expect(openMock).toHaveBeenCalledTimes(1);
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+    expect(onParentKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("opens the conference link on Space without triggering the card's open handler", () => {
+    const openMock = stubWindowOpen();
+    const onEventKeyDown = mock();
+    const onParentKeyDown = mock();
+
+    render(
+      // biome-ignore lint/a11y/noStaticElementInteractions: test wrapper simulates a parent shortcut listener.
+      <div onKeyDown={onParentKeyDown}>
+        <TimedEventCard
+          displayMode="saved"
+          event={createEvent({ conference })}
+          motionMode="idle"
+          onEventKeyDown={onEventKeyDown}
+          position={position}
+        />
+      </div>,
+    );
+
+    fireEvent.keyDown(
+      screen.getByRole("button", { name: "Join Google Meet" }),
+      {
+        key: " ",
+      },
+    );
+
+    expect(openMock).toHaveBeenCalledTimes(1);
+    expect(onEventKeyDown).not.toHaveBeenCalled();
+    expect(onParentKeyDown).not.toHaveBeenCalled();
+  });
+
+  it("refuses to render a join control for a non-http conference url", () => {
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: { url: "javascript:alert(1)", label: "Sketchy" },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: { url: "data:text/html,x", label: null },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+  });
+
+  it("places the join glyph clear of the repeat glyph when an event is both recurring and joinable", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const repeatGlyphs = container.querySelectorAll('svg[class*="right-1"]');
+    expect(repeatGlyphs).toHaveLength(1);
+    expect(repeatGlyphs[0]?.getAttribute("class")).toContain(
+      "pointer-events-none absolute right-1 bottom-0.5",
+    );
+    const join = screen.getByRole("button", { name: "Join Google Meet" });
+    expect(join.className).toContain("right-4.5");
+    expect(join.className).not.toContain("right-1");
+  });
+
+  it("reserves title room for both bottom-right icons on an all-day card", () => {
+    const { rerender } = render(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          title: "Repeat only",
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(screen.getByText("Repeat only").parentElement).toHaveClass("pr-3.5");
+
+    rerender(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, title: "Join only", conference })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(screen.getByText("Join only").parentElement).toHaveClass("pr-7");
+
+    rerender(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          title: "Repeat and join",
+          conference,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(screen.getByText("Repeat and join").parentElement).toHaveClass(
+      "pr-7",
+    );
+  });
+
+  it("hides the join control on a too-narrow or too-short timed event", () => {
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference })}
+        motionMode="idle"
+        position={{ ...position, width: 30 }}
+      />,
+    );
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference,
+          startDate: "2024-01-15T09:00:00.000Z",
+          endDate: "2024-01-15T09:10:00.000Z",
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+  });
+
+  it("hides the join control on a too-narrow or placeholder all-day event", () => {
+    const { rerender } = render(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference })}
+        isPlaceholder={false}
+        position={{ ...position, width: 50 }}
+      />,
+    );
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+
+    rerender(
+      <AllDayEventCard
+        event={createEvent({ isAllDay: true, conference })}
+        isPlaceholder={true}
+        position={position}
+      />,
+    );
+    expect(screen.queryAllByRole("button", { name: /^Join/ })).toHaveLength(0);
+  });
+
+  it("names the join control from the conference label", () => {
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Join Google Meet" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            url: "https://meet.google.com/abc-defg-hij",
+            label: null,
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Join meeting" }),
+    ).toBeInTheDocument();
   });
 });

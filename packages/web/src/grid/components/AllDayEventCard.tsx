@@ -27,9 +27,11 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { EventJoinIcon } from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
+import { getJoinableConferenceUrl } from "./event-join-url.util";
 
-const REPEAT_ICON_MIN_WIDTH = 60;
+const CARD_ICON_MIN_WIDTH = 60;
 
 export interface AllDayEventCardProps {
   /** Resolved by a list-level useCalendarLookup call, not fetched here. */
@@ -74,7 +76,10 @@ const AllDayEventCardBase = (
   const isInPast = dayjs().isAfter(dayjs(event.endDate));
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
-    isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+    isRecurring && !isPlaceholder && position.width >= CARD_ICON_MIN_WIDTH;
+  const joinUrl = getJoinableConferenceUrl(event.conference);
+  const showJoinIcon =
+    joinUrl !== null && !isPlaceholder && position.width >= CARD_ICON_MIN_WIDTH;
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -186,8 +191,11 @@ const AllDayEventCardBase = (
       )}
       <div
         className={cn("flex min-w-0 items-center", {
-          // Reserve room so a long title truncates before the bottom-right icon.
-          "pr-3.5": showRepeatIcon,
+          // Reserve room so a long title truncates before the bottom-right icons.
+          // The join glyph sits further left than the repeat glyph, so it needs
+          // the wider reservation whether or not the repeat glyph also shows.
+          "pr-3.5": showRepeatIcon && !showJoinIcon,
+          "pr-7": showJoinIcon,
         })}
       >
         <span
@@ -199,6 +207,13 @@ const AllDayEventCardBase = (
         </span>
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {showJoinIcon && joinUrl && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          label={event.conference?.label ?? null}
+          url={joinUrl}
+        />
+      )}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
       <div
         aria-hidden="true"
