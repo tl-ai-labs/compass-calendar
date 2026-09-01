@@ -1,0 +1,218 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "attendee-status-util",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/attendee-status.util.ts",
+    "instruction": "Create the shared, React-free RSVP status module exactly as specified in design.md §4. Move ATTENDEE_STATUS_DOT and attendeeStatusLabel verbatim out of EventDetailsSection.tsx (class-name literals must be byte-identical). Add AttendeeStatusLike, the private ATTENDEE_STATUS_SEVERITY map, aggregateAttendeeStatus (non-mutating reduce, null for undefined/empty), ATTENDEE_AGGREGATE_LABEL, attendeeSummaryLabel(status,count), ATTENDEE_COUNT_DISPLAY_MAX and attendeeCountLabel. Re-export the AttendeeResponseStatus type from @core; do not redeclare it. No React import, no store access, no DOM.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§4 carries the full source of this module" },
+      { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "reason": "lines 12-20 are the extraction source; literals must not drift" },
+      { "path": "packages/core/src/types/event-attendance.contracts.ts", "reason": "AttendeeResponseStatus definition (read-only, off-limits)" },
+      { "path": "packages/web/src/grid/components/calendar-accent.util.ts", "reason": "in-repo precedent for a pure grid util's file shape" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "ATTENDEE_STATUS_DOT values are exactly bg-success / bg-error / bg-warning / bg-text-subtle (FR-1)",
+      "attendeeStatusLabel returns \"hasn't responded\" for needsAction, the raw status otherwise (FR-2)",
+      "AttendeeResponseStatus is re-exported, not redeclared or widened (FR-3)",
+      "no React/DOM/store import; module is pure (FR-4)",
+      "aggregateAttendeeStatus returns null for undefined and [], uses reduce not sort, accepts a readonly array (FR-5, R-6)",
+      "attendeeSummaryLabel's signature is (status, count) so it structurally cannot emit a name or email (D-5)"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0,
+    "wave": "A",
+    "depends_on": []
+  },
+  {
+    "id": "tp_cg_002",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-constants",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/grid.constants.ts",
+    "instruction": "Append the four exported attendee-badge size constants from design.md §6 with their rationale comments: MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 22, MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE = 56, MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE = 72, ATTENDEE_BADGE_TITLE_RESERVE_PX = 28. Place them next to the existing MIN_EVENT_*_FOR_TIME_LABEL constants. Change no existing constant.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§6 carries the exact values and comments" },
+      { "path": "packages/web/src/grid/grid.constants.ts", "reason": "target file; existing values must not move" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "all four constants exported and importable from @web/grid/grid.constants (AC-4)",
+      "MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE > COMPACT_EVENT_MAX_HEIGHT so a 15-minute event cannot show the badge (FR-11)",
+      "no existing constant's name, value, or comment changes"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 1500 },
+    "retry_count": 0,
+    "wave": "A",
+    "depends_on": []
+  },
+  {
+    "id": "tp_cg_003",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "attendee-badge",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/AttendeeBadge.tsx",
+    "instruction": "Create the presentational AttendeeBadge component exactly as specified in design.md §4. Export ATTENDEE_BADGE_ATTRIBUTE = \"data-attendee-badge\" and AttendeeBadge({ className, count, status, style }). One aria-hidden, pointer-events-none span containing an 8px dot (size-2 shrink-0 rounded-full + ATTENDEE_STATUS_DOT[status]) and the capped count text; title = attendeeSummaryLabel(status, count). No hooks, no state, no interaction handlers. Follow EventRepeatIcon's doc-comment style.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§4 carries the full source" },
+      { "path": "packages/web/src/grid/components/EventRepeatIcon.tsx", "reason": "precedent for shared decorative card chrome" },
+      { "path": "packages/web/src/grid/components/attendee-status.util.ts", "reason": "the module it imports (written by tp_cg_001)" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "root span is aria-hidden=\"true\" and pointer-events-none (FR-13, NFR-1)",
+      "dot class comes from ATTENDEE_STATUS_DOT, never a hardcoded bg-* literal (AC-1)",
+      "count rendered via attendeeCountLabel so it is capped at 9+",
+      "no attendee name or email is accepted as a prop or rendered (D-5)",
+      "no hook, no store subscription, no context read (NFR-2)"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 2000 },
+    "retry_count": 0,
+    "wave": "B",
+    "depends_on": ["tp_cg_001"]
+  },
+  {
+    "id": "tp_cg_004",
+    "phase": "refactor",
+    "task_type": "existing_file_edit",
+    "module": "event-form",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "instruction": "Apply ONLY the import swap specified in design.md §8. Delete line 4 (the @core AttendeeResponseStatus type import) and lines 12-21 (the two moved declarations plus the trailing blank line). Insert the ATTENDEE_STATUS_DOT + attendeeStatusLabel import from @web/grid/components/attendee-status.util after the @core/types/event.contracts import. Keep MAX_VISIBLE_ATTENDEES. Touch NOTHING below line 24 - no reflow, no re-sort, no reformat, no JSX change of any kind. This packet ships alone so its diff is inspectable in isolation (§11).",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§8 carries the exact resulting file head and the deleted line ranges" },
+      { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "reason": "target file" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "net diff is approximately -11/+5 and entirely above line 24; a diff over ~16 changed lines is a reject (R-1, R-11)",
+      "the JSX body is byte-identical to the pre-run file (AC-5)",
+      "both identifiers keep their exact names so lines 76 and 86 need no edit",
+      "EventForm test files are not touched and need zero assertion edits (AC-5)"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 2500 },
+    "retry_count": 0,
+    "wave": "B",
+    "depends_on": ["tp_cg_001"],
+    "isolation": "must not be combined with any other file in one unit of work (design.md §11)"
+  },
+  {
+    "id": "tp_test_001",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "attendee-status-util",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/attendee-status.util.test.ts",
+    "instruction": "Write the unit test for attendee-status.util.ts exactly per design.md §9.1 - 5 describe blocks, 18 it cases. Follow calendar-accent.util.test.ts conventions: relative module import first, then import { describe, expect, it } from \"bun:test\". No DOM, no Testing Library, no jest-dom. Include the non-mutation check, the readonly-array compile check, and the no-PII regression guard.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§9.1 is the case-by-case spec" },
+      { "path": "packages/web/src/grid/components/calendar-accent.util.test.ts", "reason": "convention source" },
+      { "path": "packages/web/src/grid/components/attendee-status.util.ts", "reason": "module under test" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "all four ATTENDEE_STATUS_DOT entries asserted byte-exact (AC-6)",
+      "both attendeeStatusLabel branches asserted (AC-6)",
+      "aggregate precedence asserted including ties, order-independence, undefined and [] (AC-6)",
+      "non-mutation of the caller's array asserted (R-6)",
+      "a guard asserts no attendeeSummaryLabel output matches /@/ (D-5)"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 },
+    "retry_count": 0,
+    "wave": "B",
+    "depends_on": ["tp_cg_001"]
+  },
+  {
+    "id": "tp_cg_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "timed-card",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Apply design.md §5.1 to TimedEventCard. Add the attendeeStatus / attendeeCount / showAttendeeBadge derivation after showTimeLabel; add attendeeSuffix to accessibleLabel (gated on attendee presence ONLY, not on the size gate - D-3 sub-decision); add paddingRight: showAttendeeBadge ? ATTENDEE_BADGE_TITLE_RESERVE_PX : undefined to titleStyle (title span only, NEVER the content wrapper); mount <AttendeeBadge className=\"absolute top-0.5 right-1\" .../> as a sibling immediately before the showRepeatIcon line. Use the showAttendeeBadge && attendeeStatus !== null guard to narrow the union - no non-null assertion, no cast.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§5.1 carries the exact derivation, label, mount point and title reserve" },
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "reason": "target file" },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "reason": "component being mounted" },
+      { "path": "packages/web/src/grid/grid.constants.ts", "reason": "gate constants" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "an event with attendees undefined or [] produces a byte-identical accessibleLabel and no badge node (AC-2)",
+      "the padding reserve is on the title span, not the content wrapper, so the time label row is untouched (FR-10, R-7)",
+      "badge is suppressed for placeholder, shown for draft (FR-12)",
+      "no !, no as, no any (FR-16, R-12)",
+      "badge derives from event only, so GridEventMemo stays correct (NFR-3)"
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 5000 },
+    "retry_count": 0,
+    "wave": "C",
+    "depends_on": ["tp_cg_001", "tp_cg_002", "tp_cg_003"]
+  },
+  {
+    "id": "tp_cg_006",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "allday-card",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Apply design.md §5.2 to AllDayEventCard. Same derivation with the width-only gate (MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE); append attendeeSuffix to accessibleLabel; mount <AttendeeBadge className=\"ml-1\" .../> IN-FLOW as the last child of the existing content wrapper, immediately after the title span. Do not change the content wrapper's class string. Do not add a pr-* for the badge - shrink-0 on the badge plus min-w-0 truncate on the title is what reserves the room (FR-15).",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§5.2 carries the exact mount point and the in-flow-vs-absolute rationale" },
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "reason": "target file" },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "reason": "component being mounted" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "width-only gate; no height gate (the strip is fixed at EVENT_ALLDAY_HEIGHT) (FR-14)",
+      "the content wrapper's class string is unchanged - only a new child node (§5.2)",
+      "title keeps min-w-0 truncate so it truncates against the badge rather than overlapping it (FR-15)",
+      "an event with no attendees renders byte-identically to today (AC-2)",
+      "no !, no as, no any (FR-16)"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 },
+    "retry_count": 0,
+    "wave": "C",
+    "depends_on": ["tp_cg_001", "tp_cg_002", "tp_cg_003"]
+  },
+  {
+    "id": "tp_test_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-cards",
+    "intent": "feature-extend",
+    "pass_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Append the 15 component cases from design.md §9.2 (T1-T10, A1-A5) to the existing EventCard.test.tsx. Extend the existing @web/grid/grid.constants import with the three gate constants; add imports for ATTENDEE_BADGE_ATTRIBUTE and ATTENDEE_STATUS_DOT. Add the createAttendee and badgeIn helpers beside the existing createEvent factory. CRITICAL: every accessibility assertion queries by accessible name via getByRole(\"button\", { name }) - never by Tailwind class. The single class assertion (T2) reads its expected value by importing ATTENDEE_STATUS_DOT, never by hardcoding \"bg-error\". Size-gate tests import the constants and use CONSTANT - 1, never a hardcoded pixel. MODIFY NO EXISTING ASSERTION.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md", "reason": "§9.2 is the case-by-case spec incl. the exact accessible-name strings" },
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "reason": "target file; existing factory and conventions" },
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "reason": "component under test" },
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "reason": "component under test" }
+    ],
+    "outputSchema": { "type": "object", "properties": { "content": { "type": "string" } }, "required": ["content"] },
+    "acceptance": [
+      "badge-shown, badge-hidden (undefined AND []), badge-suppressed-when-too-small covered on BOTH card types (AC-6)",
+      "a11y asserted against the computed accessible name, not a class attribute (AC-3, R-3)",
+      "gate thresholds imported, not hardcoded (AC-4)",
+      "no existing assertion in the file is modified (AC-2)",
+      "T5 pins D-3's decoupling: no badge node below the gate, but RSVP still in the accessible name"
+    ],
+    "budget": { "maxInputTokens": 24000, "maxOutputTokens": 8000 },
+    "retry_count": 0,
+    "wave": "D",
+    "depends_on": ["tp_cg_002", "tp_cg_003", "tp_cg_005", "tp_cg_006"]
+  }
+]

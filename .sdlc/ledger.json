@@ -829,6 +829,111 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+      "date": "2026-08-31",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "opus-only-v5",
+      "auth_mode": "estimated",
+      "ticket": "CMP-105",
+      "status": "accepted",
+      "commit_strategy": "NONE — nothing committed, nothing pushed, no branch operation. Explicit operator instruction at Gate 4 and close-out: the 8-path delta stays as uncommitted working-tree changes for the human to review and commit. Close-out touched .sdlc/ bookkeeping and the ledger only.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-105/opus-only-v5",
+      "commits": [],
+      "files_written": 8,
+      "files_written_detail": "3 new (grid/components/attendee-status.util.ts 120 LOC, grid/components/AttendeeBadge.tsx 56 LOC, grid/components/attendee-status.util.test.ts 198 LOC), 5 modified. +517 / -13 on tracked files. 11 individual writes across those 8 paths (provenance.json files_touched).",
+      "files_allowlisted_untouched": 3,
+      "tests": {
+        "before": { "pass": 2298, "fail": 0, "files": 302 },
+        "after": { "pass": 2337, "fail": 0, "files": 303 },
+        "new_failures": 0,
+        "tests_added": 39,
+        "verification": "bun test:web 2337 pass / 0 fail exit 0, run by the orchestrator three times (post-codegen 2331, post-senior-refinement 2336, post-security-refinement 2337). Baseline 2298/0 was captured BEFORE any codegen so 'no new failures' is measured, not asserted. bun type-check clean; bunx biome check clean on all 8 files. The senior reviewer independently re-ran bun test:web rather than trusting the orchestrator's number."
+      },
+      "cost_usd": 4.1035,
+      "cost_split": {
+        "estimated_opus_tier": 4.1035,
+        "vendor_metered_dispatches": 0
+      },
+      "cost_note": "Fully-loaded single-tier estimate. opus-only-v5 declares one leaf (claude-opus-5 via claude-cli, no ANTHROPIC_API_KEY), so under auth_mode=estimated every phase ran in-session and is priced from the policy's pricing block ($5/M input, $25/M output) using the char/3.8 heuristic with CACHED INPUT BOOKED AT 0. All 16 events carry provenance:'estimated'; nothing was metered through the MCP server. Reconciled at close-out by re-summing telemetry.jsonl from disk. Methodologically comparable to rows three, six and nine (same policy, same auth mode), NOT to flash-agsdk-only rows (which price no orchestration) or to row ten (vendor-metered).",
+      "known_findings_open": 8,
+      "artifacts_dir": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge",
+      "gates": {
+        "gate-0": "approved (prior session, recorded in intent_brief.md)",
+        "gate-1": "approved — Q-1..Q-6 all deferred to Gate 2; Q-6 (branch) confirmed",
+        "gate-2": "approved — D-1..D-5 ratified as written, including D-3's sub-decision and D-5's no-PII-in-the-accessible-layer line. Write contract explicitly NOT widened.",
+        "gate-3": "approved — INFO-2 and INFO-4 ratified as accepted rulings; F-5 deferred as a follow-up with an explicit do-not-blind-bump instruction",
+        "gate-4": "accept — plain, unconditional"
+      },
+      "senior_review": {
+        "rounds": 1,
+        "verdict": "approve_with_followups — all 8 ACs met",
+        "findings": "7 (0 blocker, 0 major, 5 minor, 2 nit). 4 actioned as refinement packets, 3 deferred.",
+        "note": "THE REVIEW CAUGHT AN ARITHMETIC ERROR IN THE GATE-2-APPROVED DESIGN. R-8 was accepted on the explicit promise that the badge and the repeat glyph 'touch but do not overlap' at the minimum height gate. They overlapped by 2px: R-8 assumed a 12px badge and forgot both 0.5 (2px) offsets. The badge is 10px (leading-none on text-[10px] around an 8px dot), so non-overlap needs H>=24, not 22. The risk accepted at Gate 2 was not the risk that existed. Orchestrator re-derived the arithmetic from source before applying the 22->24 fix rather than taking the finding on trust. The other three actioned findings were all TESTS THAT COULD NOT HAVE FAILED: the size-gate tests pinned only the hidden side (a > vs >= slip would stay green), the sole PII test asserted on a (status,count)=>string function that is structurally incapable of regressing while the rendered card went unguarded, and D-3's decoupling was pinned on the timed card but only half-pinned on all-day."
+      },
+      "security_review": {
+        "verdict": "pass_with_notes",
+        "passes": 1,
+        "finding_count": 4,
+        "highest_severity": "info",
+        "required_fixes": 0,
+        "note": "Scoped to changed files per the Intent matrix. D-5 verified ON THE CODE PATH, not just in tests: every read of event.attendees on both cards is terminal (2 reads each, yielding an enum and a number), identifiers terminate inside aggregateAttendeeStatus, and the sole text-producing function takes (status, count) so it is incapable BY SIGNATURE of emitting an identifier. The reviewer went further and rendered both cards against hostile fixtures — displayName set to \"><img src=x onerror=alert(1)>, an email carrying the same payload, and an off-contract responseStatus of <script>alert(1)</script> — then dumped the full container.innerHTML: zero identifiers, zero payload fragments, no injected node. INFO-1 was actioned in-run: the web layer never runs GridEventSchema.parse(), so the four-member enum has NO RUNTIME TEETH and that reduce IS the clamp; a test now pins it and records that a sort- or Math.max-based rewrite would silently remove the guard."
+      },
+      "accepted_rulings": [
+        {
+          "id": "AR-1 (INFO-2 / D-3 sub-decision)",
+          "ruling": "A card too small to draw the badge STILL announces RSVP state in its aria-label. The label suffix is gated on attendee presence only; the badge node is gated on presence + size + placeholder. Deliberate: RSVP state is not a function of pixel height, and withholding information from AT users over a VISUAL constraint is the worse bug. Follows the in-file recurringPrefix-vs-showRepeatIcon precedent. Pinned by a test on BOTH card types. Recorded so a future reader pattern-matching D-5's modality-symmetry language does not 'fix' it."
+        },
+        {
+          "id": "AR-2 (INFO-4)",
+          "ruling": "The aggregate wording ('at least one declined') is a genuinely NEW ambient disclosure: the Week grid is on screen all day and lands in screenshares, recordings and support screenshots, where the event form is opened deliberately one event at a time. Acknowledged and accepted per D-5's rationale — the aggregate carries the actionable signal with no identifier attached, and the grid shows only the viewer's own calendar."
+        }
+      ],
+      "process_notes": [
+        {
+          "id": "PN-1-non-recurrence-2",
+          "severity": "info",
+          "summary": "The harness Write guard fired a FOURTH time on SUMMARY.md and the orchestrator complied: it did not re-route through Bash, it folded the narrative into manifest.json's structured fields (accepted_rulings, revert, followups, cost_provenance_note), delivered the summary as its final response, and disclosed the refusal explicitly at Gate 4.",
+          "structural_point": "SECOND recorded non-recurrence (first: run 20260822-040449). Does NOT close CLAUDE-SDLC follow-up 16 — a prompt-level behaviour that complies twice is still not a boundary — but the compliance rate is now 2 of 4."
+        },
+        {
+          "id": "PN-2-provenance-scope",
+          "severity": "low",
+          "summary": "Provenance was recorded for the 8 user-source writes only, not for the run's own artifacts under .sdlc/runs/<run-id>/. Deliberate and disclosed at Gate 3: those paths are auto-allowlisted, are created by the run, and recording them would make /mmo:revert try to restore the run's own record. Noted because the orchestrator contract's wording is 'every file the run touches'."
+        },
+        {
+          "id": "PN-3-formatting-via-edit",
+          "severity": "info",
+          "summary": "Biome flagged 6 formatting/import-order issues after codegen. Rather than running `biome check --write` via Bash — which would have bypassed the Write|Edit-only PreToolUse hook — the orchestrator applied all six by hand through Edit. It also checked FIRST whether EventDetailsSection.tsx was among the flagged files (it was not), because blanket-formatting that file would have put AC-5's byte-identity claim at risk.",
+          "structural_point": "The relevant memory note warns against Bash-routed writes precisely because the hook is Write|Edit-only. Recorded as the correct handling of that hazard."
+        },
+        {
+          "id": "PN-4-harness-test-invocation",
+          "severity": "info",
+          "summary": "`bun test <file>` from the REPO ROOT fails with 'PORT is required when API_BASEURL is not configured' because packages/web/bunfig.toml carries a required preload that root-level invocation does not pick up. This looked like a regression caused by the change and was not. Correct invocations: `bun test:web`, or cwd packages/web with a src/-relative path. Both reviewers hit and independently documented the same trap."
+        }
+      ],
+      "followups_open": [
+        "FU-1 relocate attendee-status.util.ts to packages/web/src/common/ (flagged independently by design R-13, the senior reviewer and the security reviewer)",
+        "FU-2 browser-verify badge dot contrast on live event fills (design R-14, never measured)",
+        "FU-3 11 order-dependent failures under the unsharded bun test runner (pre-existing, unrelated; NOT independently re-verified at baseline by the orchestrator)",
+        "FU-4 revisit the aggregate on large invites (sits at needsAction semi-permanently)",
+        "FU-5 MEASURE the title reserve at the 56px width gate before touching it — explicitly do not blind-bump",
+        "FU-6 collapse the duplicated attendeeSuffix construction across the two cards",
+        "FU-7 pin ATTENDEE_AGGREGATE_LABEL's four entries directly, or drop the unused export",
+        "FU-8 browser-check whether the badge title tooltip can ever fire under pointer-events-none"
+      ],
+      "revert": {
+        "clean_revert_available": false,
+        "reason": "provenance.json records backup_path:null for the 8 original writes (backups exist only for the 3 later refinement writes), and 3 of the 8 files are new and untracked, so git checkout alone cannot restore the pre-run state. git_head_before == git_head_after == 2d81253a with 0 commits.",
+        "manual_path": "rm the 3 new files (attendee-status.util.ts, AttendeeBadge.tsx, attendee-status.util.test.ts), then git checkout -- the 5 tracked ones (grid.constants.ts, TimedEventCard.tsx, AllDayEventCard.tsx, EventCard.test.tsx, EventDetailsSection.tsx)."
+      },
+      "tags": ["CMP-105", "policy-ab-fourth-arm", "feature-extend", "no-commit", "design-arithmetic-error-caught", "inert-tests-caught", "adversarial-pii-verification"],
+      "compare_baseline_tag": null,
+      "compare_note": "FOURTH arm of the CMP-105 attendee-badge comparison and the first cut from the NEW anchor 2d81253a (main after the SDLC layer was tracked); the three prior CMP-105 arms — opus-plus-flash-v37 (649aea0c, pushed), flash-agsdk-only (fe6520d3, pushed) and the 2026-08-29 attendee-badge run — used different anchors, so this is NOT a clean like-for-like cost A/B against them. What this row contributes is not a cost datapoint but a REVIEW-VALUE datapoint: the two review phases cost $1.53 of the $4.10 total (37%) — more than all codegen and tests combined ($1.22) — and they are what caught (a) an arithmetic error in the human-approved design whose own accepted-risk statement was false, and (b) three tests that were structurally incapable of failing, including the only guard on the run's headline privacy decision. The prior CMP-105 flash-agsdk-only arm recorded the mirror-image failure: 'tests assert role DOM attr not a11y tree'. Here the design ANTICIPATED that trap (R-3), the tests honoured it, and the senior reviewer verified the accessible-name assertions rather than taking the design's word. Also of note: Phase 1 read the source instead of trusting the brief and retired three of the brief's in-scope files (GridEvent already carries attendees, the view-model already populates it, GridEvent.tsx already passes the whole event), and found the brief's 'existing snapshots unchanged' clause vacuous — no __snapshots__ directory exists anywhere under packages/web/src."
     }
   ]
 }

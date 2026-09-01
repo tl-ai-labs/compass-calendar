@@ -45,6 +45,17 @@ location `global`). Under `opus-only-v5`, the whole run is estimated (nothing di
 through the MCP server; character-count heuristics priced against the policy's `pricing`
 block).
 
+**Updated 2026-08-31.** `.sdlc/project.json`'s `default_policy` is now **`opus-only-v5`** again
+(`last_updated_at` 2026-08-31T11:47:34Z), superseding `opus-plus-flash-v37` below. Run
+`20260831-045511-feature-extend-attendee-avatar-badge` used it under `auth_mode: estimated`, and
+`preflight_dispatch` returned `ok: true` with **zero warnings and an empty `not_selected`** — the
+single `claude-opus-5` leaf over `claude-cli` resolved cleanly with no env var set. This is the
+**fourth** round-trip of this project's default; the warning above stands — read `project.json`
+directly rather than trusting any paragraph here. Note the shape of a single-tier run under
+`estimated`: **nothing dispatches through the MCP server at all**, so every event carries
+`provenance: "estimated"`, cached input is booked at 0, and there is no vendor number anywhere in
+the run to cross-check the heuristic against.
+
 **Updated 2026-08-24.** `.sdlc/project.json`'s `default_policy` is now **`opus-plus-flash-v37`**
 (set 2026-08-24T07:18:08Z). The shipped YAML was **edited in place in the plugin cache** to match this
 team's actual auth: the `opus` leaf moved from `builtin-anthropic` + `ANTHROPIC_API_KEY` to
@@ -329,7 +340,17 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
 
 ## Runs
 
-See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
+See [`.sdlc/ledger.md`](./ledger.md) (human) and [`.sdlc/ledger.json`](./ledger.json) (machine).
+
+**Latest run:** `20260831-045511-feature-extend-attendee-avatar-badge` (2026-08-31, CMP-105,
+`feature-extend`, `opus-only-v5`, `estimated`, **$4.10**, 8 files, 2298/0 → **2337/0**, accepted,
+**uncommitted** on `CMP-105/opus-only-v5` @ `2d81253a`). Artifacts:
+[`.sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/`](./runs/20260831-045511-feature-extend-attendee-avatar-badge/)
+— see its `manifest.json` for the rollup and `ledger.md` row thirteen for the narrative.
+
+**Anchor change:** this is the first run cut from **`2d81253a`** rather than `4189de13`. Every row
+before it anchors on `4189de13`, so cross-run cost and diff comparisons against older arms are no
+longer like-for-like on repo state.
 
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added

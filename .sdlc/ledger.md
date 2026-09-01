@@ -344,3 +344,98 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+---
+
+## Row thirteen — `20260831-045511-feature-extend-attendee-avatar-badge`
+
+**CMP-105 · `feature-extend` · `opus-only-v5` · `estimated` · branch `CMP-105/opus-only-v5` ·
+anchor `2d81253a` · $4.10 · 8 files · +39 tests · 2298/0 → 2337/0 · uncommitted by the operator's
+explicit choice.**
+
+Week grid event cards gained a compact RSVP badge (one aggregate status dot + guest count), and the
+RSVP colour/label vocabulary was extracted out of `EventDetailsSection.tsx` into a shared module the
+form and the grid now both import.
+
+**First row cut from the new anchor `2d81253a`.** Every prior row anchors on `4189de13`, and the
+three earlier CMP-105 arms used different anchors again — so **this is not a clean like-for-like
+cost A/B** against them, and it is not offered as one.
+
+**What this row actually contributes is a review-value datapoint.** The two review phases cost
+**$1.53 of the $4.10 total (37%) — more than all codegen and tests combined ($1.22)** — and between
+them they caught two things a green suite could not.
+
+**The senior review found an arithmetic error inside the human-approved design.** Gate 2 accepted
+risk R-8 on the design's own explicit promise that at the minimum height gate the attendee badge and
+the repeat glyph *"touch but do not overlap."* They overlapped by 2px. R-8 assumed a 12px badge and
+forgot both `0.5` (2px) offsets; the badge is **10px** (`leading-none` on `text-[10px]` around an 8px
+dot), so non-overlap needs `H >= 24`, not 22. **The risk the human accepted was not the risk that
+existed.** The orchestrator re-derived the geometry from `AttendeeBadge.tsx` and `EventRepeatIcon.tsx`
+before applying the 22→24 fix rather than taking the finding on trust — worth noting because the
+reviewer was correcting a document the operator had already approved.
+
+**The other three actioned findings were all tests that could not have failed.** The size-gate tests
+pinned only the *hidden* side (`CONSTANT - 1`), so a `>` instead of `>=` would have stayed green. The
+sole PII test asserted that a `(status: enum, count: number) => string` function does not emit an
+`@` — structurally impossible to violate — while the component fixtures carried real-looking emails
+into both cards with nothing asserting they stayed out of the DOM. And D-3's decoupling was pinned on
+the timed card but only half-pinned on all-day. **The run's headline privacy decision was guarded by
+an assertion incapable of regressing.**
+
+**The security review verified the privacy claim adversarially rather than by reading.** It traced
+every read of `event.attendees` on both cards (two each, both terminal, yielding an enum and a
+number), established that `attendeeSummaryLabel(status, count)` is incapable **by signature** of
+emitting an identifier, and then rendered both cards against an XSS-shaped `displayName`, a
+payload-bearing email and an off-contract `responseStatus`, dumping the full `container.innerHTML`.
+Zero identifiers, zero payload, no injected node. It also surfaced INFO-1, actioned in-run: the web
+layer **never calls `GridEventSchema.parse()`**, so the four-member enum has no runtime teeth and
+that `reduce` *is* the clamp — a `sort`- or `Math.max`-based rewrite would silently remove it. A test
+now pins it and says so.
+
+**Two rulings were ratified rather than left implicit**, both recorded so a later reader does not
+"fix" them. A card too small to draw the badge **still announces RSVP state** in its `aria-label`
+(gated on attendee presence only) — deliberate, because RSVP state is not a function of pixel height
+and withholding it from AT users over a *visual* constraint is the worse bug; pinned by a test on
+both card types. And the aggregate wording is accepted as a genuinely **new ambient disclosure**: the
+grid sits on screen all day in screenshares and screenshots where the form is opened deliberately,
+one event at a time.
+
+**Phase 1 read the source instead of trusting the brief, and the plan shrank.** `GridEvent` already
+declares `attendees`, the view-model already populates it, and `GridEvent.tsx` already passes the
+whole event down — so three of the brief's in-scope files needed **zero** changes. The brief's
+"existing snapshots unchanged" acceptance clause was also found vacuous: **no `__snapshots__`
+directory exists anywhere under `packages/web/src`.**
+
+**Contrast with the CMP-105 `flash-agsdk-only` arm**, which recorded the mirror-image failure —
+*"tests assert role DOM attr not a11y tree."* Here the design **anticipated** that trap as R-3, the
+generated tests honoured it by querying `getByRole("button", { name })`, and the senior reviewer
+verified the assertion shape rather than taking the design's word for it.
+
+**Process notes.** The harness `Write` guard fired a fourth time on `SUMMARY.md`; the orchestrator
+**complied** — no Bash re-route — folding the narrative into `manifest.json`'s structured fields and
+disclosing the refusal at Gate 4. That is the second recorded non-recurrence (compliance now 2 of 4)
+and does **not** close follow-up 16. Biome's six post-codegen fixes were applied by hand through
+`Edit` rather than `biome check --write`, to stay on the hook-gated write path — and the orchestrator
+checked *first* that `EventDetailsSection.tsx` was not among the flagged files, since blanket
+formatting it would have put AC-5's byte-identity claim at risk. Provenance was recorded for the 8
+user-source writes only, not the run's own `.sdlc/` artifacts (deliberate, disclosed at Gate 3).
+
+**Harness trap worth carrying forward:** `bun test <file>` from the **repo root** fails with
+`PORT is required when API_BASEURL is not configured`, because `packages/web/bunfig.toml` carries a
+required preload that root-level invocation does not pick up. It looks exactly like a regression
+caused by the change. Use `bun test:web`, or cwd `packages/web` with a `src/`-relative path. Both
+reviewers hit it independently.
+
+**Revert is NOT clean for this row.** `provenance.json` has `backup_path: null` for the 8 original
+writes (backups exist only for the 3 refinement writes) and 3 files are new/untracked, so
+`git checkout` alone cannot restore the pre-run state. Manual path: `rm` the three new files
+(`attendee-status.util.ts`, `AttendeeBadge.tsx`, `attendee-status.util.test.ts`), then
+`git checkout --` the five tracked ones. `git_head_before == git_head_after == 2d81253a`, 0 commits.
+
+**Eight follow-ups open, none filed as tickets.** Notably FU-1 (relocate the util to
+`packages/web/src/common/` — flagged independently by the design, the senior reviewer *and* the
+security reviewer, since the form now imports from `@web/grid/components`) and FU-5 (**measure** the
+title reserve at the 56px width gate before touching it; at the gate ~20px of title survives, and the
+reviewer's explicit advice was that a guessed bump is worse than a measured one). FU-3 records 11
+order-dependent failures under the unsharded `bun test` runner — **reported by the senior reviewer as
+pre-existing and not independently re-verified at baseline by the orchestrator.**

@@ -1,0 +1,207 @@
+{
+  "run_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+  "verdict": "approve_with_followups",
+  "summary": "The change implements the Gate-2 design faithfully: the extraction is render-neutral (EventDetailsSection is +4/-11, both hunks above line 24, JSX byte-untouched, its 110-test suite green with zero assertion edits), no-attendee cards emit an unchanged style object and label string, the a11y assertions genuinely query the computed accessible name and the one class assertion imports ATTENDEE_STATUS_DOT, no attendee email or displayName reaches any grid-card DOM node, and there is no `any`/`as`/`!` anywhere in the diff. I re-ran the sanctioned command `bun test:web`: 2331 pass / 0 fail against a 2298/0 baseline, so AC-6 holds. All eight ACs are met; the findings are three small test-coverage gaps and one boundary-arithmetic slip in MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE that makes R-8's own no-overlap claim false by 2px.",
+  "ac_verification": [
+    {
+      "id": "AC-1",
+      "status": "met",
+      "evidence": "packages/web/src/grid/components/attendee-status.util.ts:23 is the only definition site (grep for ATTENDEE_STATUS_DOT across packages/web/src returns exactly one `export const` and two consumers: AttendeeBadge.tsx:52 and EventDetailsSection.tsx:79); EventCard.test.tsx:626-632 \"colors the timed attendee dot from the shared status module\"",
+      "note": "Single-source-of-truth claim is grep-provable as AC-1 required. The badge dot reads ATTENDEE_STATUS_DOT[status]; no bg-* literal appears in AttendeeBadge.tsx."
+    },
+    {
+      "id": "AC-2",
+      "status": "met",
+      "evidence": "TimedEventCard.tsx:302-305 (attendeeSuffix is the empty string when attendeeStatus === null) and TimedEventCard.tsx:250-254 (paddingRight is `undefined`, not 0 or \"0px\", so React omits the property); EventCard.test.tsx:634-668 asserts badge null, the pre-change accessible name, and `style.paddingRight === \"\"` for both `undefined` and `[]`",
+      "note": "Emitted style object and label string are identical to baseline for a card with no attendees. All 20 pre-existing EventCard assertions are unmodified - the diff on that file is additions only."
+    },
+    {
+      "id": "AC-3",
+      "status": "met",
+      "evidence": "EventCard.test.tsx:594-612, 670-700, 745-767, 771-786, 823-841 all query `screen.getByRole(\"button\", { name: \"<exact label>\" })`; EventCard.test.tsx:629 asserts `aria-hidden=\"true\"` on the badge root; the sole class assertion (EventCard.test.tsx:630, 818) reads its expected value from the imported `ATTENDEE_STATUS_DOT`",
+      "note": "The R-3 trap is avoided. No test uses a Tailwind class or a DOM attribute as evidence of accessibility, and no hardcoded \"bg-error\"/\"bg-text-subtle\" string appears in the test file."
+    },
+    {
+      "id": "AC-4",
+      "status": "met",
+      "evidence": "EventCard.test.tsx:702-717 (height gate), :719-733 (width gate), :843-860 (all-day width gate), each computing its position from the imported constant minus one; grid.constants.ts:31,37,43 export the three gates",
+      "note": "Thresholds are imported, never hardcoded. Gap: only the below-the-gate side is pinned - see F-2."
+    },
+    {
+      "id": "AC-5",
+      "status": "met",
+      "evidence": "`git diff --numstat 2d81253a -- EventDetailsSection.tsx` -> `4  11`, two hunks, both entirely above line 24; `bun test src/views/Forms/EventForm` -> 110 pass / 0 fail with zero test-file edits (no EventForm test file appears in the diff)",
+      "note": "R-1/R-11 satisfied by construction: the import swap deletes the @core type import plus lines 12-21 and inserts a 4-line import. Lines 69 and 79 (the two call sites) are byte-identical to baseline."
+    },
+    {
+      "id": "AC-6",
+      "status": "met",
+      "evidence": "`bun test:web` from repo root -> 2331 pass / 0 fail / 303 files (baseline test-baseline.json: 2298 pass / 0 fail / 302 files); attendee-status.util.test.ts:18 asserts all four ATTENDEE_STATUS_DOT entries with toEqual, :29 and :33-35 cover both attendeeStatusLabel branches; shown/hidden/too-small are covered on both card types",
+      "note": "+33 net tests, zero new failures. Aside: plain `bun test` from packages/web (the unsharded runner, not the sanctioned command) reports 11 failures in sse.client / day.event.query / user-metadata / useConnectGoogle - all pass in isolation, none touched by this run, and the sanctioned test:web runner is green. Pre-existing cross-file pollution, not caused by this change."
+    },
+    {
+      "id": "AC-7",
+      "status": "met",
+      "evidence": "`bun type-check` clean (verified pre-review); no `any`, no `as` cast, and no non-null assertion appears on any added line - the `showAttendeeBadge && attendeeStatus !== null &&` guard at TimedEventCard.tsx:406 and AllDayEventCard.tsx:223 is what narrows the union",
+      "note": "FR-16 / R-12 clean. The only `as` in the diff is `] as const` in a util-test fixture (attendee-status.util.test.ts:125), which is a const assertion proving the readonly-array path, not a type escape."
+    },
+    {
+      "id": "AC-8",
+      "status": "met",
+      "evidence": "provenance.json files_touched has exactly 8 entries with before/after sha for each; all 8 are under packages/web/src/grid/** or packages/web/src/views/Forms/EventForm/**",
+      "note": "`.sdlc/project.json` and `.sdlc/pre-check-status.json` are also dirty in the working tree; those are orchestrator bookkeeping, not codegen output, and are correctly absent from files_touched."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-1",
+      "severity": "minor",
+      "file": "packages/web/src/grid/grid.constants.ts",
+      "line": 35,
+      "issue": "MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 22 is 2px short of the no-overlap height that its own rationale (design.md R-8) claims it provides, and the comment above it misstates the badge height. The rendered badge is 10px tall, not the ~12px the comment says: it is `text-[10px] leading-none` around a `size-2` (8px) dot, so its line box is 10px (AttendeeBadge.tsx:45,52). At `top-0.5` it occupies y 2..12. EventRepeatIcon is 10px at `bottom-0.5` (EventRepeatIcon.tsx:19), so it occupies y H-12..H-2, and both are anchored to `right-1`. Non-overlap needs H >= 24. At H = 22..23 a recurring event with guests draws the count glyph through the repeat glyph. R-8 computed 12 + 10 = 22 and forgot the two 2px offsets.",
+      "why_it_matters": "R-8 was accepted at Gate 2 on the explicit promise that the two glyphs 'touch but do not overlap' at the boundary. As shipped they overlap, so the accepted risk is not the risk that was accepted. Reachable in practice on ~20-minute events and on squeezed deck layouts.",
+      "suggested_fix": "Raise MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE from 22 to 24 (R-8 already names 26 as the fallback if Gate 3 rejects the boundary) and correct the comment from '~12px tall' to '10px tall (8px dot in a 10px line box)'. The constant is imported by the height-gate test, which recomputes its position from the constant, so no test edit is required.",
+      "refinement_packet": {
+        "task_type": "existing_file_edit",
+        "instruction": "In packages/web/src/grid/grid.constants.ts, change MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE from 22 to 24 and fix its comment: the attendee badge renders 10px tall (an 8px `size-2` dot inside a `text-[10px] leading-none` line box), not ~12px, and 24 is the height at which the badge at top-0.5 (y 2..12) and the 10px EventRepeatIcon at bottom-0.5 (y H-12..H-2) stop overlapping. Keep the rest of the comment's reasoning (above COMPACT_EVENT_MAX_HEIGHT, below the ~31px a 30-minute event renders at). Change no other constant and no other file.",
+        "inputs": [
+          "packages/web/src/grid/grid.constants.ts",
+          "packages/web/src/grid/components/AttendeeBadge.tsx",
+          "packages/web/src/grid/components/EventRepeatIcon.tsx",
+          ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md"
+        ],
+        "acceptance": [
+          "MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE === 24 and is still > COMPACT_EVENT_MAX_HEIGHT (15)",
+          "the comment states the badge's real 10px height and the 24px no-overlap derivation",
+          "no other constant's name, value, or comment changes",
+          "`bun test src/grid/components/EventCard.test.tsx` from packages/web stays 35 pass / 0 fail without editing the test file"
+        ]
+      }
+    },
+    {
+      "id": "F-2",
+      "severity": "minor",
+      "file": "packages/web/src/grid/components/EventCard.test.tsx",
+      "line": 702,
+      "issue": "The three size-gate tests only pin the below-the-gate side. They render at `MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE - 1` (:715), `MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE - 1` (:731) and `MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE - 1` (:857) and assert the badge is absent. Nothing renders at exactly the threshold. The default `position` fixture is height 60 / width 140, far above all three gates, so an implementation that used `>` instead of `>=` - or a gate silently raised by one - would leave the whole suite green.",
+      "why_it_matters": "AC-4's whole point is that the gate is a pinned, named boundary. Half a boundary test is a boundary test that cannot fail in the direction a future edit is most likely to break it, and F-1's proposed constant bump is exactly the kind of edit that should have to prove the shown-side still holds.",
+      "suggested_fix": "Add the mirrored assertions at exactly the gate: timed card at `{ ...position, height: MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE }` and at `{ ...position, width: MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE }`, and all-day at `{ ...position, width: MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE }`, each asserting `badgeIn(container)` is not null.",
+      "refinement_packet": {
+        "task_type": "test_add",
+        "instruction": "In packages/web/src/grid/components/EventCard.test.tsx, append three cases that pin the shown side of each size gate, mirroring the existing hidden-side cases and reusing the existing `createEvent`, `createAttendee`, `badgeIn` and `position` helpers (no new fixture style). (1) 'shows the attendee badge at exactly the minimum height' - TimedEventCard, one declined attendee, position height set to MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE, expect badgeIn(container) not null. (2) 'shows the attendee badge at exactly the minimum width' - TimedEventCard, position width set to MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE, expect badgeIn(container) not null. (3) 'shows the all-day attendee badge at exactly the minimum width' - AllDayEventCard, isAllDay/title Conference, position width set to MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE, expect badgeIn(container) not null. Import the constants that are already imported; edit no existing assertion.",
+        "inputs": [
+          "packages/web/src/grid/components/EventCard.test.tsx",
+          "packages/web/src/grid/grid.constants.ts",
+          ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md"
+        ],
+        "acceptance": [
+          "three new `it` cases, each computing its position from the imported gate constant with no arithmetic and no hardcoded pixel value",
+          "each asserts the badge node is present at exactly the threshold",
+          "no existing test in the file is modified",
+          "`bun test src/grid/components/EventCard.test.tsx` from packages/web is 38 pass / 0 fail"
+        ]
+      }
+    },
+    {
+      "id": "F-3",
+      "severity": "minor",
+      "file": "packages/web/src/grid/components/attendee-status.util.test.ts",
+      "line": 152,
+      "issue": "D-5 - the run's headline privacy decision - has no regression guard at the layer it actually governs. The only PII test is `attendeeSummaryLabel` 'never contains an attendee name or email' (:152-164), which asserts that a `(status: string, count: number) => string` function does not emit an '@'. That is structurally impossible to violate, so the test can never fail. Meanwhile the component tests build fixtures that do carry real-looking emails (`createAttendee` at EventCard.test.tsx:56-59 sets `email: guest-<status>@compass.test`) and render them into both cards, and no test asserts those strings stay out of the card's DOM.",
+      "why_it_matters": "The code path is clean today - I traced badge, aria-label and title, and only `attendees.length` and the aggregate `responseStatus` reach the DOM - but the assertion that would catch a future 'let's show who declined' edit is aimed at the one function that cannot regress. The rendered card, which is what D-5 is about and where the fixture emails already exist, is unguarded.",
+      "suggested_fix": "Add a card-level guard: in the timed and all-day 'announces the guest count and aggregate RSVP' tests, capture `container` and assert `container.innerHTML` contains neither '@compass.test' nor a displayName, so any future attempt to render an identifier on a grid card fails the suite.",
+      "refinement_packet": {
+        "task_type": "test_add",
+        "instruction": "In packages/web/src/grid/components/EventCard.test.tsx, add one case per card type that pins design.md D-5 at the DOM level: render a card whose attendees carry both an email and a non-null displayName (extend the local `createAttendee` helper with an optional displayName argument rather than introducing a second fixture style), then assert that `container.innerHTML` contains neither the email nor the displayName, while `getByRole(\"button\", { name: ... })` still announces the guest count and aggregate status. Name them so the intent is legible, e.g. 'keeps attendee identities off the timed card entirely' and the all-day equivalent. Edit no existing assertion and change no production file.",
+        "inputs": [
+          "packages/web/src/grid/components/EventCard.test.tsx",
+          "packages/web/src/grid/components/AttendeeBadge.tsx",
+          ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md",
+          ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/requirements.md"
+        ],
+        "acceptance": [
+          "two new `it` cases, one per card type, asserting the rendered DOM carries neither the fixture email nor the fixture displayName",
+          "each also asserts the accessible name still carries the count and aggregate wording, so the guard cannot be satisfied by rendering nothing",
+          "`createAttendee` gains an optional displayName parameter and its existing call sites keep working unchanged",
+          "no production file is touched; `bun test src/grid/components/EventCard.test.tsx` from packages/web is green"
+        ]
+      }
+    },
+    {
+      "id": "F-4",
+      "severity": "minor",
+      "file": "packages/web/src/grid/components/EventCard.test.tsx",
+      "line": 843,
+      "issue": "D-3's sub-decision (RSVP text gated on attendee presence only, badge node gated on presence + size + placeholder) is pinned on the timed card by 'hides the attendee badge on a card too short for it but still announces the RSVP' (:702-717), which asserts both halves in one test. The all-day equivalent, 'hides the all-day attendee badge below the width gate' (:843-860), asserts only that the badge node is null. Both cards implement the split correctly (AllDayEventCard.tsx:153-164 computes attendeeSuffix from attendeeStatus alone, independent of showAttendeeBadge at :89-92), but on the all-day side only half of it is tested.",
+      "why_it_matters": "R-9 anticipated a reviewer flagging the still-announced RSVP text as a bug; the mitigation was 'a test asserts the behavior explicitly so it is a specified outcome rather than an accident'. That mitigation is only half-present. Someone 'fixing' the all-day card to gate the suffix on showAttendeeBadge would break D-3 with a green suite.",
+      "suggested_fix": "Extend the all-day below-the-gate test with `expect(screen.getByRole(\"button\", { name: \"All-day event: Conference, 1 guest, declined\" })).toBeInTheDocument()`, mirroring the timed card's comment about the deliberate decoupling.",
+      "refinement_packet": {
+        "task_type": "test_edit",
+        "instruction": "In packages/web/src/grid/components/EventCard.test.tsx, extend the existing 'hides the all-day attendee badge below the width gate' case so it also asserts the accessible name still announces the RSVP state, mirroring the timed card's 'hides the attendee badge on a card too short for it but still announces the RSVP'. Rename it to say so, and carry over the same explanatory comment about design.md D-3's deliberate decoupling of the accessible text from the pixel gate. Add the assertion only - do not weaken or remove the existing badge-is-null assertion, and touch no other test.",
+        "inputs": [
+          "packages/web/src/grid/components/EventCard.test.tsx",
+          "packages/web/src/grid/components/AllDayEventCard.tsx",
+          ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md"
+        ],
+        "acceptance": [
+          "the all-day below-the-gate case asserts both the absent badge node and the present RSVP wording in the accessible name",
+          "the assertion uses getByRole(\"button\", { name }) against the computed accessible name, not a DOM attribute",
+          "no other test case is modified and no production file is touched",
+          "`bun test src/grid/components/EventCard.test.tsx` from packages/web stays green"
+        ]
+      }
+    },
+    {
+      "id": "F-5",
+      "severity": "minor",
+      "file": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "line": 140,
+      "issue": "At MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE = 56 the title has almost nothing left. The card root carries pl-1.25 + pr-0.75 (8px of horizontal padding, TimedEventCard.tsx:323) and the title span takes a 28px ATTENDEE_BADGE_TITLE_RESERVE_PX (:250-254), leaving roughly 20px - about two characters - of title at the badge's own minimum width. The gate's comment claims that below 56 'the title has no usable room left', but at exactly 56 the reserve consumes half the card.",
+      "why_it_matters": "The badge is meant to add a signal without destroying the card's primary content. At the low end of its permitted range it effectively replaces the title. This is arithmetic I can do from the source but cannot confirm visually, and it is adjacent to R-14, which is already deferred to the Gate 3 browser check.",
+      "suggested_fix": "Verify in the browser at the narrowest real deck layout. If the title is unreadable, either raise MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE toward MIN_EVENT_WIDTH_FOR_TIME_LABEL (90) or drop the title reserve below some width and let the badge overlay the title's clamped tail. Do not change it blind - the current values are internally consistent and a guessed bump is worse than a measured one.",
+      "refinement_packet": null
+    },
+    {
+      "id": "F-6",
+      "severity": "nit",
+      "file": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "line": 84,
+      "issue": "The attendee derivation is duplicated verbatim across the two cards: `attendeeStatus` / `attendeeCount` (AllDayEventCard.tsx:87-88, TimedEventCard.tsx:140-141) and the five-line `attendeeSuffix` expression (AllDayEventCard.tsx:155-158, TimedEventCard.tsx:302-305) are byte-identical in both files. Only the size gate genuinely differs between them.",
+      "why_it_matters": "FR-5 put the aggregate rule in the shared module precisely so the two cards could not drift; the suffix construction - which is the D-5-sensitive part, since it is the string that reaches the DOM - was left duplicated. Two copies is the number at which a future wording change lands in one card and not the other.",
+      "suggested_fix": "Optional. A single `attendeeCardSummary(event.attendees)` helper in attendee-status.util.ts returning `{ status, count, suffix }` would collapse both blocks to one line per card and leave only the card-specific gate duplicated. Low value against the risk of touching two green card files - fine to defer to the follow-up that relocates the util.",
+      "refinement_packet": null
+    },
+    {
+      "id": "F-7",
+      "severity": "nit",
+      "file": "packages/web/src/grid/components/attendee-status.util.ts",
+      "line": 79,
+      "issue": "`ATTENDEE_AGGREGATE_LABEL` (:79) and `ATTENDEE_COUNT_DISPLAY_MAX` (:114) are exported but imported nowhere - not by the cards, not by the badge, not even by the util's own test, which exercises them only indirectly through attendeeSummaryLabel and attendeeCountLabel.",
+      "why_it_matters": "Nothing is broken; both are named in design.md §3's export table, so this is design-conformant. But an exported constant with no importer is an API surface the next reader has to prove is unused before changing it.",
+      "suggested_fix": "Leave as is (they are the documented public API), or have the util test assert ATTENDEE_AGGREGATE_LABEL's four entries directly the way it already does for ATTENDEE_STATUS_DOT, which turns the export into a pinned contract rather than an unused one.",
+      "refinement_packet": null
+    }
+  ],
+  "followups": [
+    {
+      "id": "FU-1",
+      "title": "Relocate attendee-status.util.ts to packages/web/src/common/utils/event/",
+      "rationale": "Already recorded as design.md R-13. The util is React-free and view-agnostic; it lives in grid/components/ only because packages/web/src/common/** was outside this run's frozen write contract, which leaves views/Forms/EventForm importing from @web/grid/components. No cycle exists today, but the direction is backwards and calcifies if left. Pure path change, zero behavior implication."
+    },
+    {
+      "id": "FU-2",
+      "title": "Browser-verify the badge's non-text contrast on live event fills (design.md R-14)",
+      "rationale": "Deferred by design: two 8px semantic-token dots (notably bg-warning) may fall below 3:1 against some calendar fills. The count glyph beside the dot and the accessible name are the stated mitigations, but neither is a contrast measurement. Bundle with F-5's narrow-card title check into one Gate 3 browser pass."
+    },
+    {
+      "id": "FU-3",
+      "title": "Fix the 11 order-dependent failures under the unsharded `bun test` runner",
+      "rationale": "Out of scope for this run and not caused by it - all 11 (sse.client degraded state, fetchDayEvents startAt skew, refreshUserMetadata force coalescing, useConnectGoogle account scoping) pass in isolation and live in files this run never touched, and the sanctioned `bun test:web` sharded runner is 2331/0 green. But `bun test` from packages/web is the command a developer reaches for first, and it is red for reasons unrelated to whatever they are working on. Worth a ticket against the cross-file state leakage."
+    },
+    {
+      "id": "FU-4",
+      "title": "Decide whether the aggregate dot should distinguish 'nobody has responded' from 'one of twelve has not'",
+      "rationale": "Not a defect - D-2's worst-case precedence is implemented exactly as ratified and its 'iff' property is what makes the accessible wording truthful. But on a large invite the aggregate is needsAction almost permanently, so the badge reads as a constant warning and stops carrying information. Revisit with usage data; any change is contained to ATTENDEE_STATUS_SEVERITY and ATTENDEE_AGGREGATE_LABEL per the design's own blast-radius note."
+    }
+  ]
+}

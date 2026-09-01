@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "run_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": {
+    "name": "opus-only-v5",
+    "version": 1,
+    "tiers": 1,
+    "models": [
+      {
+        "id": "opus",
+        "model_name": "claude-opus-5",
+        "adapter": "claude-cli",
+        "role": "all phases"
+      }
+    ],
+    "hard_cost_cap_usd": 50
+  },
+  "auth_mode": "estimated",
+  "cost_provenance_note": "auth_mode=estimated and opus-only-v5 is single-tier, so every phase ran in-session on the orchestrator's own tier. Tokens are char/3.8 estimates, cached input is booked at 0, and rates come from the policy YAML pricing block (input $5.00/1M, output $25.00/1M). These figures are NOT vendor-metered and are not comparable to a vendor-mode run of the same work.",
+  "git": {
+    "branch": "CMP-105/opus-only-v5",
+    "head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "commits": [],
+    "committed": false,
+    "note": "Nothing committed by this run. Working tree left dirty for human review, per the operator's instruction."
+  },
+  "gates": [
+    { "gate": "gate-0", "title": "Discovery Confirmation", "response": "approved", "note": "Resolved before this orchestration began; recorded in intent_brief.md" },
+    { "gate": "gate-1", "title": "Requirements Approval", "response": "approved", "note": "Q-1..Q-6 deferred to Gate 2; Q-6 (branch) confirmed" },
+    { "gate": "gate-2", "title": "Architecture Approval", "response": "approved", "note": "D-1..D-5 ratified as written, incl. D-3 sub-decision and D-5 PII line. Write contract NOT widened." },
+    { "gate": "gate-3", "title": "Security Review", "response": "approved", "note": "INFO-2 and INFO-4 ratified as accepted rulings; F-5 deferred as follow-up" },
+    { "gate": "gate-4", "title": "Final Acceptance", "response": "accepted", "note": "Plain, unconditional. Close-out run: ledger.md + ledger.json appended, CLAUDE-SDLC.md fingerprint updated, write contract deactivated, state closed. Nothing committed by operator instruction." }
+  ],
+  "status": "closed",
+  "closed_at_phase": "close_out",
+  "summary_note": "SUMMARY.md was NOT written — the harness Write guard refused it as an agent report file. The orchestrator complied rather than re-routing the write through Bash (second recorded non-recurrence of that pattern; see ledger.json process_notes PN-1-non-recurrence-2). Its narrative content was delivered in the orchestrator's final response and its structured content lives in this file's accepted_rulings, revert, followups, cost_provenance_note and rollup fields.",
+  "artifacts": {
+    "requirements": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/requirements.md",
+    "design": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/design.md",
+    "packets": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/packets.json",
+    "senior_review": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/review.json",
+    "security_review": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/security_review.md",
+    "telemetry": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/telemetry.jsonl",
+    "provenance": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/provenance.json",
+    "test_baseline": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/test-baseline.json",
+    "summary": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/SUMMARY.md",
+    "manifest": ".sdlc/runs/20260831-045511-feature-extend-attendee-avatar-badge/manifest.json"
+  },
+  "phases": [
+    { "phase": "preflight_dispatch", "status": "ok", "note": "single tier reachable; no warnings; not_selected empty" },
+    { "phase": "requirements_analysis", "status": "completed", "form": "intent-specific (delta)" },
+    { "phase": "change_plan", "status": "completed", "form": "intent-specific (delta design)", "subagent": "architect" },
+    { "phase": "plan_task_packets", "status": "completed", "packets": 8 },
+    { "phase": "execute_packets", "status": "completed", "packets_executed": 8, "refinement_packets": 3 },
+    { "phase": "senior_code_review", "status": "completed", "subagent": "senior-reviewer", "verdict": "approve_with_followups" },
+    { "phase": "test_run", "status": "completed", "form": "intent-specific (affected suites + full web package)" },
+    { "phase": "security_review", "status": "completed", "subagent": "security-reviewer", "verdict": "pass_with_notes", "scope": "changed files only" },
+    { "phase": "generate_final_report", "status": "completed" }
+  ],
+  "rollup": {
+    "events": 16,
+    "input_tokens": 511500,
+    "input_tokens_cached": 0,
+    "output_tokens": 61840,
+    "total_cost_usd": 4.1035,
+    "provenance": "estimated",
+    "by_phase": {
+      "requirements_analysis": { "events": 1, "input_tokens": 25500, "output_tokens": 4600, "cost_usd": 0.2425 },
+      "change_plan": { "events": 1, "input_tokens": 84000, "output_tokens": 12138, "cost_usd": 0.7235 },
+      "plan_task_packets": { "events": 1, "input_tokens": 45000, "output_tokens": 3000, "cost_usd": 0.3 },
+      "codegen": { "events": 6, "input_tokens": 101000, "output_tokens": 5200, "cost_usd": 0.635 },
+      "refactor": { "events": 1, "input_tokens": 15000, "output_tokens": 400, "cost_usd": 0.085 },
+      "tests": { "events": 4, "input_tokens": 82000, "output_tokens": 7100, "cost_usd": 0.5875 },
+      "senior_code_review": { "events": 1, "input_tokens": 92000, "output_tokens": 16438, "cost_usd": 0.871 },
+      "security_review": { "events": 1, "input_tokens": 67000, "output_tokens": 12964, "cost_usd": 0.6591 }
+    },
+    "by_model": {
+      "claude-opus-5": { "events": 16, "cost_usd": 4.1035, "share": 1.0 }
+    }
+  },
+  "tests": {
+    "command": "bun test:web",
+    "cwd": "repo root",
+    "baseline": { "pass": 2298, "fail": 0, "files": 302, "expect_calls": 5774 },
+    "final": { "pass": 2337, "fail": 0, "files": 303, "expect_calls": 5853 },
+    "delta_tests": 39,
+    "new_failures": 0,
+    "type_check": "clean",
+    "lint": "biome clean on all 8 touched files"
+  },
+  "files_touched": [
+    { "path": "packages/web/src/grid/components/attendee-status.util.ts", "action": "new", "loc": 120, "packets": ["tp_cg_001"] },
+    { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "action": "new", "loc": 56, "packets": ["tp_cg_003"] },
+    { "path": "packages/web/src/grid/components/attendee-status.util.test.ts", "action": "new", "loc": 198, "packets": ["tp_test_001", "tp_ref_003"] },
+    { "path": "packages/web/src/grid/grid.constants.ts", "action": "edit", "diff": "+23/-0", "packets": ["tp_cg_002", "tp_ref_001"] },
+    { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "action": "edit", "diff": "+51/-2", "packets": ["tp_cg_005"] },
+    { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "action": "edit", "diff": "+31/-2", "packets": ["tp_cg_006"] },
+    { "path": "packages/web/src/grid/components/EventCard.test.tsx", "action": "edit", "diff": "+406/-0", "packets": ["tp_test_002", "tp_ref_002"] },
+    { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "action": "edit", "diff": "+4/-11", "packets": ["tp_cg_004"] }
+  ],
+  "write_contract": {
+    "path": ".sdlc/local/write-contract.json",
+    "strict": true,
+    "widened_during_run": false,
+    "violations": 0,
+    "note": "All 8 paths fall inside packages/web/src/grid/** or packages/web/src/views/Forms/EventForm/**. Independently confirmed by the security reviewer via git status filtered for off-limits prefixes."
+  },
+  "revert": {
+    "clean_revert_available": false,
+    "reason": "provenance.json records backup_path: null for the 8 original writes (backups exist only for the 3 later refinement writes), and 3 of the 8 files are new and untracked, so git checkout alone cannot restore the pre-run state.",
+    "manual_path": [
+      "rm packages/web/src/grid/components/attendee-status.util.ts",
+      "rm packages/web/src/grid/components/AttendeeBadge.tsx",
+      "rm packages/web/src/grid/components/attendee-status.util.test.ts",
+      "git checkout -- packages/web/src/grid/grid.constants.ts packages/web/src/grid/components/TimedEventCard.tsx packages/web/src/grid/components/AllDayEventCard.tsx packages/web/src/grid/components/EventCard.test.tsx packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx"
+    ]
+  },
+  "accepted_rulings": [
+    { "id": "D-3-sub", "ruling": "Cards below the size gate draw no badge but still announce RSVP state in the aria-label. Deliberate; ratified at Gate 2 and again at Gate 3 as INFO-2." },
+    { "id": "D-5", "ruling": "No attendee email or displayName reaches the grid card DOM, including the aria-label and title. Verified on the code path and against hostile input." },
+    { "id": "INFO-4", "ruling": "The aggregate wording is a new ambient, week-long disclosure on a screenshare surface. Acknowledged and accepted per D-5's rationale." }
+  ],
+  "followups": [
+    { "id": "FU-1", "title": "Relocate attendee-status.util.ts to packages/web/src/common/utils/event/", "source": "design.md R-13, senior FU-1, security INFO-3" },
+    { "id": "FU-2", "title": "Browser-verify badge dot contrast on live event fills (design.md R-14)", "source": "senior FU-2" },
+    { "id": "FU-3", "title": "Fix 11 order-dependent failures under the unsharded bun test runner (pre-existing, not caused by this run)", "source": "senior FU-3" },
+    { "id": "FU-4", "title": "Revisit whether the aggregate dot should distinguish 'nobody responded' from 'one of twelve has not'", "source": "senior FU-4" },
+    { "id": "FU-5", "title": "Measure the title reserve at the 56px width gate before adjusting it (senior F-5) — do not blind-bump", "source": "senior F-5" },
+    { "id": "FU-6", "title": "Collapse the duplicated attendeeSuffix construction across the two cards (senior F-6)", "source": "senior F-6" },
+    { "id": "FU-7", "title": "Pin ATTENDEE_AGGREGATE_LABEL's four entries directly, or drop the unused export (senior F-7)", "source": "senior F-7" },
+    { "id": "FU-8", "title": "Browser-check whether the badge title tooltip can ever fire under pointer-events-none", "source": "security review §6 note 1" }
+  ]
+}

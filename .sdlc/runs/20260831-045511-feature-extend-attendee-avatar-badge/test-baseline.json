@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "run_id": "20260831-045511-feature-extend-attendee-avatar-badge",
+  "captured_at_phase": "pre-codegen (during change_plan)",
+  "command": "bun test:web",
+  "cwd": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "git_head": "2d81253a",
+  "branch": "CMP-105/opus-only-v5",
+  "exit_code": 0,
+  "pass": 2298,
+  "fail": 0,
+  "expect_calls": 5774,
+  "test_files": 302,
+  "duration_s": 78.72,
+  "note": "AC-6 reference point: 'no new failures' is measured against this. Pre-existing React act() warnings from SettingsModal are noise on the baseline too, not introduced by this run."
+}
