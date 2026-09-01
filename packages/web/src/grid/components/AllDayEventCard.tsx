@@ -15,18 +15,24 @@ import { theme } from "@web/common/styles/theme";
 import { useEventPalette } from "@web/common/styles/theme.util";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import {
+  aggregateAttendeeStatus,
+  attendeeSummaryLabel,
+} from "@web/grid/components/attendee-status.util";
+import {
   calendarAccentAccessibleSuffix,
   calendarAccentStyle,
   eventEdgeFocusShadow,
   eventFocusColor,
   eventFocusOutlineClass,
 } from "@web/grid/components/calendar-accent.util";
+import { MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE } from "@web/grid/grid.constants";
 import { EVENT_RESIZE_HANDLE_ATTRIBUTE } from "@web/grid/interaction/dom";
 import {
   selectEdgeForEvent,
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { AttendeeBadge } from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +81,15 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  // Same aggregate the timed card uses, from the same shared module. Width is
+  // the only meaningful gate here: the strip is a fixed EVENT_ALLDAY_HEIGHT
+  // tall, so a height gate would be dead code.
+  const attendeeStatus = aggregateAttendeeStatus(event.attendees);
+  const attendeeCount = event.attendees?.length ?? 0;
+  const showAttendeeBadge =
+    attendeeStatus !== null &&
+    !isPlaceholder &&
+    position.width >= MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE;
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -135,10 +150,18 @@ const AllDayEventCardBase = (
       : focusedEdge === "endDate"
         ? ", editing end date"
         : "";
+  // Presence of guests alone, not the width gate — a card too narrow to draw
+  // the badge still announces its RSVP state, matching the timed card.
+  const attendeeSuffix =
+    attendeeStatus === null
+      ? ""
+      : `, ${attendeeSummaryLabel(attendeeStatus, attendeeCount)}`;
   const accessibleLabel =
     (calendarIdentity
       ? `${baseAccessibleLabel}${calendarAccentAccessibleSuffix(calendarIdentity)}`
-      : baseAccessibleLabel) + edgeFocusSuffix;
+      : baseAccessibleLabel) +
+    attendeeSuffix +
+    edgeFocusSuffix;
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: All-day events are draggable/resizable blocks, not native buttons.
@@ -197,6 +220,14 @@ const AllDayEventCardBase = (
           {event.title}
           {"\u00A0"}
         </span>
+        {showAttendeeBadge && attendeeStatus !== null && (
+          <AttendeeBadge
+            className="ml-1"
+            count={attendeeCount}
+            status={attendeeStatus}
+            style={{ color: titleColor }}
+          />
+        )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}

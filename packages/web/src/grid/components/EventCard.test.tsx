@@ -2,10 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { getEventPalette } from "@web/common/styles/theme.util";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import {
+  ATTENDEE_BADGE_TITLE_RESERVE_PX,
   COMPACT_EVENT_MAX_HEIGHT,
   GRID_EVENT_TITLE_COMPACT_FONT_SIZE,
   GRID_EVENT_TITLE_COMPACT_LINE_HEIGHT,
   GRID_EVENT_TITLE_FONT_SIZE,
+  MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE,
+  MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE,
+  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,
 } from "@web/grid/grid.constants";
 import {
   initialEdgeFocusState,
@@ -15,6 +19,11 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
 
 import { AllDayEventCard } from "./AllDayEventCard";
+import { ATTENDEE_BADGE_ATTRIBUTE } from "./AttendeeBadge";
+import {
+  ATTENDEE_STATUS_DOT,
+  type AttendeeResponseStatus,
+} from "./attendee-status.util";
 import { TimedEventCard } from "./TimedEventCard";
 
 const createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
@@ -43,6 +52,15 @@ const position = {
   top: 20,
   width: 140,
 };
+
+const createAttendee = (
+  responseStatus: AttendeeResponseStatus,
+  email = `guest-${responseStatus}@compass.test`,
+  displayName: string | null = null,
+) => ({ email, displayName, responseStatus });
+
+const badgeIn = (container: HTMLElement) =>
+  container.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`);
 
 describe("EventCard", () => {
   afterEach(() => {
@@ -571,5 +589,393 @@ describe("EventCard", () => {
     expect(card).toHaveAttribute("data-edge-focus", "endDate");
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
+  });
+
+  it("announces the guest count and aggregate RSVP on a timed card", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          attendees: [
+            createAttendee("accepted"),
+            createAttendee("declined"),
+            createAttendee("needsAction"),
+          ],
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM, 3 guests, at least one declined",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("colors the timed attendee dot from the shared status module", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [createAttendee("declined")] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const badge = badgeIn(container);
+    expect(badge).not.toBeNull();
+    expect(badge).toHaveAttribute("aria-hidden", "true");
+    expect(badge?.firstElementChild?.className).toContain(
+      ATTENDEE_STATUS_DOT.declined,
+    );
+  });
+
+  it("leaves a timed card without attendees exactly as it was", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: undefined })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Planning block").style.paddingRight).toBe("");
+  });
+
+  it("leaves a timed card with an empty attendee list exactly as it was", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the attendee badge on a card too short for it but still announces the RSVP", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          attendees: [
+            createAttendee("accepted"),
+            createAttendee("declined"),
+            createAttendee("needsAction"),
+          ],
+        })}
+        motionMode="idle"
+        position={{
+          ...position,
+          height: MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE - 1,
+        }}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+    // Deliberate: the accessible text is gated on having guests, not on having
+    // room to draw a dot, so a sliver announces what a tall card announces.
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM, 3 guests, at least one declined",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the attendee badge on a card too narrow for it", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [createAttendee("declined")] })}
+        motionMode="idle"
+        position={{
+          ...position,
+          width: MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE - 1,
+        }}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+  });
+
+  it("hides the attendee badge on a drag placeholder", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="placeholder"
+        event={createEvent({ attendees: [createAttendee("accepted")] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+  });
+
+  it("shows the attendee badge on a draft card", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="draft"
+        event={createEvent({ attendees: [createAttendee("accepted")] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).not.toBeNull();
+  });
+
+  it("caps the displayed guest count while announcing the true one", () => {
+    const attendees = [
+      ...Array.from({ length: 11 }, (_, index) =>
+        createAttendee("accepted", `guest-${index}@compass.test`),
+      ),
+      createAttendee("tentative"),
+    ];
+
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)?.textContent).toBe("9+");
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM, 12 guests, at least one tentative",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("reserves title room for the timed attendee badge", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [createAttendee("accepted")] })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.getByText("Planning block").style.paddingRight).toBe(
+      `${ATTENDEE_BADGE_TITLE_RESERVE_PX}px`,
+    );
+  });
+
+  it("announces the guest count and aggregate RSVP on an all-day card", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [createAttendee("accepted"), createAttendee("accepted")],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "All-day event: Conference, 2 guests, all accepted",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the all-day attendee badge beside a truncating title", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [createAttendee("needsAction")],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const badge = badgeIn(container);
+    expect(badge).not.toBeNull();
+    expect(badge?.firstElementChild?.className).toContain(
+      ATTENDEE_STATUS_DOT.needsAction,
+    );
+    expect(container.querySelector("span.truncate")).not.toBeNull();
+  });
+
+  it("leaves an all-day card without attendees exactly as it was", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: undefined,
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "All-day event: Conference" }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the all-day attendee badge below the width gate but still announces the RSVP", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [createAttendee("declined")],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={{
+          ...position,
+          width: MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE - 1,
+        }}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+    // Deliberate, same as the timed card: the accessible text is gated on
+    // having guests, not on having room to draw a dot.
+    expect(
+      screen.getByRole("button", {
+        name: "All-day event: Conference, 1 guest, declined",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the all-day attendee badge on a placeholder", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [createAttendee("accepted")],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={true}
+        position={position}
+      />,
+    );
+
+    expect(badgeIn(container)).toBeNull();
+  });
+
+  it("shows the attendee badge at exactly the minimum height", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [createAttendee("declined")] })}
+        motionMode="idle"
+        position={{ ...position, height: MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE }}
+      />,
+    );
+
+    expect(badgeIn(container)).not.toBeNull();
+  });
+
+  it("shows the attendee badge at exactly the minimum width", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ attendees: [createAttendee("declined")] })}
+        motionMode="idle"
+        position={{ ...position, width: MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE }}
+      />,
+    );
+
+    expect(badgeIn(container)).not.toBeNull();
+  });
+
+  it("shows the all-day attendee badge at exactly the minimum width", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [createAttendee("declined")],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={{ ...position, width: MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE }}
+      />,
+    );
+
+    expect(badgeIn(container)).not.toBeNull();
+  });
+
+  it("keeps attendee identities off the timed card entirely", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          attendees: [
+            createAttendee("declined", "ahab@pequod.test", "Captain Ahab"),
+            createAttendee("accepted", "starbuck@pequod.test", "Starbuck"),
+          ],
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    // The grid is a screenshare-and-screenshot surface; only the count and the
+    // aggregate status may reach it. The form remains the deliberate place
+    // where attendee identities are shown.
+    expect(container.innerHTML).not.toContain("pequod.test");
+    expect(container.innerHTML).not.toContain("Captain Ahab");
+    expect(container.innerHTML).not.toContain("Starbuck");
+    // Asserted alongside, so the guard cannot be satisfied by rendering nothing.
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM, 2 guests, at least one declined",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps attendee identities off the all-day card entirely", () => {
+    const { container } = render(
+      <AllDayEventCard
+        event={createEvent({
+          attendees: [
+            createAttendee("tentative", "queequeg@pequod.test", "Queequeg"),
+            createAttendee("accepted", "ishmael@pequod.test", "Ishmael"),
+          ],
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(container.innerHTML).not.toContain("pequod.test");
+    expect(container.innerHTML).not.toContain("Queequeg");
+    expect(container.innerHTML).not.toContain("Ishmael");
+    expect(
+      screen.getByRole("button", {
+        name: "All-day event: Conference, 2 guests, at least one tentative",
+      }),
+    ).toBeInTheDocument();
   });
 });

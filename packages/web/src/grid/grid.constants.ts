@@ -27,6 +27,29 @@ export const GRID_EVENT_TITLE_COMPACT_FONT_SIZE = "10px";
 export const GRID_EVENT_TITLE_COMPACT_LINE_HEIGHT = "1.1";
 export const MIN_EVENT_HEIGHT_FOR_TIME_LABEL = 36;
 export const MIN_EVENT_WIDTH_FOR_TIME_LABEL = 90;
+// Attendee badge: 10px tall (an 8px `size-2` dot inside a `text-[10px]
+// leading-none` line box), pinned to the card's top-right corner. 24 is where
+// it stops colliding with the repeat glyph: the badge at top-0.5 occupies
+// y 2..12, the 10px EventRepeatIcon at bottom-0.5 occupies y H-12..H-2, and
+// both are anchored to right-1, so non-overlap needs H >= 24. Still above
+// COMPACT_EVENT_MAX_HEIGHT so a 15-minute sliver never carries it (a sliver has
+// room for one cramped title line and nothing else), and below the ~31px a
+// 30-minute event renders at, so an ordinary half-hour meeting does.
+export const MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 24;
+// The badge is ~22px wide plus a 4px right offset; below this the title has no
+// usable room left. Lower than MIN_EVENT_WIDTH_FOR_TIME_LABEL on purpose — on a
+// narrow card the attendee signal is worth more than the time label, which the
+// user can infer from the card's vertical position.
+export const MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE = 56;
+// All-day strips are a fixed EVENT_ALLDAY_HEIGHT tall, so width is the only
+// meaningful gate. Higher than the timed card's because the all-day badge is
+// in-flow and takes its room directly out of a single-line truncating title.
+export const MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE = 72;
+// Horizontal room the timed title reserves for the badge: the badge (~22px)
+// plus its right-1 offset (4px), rounded up to the 4px spacing step. Applied to
+// the title span only — applying it to the content wrapper would inset the time
+// label too and clip it at MIN_EVENT_WIDTH_FOR_TIME_LABEL.
+export const ATTENDEE_BADGE_TITLE_RESERVE_PX = 28;
 export const EVENT_WIDTH_MINIMUM = 80;
 // Narrowest a day column can get before the week view drops a day instead;
 // wider than EVENT_WIDTH_MINIMUM so titles/time labels stay legible.

@@ -18,6 +18,10 @@ import { type GridEvent } from "@web/common/types/web.event.types";
 import { getTimesLabel } from "@web/common/utils/datetime/web.date.util";
 import { getLineClamp } from "@web/common/utils/grid/grid.util";
 import {
+  aggregateAttendeeStatus,
+  attendeeSummaryLabel,
+} from "@web/grid/components/attendee-status.util";
+import {
   calendarAccentAccessibleSuffix,
   calendarAccentStyle,
   eventEdgeFocusShadow,
@@ -25,6 +29,7 @@ import {
   eventFocusOutlineClass,
 } from "@web/grid/components/calendar-accent.util";
 import {
+  ATTENDEE_BADGE_TITLE_RESERVE_PX,
   COMPACT_EVENT_MAX_HEIGHT,
   GRID_EVENT_TIME_LABEL_FONT_SIZE,
   GRID_EVENT_TIME_LABEL_LINE_HEIGHT,
@@ -33,7 +38,9 @@ import {
   GRID_EVENT_TITLE_COMPACT_LINE_HEIGHT,
   GRID_EVENT_TITLE_FONT_SIZE,
   GRID_EVENT_TITLE_LINE_HEIGHT,
+  MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE,
   MIN_EVENT_HEIGHT_FOR_TIME_LABEL,
+  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,
   MIN_EVENT_WIDTH_FOR_TIME_LABEL,
 } from "@web/grid/grid.constants";
 import {
@@ -46,6 +53,7 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import { AttendeeBadge } from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -124,6 +132,24 @@ const TimedEventCardBase = (
     (isDraft || !isInPast) &&
     position.height >= MIN_EVENT_HEIGHT_FOR_TIME_LABEL &&
     position.width >= MIN_EVENT_WIDTH_FOR_TIME_LABEL;
+
+  // Worst-case aggregate over the guest list, or null when there are no
+  // guests to summarize. One O(n) reduce over an array already in memory —
+  // no hook, no memo, no store read — and derived from `event` alone, which
+  // is what keeps GridEventMemo's reference comparison correct.
+  const attendeeStatus = aggregateAttendeeStatus(event.attendees);
+  const attendeeCount = event.attendees?.length ?? 0;
+  // Gated on the card's rendered height, not its duration (unlike the repeat
+  // icon): the constraint here is genuinely spatial — is there room in the
+  // top-right corner — so it must read the same pixels the corner is measured
+  // in. A placeholder is a drag ghost at half opacity; a status dot on a ghost
+  // reads as a rendering artifact. A draft still shows one, matching the
+  // repeat icon, so a draft cloned from a meeting previews its guests.
+  const showAttendeeBadge =
+    attendeeStatus !== null &&
+    !isPlaceholder &&
+    position.height >= MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE &&
+    position.width >= MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE;
 
   // Clamp the title against the height the label leaves behind, not the whole
   // card. Clamping against the full height lets a wrapping title occupy every
@@ -221,6 +247,13 @@ const TimedEventCardBase = (
     overflowWrap: "anywhere",
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: lineClamp,
+    // Reserve the badge's corner on the title only. Putting this on the shared
+    // content wrapper would inset the time label too, and at the label's own
+    // 90px gate width its nowrap text would be clipped by the card's
+    // overflow-hidden root.
+    paddingRight: showAttendeeBadge
+      ? ATTENDEE_BADGE_TITLE_RESERVE_PX
+      : undefined,
   };
 
   const timeLabelStyle: CSSProperties = {
@@ -262,10 +295,20 @@ const TimedEventCardBase = (
       : focusedEdge === "endDate"
         ? ", editing end time"
         : "";
+  // Carried on presence of guests alone, deliberately not on showAttendeeBadge:
+  // RSVP state is not a function of pixel height, so a 15-minute sliver
+  // announces the same thing a 2-hour block does even though it draws no dot.
+  // Same split the recurring prefix already makes against showRepeatIcon.
+  const attendeeSuffix =
+    attendeeStatus === null
+      ? ""
+      : `, ${attendeeSummaryLabel(attendeeStatus, attendeeCount)}`;
   const accessibleLabel =
     (calendarIdentity
       ? `${samplePrefix}${baseAccessibleLabel}${calendarAccentAccessibleSuffix(calendarIdentity)}`
-      : `${samplePrefix}${baseAccessibleLabel}`) + edgeFocusSuffix;
+      : `${samplePrefix}${baseAccessibleLabel}`) +
+    attendeeSuffix +
+    edgeFocusSuffix;
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: Grid events are draggable/resizable blocks, not native buttons.
@@ -360,6 +403,14 @@ const TimedEventCardBase = (
           </>
         )}
       </div>
+      {showAttendeeBadge && attendeeStatus !== null && (
+        <AttendeeBadge
+          className="absolute top-0.5 right-1"
+          count={attendeeCount}
+          status={attendeeStatus}
+          style={{ color: contentColor }}
+        />
+      )}
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
     </div>
   );
