@@ -152,6 +152,14 @@
     "telemetry_file_total_usd": 4.2608,
     "note": "Run-attributable cost is $4.2588 across 16 events. telemetry.jsonl also holds 2 pre-check smoke events (pass='pre-check-smoke', phase='docs', $0.0019) written before this run began; they make the file total $4.2608."
   },
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "multiday_drag_week_allday_row": "WORKS -- press-and-drag across day columns in the Week all-day row creates one spanning all-day event",
+    "past_week_edge": "Draft does not extend beyond the rendered window, per FR-4: resolveAllDayCreateRange deliberately does no clamping of its own and delegates to useGridCoordinates.getVisibleDateIndexByX. Same observed behaviour as the CMP-101/opus-only and opus-plus-sonnet arms.",
+    "net": "PASS -- the feature works."
+  },
   "reviews": {
     "senior": {
       "verdict": "approve-with-nits",
