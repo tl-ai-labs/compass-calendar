@@ -149,6 +149,14 @@
     "delta": "+29 tests, +3 files, 0 failures",
     "verified_independently_by_main_session": true
   },
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "multiday_drag_week_allday_row": "WORKS -- press-and-drag across day columns in the Week all-day row creates one spanning all-day event",
+    "past_week_edge": "Draft does not extend beyond the rendered window, per FR-1/AC-6. Note this arm clamps inside the pure range function itself (to [startOfView, endOfView]) rather than delegating to useGridCoordinates.getVisibleDateIndexByX as the opus-flash-v37 arm does by design, so two clamps are in play; no disagreement between them was observed. Same net behaviour as all three other CMP-101 arms.",
+    "net": "PASS -- the feature works."
+  },
   "reviews": {
     "senior": "approve_with_comments (1 minor, adjudicated not-fixed)",
     "security": "PASS (no follow-ups)"
