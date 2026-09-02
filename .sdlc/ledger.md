@@ -344,3 +344,12 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+**Manual browser check performed 2026-09-02 (human, `bun run dev:web` @ `localhost:9080`, anonymous /
+IndexedDB mode) — PASS.** Press-and-drag across day columns in the Week all-day row creates one
+spanning all-day event, matching the `CMP-101/opus-only` arm's observed behaviour. Dragging past the
+week edge does not extend the draft beyond the rendered window. Note that unlike the `opus-only` arm,
+which specified that clamp explicitly as AC-10, **this arm never specified edge behaviour at all** —
+its requirements do not mention the edge and `resolveAllDayCreateRange` carries no clamp arithmetic,
+so the matching behaviour is emergent from the shared column-index lookup rather than designed. That
+is a comparison data point, not a defect. The multi-day drag itself works as intended.

@@ -765,6 +765,14 @@
       "auth_mode": "estimated",
       "ticket": "CMP-101",
       "status": "accepted",
+      "manual_verification_result": {
+        "performed_by": "human",
+        "date": "2026-09-02",
+        "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+        "multiday_drag_week_allday_row": "WORKS -- press-and-drag across day columns in the Week all-day row creates one spanning all-day event",
+        "past_week_edge": "Draft does not extend beyond the rendered window. Same observed behaviour as the CMP-101/opus-only arm, but NOT specified here: this arm's requirements never mention edge behaviour and resolveAllDayCreateRange has no clamp arithmetic, so it is emergent rather than designed. Comparison data point, not a defect.",
+        "net": "PASS -- the feature works."
+      },
       "commit_strategy": "NONE at close-out - nothing committed, staged or pushed, no branch operation. The human's manual in-app verification comes first. Close-out touched .sdlc/ bookkeeping and the ledger only.",
       "anchor_commit": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
       "branch": "CMP-101/opus-plus-sonnet",
