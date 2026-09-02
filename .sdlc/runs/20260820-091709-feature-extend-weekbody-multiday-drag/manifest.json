@@ -138,6 +138,14 @@
     "senior": "CHANGES REQUIRED -> remediated (RP-001..RP-004), 6/6 mutants now killed",
     "security": "PASS WITH NOTES - no critical/high/medium introduced"
   },
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "multiday_drag_week_allday_row": "WORKS -- press-and-drag across day columns in the Week all-day row creates one spanning all-day event",
+    "past_week_edge": "Drag past the week edge does not extend the draft beyond the visible window; it clamps to the last rendered column. This matches AC-10 and is not a defect -- mid-drag week paging lives in views/Week/interaction/adapter/**, which requirements.md 2.3 put out of scope for this run.",
+    "net": "PASS -- the feature works as specified."
+  },
   "write_contract_amendments": 1,
   "generated_at": "2026-08-20T10:46:00Z",
   "finalized": true,
