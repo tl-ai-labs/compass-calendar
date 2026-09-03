@@ -139,6 +139,28 @@
     "lint_changed_files": "0 warnings",
     "regressions": 0
   },
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "net": "FAIL on the primary interaction. The join affordance renders correctly and works by keyboard via Enter, but a plain mouse click does not open the meeting -- it opens the event details panel -- and Space scrolls the page instead of activating the link. The feature's headline promise, one-click join, does not work as shipped on this arm.",
+    "checks": {
+      "MV-1 glyph renders on a conference-bearing event": "PASS",
+      "MV-2 no glyph on events without a conference": "PASS",
+      "MV-3 mouse click on the glyph opens the meeting": "FAIL -- opens the event details panel instead; the meeting never opens",
+      "MV-4 Enter on the focused glyph opens the meeting": "PASS -- the keyboard path is unaffected",
+      "MV-5 Space on the focused glyph activates the link": "FAIL -- scrolls the page instead",
+      "MV-6 repeat and join icons coexist without overlap": "PASS",
+      "MV-7 drafts and placeholders render no glyph": "PASS",
+      "MV-8 resize handles still grabbable": "NOT TESTED -- deliberately skipped; a resize is a write, and in local mode any write destroys the conference (see the baseline bug below), which would have cost a reseed for no new information"
+    },
+    "card_size_ruled_out": "The click was first tried on 'Morning standup' (30 min, a short card) and the failure was initially suspected to be a small-target problem. It was then re-tried after adding a conference to a 1-hour timed event, a 2-hour timed event, and an all-day event -- the last of which also exercised the AllDayEventCard path for the first time on any arm. The click fails identically in every case, so card height and hit-target size are not the cause.",
+    "root_cause_of_MV-3": "This run changed 4 files, all under grid/components/. It did not touch grid/interaction/dom.ts or the Week/Day interaction adapters, so there is no opt-out telling the interaction layer to decline a target over the affordance. PointerCaptureBoundary.tsx:107 claims pointerdown via onPointerDownCapture and calls preventDefault + stopPropagation on ownership (:199-200). Capture runs root to target, so the boundary resolves the card before the anchor is ever reached -- the anchor's own onMouseDown stopPropagation cannot help, because it defends a phase that has already passed. Confirmed by grep on this branch: no interactive-affordance attribute exists anywhere in the interaction layer.",
+    "root_cause_of_MV-5": "EventJoinIcon.tsx's onKeyDown calls stopPropagation for ' ' but never preventDefault and never .click(). Anchors do not activate on Space natively, so the card is stopped from acting, the link does not activate, and the browser's default Space-scrolls-the-page behaviour takes over. This is worse than a no-op.",
+    "ab_comparison": "Identical mouse-path failure to the CMP-103/opus-plus-flash-v37-t2 arm (run 20260830-164154), which also omitted the interaction-layer opt-out; on both, keyboard Enter works while the mouse click opens the panel. The CMP-103/opus-plus-sonnet arm (run 20260825-220640) is the only CMP-103 arm where the mouse click works, and it is also the only one that widened its allowlist to reach grid/interaction/dom.ts and both view adapters -- a scope decision its Gate 2 made after the shepherd refuted the original design. This arm is marginally worse than t2 on the keyboard axis, because its Space handling scrolls the page rather than doing nothing.",
+    "not_recorded_as_a_defect": "Press-dragging from the glyph reschedules the event. This was checked and observed, but it is NOT logged as a finding: no requirement in this run covers it, and it follows directly from the same mousedown-reaches-the-card fact that MV-3 already records. Counting it separately would double-count one defect as two. Noted here only so a later reader does not re-derive it as a new issue.",
+    "pre_existing_bug_encountered": "Not caused by this run, and not a finding against it: in local / anonymous mode any move, resize or edit persists content wholesale through LocalEventRepository.replace with no merge against the existing record, permanently destroying conference, organizer and attendees. The join glyph then disappears for good and only a reseed restores it. Recorded in full as MV-01 on run 20260822-062945 (branch CMP-103/opus-only-v5); still unticketed. Relevant here only because it makes every write-based check destructive and forces a reseed between passes."
+  },
   "gates": {
     "gate-1": "approved",
     "gate-2": "approved",
