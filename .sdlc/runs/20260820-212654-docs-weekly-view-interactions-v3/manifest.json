@@ -228,6 +228,22 @@
     },
     "corrections_applied_post_preview": 2
   },
+  "manual_verification_result": {
+    "performed_by": "assistant",
+    "date": "2026-09-02",
+    "method": "Source-of-truth fact-check, NOT a browser check. A docs run has no rendered surface to exercise, so every factual claim in the added README section was read back against the code it describes. Both relative links were resolved with `git cat-file -e` on this branch, not assumed from main.",
+    "net": "PASS -- no factual errors, and this arm is the most careful of the four about the difference between what a user does and what the app then does.",
+    "claims_checked": {
+      "'Drag an event to move it to another day'": "TRUE -- both timed and all-day drags resolve a target day column in week-interaction.adapter.ts.",
+      "'drag the edge of an all-day event along the strip at the top of the week to stretch it across several days'": "TRUE, and the most physically accurate phrasing of the three arms that describe this. AllDayEventCard mounts two scaler handles wired to onScalerMouseDown with 'startDate' and 'endDate', and the week adapter implements allDayResize / allDayResizeEnd. 'The edge of an all-day event' and 'the strip at the top of the week' both name real, findable things -- contrast the opus-plus-sonnet arm's 'grab handle', which is not a term the UI or the code uses anywhere.",
+      "'Edit or delete one and the change lands on just that occurrence -- a toast then offers to widen it to this one and everything after it, or to the entire series'": "TRUE and exactly right, including the ordering. recurrence-scope.toast.tsx applies the single-occurrence change first, then renders 'Deleted/Changed <name>' with 'Apply to series?' and exactly two actions: Following and All. The sentence's two widening options match the toast's two buttons one-for-one, and 'lands on just that occurrence' correctly conveys that the narrow change is already committed rather than pending. The app also has an ask-first path (RecurrenceScopeDialog.tsx, three options) reached from the form and sidebar; this section describes the grid path, which is right for its heading.",
+      "'give a single event its own color from the event form and it shows up on that event's chip in the grid'": "TRUE -- colour is set in the event form and drives the card palette.",
+      "'Leave it alone and the event just follows your calendar's usual look'": "TRUE -- a null colour renders as 'Calendar default' (theme.util.ts:53) and the card falls back to the calendar's colouring. This arm conveys the default behaviour in prose without asserting a count; the 11-slot enum (EventColorSlotSchema) is real, so the sibling arms' '11 colors' is also true -- this one simply chose not to put a number in front of the reader."
+    },
+    "links_resolved": "Both relative links resolve on this branch: docs/frontend/week-drag-interaction.md and docs/acceptance/recurring-events.md. The second is described as 'where that behavior gets verified case by case', which is accurate -- it is an acceptance runbook, not a feature explainer.",
+    "scope_note": "This run also added 3 lines to .gitignore (the AI-SDLC delegated-worker session cache path). Unrelated to documentation content and correct as written.",
+    "not_verified": "Nothing was exercised in a running browser. These are code-to-prose consistency findings; a claim can be true of the code and still read poorly in practice."
+  },
   "outcome": "completed",
   "finalized": true,
   "acceptance": {
