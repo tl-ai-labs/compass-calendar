@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "run_id": "20260903-105448-feature-extend-oneclick-join",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/grid/interaction/dom.ts",
+      "existed_before": true,
+      "sha_before": "sha256:b981427edabc82da5940d909966a9492d2c76540e6540a94bfc92071f9318687",
+      "sha_after": "sha256:29ab99fc6c1d7619dec8293cb0ce6cf2b628b7a04e598a6133ddc6706cbe479b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_001",
+      "written_at": "2026-09-03T11:58:31.619Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:ebe2caf0dc443f8995eea82545301d4e2dec56c2de75284be28e8476175bfb4a",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-09-03T17:24:25.935Z",
+      "note": "sha_after refreshed after Gate-3 fixes"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+      "existed_before": true,
+      "sha_before": "sha256:8888bcb034fd32365c0be7088c28f56c00ae4ea1b06e321fdcc1e23631e85bcc",
+      "sha_after": "sha256:861ef30be0003f441c7982e7de98d1e3c2b41efc84a98fa5b33064643baa12b9",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_007",
+      "written_at": "2026-09-03T12:00:17.347Z"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+      "existed_before": true,
+      "sha_before": "sha256:267576804458298f5fcfd5af950ef6192d613585bc387ed755eaf241cc82d71d",
+      "sha_after": "sha256:85878ec39f313e038d054e8bdac0a4f317d2dd54856954b49075859e1038b033",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_008",
+      "written_at": "2026-09-03T12:00:17.433Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/TimedEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:4d5ccf04a2bef57e58f57d94ddfc3edef9c920c800463d9bb5e210cdd9c09882",
+      "sha_after": "sha256:34542e8a3ed6d40d3032f47a17b7c0d450cbd483b903fbb504b9c0e993ffacc2",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_004",
+      "written_at": "2026-09-03T12:55:59.276Z",
+      "note": "sha_after refreshed by orchestrator after post-review blocker fix; sha_before/existed_before untouched"
+    },
+    {
+      "path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5d2cefc1f33298cd0734e706ac130892b3d75066ce9b54b17835b8756e7d2ca8",
+      "sha_after": "sha256:c4a80ed4f2079bc469f1a115a87671ffec42cf6252bd91fa44f9e06414287d01",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_005",
+      "written_at": "2026-09-03T12:02:11.344Z"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventJoinIcon.test.tsx",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:7d748ee887ac0894c6820609ac7b45e133c4a987214b37de8dc5b5282439b1a8",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_ts_003",
+      "written_at": "2026-09-03T17:24:25.936Z",
+      "note": "sha_after refreshed after Gate-3 fixes"
+    },
+    {
+      "path": "packages/web/src/grid/components/EventCard.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:5c781719ce02cc7a3f522cfb7486af383d729eaea6be507c6f2ebcc482143c36",
+      "sha_after": "sha256:4269ecdaea4f078b0049a3c8dc88bad6345022445dc766af72226d81efaada3b",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_ts_006",
+      "written_at": "2026-09-03T17:24:25.936Z",
+      "note": "sha_after refreshed after Gate-3 fixes"
+    },
+    {
+      "path": "e2e/utils/event-test-utils.ts",
+      "existed_before": true,
+      "sha_before": "sha256:11fac7745555aac6506424f12b1453f4852d28c17cfd7b2b4fbfaabfd195f133",
+      "sha_after": "sha256:bd6f073725d142776db560a11a3c8fe21226891a4e1484dccc2eeab75ec3e0b7",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_ts_009",
+      "written_at": "2026-09-03T12:20:58.869Z"
+    },
+    {
+      "path": "e2e/timed/event-join.spec.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:eb43a419cbc439daa7c9ab8fbd1034cd3e1c1d375bb6490110385b1871911be8",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_ts_010",
+      "written_at": "2026-09-03T17:24:25.936Z",
+      "note": "sha_after refreshed after Gate-3 fixes"
+    },
+    {
+      "path": "e2e/allday/event-join.spec.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:5e110f4ae7a03b196ac45f9d6d4cf4dd35a94654932024382a199e0ee386eac8",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_ts_011",
+      "written_at": "2026-09-03T17:24:25.936Z",
+      "note": "sha_after refreshed after Gate-3 fixes"
+    },
+    {
+      "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5c05d3a2d11a5a141885c2985310fe180fc39e32595ef3581c7b6200e77b5ff8",
+      "sha_after": "sha256:e72a7faf68c82ad62ab2c64e77cb59637234946e56fec59c7c9db81aa4d23d27",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_ts_012",
+      "written_at": "2026-09-03T17:24:25.884Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.test.ts",
+      "existed_before": true,
+      "sha_before": "sha256:d7032eb329e2ffa2b5745f3da0f76bf067cce332dfaa0ea27dae73d950abbead",
+      "sha_after": "sha256:bf0e987a2d5e9c0c4bacb5567f89d1296f7bc2654ed876f3b320b74740e6363d",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_ts_013",
+      "written_at": "2026-09-03T17:24:25.819Z"
+    }
+  ]
+}

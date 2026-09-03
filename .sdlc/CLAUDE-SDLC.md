@@ -431,3 +431,36 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **The mechanical tier can cost MORE per packet than the premium tier (high, open).** Run
+    `20260903-105448-feature-extend-oneclick-join` (`opus-plus-flash-v37`, SDK door): mechanical
+    `flash-agsdk-worker` $0.654/packet vs `opus` $0.305/packet, and 15x the premium *source* packets
+    at $0.042. Two causes. (a) **The tiering gap**: the `codegen` rule matches a fixed `task_type`
+    allowlist that omits the brownfield primitives `new_file_add` / `existing_file_edit`, so every
+    source packet falls through to `default: opus` and **codegen never reaches the cheap tier at
+    all** — only `phase: tests` matches. (b) **Agent-door exploration**: 122k-400k input tokens for a
+    packet whose output is one file; priciest single packet $1.00 for one Playwright spec. Do not
+    relabel task types to force routing — that fabricates the comparison. Fix the policy's
+    `codegen` task_type list instead.
+
+31. **The antigravity worker cannot be gated by the write-contract hook, by construction (high, open).**
+    Same run, observed directly: it writes through its own agent session and never invokes
+    `Write`/`Edit`, so the `PreToolUse` matcher **never fires**. Its writes landed on allowlisted
+    paths only because the packet instruction said so. It also wrote **zero provenance** entries and
+    wrote into `build/**`, which is explicitly off-limits (gitignored and pre-existing, so nothing was
+    corrupted — but the contract was not honoured). **Consequence: `/mmo:revert` is not trustworthy on
+    any run that used this door. Use plain `git` and verify with `git status --porcelain`.**
+
+32. **`write-provenance.mjs` is single-shot per file (medium, open).** Same run: once `--after` closes
+    a record, a second `--after` for that path is refused with "no matching --before record", so
+    `sha_after` silently goes stale after any later edit — which is exactly what happens when a review
+    phase sends you back into a file. A stale `sha_after` makes revert treat the file as
+    externally modified. Refresh by hand at close-out and re-verify every record against disk.
+
+33. **A 20px-tall all-day chip cannot host an adjacent interactive target (medium, PRODUCT bug, open).**
+    Same run: axe `target-size` (WCAG 2.5.8) fails on the **card** as soon as any interactive target
+    overlaps or abuts it, because the chip is shorter than the 24px minimum and the neighbour kills the
+    spacing exception. A bare chip passes; 16px, 20px and 24px controls all fail; only placing the
+    control fully outside the chip passes. Pre-existing constraint of `EVENT_ALLDAY_HEIGHT = 20`,
+    **exposed, not caused**, by the join feature. Also note `target-size` ships `enabled: false` but
+    **does run** under `expectNoAxeViolations`, because tag-based `runOnly` never consults that flag.

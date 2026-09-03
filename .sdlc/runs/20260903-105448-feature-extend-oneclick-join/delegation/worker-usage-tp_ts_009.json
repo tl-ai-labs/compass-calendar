@@ -1,0 +1,225 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 1050723,
+    "cached_content_token_count": 761276,
+    "candidates_token_count": 12147,
+    "thoughts_token_count": 8815,
+    "total_token_count": 1071685,
+    "service_tier": null
+  },
+  "tool_call_count": 22,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/types/local-event.record.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/types/local-event.record.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/core/src/types/event.contracts.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/core/src/types/event.contracts.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "search_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+        "query": "getRandomValues",
+        "num_results": "0"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260903-105448-feature-extend-oneclick-join/delegation/worker-task-tp_ts_009.md",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260903-105448-feature-extend-oneclick-join/delegation/worker-task-tp_ts_009.md",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun run lint || bun x biome check e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x biome check e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x tsc --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+        "query": "*tsconfig*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x tsc -p e2e/tsconfig.json --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git diff e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status --short",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x biome check e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x biome format --write e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git diff e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x biome check e2e/utils/event-test-utils.ts && bun x tsc -p e2e/tsconfig.json --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "grep -c \"^export \" e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "grep \"^export \" e2e/utils/event-test-utils.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/e2e/utils/event-test-utils.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "node -e '\nconst fs = require(\"fs\");\nconst content = fs.readFileSync(\"e2e/utils/event-test-utils.ts\", \"utf8\");\nconst output = {\n  file_content: content,\n  files_written: [\"e2e/utils/event-test-utils.ts\"]\n};\nconsole.log(JSON.stringify(output));\n'",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_content\":\"import { expect, type Locator, type Page } from \\\"@playwright/test\\\";\\n\\nconst LOCAL_DB_NAME = \\\"compass-local\\\";\\n\\n// LocalEventRecord (B13) nests the event under `.event`; title lives at\\n// `.event.content.title` (kind \\\"details\\\") and the schedule is a discriminated\\n// union (\\\"timed\\\"/\\\"allDay\\\" both use start/end) rather than flat\\n// startDate/endDate columns on the row.\\nexport const getSavedEventsByTitle = (page: Page, title: string) =>\\n  page.evaluate(async (eventTitle) => {\\n    const db = await new Promise<IDBDatabase>((resolve, reject) => {\\n      const request = indexedDB.open(\\\"compass-local\\\");\\n\\n      request.onerror = () => reject(request.error);\\n      request.onsuccess = () => resolve(request.result);\\n    });\\n\\n    type LocalEventRecord = {\\n      event: {\\n        content: { kind: string; title?: string };\\n        schedule: { kind: \\\"timed\\\" | \\\"allDay\\\"; start: string; end: string };\\n      };\\n    };\\n\\n    try {\\n      const records = await new Promise<LocalEventRecord[]>(\\n        (resolve, reject) => {\\n          const transaction = db.transaction(\\\"events\\\", \\\"readonly\\\");\\n          const request = transaction.objectStore(\\\"events\\\").getAll();\\n\\n          request.onerror = () => reject(request.error);\\n          request.onsuccess = () => resolve(request.result);\\n        },\\n      );\\n\\n      return records\\n        .filter(\\n          (record) =>\\n            record.event.content.kind === \\\"details\\\" &&\\n            record.event.content.title === eventTitle,\\n        )\\n        .map(({ event }) => ({\\n          title: event.content.title,\\n          startDate: event.schedule.start,\\n          endDate: event.schedule.end,\\n        }));\\n    } finally {\\n      db.close();\\n    }\\n  }, title);\\n\\n/** Rendered week day-label dates in column order, as local YYYY-MM-DD. */\\nexport const getVisibleDayDates = (page: Page) =>\\n  page.evaluate(() =>\\n    [...document.querySelectorAll(\\\"#weekGridScroller [title]\\\")]\\n      .filter((node): node is HTMLElement => node instanceof HTMLElement)\\n      .map((node) => node.title)\\n      // Day labels use the compact YYYYMMDD title format; skips e.g. the now line\\n      .filter((title) => /^\\\\d{8}$/.test(title))\\n      .map(\\n        (title) =>\\n          `${title.slice(0, 4)}-${title.slice(4, 6)}-${title.slice(6, 8)}`,\\n      ),\\n  );\\n\\n// Shared timeout for form operations - use a single reasonable timeout instead of short retries\\nconst FORM_TIMEOUT = 10000;\\n\\n/**\\n * Dispatch a keyboard shortcut to the document.\\n * Uses the same event properties as the app's internal pressKey utility.\\n */\\nconst pressShortcut = async (page: Page, key: string) => {\\n  await page.evaluate((shortcut) => {\\n    document.dispatchEvent(\\n      new KeyboardEvent(\\\"keydown\\\", {\\n        key: shortcut,\\n        bubbles: true,\\n        cancelable: true,\\n        composed: true,\\n      }),\\n    );\\n    document.dispatchEvent(\\n      new KeyboardEvent(\\\"keyup\\\", {\\n        key: shortcut,\\n        bubbles: true,\\n        cancelable: true,\\n        composed: true,\\n      }),\\n    );\\n  }, key);\\n};\\n\\n/**\\n * The header's date title doubles as the Day/Week switcher trigger, so it's\\n * the sole button inside the page's one <h1> regardless of which view or\\n * date it displays.\\n */\\nexport const getViewSwitcherButton = (page: Page) =>\\n  page.getByRole(\\\"heading\\\", { level: 1 }).getByRole(\\\"button\\\");\\n\\nconst ensureWeekView = async (page: Page) => {\\n  if (page.url().includes(\\\"/week\\\")) {\\n    return;\\n  }\\n\\n  const viewButton = getViewSwitcherButton(page);\\n  await viewButton.waitFor({ state: \\\"visible\\\", timeout: 5000 });\\n  await viewButton.click();\\n  await page.getByRole(\\\"option\\\", { name: \\\"Week\\\" }).click();\\n  await page.waitForURL((url) => url.pathname.startsWith(\\\"/week\\\"), {\\n    timeout: 10000,\\n  });\\n};\\n\\nconst blurActiveElement = async (page: Page) => {\\n  await page.evaluate(() => {\\n    if (document.activeElement instanceof HTMLElement) {\\n      document.activeElement.blur();\\n    }\\n  });\\n};\\n\\n/** Returns a locator for the form's title input */\\nconst getFormTitleInput = (page: Page) =>\\n  page.getByRole(\\\"form\\\").getByPlaceholder(\\\"Title\\\");\\n\\nconst waitForCalendarShell = async (page: Page) => {\\n  await getViewSwitcherButton(page).waitFor({\\n    state: \\\"visible\\\",\\n    timeout: 15000,\\n  });\\n};\\n\\nconst clearClientAuthState = async (page: Page) => {\\n  await page.evaluate(() => {\\n    localStorage.removeItem(\\\"compass.auth\\\");\\n  });\\n};\\n\\nexport const createEventTitle = (prefix: string) =>\\n  `${prefix} ${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;\\n\\nexport const updateEventTitle = (prefix: string) =>\\n  `${prefix} Updated ${Date.now()}`;\\n\\nexport const prepareCalendarPage = async (page: Page) => {\\n  await page.goto(\\\"/week\\\", { waitUntil: \\\"domcontentloaded\\\" });\\n  await waitForCalendarShell(page);\\n  await clearClientAuthState(page);\\n\\n  await resetLocalEventDb(page);\\n  await page.reload({ waitUntil: \\\"domcontentloaded\\\" });\\n  await waitForCalendarShell(page);\\n\\n  await ensureWeekView(page);\\n  await page.locator(\\\"#mainGrid\\\").waitFor({ state: \\\"visible\\\", timeout: 15000 });\\n  await blurActiveElement(page);\\n  await page.locator(\\\"#mainGrid\\\").focus();\\n};\\n\\nexport const resetLocalEventDb = async (page: Page) => {\\n  await page.evaluate(async (dbName) => {\\n    const clearStore = async (\\n      db: IDBDatabase,\\n      storeName: string,\\n    ): Promise<void> => {\\n      if (!db.objectStoreNames.contains(storeName)) {\\n        return;\\n      }\\n\\n      await new Promise<void>((resolve) => {\\n        const transaction = db.transaction(storeName, \\\"readwrite\\\");\\n        const clearRequest = transaction.objectStore(storeName).clear();\\n        clearRequest.onerror = () => resolve();\\n        transaction.oncomplete = () => resolve();\\n        transaction.onerror = () => resolve();\\n        transaction.onabort = () => resolve();\\n      });\\n    };\\n\\n    await new Promise<void>((resolve) => {\\n      const deleteRequest = indexedDB.deleteDatabase(dbName);\\n\\n      deleteRequest.onsuccess = () => resolve();\\n      deleteRequest.onerror = () => resolve();\\n      deleteRequest.onblocked = () => {\\n        // If the app still has an open connection, fall back to clearing stores\\n        // so tests still start from a clean state.\\n        const openRequest = indexedDB.open(dbName);\\n        openRequest.onerror = () => resolve();\\n        openRequest.onsuccess = async () => {\\n          const db = openRequest.result;\\n          await clearStore(db, \\\"events\\\");\\n          await clearStore(db, \\\"tasks\\\");\\n          db.close();\\n          resolve();\\n        };\\n      };\\n    });\\n  }, LOCAL_DB_NAME);\\n};\\n\\n// The content pane transitions width over 200ms when the sidebar toggles\\n// (see WeekView.tsx's `transition-[width]` wrapper), so #mainGrid's column\\n// layout keeps changing for a beat after the sidebar becomes visible. Poll\\n// until its measured width stops moving so callers don't compute click/drag\\n// targets against a mid-transition column count.\\nconst waitForMainGridWidthToSettle = async (page: Page) => {\\n  const mainGrid = page.locator(\\\"#mainGrid\\\");\\n  const getWidth = () =>\\n    mainGrid.evaluate((el) => el.getBoundingClientRect().width);\\n\\n  let previousWidth = await getWidth();\\n\\n  for (let attempt = 0; attempt < 20; attempt++) {\\n    await page.waitForTimeout(50);\\n    const width = await getWidth();\\n    if (width === previousWidth) {\\n      return;\\n    }\\n    previousWidth = width;\\n  }\\n\\n  throw new Error(\\n    `#mainGrid width never settled after 1s (still moving at ${previousWidth}px). ` +\\n      \\\"A caller computed click/drag targets against this width right after \\\" +\\n      \\\"this timeout previously gave up silently, so a genuine layout stall \\\" +\\n      \\\"would show up as a confusing downstream failure instead of here.\\\",\\n  );\\n};\\n\\nexport const ensureSidebarOpen = async (page: Page) => {\\n  const sidebar = page.locator(\\\"#sidebar\\\");\\n  if (!(await sidebar.isVisible())) {\\n    await blurActiveElement(page);\\n    await page.locator(\\\"#mainGrid\\\").focus();\\n    await pressShortcut(page, \\\"]\\\");\\n    await expect(sidebar).toBeVisible();\\n    await waitForMainGridWidthToSettle(page);\\n  }\\n};\\n\\nexport const clickGridCenter = async (page: Page, locator: Locator) => {\\n  await locator.scrollIntoViewIfNeeded();\\n  const box = await locator.boundingBox();\\n  if (!box) {\\n    throw new Error(\\\"Expected grid element to be visible for interaction.\\\");\\n  }\\n\\n  const x = box.x + box.width * 0.3;\\n  const y = box.y + box.height * 0.3;\\n\\n  await page.mouse.move(x, y);\\n  await page.mouse.down();\\n  // Allow draft state to settle before mouseup so the form can open reliably.\\n  await page.waitForTimeout(175);\\n  await page.mouse.up();\\n};\\n\\nexport const getMainGridPoint = async (\\n  page: Page,\\n  { xRatio = 0.3, yRatio = 0.3 } = {},\\n) => {\\n  const mainGrid = page.locator(\\\"#mainGrid\\\");\\n  await mainGrid.scrollIntoViewIfNeeded();\\n  const box = await mainGrid.boundingBox();\\n\\n  if (!box) {\\n    throw new Error(\\\"Expected the week grid to be visible.\\\");\\n  }\\n\\n  return {\\n    x: box.x + box.width * xRatio,\\n    y: box.y + box.height * yRatio,\\n  };\\n};\\n\\n/**\\n * Fills the event form title and submits via the Save control (role=button, name Save).\\n * Keyboard shortcuts for submit (Enter / Mod+Enter) are not driven here: Playwright\u2019s\\n * synthesized keyboard events are unreliable in headless Chromium on Linux CI; the Save\\n * button matches the accessible UI and stays stable. Shortcut submit is covered in\\n * EventForm unit tests.\\n */\\nexport const fillTitleAndSaveEventForm = async (page: Page, title: string) => {\\n  const titleInput = getFormTitleInput(page);\\n  await expect(titleInput).toBeVisible({ timeout: FORM_TIMEOUT });\\n  await titleInput.fill(title);\\n  const saveButton = page.getByRole(\\\"form\\\").getByRole(\\\"button\\\", {\\n    name: \\\"Save\\\",\\n  });\\n  // Save often sits in floating form UI that can re-render while Playwright is\\n  // performing pointer actionability checks. Dispatch a DOM click so React\\n  // handlers run against the currently mounted control.\\n  await saveButton.evaluate((el) => {\\n    (el as HTMLElement).click();\\n  });\\n  await titleInput.waitFor({ state: \\\"hidden\\\", timeout: FORM_TIMEOUT });\\n};\\n\\nexport const openTimedEventFormWithMouse = async (page: Page) => {\\n  const titleInput = getFormTitleInput(page);\\n\\n  if (!(await titleInput.isVisible().catch(() => false))) {\\n    const { x, y } = await getMainGridPoint(page);\\n    await page.mouse.click(x, y);\\n  }\\n\\n  await titleInput.waitFor({ state: \\\"visible\\\", timeout: FORM_TIMEOUT });\\n};\\n\\nexport const openAllDayEventFormWithMouse = async (page: Page) => {\\n  await clickGridCenter(page, page.locator(\\\"#allDayRow\\\"));\\n  await getFormTitleInput(page).waitFor({\\n    state: \\\"visible\\\",\\n    timeout: FORM_TIMEOUT,\\n  });\\n};\\n\\nexport const openEventForEditingWithMouse = async (\\n  page: Page,\\n  eventTitle: string,\\n) => {\\n  const titleInput = getFormTitleInput(page);\\n  const eventButton = page.getByRole(\\\"button\\\", { name: eventTitle }).last();\\n\\n  await eventButton.waitFor({ state: \\\"visible\\\", timeout: FORM_TIMEOUT });\\n  await eventButton.click({ force: true });\\n  await expect(titleInput).toHaveValue(eventTitle, { timeout: FORM_TIMEOUT });\\n};\\n\\nexport const deleteEventWithMouse = async (page: Page) => {\\n  const form = page.getByRole(\\\"form\\\");\\n  await expect(form).toBeVisible();\\n  page.once(\\\"dialog\\\", (dialog) => dialog.accept());\\n  await form.getByLabel(\\\"Open actions menu\\\").click();\\n  await page.getByRole(\\\"menuitem\\\", { name: /delete/i }).click();\\n};\\n\\nexport const expectTimedEventVisible = async (page: Page, title: string) => {\\n  await expect(\\n    page.locator(\\\"#mainGrid\\\").getByRole(\\\"button\\\", { name: title }),\\n  ).toBeVisible({ timeout: 8000 });\\n};\\n\\nexport const expectAllDayEventVisible = async (page: Page, title: string) => {\\n  await expect(\\n    page.locator(\\\"#allDayRow\\\").getByRole(\\\"button\\\", { name: title }),\\n  ).toBeVisible({ timeout: 8000 });\\n};\\n\\nexport const expectTimedEventMissing = async (page: Page, title: string) => {\\n  await expect(\\n    page.locator(\\\"#mainGrid\\\").getByRole(\\\"button\\\", { name: title }),\\n  ).toHaveCount(0, { timeout: 8000 });\\n};\\n\\nexport interface SeededLocalEvent {\\n  conferenceUrl?: string;\\n  conferenceLabel?: string | null;\\n  end: string;\\n  kind: \\\"allDay\\\" | \\\"timed\\\";\\n  start: string;\\n  title: string;\\n}\\n\\n/**\\n * Writes one event row directly into the `compass-local` IndexedDB `events` object store.\\n *\\n * Necessary because conference is read-only provider-sourced data: the event form\\n * cannot set one, so a UI-created event can never render the join control. Every e2e\\n * spec runs signed out against local IndexedDB, so direct seeding into IndexedDB is\\n * required.\\n *\\n * MUST be called after prepareCalendarPage(page).\\n *\\n * Returns the generated event id.\\n */\\nexport const seedEventWithConference = async (\\n  page: Page,\\n  seed: SeededLocalEvent,\\n): Promise<string> => {\\n  const id = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) =>\\n    b.toString(16).padStart(2, \\\"0\\\"),\\n  ).join(\\\"\\\");\\n  const calendarIdFallback = Array.from(\\n    crypto.getRandomValues(new Uint8Array(12)),\\n    (b) => b.toString(16).padStart(2, \\\"0\\\"),\\n  ).join(\\\"\\\");\\n\\n  await page.evaluate(\\n    async ({ dbName, id, calendarIdFallback, seed }) => {\\n      const existingCalendarId = localStorage.getItem(\\n        \\\"compass.localCalendarId\\\",\\n      );\\n      const calendarId = existingCalendarId || calendarIdFallback;\\n      if (!existingCalendarId) {\\n        localStorage.setItem(\\\"compass.localCalendarId\\\", calendarIdFallback);\\n      }\\n\\n      const db = await new Promise<IDBDatabase>((resolve, reject) => {\\n        const request = indexedDB.open(dbName);\\n\\n        request.onerror = () => reject(request.error);\\n        request.onsuccess = () => resolve(request.result);\\n      });\\n\\n      if (!db.objectStoreNames.contains(\\\"events\\\")) {\\n        db.close();\\n        throw new Error(\\n          \\\"seedEventWithConference ran before the app created compass-local \u2014 call prepareCalendarPage(page) first\\\",\\n        );\\n      }\\n\\n      try {\\n        const record = {\\n          version: 2,\\n          id,\\n          isDemo: false,\\n          event: {\\n            id,\\n            calendarId,\\n            content: {\\n              kind: \\\"details\\\",\\n              title: seed.title,\\n              description: \\\"\\\",\\n              ...(seed.conferenceUrl\\n                ? {\\n                    conference: {\\n                      url: seed.conferenceUrl,\\n                      label: seed.conferenceLabel ?? \\\"Compass Meet\\\",\\n                    },\\n                  }\\n                : {}),\\n            },\\n            schedule:\\n              seed.kind === \\\"timed\\\"\\n                ? {\\n                    kind: \\\"timed\\\",\\n                    start: seed.start,\\n                    end: seed.end,\\n                    timeZone: \\\"UTC\\\",\\n                  }\\n                : { kind: \\\"allDay\\\", start: seed.start, end: seed.end },\\n            recurrence: { kind: \\\"single\\\" },\\n            createdAt: new Date().toISOString(),\\n            updatedAt: null,\\n          },\\n        };\\n\\n        await new Promise<void>((resolve, reject) => {\\n          const transaction = db.transaction(\\\"events\\\", \\\"readwrite\\\");\\n          const store = transaction.objectStore(\\\"events\\\");\\n          store.put(record);\\n\\n          transaction.oncomplete = () => resolve();\\n          transaction.onerror = () => reject(transaction.error);\\n          transaction.onabort = () => reject(transaction.error);\\n        });\\n      } finally {\\n        db.close();\\n      }\\n    },\\n    { dbName: LOCAL_DB_NAME, id, calendarIdFallback, seed },\\n  );\\n\\n  return id;\\n};\\n\",\"files_written\":[\"e2e/utils/event-test-utils.ts\"]}"
+}

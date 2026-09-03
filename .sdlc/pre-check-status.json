@@ -1,28 +1,31 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-25T04:44:41.674Z",
+  "updated_at": "2026-09-03T10:56:17.983Z",
   "steps": {
     "discovery_smoke": {
       "status": "pass",
       "note": "Tier 1 discovery completed cleanly on a git repo; wrote per-run + baseline artifacts, no writes outside .sdlc/. Flagged: no WeekBody component exists (week body = views/Week/components/Grid/Grid.tsx)."
     },
     "test_command_probe": {
-      "status": "pass",
-      "note": "Re-probed under plugin 0.6.0 at HEAD 4189de1: bun test:web = 2298 pass / 0 fail across 302 files in 86.87s, exit 0. node_modules already present; no install needed; bun.lock untouched."
+      "status": "skip",
+      "note": "No test command provided (unknown at discovery). Gate 0 will ask the user."
     },
     "dispatch_smoke": {
       "status": "pass",
-      "tiers_tested": ["opus (claude-cli)", "sonnet (claude-cli)"],
-      "note": "Re-run after 2026-08-24 policy switch to opus-plus-sonnet; prior cache covered v37 tiers only. Both OK. Sonnet returned fenced JSON -> {raw:...} fallback, no adapter strips fences."
+      "tiers_tested": [
+        "opus (claude-cli)",
+        "gemini-3.7-flash (antigravity-worker / flash-agsdk-worker)"
+      ],
+      "note": "Re-run 2026-09-03 after policy switch to opus-plus-flash-v37. Both returned OK. Mechanical door resolved to flash-agsdk-worker (SDK door) via select default, not flash-completion. Vertex ADC backend, project ai-studies-console."
     },
     "write_contract_smoke": {
       "status": "pass",
-      "path": "<repo-root>/.sdlc/pre-check/hello.txt",
+      "path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/pre-check/hello.txt",
       "note": "Wrote a file under .sdlc/pre-check/; write-contract auto-allowlists paths under .sdlc/."
     },
     "rollback_smoke": {
       "status": "pass",
-      "path": "<repo-root>/.sdlc/pre-check/hello.txt"
+      "path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/pre-check/hello.txt"
     },
     "report_finalized": {
       "status": "pass",

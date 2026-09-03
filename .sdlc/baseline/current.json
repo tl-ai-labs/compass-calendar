@@ -1,15 +1,26 @@
 {
   "schema_version": 1,
-  "plugin_version": "0.5.0",
-  "built_at": "2026-08-20T04:32:08Z",
-  "run_id": "20260819-212923-feature-extend-weekbody-multiday-drag",
-  "mode": "first-time",
-
+  "plugin_version": "0.6.0",
+  "built_at": "2026-09-03T10:54:48Z",
+  "run_id": "20260903-105448-feature-extend-oneclick-join",
+  "mode": "refresh",
+  "refresh_decision": "incremental",
+  "refresh_reason": "9 files changed since baseline (2 commits); all 9 are under .sdlc/ or .gitignore. No stack manifest changed, no policy change, no new AI-config file. Groups 3-4 and 6 re-verified rather than re-derived.",
+  "baseline_superseded": {
+    "built_at": "2026-08-20T04:32:08Z",
+    "git_head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
+    "age_commits": 2
+  },
   "git": {
-    "head": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
-    "branch": "main",
-    "dirty": false,
-    "dirty_note": "Only untracked .sdlc/ present; no tracked-file modifications.",
+    "head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "branch": "CMP-103/opus-plus-flash-v37-sdk",
+    "dirty": true,
+    "dirty_note": "Tracked modifications limited to .sdlc/pre-check-status.json and .sdlc/project.json, plus untracked .sdlc/local/. No user source file is modified.",
+    "dirty_paths": [
+      ".sdlc/pre-check-status.json",
+      ".sdlc/project.json",
+      ".sdlc/local/"
+    ],
     "remotes": [
       {
         "name": "origin",
@@ -17,9 +28,9 @@
       }
     ],
     "gitignore_covers_sdlc": false,
-    "tracked_file_count": 1582
+    "gitignore_sdlc_note": "Since the previous baseline, .gitignore gained two NARROW .sdlc rules (.sdlc/**/_gemini_worker_save/ and .sdlc/local/debug.log) plus .hook-logs/. The .sdlc/ tree itself is deliberately tracked, so run artifacts under .sdlc/runs/ are still visible to git add -A. Verified: git check-ignore .sdlc/runs/ -> not ignored on this branch.",
+    "tracked_file_count": 1590
   },
-
   "topology": {
     "top_level_dirs": [
       ".agents",
@@ -27,8 +38,10 @@
       ".codex",
       ".cursor",
       ".github",
+      ".hook-logs",
       "docs",
       "e2e",
+      "logs",
       "packages",
       "patches",
       "self-host"
@@ -40,7 +53,6 @@
       "packages/scripts/src/cli.ts"
     ]
   },
-
   "stacks": [
     {
       "manifest": "package.json",
@@ -72,23 +84,32 @@
         "zod",
         "tailwind-4",
         "testing-library",
-        "msw"
+        "msw",
+        "phosphor-icons"
       ]
     },
     {
       "manifest": "packages/backend/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["express", "supertokens", "mongodb"]
+      "detected_frameworks": [
+        "express",
+        "supertokens",
+        "mongodb"
+      ]
     },
     {
       "manifest": "packages/core/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["zod"]
+      "detected_frameworks": [
+        "zod"
+      ]
     },
     {
       "manifest": "packages/sync/package.json",
       "stack": "node-typescript",
-      "detected_frameworks": ["googleapis"]
+      "detected_frameworks": [
+        "googleapis"
+      ]
     },
     {
       "manifest": "packages/scripts/package.json",
@@ -96,53 +117,110 @@
       "detected_frameworks": []
     }
   ],
-
+  "stacks_unchanged_since_baseline": true,
   "adapter_match": {
     "preauthored_adapter": "generic.md",
     "reason": "React/Vite-style SPA on Bun runtime; no react/bun adapter shipped in v1 (generic, nest, python only).",
-    "adaptive_profile_recommended": true
+    "adaptive_profile_recommended": true,
+    "adaptive_profile_cached": ".sdlc/baseline/stack-profile.md",
+    "adaptive_profile_rebuilt_this_run": false,
+    "adaptive_profile_note": "Refresh decision is incremental and no stack manifest changed, so the cached stack-profile.md is reused per the freshness rule."
   },
-
-  "test_command_proposed": "bun test:web",
-  "test_command_source": "AGENTS.md#Validation-defaults + package.json#scripts.test:web",
+  "test_command_proposed": "bun run test:web",
+  "test_command_source": "caller-supplied (confirmed fact) + AGENTS.md#Validation-defaults + package.json#scripts.test:web",
+  "test_command_confirmed": true,
+  "test_baseline": {
+    "command": "bun run test:web",
+    "git_head": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "tree": "clean",
+    "status": "RED",
+    "pass": 2297,
+    "fail": 1,
+    "error": 1,
+    "files": 302,
+    "exit_code": 1,
+    "known_failure": "RecurrenceSection > keeps the event's own date selectable when the event ends after midnight",
+    "known_failure_cause": "pre-existing date-rot; not caused by any pending work",
+    "gate_implication": "Phase 7 must diff against 2297/1, not treat green as the bar. A run that ends 2297/1 with the same single failure is NOT a regression."
+  },
   "test_command_alternatives": {
     "full_suite": "bun test",
-    "web_only": "bun test:web",
-    "core": "bun test:core",
-    "type_check": "bun type-check",
-    "lint": "bun lint",
-    "e2e": "bun test:e2e",
+    "web_only": "bun run test:web",
+    "core": "bun run test:core",
+    "type_check": "bun run type-check",
+    "lint": "bun run lint",
+    "e2e": "bun run test:e2e",
     "diff_aware": "bun run verify"
   },
-  "test_command_notes": "AGENTS.md explicitly says: 'Avoid defaulting to bun test; use the focused package test first.' The intent touches packages/web only, so bun test:web is the correct scoped default. Gate 0 must confirm.",
-
+  "active_policy": "opus-plus-flash-v37",
   "docs_present": [
-    { "path": "README.md", "kind": "readme" },
-    { "path": "AGENTS.md", "kind": "agent-instructions" },
-    { "path": "CONTRIBUTING.md", "kind": "contributing" },
-    { "path": "SECURITY.md", "kind": "security" },
-    { "path": "CODE_OF_CONDUCT.md", "kind": "code-of-conduct" },
-    { "path": "docs/README.md", "kind": "docs-index" },
-    { "path": "docs/architecture", "kind": "architecture-dir" },
-    { "path": "docs/frontend", "kind": "docs-subdir" },
-    { "path": "docs/features", "kind": "docs-subdir" }
+    {
+      "path": "README.md",
+      "kind": "readme"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "agent-instructions"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "kind": "contributing"
+    },
+    {
+      "path": "SECURITY.md",
+      "kind": "security"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "kind": "code-of-conduct"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "docs-index"
+    },
+    {
+      "path": "docs/architecture",
+      "kind": "architecture-dir"
+    },
+    {
+      "path": "docs/frontend",
+      "kind": "docs-subdir"
+    },
+    {
+      "path": "docs/features",
+      "kind": "docs-subdir"
+    }
   ],
-
   "ai_configs_detected": [
-    { "path": ".claude/settings.json", "type": "claude-code" },
-    { "path": ".claude/launch.json", "type": "claude-code" },
+    {
+      "path": ".claude/settings.json",
+      "type": "claude-code"
+    },
+    {
+      "path": ".claude/launch.json",
+      "type": "claude-code"
+    },
     {
       "path": ".cursor/rules/",
       "type": "cursor",
       "detail": "4 .mdc rule files: imports-and-packages, sync-package, web-styles, web-testing"
     },
-    { "path": ".cursor/hooks.json", "type": "cursor-hooks" },
+    {
+      "path": ".cursor/hooks.json",
+      "type": "cursor-hooks"
+    },
     {
       "path": ".cursor/hooks/format-after-edit.ts",
       "type": "cursor-hook-script"
     },
-    { "path": ".codex/config.toml", "type": "codex" },
-    { "path": ".codex/hooks.json", "type": "codex-hooks" },
+    {
+      "path": ".codex/config.toml",
+      "type": "codex"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "type": "codex-hooks"
+    },
     {
       "path": ".agents/skills/",
       "type": "shared-agent-skills",
@@ -152,11 +230,15 @@
       "path": ".agents/skills/chaos/agents/openai.yaml",
       "type": "external-model-agent-config"
     },
-    { "path": "AGENTS.md", "type": "agent-instructions" }
+    {
+      "path": "AGENTS.md",
+      "type": "agent-instructions"
+    }
   ],
   "ai_configs_absent": [
-    ".mcp.json (gitignored, not present on disk)",
+    ".mcp.json",
     "CLAUDE.md",
+    "CLAUDE.local.md",
     ".cursorrules",
     ".aider.conf.yml",
     ".continue/",
@@ -164,10 +246,10 @@
     ".roo/",
     "routing-policy.yaml"
   ],
-
+  "ai_configs_unchanged_since_baseline": true,
   "env_keys_by_file": {},
   "env_keys_all": [],
-  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template.",
+  "env_keys_note": "No .env* files exist on disk. Config is via compass.yaml (gitignored) with compass.example.yaml as the tracked template. Names only were ever read; no values inspected.",
   "env_keys_referenced_in_code": [
     "API_BASEURL",
     "COMPASS_BUILD_REF",
@@ -178,40 +260,41 @@
     "POSTHOG_KEY",
     "TZ"
   ],
-
   "monorepo": {
     "type": "lerna+bun-workspaces",
-    "workspace_globs": ["packages/*"],
+    "workspace_globs": [
+      "packages/*"
+    ],
     "packages": [
       {
         "name": "@compass/web",
         "root": "packages/web",
         "manifest": "packages/web/package.json",
-        "test_command": "bun test:web"
+        "test_command": "bun run test:web"
       },
       {
         "name": "@compass/backend",
         "root": "packages/backend",
         "manifest": "packages/backend/package.json",
-        "test_command": "bun test:backend"
+        "test_command": "bun run test:backend"
       },
       {
         "name": "@compass/core",
         "root": "packages/core",
         "manifest": "packages/core/package.json",
-        "test_command": "bun test:core"
+        "test_command": "bun run test:core"
       },
       {
         "name": "@compass/sync",
         "root": "packages/sync",
         "manifest": "packages/sync/package.json",
-        "test_command": "bun test:sync"
+        "test_command": "bun run test:sync"
       },
       {
         "name": "@compass/scripts",
         "root": "packages/scripts",
         "manifest": "packages/scripts/package.json",
-        "test_command": "bun test:scripts"
+        "test_command": "bun run test:scripts"
       }
     ],
     "path_aliases": {
@@ -222,11 +305,9 @@
       "@compass/scripts": "packages/scripts/src"
     }
   },
-
   "submodules": [],
   "lfs": false,
   "lfs_patterns": [],
-
   "infra_hints": {
     "dockerfile": false,
     "dockerfile_note": "Docker assets live under .github/docker and self-host, not repo root.",
@@ -238,7 +319,6 @@
     "circleci": false,
     "jenkins": false
   },
-
   "off_limits_proposed": [
     ".git/**",
     ".claude/**",
@@ -262,28 +342,35 @@
     "playwright-report/**",
     "test-results/**",
     "blob-report/**",
-    ".github/workflows/**"
+    ".github/workflows/**",
+    ".hook-logs/**",
+    "logs/**"
   ],
-
   "regulated_repo_signals": [
-    { "kind": "security-policy", "path": "SECURITY.md" }
+    {
+      "kind": "security-policy",
+      "path": "SECURITY.md"
+    }
   ],
   "regulated_repo_warning_required": false,
-
   "coexistence_notes": [
-    "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) — untouched by default, but they encode the conventions codegen must match.",
+    "Cursor rules at .cursor/rules/ (4 .mdc files incl. web-styles.mdc and web-testing.mdc) - untouched by default, but they encode the conventions codegen must match.",
     "Cursor AND Codex format-on-edit hooks are active (.cursor/hooks.json, .codex/hooks.json, .cursor/hooks/format-after-edit.ts). AGENTS.md states formatting is handled by these repo-local hooks after agent edits. Files this plugin writes may be reformatted out-of-band by Biome.",
-    ".gitignore does NOT cover .sdlc/ — run artifacts are visible to git add -A.",
-    ".gitignore contains a repo-wide '*.mjs' rule — any .mjs the plugin emits into user source would be silently untracked.",
-    ".mcp.json is gitignored and absent locally; no competing MCP servers registered.",
-    "No repo-local routing-policy.yaml — shipped policy applies."
+    ".gitignore still does NOT cover .sdlc/ - only .sdlc/**/_gemini_worker_save/ and .sdlc/local/debug.log. Run artifacts under .sdlc/runs/ are tracked-visible to git add -A. This is intentional on this repo (the .sdlc layer is committed on main), so Gate 0 should NOT offer to broaden the ignore.",
+    ".gitignore contains a repo-wide '*.mjs' rule - any .mjs the plugin emits into user source would be silently untracked.",
+    ".mcp.json is absent; no competing MCP servers registered.",
+    "No repo-local routing-policy.yaml - the shipped opus-plus-flash-v37 policy applies."
   ],
-
   "repo_state_risks": [
     {
-      "kind": "gitignore_missing_sdlc",
-      "severity": "medium",
-      "detail": ".sdlc/ untracked but visible to git add -A."
+      "kind": "red_test_baseline",
+      "severity": "high",
+      "detail": "bun run test:web is 2297/1 on a clean tree at HEAD. Every gate that reads 'tests green' must be re-read as 'no new failures beyond the known RecurrenceSection date-rot'."
+    },
+    {
+      "kind": "gitignore_partial_sdlc",
+      "severity": "low",
+      "detail": ".sdlc/ is tracked by design on this repo; only worker blobs and debug.log are ignored."
     },
     {
       "kind": "aggressive_gitignore",
@@ -295,20 +382,37 @@
       "severity": "low",
       "detail": "Cursor/Codex format-after-edit hooks may rewrite plugin output."
     },
-    { "kind": "lfs", "severity": "none", "detail": "No Git-LFS in use." },
-    { "kind": "submodules", "severity": "none", "detail": "No submodules." },
     {
       "kind": "dirty_tree",
       "severity": "none",
-      "detail": "Clean apart from untracked .sdlc/."
+      "detail": "Only .sdlc/ paths modified/untracked; no user source touched."
+    },
+    {
+      "kind": "lfs",
+      "severity": "none",
+      "detail": "No Git-LFS in use."
+    },
+    {
+      "kind": "submodules",
+      "severity": "none",
+      "detail": "No submodules."
     }
   ],
-
   "intent_scope": {
-    "hint": "feature-extend-weekbody-multiday-drag",
+    "hint": "feature-extend-oneclick-join",
     "primary_package": "packages/web",
-    "weekbody_component_exists": false,
-    "weekbody_note": "No component named WeekBody exists. The week-view body is composed by Grid.tsx via AllDayRow > MainGrid > EventGrid.",
-    "key_gap": "All-day row creation is click-only (useAllDayDraftCreation creates a fixed 1-day draft on mousedown). The timed grid has true drag-create via useTimedDraftCreation. Multi-day drag-create in the all-day row does not exist."
-  }
+    "ticket": "CMP-103",
+    "summary": "Add a one-click 'join conference' icon to the grid event cards.",
+    "prior_art_on_main": false,
+    "prior_art_on_sibling_branches": 5,
+    "conference_data_already_on_card_type": true,
+    "shared_base_card_component": false,
+    "styled_components_in_use": false,
+    "key_gap": "GridEvent already carries `conference` (url + label) and the view model already populates it, but neither grid card reads it. Three join affordances exist elsewhere in packages/web (UpNextCard link, UpNextBanner 'V' shortcut, EventForm EventDetailsSection link); none is on a grid card, and there is no shared join-URL helper.",
+    "sharpest_constraint": "Drag/resize is owned by PointerCaptureBoundary via onPointerDownCapture, which calls preventDefault()+stopPropagation() at an ancestor in the CAPTURE phase. A nested interactive element inside a card cannot defend itself with its own stopPropagation; the repo's existing pattern for this is a data-attribute the view adapters check in getInteractionTarget (as resize handles do). EventCard.test.tsx renders the cards with no boundary above them, so unit tests alone cannot catch this.",
+    "note": "Last intent seen. Full per-file findings live in the run snapshot referenced by job_scope_findings_ref."
+  },
+  "last_run_id": "20260903-105448-feature-extend-oneclick-join",
+  "merged_from_run": "20260903-105448-feature-extend-oneclick-join",
+  "job_scope_findings_ref": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/discovery.md#job-scope-findings--one-click-join-conference-icon-on-event-cards"
 }

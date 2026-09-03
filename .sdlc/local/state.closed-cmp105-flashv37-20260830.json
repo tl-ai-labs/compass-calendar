@@ -1,0 +1,320 @@
+{
+  "status": "complete",
+  "outcome": "accepted",
+  "committed_after_close_out": "649aea0c + 8fd2adba on CMP-105/opus-plus-flash-v37 (pushed to origin); archived 2026-08-30",
+  "phase": "generate_final_report",
+  "checkpoint": "gate_3_PASSED_accepted_with_followups__gate_4_close_out_written__nothing_committed",
+  "gate_3": "passed_accepted_with_followups",
+  "gate_3_passed_at": "2026-08-30T08:47:00Z",
+  "gate_3_decision": "ACCEPT with follow-ups after 3 review passes. N-1/N-2/N-3 closed; remaining pass-3 nits non-blocking and ticketed in follow-ups.md.",
+  "gate_4": "close_out_written",
+  "close_out": {
+    "artifact": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/close-out.md",
+    "follow_ups": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/follow-ups.md",
+    "follow_up_count": 15,
+    "final_verify": {
+      "bun_test_web": "2321 pass / 0 fail / 5862 expect / 304 files / 78.66s / exit 0 (baseline 2298 pass / 302 files; net +23 tests, +2 files)",
+      "bun_lint": "exit 0 - 10 warnings, 0 errors, all in pre-existing untouched files",
+      "type_check_web_tests": "exit 0",
+      "git_diff_stat": "4 files changed, 275 insertions(+), 15 deletions(-), plus 4 new untracked"
+    },
+    "cost": {
+      "auth_mode": "estimated",
+      "total_usd": 2.2727,
+      "input_tokens": 134184,
+      "input_tokens_cached": 0,
+      "output_tokens": 78126,
+      "telemetry_events": 32,
+      "opus_usd": 1.787,
+      "flash_usd": 0.4857,
+      "opus_share": "78.6%",
+      "flash_share": "21.4%",
+      "failed_dispatches": 7,
+      "wasted_usd": 0.0805,
+      "wasted_output_tokens": 7032,
+      "caveat": "NOT cross-policy comparable. Opus is a character-count estimate booking cached=0 (input cost overstated vs a real cached run); flash derives from placeholder rates in the policy YAML."
+    },
+    "tiering_note": "flash handled 22 of 29 model events (76%) for 21.4% of cost, but every flash packet still required orchestrator review and two required correction before touching disk. Saving is real but smaller than the event split implies."
+  },
+  "committed": false,
+  "not_done_by_instruction": [
+    "no git commit, no push - committed stays false",
+    "write contract left ACTIVE (strict:true) - coordinator will deactivate out of band",
+    "no browser verification of the rendered badge"
+  ],
+  "gate_3_pass3_verdicts": {
+    "senior_code_review": "APPROVE_WITH_NITS (senior_review-pass3.md)",
+    "security_review": "PASS_WITH_FINDINGS (security_review-pass3.md) - 0 critical/high/medium",
+    "n1_n2_n3": "ALL CLOSED, verified in code by the reviewer rather than from the brief",
+    "ordering_proof": "senior confirms the discriminating test is EventAttendeeBadge.test.tsx:177-191: it feeds attendees needsAction-first and asserts '3 guests: 1 accepted, 1 declined, 1 no response'. Inheriting AttendeeResponseStatusSchema.options order would render '1 no response, 1 accepted, 1 declined' and fail.",
+    "regression_lock_non_tautological": "asserts through getByRole against literal strings typed in the test, not derived from the map. Reverting to attendeeStatusLabel yields '4 hasn't responded' and fails both halves; deleting the zero-filter also fails.",
+    "cast_verdict": "senior AGREES with the cast, no change requested. Reasoning: the annotated object literal means TS already rejects missing and extra keys, so Object.keys provably returns exactly the union. Also NFR-3 as actually written (requirements.md:136-138) scopes 'without a cast' to the badge's prop type, which remains cast-free; 'No cast anywhere' is design.md editorial prose, not normative.",
+    "no_regressions": "attendeeStatusLabel byte-unchanged and still used at EventDetailsSection.tsx:69, still covered by EventForm.test.tsx:1482. EventDetailsSection/TimedEventCard/AllDayEventCard hash-identical to pass 2."
+  },
+  "gate_3_pass3_new_nits_NOT_fixed": {
+    "security_LOW_codepoint": "EventAttendeeBadge.tsx:42-47 now overclaims in the OTHER direction: 'exactly one attendee-supplied character can reach the DOM'. toUpperCase is not length-preserving. Orchestrator verified by execution: 'ß'->'SS' (1->2), 'fii ligature'->'FFI' (1->3), 'n-apostrophe'->'-N' (1->2), all passing /^[\\p{L}\\p{N}]$/u. Security bound INTACT (one whitelisted source CODE POINT, no '@' reachable); only the character-count wording is wrong. Fix = reword to code points. NEEDS A SOURCE MINI-GATE.",
+    "comment_wrong_three_passes_running": "This same comment has now been wrong in three consecutive passes: pass 1 claimed the title reached AT; pass 2 claimed no attendee text reaches the DOM at all; pass 3 (orchestrator's own wording) claims exactly one character. Pattern worth naming in the close-out.",
+    "N-8_implicit_order": "display order is now implicit in object-literal key order; a cosmetic re-sort of ATTENDEE_STATUS_COUNT_NOUN would silently change screen-reader output. Caught by a test, not by the type system.",
+    "N-9_stale_prose": "EventAttendeeBadge.tsx:83 'No cast anywhere.' now misleads. NOT fixed (source, needs mini-gate). The two design.md stale label quotes at :292 and :805 WERE fixed this pass (.sdlc carve-out).",
+    "security_INFO_freeze": "refactor traded a compile-time immutability guard for a compile-time exhaustiveness guard: STATUS_ORDER was 'as const'; ATTENDEE_STATUS_DISPLAY_ORDER is typed mutable and unfrozen. Object.freeze + readonly would make the by-construction invariant compiler-enforceable."
+  },
+  "provenance_n10_corrected": "senior nit N-10 was correct: the biome reflow of the Record<> annotation was applied via Edit AFTER tp_rf_005's --after call, so it was never bracketed and provenance described a state not on disk (recorded b4e3647a..., disk 925fa635...). Backfilled as an explicit tp_rf_005_biome_reflow record with the REAL hashes; all 8 tracked paths now verify sha_after == disk. SELF-CAUGHT ERROR during that fix: the orchestrator first wrote two INVENTED hashes (only the leading 13 chars had been observed, the rest was padded), then caught it, recomputed both real values and replaced them. Disclosed rather than quietly corrected.",
+  "rf05": {
+    "decisions_taken": {
+      "n2_shape": "Record + narrow Object.keys cast (option A). ATTENDEE_STATUS_COUNT_NOUN: Record<AttendeeResponseStatus,string> is the exhaustiveness anchor; ATTENDEE_STATUS_DISPLAY_ORDER = Object.keys(...) as AttendeeResponseStatus[]; STATUS_ORDER deleted.",
+      "cast_deviation": "DELIBERATE, user-approved, scoped deviation from design.md section 3.2 ('No cast anywhere'). Object.keys is unavoidably typed string[]. Cast-free alternatives rejected: `satisfies readonly AttendeeResponseStatus[]` validates each element but not that all members are present; an Exclude<>-based guard needs a dummy binding that biome noUnusedVariables then rejects.",
+      "n1_regression_lock": "INCLUDED. Added by the orchestrator, not by the mechanical tier - flash was not asked for it and did not produce one. Without it the exact bug that shipped once ('4 guests: 4 hasn't responded') would have had no test, which is how it got through the first time.",
+      "plus_comment_edit": "DECLINED by user. The packet id 'RF-01' stays in the comment at EventAttendeeBadge.test.tsx:101. Recorded as a known cosmetic follow-up, not fixed."
+    },
+    "why_display_order_is_not_enum_order": "AttendeeResponseStatusSchema is declared [needsAction, accepted, declined, tentative]. Iterating .options - the obvious cast-free exhaustive source - would render '3 guests: 1 no response, 2 accepted', burying the useful statuses behind the empty one. Display order therefore had to stay independent of enum order, which is what forced the Record-as-ordering-source shape.",
+    "orchestrator_corrections_to_mechanical_output": [
+      "flash rewrote the component docblock example to '3 guests: 2 yes, 1 no'; 'yes'/'no' appear nowhere in ATTENDEE_STATUS_COUNT_NOUN. Corrected to '3 guests: 2 accepted, 1 declined' before apply.",
+      "flash emitted several over-length lines; hand-wrapped to biome 80-col rather than pre-formatting in a scratch dir (the scratch-dir pre-format is what let an organizeImports error through at pass 2, because biome outside the repo does not load the project's assist rules)."
+    ],
+    "packets": {
+      "tp_rf_005a": "attendee-status.ts noun map + display order. flash-completion, 1 attempt, $0.013616",
+      "tp_rf_005b": "EventAttendeeBadge.tsx rewiring + N-3 comments. flash-completion, 1 attempt, $0.046646",
+      "tp_rf_005c": "attendee-status.test.ts three new tests. flash-completion, 1 attempt, $0.027231"
+    },
+    "flash_cost_usd": 0.087493,
+    "files_touched": 5,
+    "edits_applied": 12,
+    "apply_fidelity": "all 5 files verified byte-identical to the approved dry-run before the single biome reflow",
+    "biome_reflow_after_apply": "Record<AttendeeResponseStatus, string> annotation wrapped across 4 lines; landed as a visible follow-up Edit as promised, not silently"
+  },
+  "post_rf05_verification": {
+    "bun_test_web": "2321 pass / 0 fail / 5862 expect / 304 files / 78.66s / exit 0 (pass 2 was 2317; +4)",
+    "bun_lint": "exit 0 - 10 warnings, 0 errors",
+    "type_check_web_tests": "exit 0",
+    "git_diff_stat": "4 files changed, 275 insertions(+), 15 deletions(-), plus 4 new untracked files",
+    "head": "2d81253a - nothing committed"
+  },
+  "resume_3_preflight": "2026-08-30: branch CMP-105/opus-plus-flash-v37 OK; HEAD 2d81253a OK; git diff --stat 2d81253a -- packages/ = 4 files +275/-15; 4 untracked new files; EventDetailsSection.tsx carries packet-8 refactor; bun test:web 2317 pass / 0 fail / 304 files; bun lint exit 0 (11 warnings); type-check:web-tests exit 0; write-contract re-activated. RF-05 instruction sent to orchestrator agent a289c506970e446f7.",
+  "pause_3": {
+    "when": "2026-08-30 ~05:15 local (3rd pause)",
+    "where": "Gate 3 pass 2, decision point",
+    "user_decision_made": "Fix N-1/N-2/N-3 via a new refinement packet RF-05",
+    "state": "RF-05 NOT started. The FIX instruction was NOT sent to the orchestrator before the user paused. Nothing new written this turn. Working tree = packet 8 + RF-01 + RF-02a + RF-02b + RF-04 + tp_format_009, all applied and green.",
+    "verified_at_pause": "HEAD 2d81253a; git diff --stat 2d81253a -- packages/ = 4 files +275/-15 (AllDayEventCard +15, EventCard.test.tsx +237, TimedEventCard +23/-4, EventDetailsSection +4/-11); 4 untracked new files (attendee-status.ts + .test.ts, EventAttendeeBadge.tsx + .test.tsx); bun test:web 2317 pass / 0 fail / 304 files (re-run by main thread); bun lint exit 0 (11 warnings, 0 errors); type-check:web-tests exit 0; nothing committed",
+    "orchestrator_agent": "a289c506970e446f7 (idle, holding full run context). On resume, SendMessage the RF-05 instruction to it rather than re-invoking fresh. If that agent is gone, re-invoke mmo:orchestrator with the params under 'artifacts' + this file as the handover.",
+    "write_contract": "deactivated for the pause (active:false); allowlist/off_limits retained; RE-ACTIVATE before RF-05"
+  },
+  "rf_05_spec": {
+    "purpose": "Fix the 3 non-blocking source nits from Gate 3 pass 2. One packet, mini-gate before it lands. Mechanical tier = flash-completion (policy default); NO flash-agsdk-worker.",
+    "N-1_grammar": "The aggregate aria-label uses attendeeStatusLabel (per-attendee prose) so it reads e.g. '4 guests: 4 hasn\\u2019t responded'. Fix: give the aggregate breakdown its own noun-phrase mapping (e.g. accepted->'accepted', declined->'declined', tentative->'tentative', needsAction->'no response' / 'awaiting response'), so it reads '4 guests: 4 awaiting response' / '3 guests: 2 accepted, 1 declined'. Keep it name-free and one pass. Update the tests that assert the label string (EventAttendeeBadge.test.tsx and EventCard.test.tsx both assert it now).",
+    "N-2_exhaustiveness": "STATUS_ORDER is a hand-maintained tuple with no FR-2 compile-time exhaustiveness. Fix: derive iteration order from a Record<AttendeeResponseStatus, ...> (or satisfies Record<...>) so a future 5th enum member is a compile error, not a silently dropped label entry. attendee-status.ts already has the ATTENDEE_STATUS_DOT Record to model it on.",
+    "N-3_comment": "EventAttendeeBadge.tsx ~line 51 + the docblock claim 'no attendee-supplied text reaches the DOM at all' \\u2014 false, the monogram is one attendee-supplied code point. Fix: scope the claim to 'no attendee-supplied string of length > 1 / no @ can reach the rendered monogram or any label'. Also remove the 'RF-01' packet-id reference from shipped source (comments should not cite packet ids).",
+    "after_rf_05": "Re-run bun test:web + bun lint + bun run type-check:web-tests + git diff --stat 2d81253a -- packages/ (paste real output). Light re-review (senior can spot-check the 3 nits; security only if the label mapping changes semantics \\u2014 it should not). Then STOP at Gate 3. Do NOT proceed to Gate 4. Do NOT commit.",
+    "deferred_still_not_in_scope": "MINOR-3/4/6/7, biome.json !.sdlc exclude, EventDetailsSection.tsx:41 javascript: href, LOW-1 dup-key warning, LOW-2 uncapped scan, MEDIUM-3->LOW posthog ph-no-capture masking \\u2014 all recorded as follow-up tickets, NOT fixed in RF-05."
+  },
+  "_superseded_note": "Fields below this point were written by the orchestrator across pass 1 + pass 2 and during earlier pauses. Some (resume_procedure, completed_packets, files_on_disk, last_verified_suite, next_packet, gate_3_verdicts) describe the pass-1 / packet-8 checkpoint and are STALE. Authoritative current state is the pause_3 + rf_05_spec + resume_procedure_3 blocks. gate_3_pass2_verdicts, open_nits_not_fixed, accepted_followups_not_fixed, post_rf_verification are current.",
+  "resume_procedure_3": [
+    "1. Confirm branch CMP-105/opus-plus-flash-v37 and HEAD == 2d81253a (git rev-parse --short HEAD).",
+    "2. Confirm working tree: git diff --stat 2d81253a -- packages/ = 4 files +275/-15; git ls-files --others = the 4 new files (attendee-status.ts/.test.ts, EventAttendeeBadge.tsx/.test.tsx). EventDetailsSection.tsx shows the +4/-11 packet-8 refactor.",
+    "3. Re-run bun test:web yourself: expect 2317 pass / 0 fail / 304 files. Also bun lint (expect exit 0) and bun run type-check:web-tests (expect exit 0) before trusting the prior results.",
+    "4. Set .sdlc/local/write-contract.json active: true (allowlist already covers packages/web/src/grid/components/** and packages/web/src/common/styles/**, which is all RF-05 touches).",
+    "5. SendMessage to orchestrator agent a289c506970e446f7 with the RF-05 instruction built from rf_05_spec above: one refinement packet fixing N-1 + N-2 + N-3, mini-gate before it lands, mechanical tier flash-completion, no flash-agsdk-worker. It applies on approval, re-runs the 4 verify commands (paste real output), does a light re-review, then STOPS at Gate 3. Nothing committed.",
+    "6. If agent a289c506970e446f7 is no longer reachable, re-invoke the mmo:orchestrator subagent fresh with run_id=20260829-124312-feature-extend-attendee-avatar-badge, intent=feature-extend, policy=opus-plus-flash-v37, auth_mode=estimated, code_dir=repo root, output_dir=.sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge, and this state.json as the handover: Phases 1-2 done, Gates 0/1/2 passed, packets 1-8 + RF-01..RF-04 + tp_format_009 applied and green, Gate 3 pass 2 = senior APPROVE_WITH_NITS + security PASS_WITH_FINDINGS, RF-05 (rf_05_spec) is the only remaining work, STOP at Gate 3 pass 3.",
+    "7. Constraints unchanged: no flash-agsdk-worker; contract stays active through Gate 3; committed stays false; orchestrator runs verify commands itself and pastes real output; back off (don't thrash) on Vertex 429s."
+  ],
+  "gate_3_pass2_verdicts": {
+    "senior_code_review": "APPROVE_WITH_NITS (senior_review-pass2.md:321)",
+    "security_review": "PASS_WITH_FINDINGS (security_review-pass2.md:135) - 0 critical, 0 high, 0 medium; 3 LOW + 3 INFO",
+    "majors_closed": "MAJOR-1, MAJOR-2, MAJOR-3 all CLOSED, verified by the reviewer reading code rather than trusting the summary",
+    "security_pass1_disposition": "MEDIUM-1 CLOSED, MEDIUM-2 CLOSED, MEDIUM-3 REDUCED to LOW (identity is out of the DOM, but rrweb still serialises the aria-label, the monogram initial, and the bg-success/bg-error classes that encode RSVP positionally; no masking config present)",
+    "key_correctness_check": "senior verified countByStatus is passed the FULL attendees array while `visible` is only the render slice, so a 50-attendee event announces '50 guests: ...' with a full breakdown rather than the capped 2. A careless fix would have counted `visible`.",
+    "fr7_test_non_tautological": "senior proved the table test is not vacuous: none of the 4 tokens is a substring of the base className or of each other, so deleting the ATTENDEE_STATUS_DOT lookup fails all 4 iterations and hardcoding any single class fails 3",
+    "packet_8_intact": "EventDetailsSection.tsx sha256 5b03f669... matches its tp_codegen_008 provenance entry exactly"
+  },
+  "doc_corrections_completed_pass2": "Both reviewers found RF-04 had been scoped too narrowly. Completed at pass 2: design.md section 3.6 code listing (still showed both deleted titles), section 4 PII paragraph (said the title 'does interpolate displayName' and instructed 'do not broaden the AC-8 test to arbitrary displayNames' - i.e. the spec-of-record told a future implementer to reintroduce the vulnerability and delete its regression lock), section 7 AC matrix row 9 (still specified getByTitle); requirements.md FR-11, the PII inventory displayName row, and AC-9 all annotated with ruling A.",
+  "open_nits_not_fixed": {
+    "N-1_grammar": "aggregate label reads '4 guests: 4 hasn't responded' because attendeeStatusLabel was written for per-attendee use. Real, introduced by RF-01, affects the common freshly-invited case. NOT fixed - needs a source mini-gate.",
+    "N-2_status_order_exhaustiveness": "STATUS_ORDER is a hand-maintained tuple with none of FR-2's compile-time exhaustiveness; a 5th enum member would break ATTENDEE_STATUS_DOT and countByStatus (good) but be silently dropped from the label. NOT fixed.",
+    "N-3_comment_overclaim": "EventAttendeeBadge.tsx:51 and the docblock assert 'no attendee-supplied text reaches the DOM at all', which is false - the monogram is one attendee-supplied code point. Flagged independently by BOTH reviewers. Same false-load-bearing-comment class as the pass-1 finding. Also cites the packet id RF-01 in shipped source. NOT fixed - needs a source mini-gate."
+  },
+  "accepted_followups_not_fixed": [
+    "MINOR-3 unused MAX_VISIBLE_ATTENDEES export",
+    "MINOR-4 constants location",
+    "MINOR-6 test name",
+    "MINOR-7 !isPlaceholder guard",
+    "MINOR-8 O(n) vs O(cap) - now moot, RF-01 keeps one pass over attendees plus a fixed 4-element map",
+    "biome.json needs a '!.sdlc' exclude in files.includes (biome.json is off-limits in this run's write contract)",
+    "EventDetailsSection.tsx:41 provider-sourced href={conference.url}; z.url() accepts a javascript: scheme and React 18 only warns (pre-existing, out of scope)",
+    "LOW-1 attendee.email as React key can emit a dev duplicate-key warning",
+    "LOW-2 countByStatus scans the uncapped array and allocates a counts object plus filter/map/join per render",
+    "MEDIUM-3->LOW posthog session replay has no disable_session_recording and no mask selector"
+  ],
+  "terminal": true,
+  "gate_3_opened_at": "2026-08-30T03:38:30Z",
+  "gate_3_pass1_decision": "FIX then re-review. Ruling A on the Guest conflict: identity placeholders are group-level only; 'Guest' is no longer a rendered string; AC-9 re-scoped to glyph + empty text. Gate 1 q3 amended accordingly.",
+  "gate_1_q3_amendment": "Gate 1 q3 originally read 'null displayName = neutral person glyph with accessible text Guest'. Amended at Gate 3 pass 1 under ruling A: the glyph stays, but there is no per-attendee accessible text at all. The accessible channel is the group aria-label ('N guests: X accepted, Y declined'), which names nobody. Reason: the only carrier of 'Guest' was a title attribute that pointer-events-none and role=img jointly made unreachable, while still holding displayName (often == email) in an always-visible DOM.",
+  "refinement_packets": {
+    "tp_rf_001": "RF-01+RF-03 EventAttendeeBadge.tsx - countByStatus, STATUS_ORDER, full-breakdown aria-label, both title attrs deleted, stale biome-ignore deleted, MONOGRAM comment rescoped, docblock rewritten. flash-completion, 2 attempts (1 output-cap retry), $0.063943. Mini-gate approved.",
+    "tp_rf_002a": "RF-02 EventAttendeeBadge.test.tsx - AC-9 re-pointed off getByTitle, label updated, FR-7 table test over AttendeeResponseStatusSchema.options, email-shaped displayName no-@ test. flash-completion, 1 attempt, $0.013128. Mini-gate approved.",
+    "tp_rf_002b": "RF-02 EventCard.test.tsx - second stale label assertion (found by orchestrator, not in the reviewer list) + narrow-timed (w80) and narrow-all-day (w110) width-gate tests. flash-completion, 1 attempt, $0.028814. Mini-gate approved.",
+    "tp_rf_004": "RF-04 design.md sections 3.5 and 8 corrected. Handled on the premium tier in-session (doc edit, .sdlc carve-out, no mini-gate required)."
+  },
+  "post_rf_verification": {
+    "bun_test_web": "2317 pass / 0 fail / 5843 expect / 304 files / 72.05s / exit 0 (pass 1 was 2313; +4 tests)",
+    "type_check_web_tests": "exit 0",
+    "bun_lint": "exit 0 - 11 warnings, 0 errors",
+    "biome_source_scope": "packages/ self-host/ => 0 errors, 10 warnings (was 11; RF-03 closed the suppressions/unused finding in EventAttendeeBadge.tsx)",
+    "git_diff_stat": "4 files changed, 275 insertions(+), 15 deletions(-), plus 4 new untracked files"
+  },
+  "lint_debt_resolved": "bun lint is exit 0 again. Two rounds were needed: (1) the duplicate gate_3 key I introduced plus formatter diffs in .sdlc bookkeeping, (2) an organizeImports error in EventAttendeeBadge.test.tsx that my scratch-dir pre-format MISSED - running `biome check --write` on a copy under /tmp does not pick up the project's assist rules, so the dry-run looked clean while the real file was not. Lesson: pre-format dry-runs must run inside the repo, or the check must be re-run after apply.",
+  "provenance_gap_known": "One --after call for EventAttendeeBadge.test.tsx (the organizeImports fix) had no matching --before and was ignored by the helper, so that record's sha_after is stale. Harmless here: the file is run-created (first record existed_before:false), so /mmo:revert must delete it regardless. Recorded rather than hidden.",
+  "gate_3_verdicts": {
+    "senior_code_review": "REQUEST_CHANGES (.sdlc/runs/<run>/senior_review.md:357)",
+    "security_review": "PASS_WITH_FINDINGS (.sdlc/runs/<run>/security_review.md:70)",
+    "convergence": "Both reviewers independently identified the SAME root cause: EventAttendeeBadge root carries role=\"img\" + pointer-events-none, which makes the per-avatar title={displayName, status} attribute unreachable by BOTH hover (no hit-test) and AT (a11y leaf). Senior frames it as NFR-5 failure (status is colour-only). Security frames it as dead PII in an always-visible DOM. Single fix (delete the 2 titles + provide a real non-colour status channel) addresses both.",
+    "senior_majors": [
+      "MAJOR-1 NFR-5 fails: per-avatar RSVP status is colour-only; title unreachable via both hover and AT",
+      "MAJOR-2 AC-9 asserts against an imperceptible attribute (getByTitle) - green test, absent behaviour",
+      "MAJOR-3 FR-7 has zero coverage: nothing asserts the status class is applied to an avatar; deleting ATTENDEE_STATUS_DOT[...] from EventAttendeeBadge.tsx:126 keeps all 2313 tests green"
+    ],
+    "senior_refinement_packets": [
+      "RF-01 a11y fix",
+      "RF-02 test hardening",
+      "RF-03 lint/comment",
+      "RF-04 design-doc correction"
+    ],
+    "security_findings": "0 CRITICAL, 0 HIGH, 3 MEDIUM (all one root cause: displayName - which directory syncs often set TO the email - sits in title on an always-visible surface with no compensating benefit; plus posthog session-replay masking unverifiable from repo). Passing by trace: attendee.email appears once as a React key only; monogram whitelist /^[\\p{L}\\p{N}]$/u; slice-before-map; busy-projection double-gated.",
+    "security_caveats": "npm audit --omit=dev unrunnable (bun workspace, ENOLOCK); substituted bun audit --prod = 69 vulns / 24 high, ALL pre-existing transitive, 0 introduced (run adds no deps); figure includes build/test trees so not comparable to an npm --omit=dev baseline.",
+    "out_of_scope_adjacent": "EventDetailsSection.tsx:41 renders provider-sourced href={conference.url}; z.url() accepts javascript: scheme and React 18 only warns. Pre-existing, untouched by this run, deserves its own ticket."
+  },
+  "correction_to_prior_claim": "My post-verify report said 'all 11 biome warnings are in pre-existing files this run never touched'. That was WRONG and the senior reviewer caught it. Verified by re-running `bunx biome check packages/ self-host/`: 10 of the 11 are pre-existing, but EventAttendeeBadge.tsx:107 suppressions/unused is in a file THIS RUN CREATED. Senior recommends deleting the stale biome-ignore comment rather than changing the markup (role=img + aria-label is the deliberate leaf choice that keeps identities out of the announcement).",
+  "packet_008_applied_at": "2026-08-30T03:24:12Z",
+  "packet_008_result": {
+    "mini_gate": "mini-diff-008 approved by user 2026-08-30T03:23:54Z",
+    "applied_via": "2 hook-gated Edit calls (not Bash), diff +4/-11 exactly as previewed, zero drift from anchor",
+    "fr_20_jsx_body_sha": "ff81b5b2ecd76d497c0a853bc644bcb881a83d5c88f70997f7a38aa5b82a13a1 == anchor 2d81253a  => byte-identical, DOM unchanged"
+  },
+  "post_packet_008_verification": {
+    "bun_test_web": "2313 pass / 0 fail / 5830 expect / 304 files / 71.57s / exit 0",
+    "eventform_test_targeted": "38 pass / 0 fail / 90 expect / exit 0 (via test-parallel web runner; bare `bun test <file>` fails on missing env - harness artifact, not a real failure)",
+    "type_check_web_tests": "exit 0",
+    "bun_lint": "exit 1 - see bun_lint_finding below",
+    "git_diff_stat": "4 files changed, 218 insertions(+), 15 deletions(-) + 4 new untracked files"
+  },
+  "bun_lint_finding": {
+    "verdict": "SOURCE IS CLEAN; repo-wide lint is red on run bookkeeping only",
+    "source_scoped": "bunx biome check packages/ self-host/ => 0 errors, 11 warnings, exit 0",
+    "semantic_colors_gate": "exit 0",
+    "repo_wide": "bun lint (= check-semantic-colors && biome check .) => 3 errors, 12 warnings, exit 1",
+    "remaining_3_errors_all_in": ".sdlc/runs/<run>/backups/*.ts(x) - provenance backup copies of 3 run-created files",
+    "why": "biome.json files.includes has no !.sdlc entry, and .sdlc/runs/ is NOT gitignored on this branch, so biome lints run bookkeeping as if it were source",
+    "not_fixed_because": "biome.json is off-limits in the write contract and Gate 2 explicitly decided to leave it untouched; formatting the backups would corrupt them as verbatim pre-edit copies and falsify /mmo:revert",
+    "prior_claim_was_wrong": "state.json previously recorded 'bun lint now exits 0'. Re-run this session shows it was already exit 1 BEFORE packet 8 (5 errors: 3 source-format/import-order in run-created files + 2 .sdlc JSON). Not a packet-8 regression.",
+    "fixed_this_session": "the 3 source-file format/import-order errors were corrected via hook-gated Edits (packet tp_format_009, behaviour-neutral: import reorder, 2 expect() wraps, 1 JSX paren wrap) and the 2 .sdlc JSON reformatted"
+  },
+  "known_risk_revert": "provenance.json now holds 2 records for each of the 3 run-created files: the packet-001..004 record (existed_before:false, sha_before:null => revert must DELETE) and a tp_format_009 record (existed_before:true, backup_path set => revert must NOT restore that mid-run backup). /mmo:revert must key off the EARLIEST record per path. Flagging as a latent correctness risk in the provenance/revert contract.",
+  "resumed_at_2": "2026-08-30T00:00:00Z",
+  "resume_2_preflight": "branch CMP-105/opus-plus-flash-v37 OK; HEAD 2d81253a OK; git diff --stat vs anchor = AllDayEventCard +15 / EventCard.test.tsx +180 / TimedEventCard +23/-4; 4 new files present; EventDetailsSection.tsx unmodified; bun test:web re-run by main thread = 2313 pass / 0 fail / 5831 expect / 304 files / 88.8s; write-contract re-activated.",
+  "run_id": "20260829-124312-feature-extend-attendee-avatar-badge",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "branch": "CMP-105/opus-plus-flash-v37",
+  "anchor_commit": "2d81253a",
+  "head_at_pause": "2d81253a",
+  "gate_0": "passed",
+  "gate_1": "passed",
+  "gate_1_decisions": {
+    "q1_cap": 3,
+    "q2_size_gate": true,
+    "q3_null_glyph": "neutral_person_glyph_guest"
+  },
+  "gate_1_resolved_at": "2026-08-29T20:20:00Z",
+  "gate_2": "passed",
+  "gate_2_opened_at": "2026-08-29T22:10:00Z",
+  "gate_2_decisions": {
+    "design": "approved_as_written",
+    "n1_bun_lint": "formatted the 3 .sdlc bookkeeping JSON files (biome check --write); biome.json untouched; bun lint now exits 0; AC-2 stands",
+    "n2_tiering_packets_5_8": "kept on flash-completion per policy, with a mandatory per-file unified-diff mini-gate before each pre-existing-file edit lands",
+    "n3": "packet 7 emitted only the new test block, inserted via a single Edit at the final }); anchor",
+    "n4": "packet 6 nbsp {\"\\u00A0\"} correction pinned; verified byte-identical vs anchor with od -c after apply"
+  },
+  "next_phase": "execute_packets",
+  "next_packet": "RF-01..RF-04 refinement packets (gate 3 decision = fix, then re-review)",
+  "mini_gate_open": "none",
+  "backups_format_audit": {
+    "why": "bun lint (biome check .) scans .sdlc because biome.json has no !.sdlc and .sdlc/runs is not gitignored on this branch. biome.json is off-limits, so the 3 backups were reformatted to clear the errors.",
+    "safe_because": "all 3 backed-up files were CREATED by this run, so their true pre-run state is 'absent' and /mmo:revert must DELETE them; the backup content therefore carries no recovery value and reformatting destroys nothing.",
+    "pre_format_sha256": {
+      "backups/packages__web__src__common__styles__attendee-status.test.ts": "e0baaf6c7c80025ff944104b79d93414734c950b972d50342df3c6b089a97c88",
+      "backups/packages__web__src__grid__components__EventAttendeeBadge.test.tsx": "cb633777af6453a0aca3ae35ca436b81884935a5e0ee7d8f168712e413b02ea2",
+      "backups/packages__web__src__grid__components__EventAttendeeBadge.tsx": "8f9a5e25fddd10e5b6dcccb1b85fc005b937d12b6b9c37e78b36fc73e5247e5a"
+    }
+  },
+  "completed_packets": [
+    "tp_codegen_001",
+    "tp_tests_002",
+    "tp_codegen_003_r1",
+    "tp_tests_004",
+    "tp_codegen_005",
+    "tp_codegen_006",
+    "tp_tests_007"
+  ],
+  "pending_packets": [],
+  "files_written": 7,
+  "files_on_disk": [
+    "packages/web/src/common/styles/attendee-status.ts (new)",
+    "packages/web/src/common/styles/attendee-status.test.ts (new)",
+    "packages/web/src/grid/components/EventAttendeeBadge.tsx (new)",
+    "packages/web/src/grid/components/EventAttendeeBadge.test.tsx (new)",
+    "packages/web/src/grid/components/TimedEventCard.tsx (modified, +23/-4)",
+    "packages/web/src/grid/components/AllDayEventCard.tsx (modified, +15)",
+    "packages/web/src/grid/components/EventCard.test.tsx (modified, +180, pure append)"
+  ],
+  "last_verified_suite": {
+    "when": "after packets 1-7, run by orchestrator subagent",
+    "bun_test_web": "2313 pass / 0 fail / 5831 expect / 304 files / 78.35s / exit 0",
+    "baseline_was": "2298 pass / 302 files",
+    "delta": "+15 tests (3 shared-map + 7 badge + 5 card), +2 files, 0 failures",
+    "bun_lint": "exit 0 (3 .sdlc bookkeeping JSON files were formatted to clear pre-existing biome errors; biome.json is off-limits and untouched)",
+    "type_check_web_tests": "not re-run after packet 7; was exit 0 at design-phase baseline",
+    "note": "NOT independently re-run by the main thread at pause; git diff --stat confirms the 3 modified + 4 new files, all in-allowlist. Re-run bun test:web on resume before trusting."
+  },
+  "cost_usd_estimated_total": 1.27278,
+  "cost_breakdown": {
+    "opus": 0.98042,
+    "flash": 0.29236,
+    "failed_dispatch_waste": 0.0553
+  },
+  "cost_events": 18,
+  "failed_dispatches": 7,
+  "cost_caveat": "auth_mode=estimated, opus booked cached=0, flash from placeholder rates. NOT cross-policy comparable. 429 RESOURCE_EXHAUSTED from Vertex is the dominant failure mode; recovery window observed 4-7 min; orchestrator now waits it out instead of retrying inside it.",
+  "artifacts": {
+    "intent_brief": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/intent_brief.md",
+    "baseline": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/baseline.json",
+    "discovery": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/discovery.md",
+    "requirements": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/requirements.md",
+    "design": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/design.md",
+    "packet_005_edits": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/packet-005-edits.json",
+    "packet_007_block": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/packet-007-block.txt",
+    "packet_008_diff": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/packet-008-diff.md",
+    "provenance": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/provenance.json",
+    "telemetry": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/telemetry.jsonl",
+    "orchestrator_log": ".sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge/orchestrator.log"
+  },
+  "write_contract": {
+    "path": ".sdlc/local/write-contract.json",
+    "active_at_pause": false,
+    "must_reactivate_before": "applying packet 8 or any further codegen write",
+    "allowlist": [
+      "packages/web/src/grid/components/**",
+      "packages/web/src/common/styles/**",
+      "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx"
+    ]
+  },
+  "resume_procedure": [
+    "1. Confirm on branch CMP-105/opus-plus-flash-v37 and HEAD == 2d81253a (git rev-parse --short HEAD). If the parking hook moved the run dir, it restores on checkout back to this branch.",
+    "2. Confirm the 7 files above are still on disk: git diff --stat 2d81253a -- packages/ should show TimedEventCard/AllDayEventCard/EventCard.test.tsx; git ls-files --others should show the 4 new files.",
+    "3. Re-run bun test:web yourself and confirm >= 2313 pass / 0 fail before trusting the prior result.",
+    "4. Set .sdlc/local/write-contract.json active: true.",
+    "5. Re-invoke the mmo:orchestrator subagent with the same params (run_id=20260829-124312-feature-extend-attendee-avatar-badge, intent=feature-extend, policy=opus-plus-flash-v37, auth_mode=estimated, code_dir=repo root, output_dir=.sdlc/runs/20260829-124312-feature-extend-attendee-avatar-badge, intent_brief_path, baseline_path=.sdlc/baseline/current.json). Tell it: Phases 1-2 done, Gates 0/1/2 passed (decisions in this file), packets 1-7 applied & green, packet 8 (tp_codegen_008, EventDetailsSection.tsx refactor) is the ONLY remaining code change and its previewed diff is in packet-008-diff.md. It must present the packet-8 mini-gate (or recompute+present), apply on approval, then run full bun test:web + bun lint + bun run type-check:web-tests + git diff --stat vs 2d81253a, then senior review + security review, then STOP at Gate 3.",
+    "6. Constraints unchanged: no flash-agsdk-worker; contract stays active through Gate 3; committed stays false; orchestrator runs verify commands itself and pastes real output; back off (don't thrash) on Vertex 429s."
+  ],
+  "notes": "3RD PAUSE (2026-08-30 ~05:15 local): at Gate 3 pass 2. Senior APPROVE_WITH_NITS, security PASS_WITH_FINDINGS, all 3 MAJORs + all 3 MEDIUMs closed. User chose 'Fix N-1/N-2/N-3 (RF-05)' then paused BEFORE the instruction reached the orchestrator - RF-05 has NOT started, nothing new written that turn. Working tree = packet 8 + RF-01 + RF-02a + RF-02b + RF-04 + tp_format_009, all applied; bun test:web 2317/0, bun lint exit 0, type-check exit 0; HEAD 2d81253a; nothing committed. Contract deactivated (allowlist retained). Clean checkpoint, no half-written files. Resume via resume_procedure_3 + rf_05_spec. Orchestrator agent a289c506970e446f7 idle with full context. --- 2ND RESUME (2026-08-30 ~00:00): contract re-activated, packet 8 mini-gate approved + applied, Gate 3 pass 1 = senior REQUEST_CHANGES / security PASS_WITH_FINDINGS, user chose FIX, ruling A on the 'Guest' conflict, RF-01/RF-02a/RF-02b/RF-04 applied, tp_format_009 lint fix, Gate 3 pass 2 reached. --- 2ND PAUSE (2026-08-29 ~23:30): at the packet-8 mini-gate. Packets 1-7 applied + suite-green (2313/0). Packet 8 previewed only. --- 1ST RESUME (2026-08-29 ~20:20): contract re-activated, Gate 1 approved (q1_cap=3 / q2_size_gate=true / q3_null_glyph amended under ruling A at Gate 3 pass 1). --- 1ST PAUSE (2026-08-29 ~12:55): after Phase 1, at Gate 1, nothing written."
+}

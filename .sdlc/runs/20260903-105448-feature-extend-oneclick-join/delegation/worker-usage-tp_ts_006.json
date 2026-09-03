@@ -1,0 +1,216 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 1112102,
+    "cached_content_token_count": 865023,
+    "candidates_token_count": 13620,
+    "thoughts_token_count": 14908,
+    "total_token_count": 1140630,
+    "service_tier": null
+  },
+  "tool_call_count": 21,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/TimedEventCard.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/TimedEventCard.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayEventCard.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayEventCard.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventJoinIcon.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventJoinIcon.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "PORT=3000 bun test packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/package.json",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/package.json",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test:web -- packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test:web -- packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun run format:check && bun run lint && bun run type-check:web-tests",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check packages/web/src/grid/components/EventCard.test.tsx && bun run type-check:web-tests",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status -s",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git diff packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "grep -c \"  it(\" packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "grep -E 'getAttribute\\(\"role\"\\)|\\[role=' packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "grep \"axe\" packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+        "start_line": "799",
+        "end_line": "1598"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/EventCard.test.tsx",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat packages/web/src/grid/components/EventCard.test.tsx",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "node -e 'const fs = require(\"fs\"); const content = fs.readFileSync(\"packages/web/src/grid/components/EventCard.test.tsx\", \"utf8\"); console.log(JSON.stringify({ file_content: content, files_written: [\"packages/web/src/grid/components/EventCard.test.tsx\"] }));'",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"file_content\":\"import { fireEvent, render, screen } from \\\"@testing-library/react\\\";\\nimport { getEventPalette } from \\\"@web/common/styles/theme.util\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport {\\n  COMPACT_EVENT_MAX_HEIGHT,\\n  GRID_EVENT_TITLE_COMPACT_FONT_SIZE,\\n  GRID_EVENT_TITLE_COMPACT_LINE_HEIGHT,\\n  GRID_EVENT_TITLE_FONT_SIZE,\\n} from \\\"@web/grid/grid.constants\\\";\\nimport {\\n  initialEdgeFocusState,\\n  useEdgeFocusStore,\\n} from \\\"@web/grid/shortcuts/edge-focus.store\\\";\\nimport { afterEach, describe, expect, it, mock } from \\\"bun:test\\\";\\nimport \\\"@testing-library/jest-dom\\\";\\n\\nimport { AllDayEventCard } from \\\"./AllDayEventCard\\\";\\nimport { TimedEventCard } from \\\"./TimedEventCard\\\";\\n\\nconst createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>\\n  ({\\n    _id: \\\"event-1\\\",\\n    endDate: \\\"2024-01-15T10:00:00.000Z\\\",\\n    isAllDay: false,\\n    position: {\\n      dragOffset: { x: 0, y: 0 },\\n      horizontalOrder: 0,\\n      initialX: null,\\n      initialY: null,\\n      isOverlapping: false,\\n      totalEventsInGroup: 1,\\n      widthMultiplier: 1,\\n    },\\n    recurrence: undefined,\\n    startDate: \\\"2024-01-15T09:00:00.000Z\\\",\\n    title: \\\"Planning block\\\",\\n    ...overrides,\\n  }) as GridEvent;\\n\\nconst position = {\\n  height: 60,\\n  left: 10,\\n  top: 20,\\n  width: 140,\\n};\\n\\ndescribe(\\\"EventCard\\\", () => {\\n  afterEach(() => {\\n    useEdgeFocusStore.setState(initialEdgeFocusState, true);\\n  });\\n\\n  it(\\\"renders timed event details, interaction attributes, and resize handles\\\", () => {\\n    const onEventMouseDown = mock();\\n    const onScalerMouseDown = mock();\\n\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n        })}\\n        interactionAttributes={{\\n          \\\"data-week-interaction-event-id\\\": \\\"event-1\\\",\\n          \\\"data-week-interaction-event-type\\\": \\\"timed\\\",\\n        }}\\n        motionMode=\\\"idle\\\"\\n        onEventMouseDown={onEventMouseDown}\\n        onScalerMouseDown={onScalerMouseDown}\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"Timed event: Planning block, 9 - 10 AM\\\",\\n    });\\n    expect(card).not.toHaveAttribute(\\\"aria-disabled\\\");\\n    expect(card).toHaveAttribute(\\\"data-week-interaction-event-id\\\", \\\"event-1\\\");\\n    expect(screen.getByText(\\\"Planning block\\\")).toBeInTheDocument();\\n\\n    const timeLabel = screen.getByText(\\\"9 - 10 AM\\\");\\n    expect(timeLabel).toHaveAttribute(\\\"data-calendar-event-time-label\\\", \\\"true\\\");\\n\\n    const handles = document.querySelectorAll(\\n      \\\"[data-calendar-event-resize-handle]\\\",\\n    );\\n    expect(handles).toHaveLength(2);\\n\\n    fireEvent.mouseDown(handles[0]);\\n    fireEvent.mouseDown(handles[1]);\\n\\n    expect(onScalerMouseDown).toHaveBeenCalledTimes(2);\\n    expect(onScalerMouseDown.mock.calls[0]?.[2]).toBe(\\\"startDate\\\");\\n    expect(onScalerMouseDown.mock.calls[1]?.[2]).toBe(\\\"endDate\\\");\\n\\n    fireEvent.mouseDown(card);\\n    expect(onEventMouseDown).toHaveBeenCalledTimes(1);\\n  });\\n\\n  it(\\\"wraps a long timed event title at word boundaries and clamps with an ellipsis\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n          title:\\n            \\\"Journaling-Flow-Experiment with James: Part 2/2: The Miner's Sifting Pan\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const title = screen.getByText(\\n      \\\"Journaling-Flow-Experiment with James: Part 2/2: The Miner's Sifting Pan\\\",\\n    );\\n\\n    // Word-boundary wrapping with a mid-word fallback for unbreakable tokens,\\n    // not the old wordBreak: \\\"break-all\\\" that split every word.\\n    expect(title.style.overflowWrap).toBe(\\\"anywhere\\\");\\n    expect(title.style.wordBreak).toBe(\\\"\\\");\\n    expect(title.style.fontSize).toBe(GRID_EVENT_TITLE_FONT_SIZE);\\n\\n    // -webkit-line-clamp renders the trailing ellipsis itself once the title\\n    // overflows its clamped line count.\\n    expect(title.style.display).toBe(\\\"-webkit-box\\\");\\n    expect(title.style.webkitLineClamp).toBe(\\\"3\\\");\\n  });\\n\\n  it(\\\"renders a compact single-line title for a very short event\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T09:15:00.000Z\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={{ ...position, height: 15 }}\\n      />,\\n    );\\n\\n    const title = screen.getByText(\\\"Planning block\\\");\\n    expect(title.style.fontSize).toBe(GRID_EVENT_TITLE_COMPACT_FONT_SIZE);\\n    expect(title.style.lineHeight).toBe(GRID_EVENT_TITLE_COMPACT_LINE_HEIGHT);\\n    expect(title.style.webkitLineClamp).toBe(\\\"1\\\");\\n  });\\n\\n  it(\\\"keeps the timed selected state on the flat event color\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n        })}\\n        isSelected={true}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"Timed event: Planning block, 9 - 10 AM\\\",\\n    });\\n\\n    expect(card).toHaveClass(\\\"bg-(--event-bg)\\\");\\n    expect(card).not.toHaveClass(\\\"bg-event-selected\\\");\\n    expect(card.style.getPropertyValue(\\\"--event-bg\\\")).toBe(\\n      getEventPalette().base,\\n    );\\n    expect(card.style.boxShadow).toContain(\\n      \\\"0 0 0 1px var(--background), 0 0 0 3px color-mix(in srgb, var(--text) 70%, transparent)\\\",\\n    );\\n  });\\n\\n  it(\\\"paints a timed event with its content color slot fill\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          color: \\\"blue\\\",\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"Timed event: Planning block, 9 - 10 AM\\\",\\n    });\\n    expect(card.style.getPropertyValue(\\\"--event-bg\\\")).toBe(\\n      getEventPalette(\\\"blue\\\").base,\\n    );\\n  });\\n\\n  it(\\\"paints a timed draft with the same slot fill as the saved card\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"draft\\\"\\n        event={createEvent({\\n          color: \\\"red\\\",\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"Timed event: Planning block, 9 - 10 AM\\\",\\n    });\\n    expect(card.style.getPropertyValue(\\\"--event-bg\\\")).toBe(\\n      getEventPalette(\\\"red\\\").base,\\n    );\\n    expect(card.style.filter).toBe(\\\"drop-shadow(0 1px 2px rgb(0 0 0 / 0.28))\\\");\\n  });\\n\\n  it(\\\"keeps timed event keyboard activation from reaching parent shortcuts\\\", () => {\\n    const onEventKeyDown = mock();\\n    const onParentKeyDown = mock();\\n\\n    render(\\n      // biome-ignore lint/a11y/noStaticElementInteractions: test wrapper simulates a parent shortcut listener.\\n      <div onKeyDown={onParentKeyDown}>\\n        <TimedEventCard\\n          displayMode=\\\"saved\\\"\\n          event={createEvent()}\\n          motionMode=\\\"idle\\\"\\n          onEventKeyDown={onEventKeyDown}\\n          position={position}\\n        />\\n      </div>,\\n    );\\n\\n    fireEvent.keyDown(screen.getByRole(\\\"button\\\"), { key: \\\"Enter\\\" });\\n\\n    expect(onEventKeyDown).toHaveBeenCalledTimes(1);\\n    expect(onParentKeyDown).not.toHaveBeenCalled();\\n  });\\n\\n  it(\\\"announces recurring timed events\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          recurrence: {\\n            eventId: \\\"series-1\\\",\\n            rule: [\\\"RRULE:FREQ=WEEKLY\\\"],\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"button\\\", {\\n        name: \\\"Recurring Timed event: Planning block, 9 - 10 AM\\\",\\n      }),\\n    ).toBeInTheDocument();\\n  });\\n\\n  it(\\\"places the repeat indicator bottom-right\\\", () => {\\n    const { container } = render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n    const icon = container.querySelector('svg[class*=\\\"right-1\\\"]');\\n\\n    // Positioned bottom-right (not the old bottom-left), and no longer the\\n    // hardcoded white fg color.\\n    expect(icon).not.toBeNull();\\n    const iconClass = icon?.getAttribute(\\\"class\\\") ?? \\\"\\\";\\n    expect(iconClass).not.toContain(\\\"left-1\\\");\\n    expect(iconClass).not.toContain(\\\"text-muted\\\");\\n  });\\n\\n  it(\\\"shows the repeat indicator on a 15-minute recurring event despite its small rendered height\\\", () => {\\n    // A true 15-minute event lays out shorter than a taller one resized down to\\n    // 15 minutes; the icon used to be gated on rendered pixel height, so the two\\n    // disagreed. Gating on duration makes any 15-minute recurring event qualify.\\n    const { container } = render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          endDate: \\\"2024-01-15T09:15:00.000Z\\\",\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n          startDate: \\\"2024-01-15T09:00:00.000Z\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        // A short height that fell below the old pixel-height threshold.\\n        position={{ ...position, height: 18 }}\\n      />,\\n    );\\n\\n    expect(container.querySelector('svg[class*=\\\"right-1\\\"]')).not.toBeNull();\\n  });\\n\\n  it(\\\"shows the repeat indicator on a recurring draft preview\\\", () => {\\n    // The draft preview should reflect the future reality: once a draft has a\\n    // recurrence rule, its card renders the repeat icon immediately (drafts are\\n    // not placeholders, so they are not excluded from the indicator).\\n    const { container } = render(\\n      <TimedEventCard\\n        displayMode=\\\"draft\\\"\\n        event={createEvent({\\n          _id: undefined,\\n          recurrence: { rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(container.querySelector('svg[class*=\\\"right-1\\\"]')).not.toBeNull();\\n  });\\n\\n  it(\\\"hides the repeat indicator on a too-narrow event\\\", () => {\\n    const { container } = render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        // Below the width gate: too cramped to place the icon without crowding.\\n        position={{ ...position, width: 30 }}\\n      />,\\n    );\\n\\n    expect(container.querySelector('svg[class*=\\\"right-1\\\"]')).toBeNull();\\n  });\\n\\n  it(\\\"renders all-day event details, interaction attributes, acknowledgement animation, and resize handles\\\", () => {\\n    const onEventMouseDown = mock();\\n    const onScalerMouseDown = mock();\\n\\n    render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          isAllDay: true,\\n          title: \\\"Conference\\\",\\n        })}\\n        interactionAttributes={{\\n          \\\"data-week-interaction-event-id\\\": \\\"event-2\\\",\\n          \\\"data-week-interaction-event-type\\\": \\\"all-day\\\",\\n        }}\\n        isPlaceholder={false}\\n        onEventMouseDown={onEventMouseDown}\\n        onScalerMouseDown={onScalerMouseDown}\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"All-day event: Conference\\\",\\n    });\\n    expect(card).not.toHaveAttribute(\\\"aria-disabled\\\");\\n    expect(card).toHaveAttribute(\\\"data-week-interaction-event-id\\\", \\\"event-2\\\");\\n    expect(card).toHaveAttribute(\\\"data-week-interaction-event-type\\\", \\\"all-day\\\");\\n    expect(screen.getByText(\\\"Conference\\\")).toBeInTheDocument();\\n\\n    const handles = document.querySelectorAll(\\n      \\\"[data-calendar-event-resize-handle]\\\",\\n    );\\n    expect(handles[0]).toHaveAttribute(\\n      \\\"data-calendar-event-resize-handle\\\",\\n      \\\"startDate\\\",\\n    );\\n    expect(handles[1]).toHaveAttribute(\\n      \\\"data-calendar-event-resize-handle\\\",\\n      \\\"endDate\\\",\\n    );\\n\\n    fireEvent.mouseDown(handles[0]);\\n    fireEvent.mouseDown(handles[1]);\\n    fireEvent.mouseDown(card);\\n\\n    expect(onScalerMouseDown).toHaveBeenCalledTimes(2);\\n    expect(onEventMouseDown).toHaveBeenCalledTimes(1);\\n  });\\n\\n  it(\\\"keeps all-day event keyboard activation from reaching parent shortcuts\\\", () => {\\n    const onEventKeyDown = mock();\\n    const onParentKeyDown = mock();\\n\\n    render(\\n      // biome-ignore lint/a11y/noStaticElementInteractions: test wrapper simulates a parent shortcut listener.\\n      <div onKeyDown={onParentKeyDown}>\\n        <AllDayEventCard\\n          event={createEvent({\\n            isAllDay: true,\\n            title: \\\"Conference\\\",\\n          })}\\n          isPlaceholder={false}\\n          onEventKeyDown={onEventKeyDown}\\n          position={position}\\n        />\\n      </div>,\\n    );\\n\\n    fireEvent.keyDown(screen.getByRole(\\\"button\\\"), { key: \\\"Enter\\\" });\\n\\n    expect(onEventKeyDown).toHaveBeenCalledTimes(1);\\n    expect(onParentKeyDown).not.toHaveBeenCalled();\\n  });\\n\\n  it(\\\"places the all-day repeat indicator bottom-right\\\", () => {\\n    const { container } = render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          isAllDay: true,\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n        })}\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n    const icon = container.querySelector('svg[class*=\\\"right-1\\\"]');\\n\\n    // Matches the timed card: bottom-right, and no longer the fixed white fg\\n    // color on the left.\\n    expect(icon).not.toBeNull();\\n    const iconClass = icon?.getAttribute(\\\"class\\\") ?? \\\"\\\";\\n    expect(iconClass).toContain(\\\"bottom-0.5\\\");\\n    expect(iconClass).not.toContain(\\\"text-muted\\\");\\n  });\\n\\n  it(\\\"announces recurring all-day events\\\", () => {\\n    render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          isAllDay: true,\\n          recurrence: {\\n            eventId: \\\"series-1\\\",\\n            rule: [\\\"RRULE:FREQ=WEEKLY\\\"],\\n          },\\n        })}\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"button\\\", {\\n        name: \\\"Recurring All-day event: Planning block\\\",\\n      }),\\n    ).toBeInTheDocument();\\n  });\\n\\n  it(\\\"uses calendar-colored focus chrome instead of the theme accent ring\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n          endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n        })}\\n        focusColor=\\\"#616161\\\"\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: \\\"Timed event: Planning block, 9 - 10 AM\\\",\\n    });\\n    expect(card.style.getPropertyValue(\\\"--event-focus-color\\\")).toBe(\\\"#616161\\\");\\n    expect(card.className).not.toContain(\\\"ring-accent\\\");\\n    expect(card.className).toContain(\\n      \\\"focus-visible:outline-(--event-focus-color)\\\",\\n    );\\n    expect(card.className).toContain(\\\"focus-visible:outline-2\\\");\\n  });\\n\\n  it(\\\"paints start/end edge focus outside the card with the calendar color\\\", () => {\\n    const event = createEvent({\\n      startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n      endDate: \\\"2099-01-15T10:00:00.000Z\\\",\\n    });\\n    useEdgeFocusStore.setState({\\n      eventId: event._id!,\\n      edge: \\\"startDate\\\",\\n      announcement: \\\"Editing start time\\\",\\n    });\\n\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={event}\\n        focusColor=\\\"#616161\\\"\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: /editing start time/,\\n    });\\n    expect(card).toHaveAttribute(\\\"data-edge-focus\\\", \\\"startDate\\\");\\n    expect(card.style.boxShadow).toContain(\\\"0 -3px 0 0 #616161\\\");\\n    expect(card.className).toContain(\\\"focus-visible:outline-none\\\");\\n    expect(card.className).not.toContain(\\\"ring-accent\\\");\\n    expect(card.className).not.toContain(\\\"bg-accent\\\");\\n  });\\n\\n  it(\\\"keeps a short timed title readable while an edge is focused\\\", () => {\\n    const event = createEvent({\\n      startDate: \\\"2099-01-15T09:00:00.000Z\\\",\\n      endDate: \\\"2099-01-15T09:15:00.000Z\\\",\\n      title: \\\"Do drops\\\",\\n    });\\n    useEdgeFocusStore.setState({\\n      eventId: event._id!,\\n      edge: \\\"startDate\\\",\\n      announcement: \\\"Editing start time\\\",\\n    });\\n\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={event}\\n        focusColor=\\\"#616161\\\"\\n        motionMode=\\\"idle\\\"\\n        position={{ ...position, height: COMPACT_EVENT_MAX_HEIGHT }}\\n      />,\\n    );\\n\\n    expect(screen.getByText(\\\"Do drops\\\")).toBeInTheDocument();\\n    const card = screen.getByRole(\\\"button\\\", { name: /Do drops/ });\\n    expect(card).toHaveAttribute(\\\"data-edge-focus\\\", \\\"startDate\\\");\\n    // Outside shadow, not an inset accent bar covering the title.\\n    expect(card.style.boxShadow).toContain(\\\"0 -3px 0 0 #616161\\\");\\n    expect(card.querySelector(\\\"[data-edge-focus]\\\")).toBeNull();\\n  });\\n\\n  it(\\\"paints all-day edge focus with the calendar color on the left/right\\\", () => {\\n    const event = createEvent({\\n      isAllDay: true,\\n      title: \\\"Conference\\\",\\n    });\\n    useEdgeFocusStore.setState({\\n      eventId: event._id!,\\n      edge: \\\"endDate\\\",\\n      announcement: \\\"Editing end time\\\",\\n    });\\n\\n    render(\\n      <AllDayEventCard\\n        event={event}\\n        focusColor=\\\"#3b82f6\\\"\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n\\n    const card = screen.getByRole(\\\"button\\\", {\\n      name: /editing end date/,\\n    });\\n    expect(card).toHaveAttribute(\\\"data-edge-focus\\\", \\\"endDate\\\");\\n    expect(card.style.boxShadow).toContain(\\\"3px 0 0 0 #3b82f6\\\");\\n    expect(card.className).not.toContain(\\\"ring-accent\\\");\\n  });\\n\\n  it(\\\"renders the join link when a timed event has a conference\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"link\\\", { name: \\\"Join Planning block\\\" }),\\n    ).toBeInTheDocument();\\n    expect(\\n      screen.getByRole(\\\"button\\\", { name: /Planning block/ }),\\n    ).toBeInTheDocument();\\n  });\\n\\n  it(\\\"does not render the join link when a timed event has no conference\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent()}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the timed join link when displayMode is placeholder\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"placeholder\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the timed join link when motionMode is dragging\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n        })}\\n        motionMode=\\\"dragging\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the timed join link when position width is below threshold\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={{ ...position, width: 30 }}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the timed join link on a 15-minute event\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          endDate: \\\"2024-01-15T09:15:00.000Z\\\",\\n          startDate: \\\"2024-01-15T09:00:00.000Z\\\",\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"renders the timed join link when displayMode is draft\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"draft\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"link\\\", { name: \\\"Join Planning block\\\" }),\\n    ).toBeInTheDocument();\\n  });\\n\\n  it(\\\"hides the timed join link when conference url uses javascript scheme\\\", () => {\\n    render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"javascript:alert(1)\\\",\\n          },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"keeps the repeat icon visible when both repeat and join icons show on a timed event\\\", () => {\\n    const { container } = render(\\n      <TimedEventCard\\n        displayMode=\\\"saved\\\"\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n        })}\\n        motionMode=\\\"idle\\\"\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"link\\\", { name: \\\"Join Planning block\\\" }),\\n    ).toBeInTheDocument();\\n    expect(container.querySelector('svg[class*=\\\"right-1\\\"]')).not.toBeNull();\\n  });\\n\\n  it(\\\"renders all-day join link when conference exists and omits it without conference\\\", () => {\\n    const { rerender } = render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          isAllDay: true,\\n          title: \\\"Conference\\\",\\n        })}\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"link\\\", { name: \\\"Join Conference\\\" }),\\n    ).toBeInTheDocument();\\n\\n    rerender(\\n      <AllDayEventCard\\n        event={createEvent({\\n          isAllDay: true,\\n          title: \\\"Conference\\\",\\n        })}\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the all-day join link when isPlaceholder is true\\\", () => {\\n    render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          isAllDay: true,\\n          title: \\\"Conference\\\",\\n        })}\\n        isPlaceholder={true}\\n        position={position}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"hides the all-day join link when width is below threshold\\\", () => {\\n    render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          isAllDay: true,\\n          title: \\\"Conference\\\",\\n        })}\\n        isPlaceholder={false}\\n        position={{ ...position, width: 30 }}\\n      />,\\n    );\\n\\n    expect(screen.queryByRole(\\\"link\\\")).toBeNull();\\n  });\\n\\n  it(\\\"adds pr-10 class to all-day title row when both repeat and join icons show\\\", () => {\\n    render(\\n      <AllDayEventCard\\n        event={createEvent({\\n          conference: {\\n            label: \\\"Google Meet\\\",\\n            url: \\\"https://meet.example.com/x\\\",\\n          },\\n          isAllDay: true,\\n          recurrence: { eventId: \\\"series-1\\\", rule: [\\\"RRULE:FREQ=WEEKLY\\\"] },\\n          title: \\\"Conference\\\",\\n        })}\\n        isPlaceholder={false}\\n        position={position}\\n      />,\\n    );\\n\\n    expect(\\n      screen.getByRole(\\\"link\\\", { name: \\\"Join Conference\\\" }),\\n    ).toBeInTheDocument();\\n    expect(screen.getByText(\\\"Conference\\\").parentElement).toHaveClass(\\\"pr-10\\\");\\n  });\\n});\\n\",\"files_written\":[\"packages/web/src/grid/components/EventCard.test.tsx\"]}"
+}

@@ -1,0 +1,72 @@
+{
+  "run_id": "20260903-105448-feature-extend-oneclick-join",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "provenance_note": "All costs are ESTIMATED (char/3.8 heuristic, input_cached booked as 0) except mechanical-tier events, which carry vendor-reported tokens. Cross-policy cost comparison is therefore indicative, not authoritative.",
+  "git": {
+    "branch": "CMP-103/opus-plus-flash-v37-sdk",
+    "head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+    "committed": false
+  },
+  "totals": {
+    "cost_usd": 7.8452,
+    "input_tokens": 1778864,
+    "output_tokens": 169339,
+    "telemetry_events": 20
+  },
+  "cost_by_phase": {
+    "requirements_analysis": 0.4906,
+    "architecture_design": 1.4921,
+    "plan_task_packets": 0.2105,
+    "codegen": 0.2539,
+    "tests": 3.2703,
+    "senior_code_review": 1.0626,
+    "debug": 0.336,
+    "security_review": 0.729
+  },
+  "cost_by_model": {
+    "opus": {
+      "cost_usd": 4.5749,
+      "packets": 15,
+      "cost_per_packet": 0.305
+    },
+    "flash-agsdk-worker": {
+      "cost_usd": 3.2703,
+      "packets": 5,
+      "cost_per_packet": 0.6541
+    }
+  },
+  "tests": {
+    "baseline": "2297 pass / 1 fail / 1 error across 302 files (RED)",
+    "after": "2336 pass / 1 fail / 1 error across 303 files",
+    "delta": "+39 passing, no new failures",
+    "known_failure": "RecurrenceSection > keeps the events own date selectable when the event ends after midnight (pre-existing date rot)",
+    "e2e": "e2e/timed/event-join.spec.ts 2/2, e2e/allday/event-join.spec.ts 2/2, e2e/accessibility 7/7 (untouched, no regression)"
+  },
+  "files_changed": 13,
+  "artifacts": [
+    "requirements.md",
+    "design.md",
+    "packets.json",
+    "review.md",
+    "security_review.md",
+    "provenance.json",
+    "telemetry.jsonl",
+    "manifest.json",
+    "SUMMARY.md"
+  ],
+  "gates": {
+    "gate_0": "approved (reopened twice: 8->10->11->13 paths)",
+    "gate_1": "approved after one revise",
+    "gate_2": "approved with 2 corrections",
+    "gate_3": "approved (pass_with_notes)",
+    "gate_4": "accepted"
+  },
+  "outstanding": [
+    "S-2 low: 24px control overhangs 20px all-day chip by 1px",
+    "7 senior + 5 security follow-up tickets unfiled"
+  ],
+  "manual_verification_result": "Manual browser verification PASSED 2026-09-03, independent driver against the running app (local/anonymous IndexedDB mode, no backend). Seeded three fixtures: timed+conference, all-day+conference, timed without conference. AC-1: join link present on both conference events, absent on the third (visually confirmed in screenshots). AC-5: accessible names resolved through the a11y tree as \"Join AC8 Timed Standup\" / \"Join AC8 All Day Offsite\". AC-3: real `.click()` on each opened https://meet.google.com/ac8-verify-xyz in a new tab and the detail panel did NOT open, on BOTH card types. AC-4: card-body click still opens the detail panel. Sibling invariant confirmed live in the DOM: the join control's `closest('[role=\"button\"]')` is null. The -t2 arm's failure mode (mouse-click join opening the panel) does not reproduce."
+}

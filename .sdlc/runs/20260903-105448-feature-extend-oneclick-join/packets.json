@@ -1,0 +1,323 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-interaction",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/interaction/dom.ts",
+    "instruction": "Add EVENT_JOIN_CONTROL_ATTRIBUTE = \"data-calendar-event-join-control\" and EVENT_JOIN_CONTROL_SELECTOR beside EVENT_RESIZE_HANDLE_ATTRIBUTE, and an isJoinControlTarget(event: Pick<PointerEvent,\"target\">): boolean predicate immediately after getResizeHandleEdge, shaped identically (Element check, closest(SELECTOR), Boolean). Do NOT modify DRAFT_CLONE_STRIPPED_ATTRIBUTES or any existing export. Carry the design's explanatory comment about ancestor pointer capture.",
+    "inputs": [
+      { "path": "packages/web/src/grid/interaction/dom.ts", "reason": "file under edit; mirror getResizeHandleEdge exactly", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 4.1 is the spec for this packet", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "EVENT_JOIN_CONTROL_ATTRIBUTE and EVENT_JOIN_CONTROL_SELECTOR are exported",
+      "isJoinControlTarget is exported and returns boolean",
+      "DRAFT_CLONE_STRIPPED_ATTRIBUTES is byte-identical to HEAD",
+      "every pre-existing export is unchanged",
+      "file typechecks under the repo tsconfig"
+    ],
+    "budget": { "maxInputTokens": 6000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_002",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "module": "grid-components",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "instruction": "Create EventJoinIcon per design section 2. Export JOIN_CONTROL_SIZE_PX = 24 (NOT 20 - forced by axe target-size), JOIN_CONTROL_REPEAT_CLEARANCE_PX = 16, resolveJoinHref (try/catch around new URL, http:/https: only, returns the ORIGINAL string not parsed.href), and EventJoinIcon. Render an <a> carrying EVENT_JOIN_CONTROL_ATTRIBUTE, aria-label `Join ${title}`, target=_blank, rel=noopener noreferrer, absolute positioning derived from the position prop, and e.stopPropagation() in onMouseDown. No onClick, no preventDefault. Child VideoCameraIcon size 12 aria-hidden.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "sections 2.1-2.4 are the full spec incl. exact render tree", "content": "" },
+      { "path": "packages/web/src/grid/components/EventRepeatIcon.tsx", "reason": "sibling glyph conventions and comment style", "content": "" },
+      { "path": "packages/web/src/components/Icons/icon.utils.ts", "reason": "getInteractiveIconClassName contract", "content": "" },
+      { "path": "packages/web/src/components/Sidebar/UpNextCard/UpNextCard.tsx", "reason": "existing join anchor idiom (lines 87-97)", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "JOIN_CONTROL_SIZE_PX === 24",
+      "resolveJoinHref returns null for javascript:, data:, vbscript:, unparseable, relative and empty input",
+      "resolveJoinHref returns the original string (not a normalized href) for http/https",
+      "the anchor carries EVENT_JOIN_CONTROL_ATTRIBUTE so closest() from the child svg resolves to it",
+      "onMouseDown calls stopPropagation and nothing calls preventDefault",
+      "no new npm import beyond @phosphor-icons/react which is already a dependency"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_ts_003",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-components",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventJoinIcon.test.tsx",
+    "instruction": "Create the bun:test suite for EventJoinIcon implementing exactly the 10 cases in design section 8.1. Use @testing-library/react + @testing-library/jest-dom, importing in the same order as EventCard.test.tsx lines 1-18. Every presence/absence assertion MUST use getByRole/queryByRole against the accessibility tree. Do NOT assert a raw role DOM attribute via getAttribute or a [role=...] CSS selector. Do NOT add axe. Do NOT fireEvent.click the anchor (navigation-not-implemented error); use fireEvent.mouseDown for the propagation case.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 8.1 enumerates the 10 required cases and the geometry numbers", "content": "" },
+      { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "reason": "component under test", "content": "" },
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "reason": "import order and bun:test conventions to mirror", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "all 10 cases from design section 8.1 are present",
+      "zero occurrences of getAttribute(\"role\") and zero [role= CSS selectors",
+      "no axe import",
+      "geometry case asserts left 110px, top 38px, width/height 24px",
+      "suite passes under bun run test:web"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_004",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "instruction": "Apply design section 5.1: add JOIN_ICON_MIN_WIDTH = 60 and JOIN_ICON_MIN_DURATION_MINUTES = 30 (the >= comparison must stay inclusive so a 30-minute event still renders), derive joinHref/showJoinIcon, add the conditional pr-5/pr-9 on the content wrapper via cn(), and convert the return to a fragment whose second child is the EventJoinIcon. The card div itself must be byte-identical to HEAD. Add no new prop to the component.",
+    "inputs": [
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "reason": "file under edit", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 5.1 is the spec", "content": "" },
+      { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "reason": "props contract of the component being rendered", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "the existing card <div> and all its attributes/handlers are unchanged",
+      "no new prop is added to TimedEventCardProps",
+      "duration gate uses >= 30 (inclusive)",
+      "the join icon is a SIBLING of the card div, not a descendant",
+      "second fragment child is null when the event has no scheme-valid conference URL"
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "grid-components",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "instruction": "Apply design section 5.2: add JOIN_ICON_MIN_WIDTH = 60, derive joinHref/showJoinIcon (no motion gate - the card has no motion prop and adding one is out of scope), extend the title-row cn() with the pr-3.5/pr-6/pr-10 branches, and convert the return to a fragment whose second child is the EventJoinIcon. The card div itself must be byte-identical to HEAD. Add no new prop.",
+    "inputs": [
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "reason": "file under edit", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 5.2 is the spec", "content": "" },
+      { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "reason": "props contract", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "the existing card <div> and all its attributes/handlers are unchanged",
+      "no new prop is added to AllDayEventCardProps",
+      "the three padding branches are mutually exclusive and preserve today's pr-3.5 behaviour when only the repeat glyph shows",
+      "the join icon is a SIBLING of the card div",
+      "second fragment child is null when the event has no scheme-valid conference URL"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_ts_006",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "grid-components",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "instruction": "Append the 13 cases from design section 8.2 inside the existing describe(\"EventCard\") block. Modify no existing case. Every presence/absence assertion MUST use getByRole/queryByRole against the accessibility tree - never getAttribute(\"role\") and never a [role=...] CSS selector. Do NOT add axe. createEvent already spreads Partial<GridEvent> so conference can be passed directly.",
+    "inputs": [
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "reason": "file under edit; existing conventions and createEvent factory", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 8.2 enumerates the 13 cases", "content": "" },
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "reason": "gates under test", "content": "" },
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "reason": "gates under test", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "all 13 cases from design section 8.2 are present",
+      "no pre-existing test case is modified or removed",
+      "zero occurrences of getAttribute(\"role\") and zero [role= CSS selectors in the added cases",
+      "no axe import",
+      "suite passes under bun run test:web"
+    ],
+    "budget": { "maxInputTokens": 24000, "maxOutputTokens": 6000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_007",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "week-interaction",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts",
+    "instruction": "Add isJoinControlTarget to the existing @web/grid/interaction/dom import (keeping Biome alphabetical order of named specifiers) and insert a three-line early bail returning null as the FIRST statement of getInteractionTarget, ahead of getAllDayResizeTarget. Change nothing else in the file.",
+    "inputs": [
+      { "path": "packages/web/src/views/Week/interaction/adapter/week-interaction.adapter.ts", "reason": "file under edit", "content": "" },
+      { "path": "packages/web/src/grid/interaction/dom.ts", "reason": "predicate being imported", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 4.2 gives the exact insertion point", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "the bail is the first statement of getInteractionTarget",
+      "exactly one import specifier is added",
+      "no other function in the file is modified",
+      "file typechecks"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_008",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "day-interaction",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+    "instruction": "Identical edit to tp_cg_007 but in the Day adapter: add isJoinControlTarget to the @web/grid/interaction/dom import and insert the same three-line early bail as the FIRST statement of getInteractionTarget. Change nothing else.",
+    "inputs": [
+      { "path": "packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts", "reason": "file under edit", "content": "" },
+      { "path": "packages/web/src/grid/interaction/dom.ts", "reason": "predicate being imported", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 4.2 gives the exact insertion point", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "the bail is the first statement of getInteractionTarget",
+      "exactly one import specifier is added",
+      "no other function in the file is modified",
+      "file typechecks"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_ts_009",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "e2e-utils",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "e2e/utils/event-test-utils.ts",
+    "instruction": "ADDITIVE ONLY. Append the SeededLocalEvent interface and the seedEventWithConference helper from design section 7.1 to the END of the file. Do NOT alter, reorder, re-type or reformat ANY existing export - every e2e spec in the repo imports from this module. The record must satisfy LocalEventRecordSchema and EventSchema (both z.strictObject): omit optional fields entirely rather than setting them undefined, keep top-level id === event.id, use timeZone \"UTC\", and throw a named error when the events object store is absent.",
+    "inputs": [
+      { "path": "e2e/utils/event-test-utils.ts", "reason": "file under edit; all existing exports must survive untouched", "content": "" },
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 7.1 gives the exact record shape and implementation contract", "content": "" },
+      { "path": "packages/web/src/events/types/local-event.record.ts", "reason": "LocalEventRecordSchema the record must satisfy", "content": "" },
+      { "path": "packages/core/src/types/event.contracts.ts", "reason": "EventSchema the nested event must satisfy", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "every export present at HEAD is byte-identical",
+      "seedEventWithConference and SeededLocalEvent are exported",
+      "optional Event fields are omitted, never set to undefined",
+      "top-level id equals event.id",
+      "a missing events object store throws a named, actionable error"
+    ],
+    "budget": { "maxInputTokens": 22000, "maxOutputTokens": 5000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_ts_010",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "e2e-timed",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "e2e/timed/event-join.spec.ts",
+    "instruction": "Create the timed join spec per design section 7.3: two test() blocks. Test 1 seeds join/blocked/control events, asserts href+target+rel, absence for the javascript: and no-conference cases, runs expectNoAxeViolations scoped to #mainGrid, then clicks join via context().waitForEvent(\"page\") (NOT page.on(\"popup\") - rel=noopener) and asserts the event form stays hidden. Test 2 asserts click/drag/resize on a CONFERENCE-FREE event only. All locators MUST be name-scoped to this spec's generated titles because demo events (incl. a conference-bearing Morning standup) are present in every run.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 7.2/7.3 give ordering, locators and both test bodies", "content": "" },
+      { "path": "e2e/timed/event-smoke.spec.ts", "reason": "spec conventions to mirror", "content": "" },
+      { "path": "e2e/utils/event-test-utils.ts", "reason": "helpers incl. the new seedEventWithConference", "content": "" },
+      { "path": "e2e/utils/axe-assertion.ts", "reason": "expectNoAxeViolations signature; READ-ONLY, never modify", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "seeding happens AFTER prepareCalendarPage and is followed by a reload",
+      "the conference-bearing card is never dragged or resized",
+      "every locator is filtered by an accessible name unique to this spec",
+      "expectNoAxeViolations is called with include: \"#mainGrid\"",
+      "e2e/utils/axe-assertion.ts is imported and not modified"
+    ],
+    "budget": { "maxInputTokens": 20000, "maxOutputTokens": 5000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_ts_011",
+    "phase": "tests",
+    "task_type": "test_add",
+    "module": "e2e-allday",
+    "pass_id": "20260903-105448-feature-extend-oneclick-join",
+    "intent": "feature-extend",
+    "artifact_path": "e2e/allday/event-join.spec.ts",
+    "instruction": "Create the all-day join spec per design section 7.3: same two-test shape as the timed spec but kind allDay (end exclusive), locators scoped to #allDayRow, drag-to-move only and NO resize. CRITICAL: do NOT call expectNoAxeViolations in this spec - Gate-2 decision (B). A 24px control over a 20px chip fails axe target-size and the helper is read-only. All locators MUST be name-scoped because demo events are present in every run.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-105448-feature-extend-oneclick-join/design.md", "reason": "section 7.3 all-day bullets incl. the (B) decision", "content": "" },
+      { "path": "e2e/allday/event-smoke.spec.ts", "reason": "spec conventions to mirror", "content": "" },
+      { "path": "e2e/utils/event-test-utils.ts", "reason": "helpers incl. the new seedEventWithConference", "content": "" }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": { "file_content": { "type": "string" } },
+      "required": ["file_content"]
+    },
+    "acceptance": [
+      "NO expectNoAxeViolations call and no import of axe-assertion",
+      "all-day resize is not exercised",
+      "the conference-bearing card is never dragged",
+      "all-day end date is exclusive (end > start)",
+      "every locator is filtered by an accessible name unique to this spec"
+    ],
+    "budget": { "maxInputTokens": 18000, "maxOutputTokens": 5000 },
+    "retry_count": 0
+  }
+]

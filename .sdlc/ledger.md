@@ -344,3 +344,66 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+---
+
+## Row thirteen — `20260903-105448-feature-extend-oneclick-join` (CMP-103 arm 2, `opus-plus-flash-v37` **SDK door**)
+
+One-click join icon on both grid event cards. **Accepted, committed and pushed** on
+`CMP-103/opus-plus-flash-v37-sdk` off `2d81253a`, no PR. 13 files, +39 passing tests
+(2297/1/1 → 2336/1/1; the suite was RED before and after and was never reported green).
+Fresh implementation — the five sibling-branch versions were deliberately not consulted.
+
+**The cost inversion is the headline, and it is the opposite of the policy's premise.** The
+mechanical `flash-agsdk-worker` cost **$0.654/packet** against `opus` at **$0.305/packet** — the
+cheap tier cost more than twice the premium tier per packet, and **15× the premium *source*
+packets** at $0.042 each. Two causes, both structural:
+
+1. **Codegen never reached the SDK door at all.** The policy's `codegen` rule matches a fixed
+   `task_type` allowlist that does not contain the brownfield primitives `new_file_add` /
+   `existing_file_edit`, so all six source packets fell through to `default: opus`. Only
+   `phase: tests` matched. The task types were deliberately **not** relabelled to force mechanical
+   routing — that would have fabricated the comparison. **So this arm measures the SDK door on
+   tests only.**
+2. **Agent-door exploration.** 122k–400k input tokens per packet whose output was one file. The
+   priciest single packet was **$1.00 for one Playwright spec**.
+
+**Two blockers and one medium security finding, all real, all caught by review rather than by tests.**
+Senior review returned `request_changes`: the timed e2e spec seeded at `10:00Z` where the demo seed
+already ships "Try Compass", producing a four-card deck whose join anchor was occluded — it would
+have failed at `.click()` looking like a feature bug, and **only at UTC offset 0, i.e. in CI**; and
+the timed card's title reserve was 3px short of the control it was reserving for. Security review
+found the AC-9 scheme guard parsed with **no base** while a browser resolves an `href` **against the
+page**, so `https:/evil.test/x` validated as off-site but navigated same-origin and `https:/cleanup`
+reached a route that wipes local storage on mount. Fixed by comparing both resolutions.
+
+**A design premise was wrong twice, and verifying rather than relaying is what caught it.** `design.md`
+claimed axe's `target-size` could not fire because it ships `enabled: false` — but tag-based `runOnly`
+never consults that flag, so WCAG 2.5.8 does run. At 20px the control would have failed the new specs
+*and* introduced a new failure into the **untouched** `app-a11y.spec.ts`. It also claimed no existing
+test had a conference-bearing card; the demo seed puts one in **every** e2e run
+(`demo-data-seed.ts:144`), which is also why the 30-minute duration gate must stay `>=` inclusive.
+
+**New product a11y bug, worth its own ticket:** a 20px-tall all-day chip cannot host any adjacent or
+overlapping interactive target without breaching WCAG 2.5.8 — a pre-existing constraint of the
+all-day row's height, **exposed, not caused**, by this feature. No on-card size passes; only placing
+the control outside the chip does. That is why the all-day spec deliberately ships **no** axe scan
+while the timed spec keeps one (Gate-2 decision B). Related: S-2, the 1px overhang into the lane below.
+
+**`/mmo:revert` is not trustworthy for this run — use plain `git`.** Three mechanical-door caveats
+observed directly: the worker's writes **cannot** reach the `PreToolUse` hook (it never invokes
+`Write`/`Edit`, so the matcher never fires — it landed on allowlisted paths only because instructed);
+it wrote **zero provenance** and touched `build/**`, which is explicitly off-limits (gitignored and
+pre-existing, so nothing corrupted, but the contract was not honoured); and `write-provenance.mjs` is
+**single-shot per file**, so `sha_after` goes stale after any later edit. All three were repaired by
+hand. `SUMMARY.md` was refused by tooling for the fifth consecutive run.
+
+**Four behaviours were mutation-tested rather than assumed** — the mouse-path `stopPropagation`, the
+S-1 base-relative guard, and both adapter bails — each verified to fail when removed, then restored
+byte-identical. The senior review also corrected a claim in this run's own requirements: adapter test
+files *did* exist, they had simply never been allowlisted, so AC-3's pointer path went from
+"inherently untestable" to covered (allowlist 11 → 13).
+
+**AC-8 passed** by independent human browser verification: real `.click()` on both card types opens
+the conference in a new tab and does **not** open the detail panel. The `-t2` arm's failure mode does
+not reproduce. 12 follow-ups remain unfiled.

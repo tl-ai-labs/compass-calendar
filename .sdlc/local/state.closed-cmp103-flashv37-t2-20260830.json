@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "run_id": "20260830-164154-feature-extend-one-click-join",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "code_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "output_dir": ".sdlc/runs/20260830-164154-feature-extend-one-click-join",
+  "status": "complete",
+  "outcome": "accepted_with_followups",
+  "phase": "closed",
+  "checkpoint": "CLOSED__gate_4_approved__all_phases_done__nothing_committed",
+  "updated_at": "2026-08-30T19:45:00Z",
+  "closed_at": "2026-08-30T19:22:00Z",
+  "close_out": {
+    "gate_3": "approved - R-1 accepted as documented known limitation (final); fix F-2 only; defer F-1, F-3, N-1",
+    "gate_4": "approved - close out, do NOT commit or push",
+    "f2_packet": "tp_refine_f2 (tests/test_hardening, flash-completion). Retitled both drag-suppression tests to '...stops mousedown bubbling in an isolated tree', added a SCOPE comment naming R-1, annotated the onEventMouseDown assertion. ZERO deletions - keyboard, scheme-guard, window.open three-argument and icon-visibility coverage all left intact. The phrase 'without selecting the card' no longer appears in the file.",
+    "final_verification": {
+      "bun test:web": "2328 pass / 0 fail / 303 files, exit 0",
+      "bun type-check": "exit 0",
+      "biome 6 changed files": "exit 0, zero diagnostics",
+      "biome grid/components/": "exit 0, zero diagnostics",
+      "repo-wide bun lint": "exit 1, PRE-EXISTING (proved unformatted .sdlc/baseline/current.json at anchor 2d81253a); not chased per Gate 4 ruling",
+      "git": "HEAD 2d81253a, 0 commits, nothing staged or pushed, exactly 6 source files dirty"
+    },
+    "artifacts_written": [
+      "manifest.json",
+      "provenance.json (finalized, 13 entries / 6 files)",
+      "security_review.md (R-1 known-limitation section expanded with a/b/c)",
+      "telemetry.jsonl (29 events)"
+    ],
+    "artifacts_not_written": [
+      "SUMMARY.md - blocked by the orchestrator subagent's harness guard on summary/report .md writes (known issue, CLAUDE-SDLC follow-up 28). Returned as text to the parent session instead; manifest.json carries the same facts."
+    ],
+    "project_level_updates": [
+      ".sdlc/ledger.md row thirteen appended",
+      ".sdlc/ledger.json runs[12] appended as a PURE APPEND (98 insertions, 0 deletions - a first attempt reserialized the whole file and reformatted 12 prior rows via unicode un-escaping, was reverted and redone as a surgical text insert)",
+      ".sdlc/CLAUDE-SDLC.md follow-ups 30 and 31 added, bun type-check/bun lint fingerprint rows refreshed, Runs section now links row thirteen"
+    ],
+    "write_contract": "cleared - .sdlc/local/write-contract.json active:false, allowlist and off_limits retained verbatim for the audit record"
+  },
+  "security_review": {
+    "artifact": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/security_review.md",
+    "verdict": "pass with notes",
+    "blockers": [],
+    "majors": [],
+    "minors": [
+      "F-1: parse/use divergence -- new URL(x) parsed with no base, window.open(x) resolves against the document base; 'https:foo' validates as https://foo/ but navigates to https://<app-origin>/foo. Bounded (always same-origin, always http(s), no scheme escalation). INSIDE allowlist.",
+      "F-2: drag-suppression tests render the cards bare (0 hits for PointerCaptureBoundary in the test file), so they assert the very property R-1 says is false in production, and pass. INSIDE allowlist (test file).",
+      "F-3: Enter/Space toHaveBeenCalledTimes(1) is weak evidence -- jsdom does not synthesise button keyboard activation, so the count stays 1 even if preventDefault() were deleted. INSIDE allowlist (test file)."
+    ],
+    "info": [
+      "F-4: no destination transparency (button + window.open gives no status-bar preview; only pre-click signal is the provider-controlled label).",
+      "F-5: guard lives in a leaf UI directory, which blocks the reuse N-1 needs."
+    ],
+    "advisory_pre_existing_out_of_scope": [
+      "N-1: two unguarded sinks consume conference.url with NO scheme check -- packages/web/src/components/Sidebar/UpNextCard/UpNextCard.tsx:89 and UpNextBanner.tsx:32. Proven that z.url() accepts javascript:/data:/vbscript:/file: and the Google normalizer applies no scheme filter. Highest-value follow-up. OUTSIDE allowlist.",
+      "N-2: bun audit --prod reports 69 advisories / 24 high, all pre-existing, none involving @phosphor-icons/react; no manifest changed this run."
+    ],
+    "headline": "The scheme guard is load-bearing, not decorative: the reviewer proved with the repo's own zod 4.5.4 that z.url() ACCEPTS javascript:/data:/vbscript:/file:, and that ConferenceSchema.safeParse at google-event.normalizer.ts:169 is the only ingest validation and has no scheme constraint. This feature closes a gap the codebase did not previously cover.",
+    "r1_assessment": "Agrees R-1 fails safe, for a STRONGER reason than the senior review gave. Could not confirm the senior review's specific 'form opens instead of meeting' claim -- per spec, cancelling pointerdown does not suppress click, so the outcome is either (a) form only or (b) form AND meeting. Security-wise it does not matter: in both branches the only value reaching window.open passed isJoinableUrl microseconds earlier, so the security property is ORTHOGONAL to R-1, not protected by it. New consequence the senior review missed: a pointerdown on the button arms a drag of the underlying event, so a slip could reschedule the meeting -- bounded by INTERACTION_MOVE_THRESHOLD_PX=25 vs a 10x10 button. Correctness note, not security.",
+    "required_before_signoff": "none",
+    "npm_audit_caveat": "npm audit --omit=dev could NOT run as specified (Bun workspace, no package-lock.json, hard ENOLOCK). Reviewer substituted bun audit --prod rather than writing a lockfile into a frozen repo, and flagged the substitution."
+  },
+  "cost_rollup": {
+    "total_usd": 3.341,
+    "cap_usd": 50,
+    "claude_opus_5_usd": 2.8482,
+    "gemini_3_7_flash_usd": 0.4928,
+    "events": 28,
+    "caveat": "auth_mode=estimated. Opus figures are character-count estimates booking cached=0; flash figures come from the policy YAML pricing block. Not vendor-reported; not valid for cross-policy cost ranking."
+  },
+  "refinement_pass": {
+    "completed_at": "2026-08-30T18:57:00Z",
+    "r1_disposition": "ACCEPTED as documented known-limitation; NOT fixed; allowlist not widened; surfaced at Gate 3 for final user ruling",
+    "packets": [
+      "tp_refine_r2a (codegen/react_component, flash-completion) - EventJoinIcon.tsx import order + className sort",
+      "tp_refine_r2bc (codegen/react_component, flash-completion) - shared 3-line import block for both cards",
+      "tp_refine_r3 (tests/test_refactor, flash-completion) - util test import order + removed 3 `as any`",
+      "tp_refine_r2e (tests/test_hardening, flash-completion) - formatter fix, biome-ignore comment, hardened repeat-glyph assertion",
+      "tp_refine_r5nits (tests/test_refactor, flash-completion) - removed vacuous assertion, render->rerender",
+      "tp_refine_r7 (tests/test_add, flash-completion) - new Space-key test",
+      "tp_debug_r6 (debug/test_fix, flash-completion) - hardened assertion needed toContain, not toBe (Phosphor IconBase prepends `c-icon`)"
+    ],
+    "findings_resolved": [
+      "R-2",
+      "R-3",
+      "R-4",
+      "R-5",
+      "R-6",
+      "R-7",
+      "R-8",
+      "R-9"
+    ],
+    "findings_not_resolved": [
+      "R-1 (accepted known-limitation)",
+      "R-10 (no action needed by design)"
+    ],
+    "verification": {
+      "bun test:web": "2328 pass / 0 fail / 303 files, exit 0 (was 2327/0; +1 = new Space test)",
+      "bun type-check": "exit 0",
+      "biome on the 6 changed files": "exit 0, zero diagnostics of any severity",
+      "biome on packages/web/src/grid/components/": "zero diagnostics",
+      "bun lint (repo-wide)": "still exit 1, but ONLY from .sdlc/** artifacts. Verified NOT a regression: biome.json includes `**` with no .sdlc exclusion, and .sdlc/baseline/current.json is already unformatted at anchor 2d81253a, so repo-wide `bun lint` also failed at the anchor. All non-.sdlc diagnostics are pre-existing warnings in files this run never touched.",
+      "diff vs pre-refinement backups": "only the intended deltas; both card files changed import ORDER only (zero runtime delta)"
+    },
+    "files_still": "exactly 6, all inside packages/web/src/grid/components/**"
+  },
+  "post_change_suite": {
+    "command": "bun test:web",
+    "pass": 2327,
+    "fail": 0,
+    "files": 303,
+    "duration_s": 73.1,
+    "delta_vs_baseline": "+29 tests, +1 file",
+    "type_check_exit": 0
+  },
+  "files_written": [
+    "packages/web/src/grid/components/event-join-url.util.ts",
+    "packages/web/src/grid/components/event-join-url.util.test.ts",
+    "packages/web/src/grid/components/EventJoinIcon.tsx",
+    "packages/web/src/grid/components/TimedEventCard.tsx",
+    "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "packages/web/src/grid/components/EventCard.test.tsx"
+  ],
+  "gate_1": {
+    "response": "approved",
+    "resolutions": {
+      "OQ-1": "keep window.open + scheme guard (no nested <a>)",
+      "OQ-2": "use conference.url",
+      "OQ-3": "reuse existing width gates 40 timed / 60 all-day; do not widen"
+    }
+  },
+  "baseline_suite": {
+    "command": "bun test:web",
+    "captured": "pre-change",
+    "pass": 2298,
+    "fail": 0,
+    "files": 302,
+    "duration_s": 75.5,
+    "exit_code": 0
+  },
+  "paused_by_user_at": "2026-08-30T17:35:00Z",
+  "senior_review": {
+    "artifact": ".sdlc/runs/20260830-164154-feature-extend-one-click-join/review.md",
+    "verdict": "request_changes",
+    "blockers": [
+      "R-1: production pointer path (PointerCaptureBoundary capture-phase onPointerDownCapture -> bare closest() drag-target resolve, no nested-interactive opt-out) defeats the button's bubble-phase stopPropagation. Unit tests only fire mouseDown/click, never pointerDown, and render cards outside PointerCaptureBoundary, so green suite does not prove FR-5/AC-4/AC-5. NOT fixable inside the frozen packages/web/src/grid/components/** allowlist -- needs orchestrator escalation / scope decision."
+    ],
+    "majors": [
+      "R-2: bun lint now fails where it was previously clean.",
+      "R-3: three unnecessary `as any` casts (param type does not require them)."
+    ],
+    "credit": [
+      "right-1 selector-collision invariant (ADR-4) correctly and verifiably implemented.",
+      "EventRepeatIcon behaviour bit-for-bit unchanged across all four icon states."
+    ],
+    "note": "review.md header mis-labels the branch as CMP-105/opus-plus-flash-v37; actual branch is CMP-103/opus-plus-flash-v37-t2, anchor hash 2d81253a is correct."
+  },
+  "resume_procedure": [
+    "1. Verify: branch CMP-103/opus-plus-flash-v37-t2, HEAD 2d81253a, `git diff --stat 2d81253a -- packages/` = 3 files changed (AllDayEventCard.tsx, EventCard.test.tsx, TimedEventCard.tsx) + 3 untracked new (EventJoinIcon.tsx, event-join-url.util.ts, event-join-url.util.test.ts), all under packages/web/src/grid/components/.",
+    "2. Re-run `bun test:web` (expect ~2327 pass / 0 fail / 303 files) and `bun type-check` (expect exit 0) to confirm the tree still matches the paused state.",
+    "3. Re-apply the 4 pre-run drift checks if `/plugin update` ran during the pause (preflight_dispatch vendor; PROC-05 carve-out in write-contract-check.mjs; write-contract hook live probe; GEMINI_API_KEY comment reword in opus-plus-flash-v37.yaml).",
+    "4. RE-ACTIVATE the write contract: set .sdlc/local/write-contract.json active:true (allowlist/off_limits are retained verbatim) BEFORE any refinement/codegen packet.",
+    "5. Decision needed before resuming: senior review R-1 is a blocker that is OUT of the current allowlist (fix lives in the card-root / PointerCaptureBoundary / GridEvent.tsx area). Options: (a) re-open Gate 0 to widen the allowlist and fix R-1 properly; (b) accept R-1 as documented known-limitation debt and proceed (mirrors the original 20260821 arm's SR-02, which was also documented-not-structural); (c) abort. R-2 (lint) and R-3 (`as any`) are in-allowlist and can be fixed with ordinary refinement packets regardless.",
+    "6. Resume the orchestrator subagent (mmo:orchestrator) with the same run params (mode brownfield, intent feature-extend, run_id 20260830-164154-feature-extend-one-click-join, policy opus-plus-flash-v37, auth_mode estimated, flash-completion door only) + the R-1 decision. It should run senior-review refinements as decided, then Phase 8 security_review, then STOP at Gate 3.",
+    "7. Do not commit or push."
+  ],
+  "resumed_by_user_at": "2026-08-30T17:45:00Z",
+  "resume_verification": {
+    "branch": "CMP-103/opus-plus-flash-v37-t2",
+    "head": "2d81253a",
+    "tree_vs_anchor": "3 files changed +372/-9 + 3 untracked new, all under packages/web/src/grid/components/ (matches paused state)",
+    "bun_test_web": "2327 pass / 0 fail / 303 files",
+    "type_check": "exit 0",
+    "drift_checks": "plugin still 0.6.0; PROC-05 carve-out present; no GEMINI_API_KEY literal in v37 yaml; opus adapter=claude-cli. write-contract re-activated (active:true).",
+    "R1_disposition": "provisionally ACCEPTED as documented known-limitation debt (mirrors original 20260821 arm SR-02). Not fixed this run. Surfaces again at Gate 3 for final user ruling."
+  },
+  "gate_3": {
+    "response": "approved",
+    "R1": "ACCEPTED as documented known-limitation (final). Must be recorded in known-limitations + follow-ups: (a) bubble-phase stopPropagation is dead vs PointerCaptureBoundary capture-phase; fix lives in grid/interaction/dom.ts + Week/Day adapters, outside allowlist; (b) click-not-suppressed => opens form, possibly form+meeting; (c) pointerdown arms an event drag, threshold-bounded 25px vs 10x10 button.",
+    "F2": "FIX NOW - flip the misleading drag-suppression test so it documents R-1 actual behaviour instead of asserting the opposite; comment linking the R-1 follow-up.",
+    "F1": "defer to follow-ups",
+    "F3": "defer to follow-ups",
+    "N1": "defer - needs its own run / widened contract (UpNextCard.tsx:89 + UpNextBanner.tsx:32 unguarded conference.url)"
+  },
+  "manual_verification": {
+    "performed_by": "human",
+    "date": "2026-08-30",
+    "env": "bun run dev:web @ localhost:9080",
+    "click": "opened event details panel; meeting did NOT open -> R-1(b) symptom (i) form-only, CONFIRMED",
+    "keyboard_tab_enter": "opened Meet tab -> keyboard path works, unaffected by R-1",
+    "drag_from_glyph": "moved/rescheduled the event -> R-1(c) CONFIRMED reproducible",
+    "net": "mouse-click join non-functional; keyboard join works; drag-from-glyph reschedules event. Fails safe (security), but primary interaction broken. Fix = R-1(a) in grid/interaction/dom.ts + Week/Day adapters, outside allowlist -> own run. Code uncommitted."
+  }
+}
