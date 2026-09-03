@@ -432,3 +432,35 @@ arms' $5.71 / $5.46 / $5.32 — but those three carry ⚠ for dispatches that di
 JSON, the opus half here is a char-count heuristic booking cached=0, and this arm did strictly more
 work (9 files and two mutation-verified adapter suites versus 4/4/7 files). **Do not quote the four
 totals as a clean policy comparison.**
+
+**Manual in-app verification — 2026-09-02 — PASS.** Driven by hand by the human in `bun run dev:web`
+at `localhost:9080`, anonymous / IndexedDB mode, no backend. Ten checks, all confirmed: the icon
+renders on the conference-bearing seed event and on nothing else (AC-1, AC-2); **a plain mouse click
+opens the meeting and neither selects the event nor opens the form (AC-4)**; the tooltip names the
+destination host; `Enter` activates without the card root swallowing it (AC-5); `Space` activates too,
+so the R-10 deviation is a working key and not a dead one; the card still drags by its body and the
+bottom resize edge is still grabbable despite the ~12×2.25px sliver R-6 shadows; repeat and join icons
+coexist without overlap (AC-7); drafts and placeholders render no link (AC-8). Per-check detail lives
+in the run's `manifest.json` under `manual_verification_result`.
+
+Two things this settles. First, it is a **different kind of evidence than the `manual_verification`
+already recorded on this row** — that one was a code-level shepherd pass (schemes probed by execution,
+adapter bails mutation-tested, suite re-run) and never opened the app. Second, it narrows the gap left
+open above: no *test* drives a real click through `PointerCaptureBoundary` into a mounted card, but a
+human now has, and the opt-out held. The gap remains real as a **regression** risk — nothing in CI
+would catch it breaking — but the mechanism is no longer unobserved. **A/B-relevant:** this same click
+path is *broken* on the `CMP-103/opus-plus-flash-v37-t2` arm, where clicking the glyph opens the event
+panel instead of the meeting.
+
+**Not retested in-app:** SEC-03's https-only gate. Local mode offers no way to author an `http`-only
+conference, so that behaviour still stands on the run's executed scheme probe rather than on a
+hand-driven check.
+
+**A pre-existing baseline bug was hit while checking, and it is not this run's:** in local / anonymous
+mode any resize, move or edit of an event destroys its `conference`, `organizer` and `attendees`
+permanently — `useEventMutations` strips the payload through `editableContent()` (correct against a
+server that owns those fields and refetches them) and `LocalEventRepository.replace` then persists
+`content` wholesale with no merge against the existing record. The join icon vanishes for good and
+only a demo reseed brings it back. Recorded in full as **MV-01** on run
+`20260822-062945-feature-extend-one-click-join`; still unticketed. It matters here only as a
+sequencing hazard: do the click and keyboard checks *before* any drag or resize check.

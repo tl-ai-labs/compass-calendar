@@ -57,6 +57,27 @@
     "type_check": { "app": "pass", "tests": "pass" },
     "lint": { "biome": "clean", "semantic_colors": "clean" }
   },
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend); demo seed 'Morning standup' is the only conference-bearing event",
+    "note": "This is the in-app hand-driven check. It is distinct from the ledger row's existing 'manual_verification', which was a code-level shepherd verification (schemes probed by execution, adapter bails grepped and mutation-tested, suite re-run) and did not exercise the running app.",
+    "checks": {
+      "MV-1 icon renders on conference-bearing card (AC-1)": "PASS",
+      "MV-2 no icon on events without a conference (AC-2)": "PASS",
+      "MV-3 mouse-click the icon opens the meeting and does NOT select the event or open the form (AC-4)": "PASS",
+      "MV-4 tooltip shows the destination host": "PASS",
+      "MV-5 Enter on the focused link activates it without opening the form (AC-5)": "PASS",
+      "MV-6 Space activates the link (ratified deviation R-10)": "PASS",
+      "MV-7 dragging the card body still moves the event": "PASS",
+      "MV-8 bottom resize edge still grabbable despite the R-6 sliver shadowed by the link": "PASS",
+      "MV-9 repeat and join icons coexist without overlap (AC-7)": "PASS",
+      "MV-10 drafts and placeholders render no join link (AC-8)": "PASS"
+    },
+    "net": "PASS -- all ten checks confirmed by hand in the running app. AC-4 is the notable one: the interactiveAffordanceAttributes opt-out read by both the Week and Day adapters holds under a real mouse click, which is the path that fails on the CMP-103/opus-plus-flash-v37-t2 arm.",
+    "known_limitations_not_retested": "SEC-03 (https-only gate) was not exercised in-app because the demo seed carries an https URL and local mode offers no way to author an http-only conference. It stands on the run's executed scheme probe.",
+    "pre_existing_bug_observed_on_this_arm": "See MV-01 recorded on run 20260822-062945 (branch CMP-103/opus-only-v5): in local/anonymous mode any resize, move or edit of an event persists content wholesale via LocalEventRepository.replace and permanently destroys conference/organizer/attendees, so the join icon disappears for good. Baseline defect, NOT caused by this run; reproduced here only as a sequencing hazard for the checks above. Still unticketed."
+  },
   "files_changed": [
     { "path": "packages/web/src/grid/components/EventJoinIcon.tsx", "kind": "new" },
     { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "kind": "edit" },
