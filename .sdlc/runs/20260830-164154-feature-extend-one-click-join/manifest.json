@@ -194,5 +194,20 @@
     "keyboard_tab_enter": "opened the Meet tab correctly -> keyboard path unaffected by R-1, works",
     "drag_from_glyph": "moved / rescheduled the event -> R-1(c) confirmed reproducible",
     "net": "As-shipped: mouse-click join is broken (opens panel, not meeting); keyboard join works; drag-from-glyph reschedules the event. Fails safe security-wise (no bad navigation), but the primary interaction does not work and there is a data-integrity footgun. Fixing needs the R-1(a) work in grid/interaction/dom.ts + Week/Day adapters -- outside this run's allowlist."
+  },
+  "manual_verification_recheck": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend), demo seed reseeded first",
+    "why": "Re-driven by hand during the 12-arm feature-extend walkthrough, to confirm the 2026-08-30 result independently rather than relaying it, and to close the one gap that record left open (Space was never tested).",
+    "checks": {
+      "glyph renders on the conference-bearing event": "PASS",
+      "mouse click opens the meeting": "FAIL -- opens the event details panel instead; unchanged from 2026-08-30",
+      "Enter on the focused glyph opens the meeting": "PASS",
+      "Space on the focused glyph opens the meeting": "PASS -- newly tested; the 2026-08-30 record did not cover this"
+    },
+    "net": "Confirms the original record and narrows it: the mouse click is the ONLY broken interaction on this arm. Both keyboard activation keys work.",
+    "why_space_works_here": "The affordance is a real <button> whose handleKeyDown treats Enter and ' ' identically -- stopPropagation, preventDefault, then window.open. Keyboard activation is handled by the component's own code rather than delegated to native element behaviour. Contrast the CMP-103/flash-agsdk-only arm, which built the affordance as a bare <a> and only stopPropagation'd Space without preventDefault or .click(): there Space activates nothing and the browser's default page-scroll takes over, so that arm fails on two interactions where this one fails on one.",
+    "supersedes_note": "This does not replace the 2026-08-30 block above; it corroborates it. The one substantive addition is Space."
   }
 }

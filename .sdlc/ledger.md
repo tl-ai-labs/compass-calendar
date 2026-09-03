@@ -424,5 +424,19 @@ Net: as-shipped the mouse-click join is **non-functional** (opens the panel, not
 keyboard join works, and drag-from-glyph is a data-integrity footgun. Fails safe security-wise (only
 `isJoinableUrl`-validated values ever reach `window.open`), but the primary interaction does not work.
 The fix is the R-1 (a) work in `grid/interaction/dom.ts` + the Week/Day adapters — outside this run's
-allowlist, so it needs its own run. The code remains **uncommitted**, so this is an A/B data point,
-not a shipped regression.
+allowlist, so it needs its own run. ~~The code remains **uncommitted**, so this is an A/B data point,
+not a shipped regression.~~ **Correction, 2026-09-02:** that sentence was true when written and is
+now stale. The code was committed the same day as `31a2ffba feat(web): add a one-click join icon to
+grid event cards` and pushed to this branch, which carries 6 changed files vs `main`. It is still an
+A/B data point — the branch has no PR and was never merged — but it is no longer uncommitted, so do
+not read that line as "this arm shipped nothing".
+
+**Re-checked by hand 2026-09-02**, during the 12-arm walkthrough, to confirm the above independently
+rather than relay it — and to close the gap it left. Mouse click: still opens the details panel, not
+the meeting. Enter: opens the meeting. **Space: opens the meeting** — newly tested, since the
+2026-08-30 pass never covered it. So the mouse click is the **only** broken interaction on this arm.
+Space works here because the affordance is a real `<button>` whose `handleKeyDown` treats `Enter` and
+`" "` identically (`stopPropagation`, `preventDefault`, `window.open`), i.e. keyboard activation is
+implemented rather than inherited. The `flash-agsdk-only` arm built the same affordance as a bare
+`<a>` and only `stopPropagation`s Space, so there Space activates nothing and the page scrolls — that
+arm fails on two interactions where this one fails on one.
