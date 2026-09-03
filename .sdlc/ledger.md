@@ -407,3 +407,13 @@ files *did* exist, they had simply never been allowlisted, so AC-3's pointer pat
 **AC-8 passed** by independent human browser verification: real `.click()` on both card types opens
 the conference in a new tab and does **not** open the detail panel. The `-t2` arm's failure mode does
 not reproduce. 12 follow-ups remain unfiled.
+
+**Post-run walkthrough on the shipped commits — confirmed working 2026-09-03.** Re-checked after the
+push, against the **demo seed** rather than hand-seeded fixtures, running the app the way a user
+meets it (`bun run dev:web`, frontend-only per `.agents/skills/local-dev-bootstrap`,
+`http://localhost:9080`, "Explore without an account"). Exactly **1** join control rendered across
+the ~20-event demo calendar — on `Morning standup`, the seed's only conference-bearing event — with
+`aria-label="Join Morning standup"`, `href=https://meet.google.com/abc-defg-hij`, `target="_blank"`,
+`rel="noopener noreferrer"`, and a bounding box of exactly **24×24** (the `target-size` decision,
+observed rather than asserted). Clicking it opened the meeting in a new tab and left the detail panel
+shut; the card body still opens the panel. Confirmed visually in screenshots, not only by assertion.

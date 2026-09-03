@@ -1,6 +1,6 @@
 {
   "run_id": "20260903-105448-feature-extend-oneclick-join",
-  "status": "awaiting_gate",
+  "status": "closed",
   "phase": "generate_final_report",
-  "checkpoint": "gate-4"
+  "checkpoint": "gate-4-accepted"
 }
