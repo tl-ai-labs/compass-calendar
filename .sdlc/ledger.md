@@ -17,7 +17,7 @@ real vendor-metered mechanical spend — the split is in each run's `manifest.js
 | 2026-08-23 | `20260822-125447-refactor-week-day-interaction` | brownfield · refactor | 24 written (22 edit, 2 new) | 2298/0 → 2298/0 (+0 by design, 0 new failures) | $4.94 ⚠ | accepted → **uncommitted** on `CMP-104/flash-agsdk-only` (anchor 4189de1) |
 | 2026-08-24 | `20260824-002919-refactor-week-day-interaction` | brownfield · refactor | 43 written | 2298/0 → 2308/0 (+10, 0 new failures) | $1.87 ⚠ | accepted → **uncommitted** on `CMP-104/opus-plus-flash-v37` (anchor 4189de1) |
 | 2026-08-24 | `20260824-214500-feature-extend-weekbody-multiday-drag` | brownfield · feature-extend | 8 written | 2298/0 → 2337/0 (+39, 0 new failures) | $8.08 ⚠ | accepted → **uncommitted** on `CMP-101/opus-plus-sonnet` (anchor 4189de1) |
-| 2026-08-25 | `20260825-090211-docs-weekly-view-interactions-v4` | brownfield · docs | 1 written (1 edit, +14/−0) | none — no markdown linter exists in this repo | $1.71 ⚠ | accepted → **uncommitted** on `CMP-102/opus-plus-sonnet` (anchor c3c59a3) |
+| 2026-08-25 | `20260825-090211-docs-weekly-view-interactions-v4` | brownfield · docs | 1 written (1 edit, +14/−0) | none — no markdown linter exists in this repo | $1.71 ⚠ | accepted → committed `4115b48a` on `CMP-102/opus-plus-sonnet` (anchor c3c59a3) |
 
 ⚠ **The two rows above are not directly comparable.** `opus-plus-flash-v37` prices its Opus spend, so
 its $4.26 is fully loaded. `flash-agsdk-only` is deliberately single-model with no Claude pricing
@@ -352,7 +352,12 @@ way — only this run's 8 files changed and every off-limits diff is empty.
 
 **CMP-102 · `docs` · `doc_update` · `opus-plus-sonnet` · `estimated` · branch
 `CMP-102/opus-plus-sonnet` @ `c3c59a36` · $1.71 · 1 file · +14/−0 · nothing tool-validated ·
-uncommitted.**
+~~uncommitted~~ → committed `4115b48a`.**
+
+> **Correction, 2026-09-02.** "Uncommitted" was true at close-out and is now stale. The section
+> was committed as `4115b48a` and pushed to this branch. Still no PR and never merged, so it
+> remains an A/B data point. The same staleness was found and corrected on three other arms in
+> this study — it is a recurring close-out gap, not four coincidences.
 
 Fourth arm of the CMP-102 per-policy comparison. One `## Weekly view interactions` section
 added to the root `README.md`, between `## Features` and `## Tech stack`.
@@ -412,3 +417,47 @@ citation was not — caught by the orchestrator at close-out and corrected in bo
 **Also noted at close-out:** the two prior rows (eleven, twelve) had narrative sections but were
 never added to the summary table above, contrary to its stated one-row-per-run contract. Both
 backfilled from `ledger.json` in this pass.
+
+**Fact-check against source — 2026-09-02 — PASS on all nine claims.** A docs run has no rendered
+surface, so rather than a browser check every factual assertion in the added section was read back
+against the code it describes. This section makes **nine** checkable claims — more than the other
+three CMP-102 arms combined — and every one holds:
+
+- `Tab` really does cycle whole-event → start → end (`edge-focus.store.ts` `EDGE_CYCLE` is literally
+  `[null, "startDate", "endDate"]`).
+- `Shift`+arrow really does branch on edge focus rather than always moving the whole event
+  (`useGridEventEditShortcuts.ts:364-366` calls `moveFocusedEventEdge` when an edge is focused) — the
+  "or" in that sentence is the real branch in the code, not a hedge.
+- The column tint really is taken from the **topmost** all-day chip (`allDayColumnTint.util.ts:79`,
+  with `:66` confirming ties keep the first in input order).
+- The calendar stripe conditional is load-bearing and correct: `useCalendarLookup.ts:97` returns null
+  when `lookup.size <= 1`, so single-calendar users get no stripe, and the element really is
+  `absolute inset-y-0 left-0 w-[3px]`. **This is the only arm of the four to state a conditional the
+  code actually enforces** — and note it is the same `useCalendarLookup.ts:97` the close-out
+  correction above had to chase down.
+- Colour really does round-trip to Google in both directions (`googleColorIdToSlot` on read,
+  `colorId` on write).
+- Eleven named colour slots, the three-option scope dialog, and the corner repeat glyph all check out.
+
+**One wording note, not an error.** Claim 1 says multi-day events stretch by dragging "the grab
+handle at either end". The behaviour is real — `AllDayEventCard` mounts `startDate`/`endDate` scaler
+handles — but **"grab handle" appears nowhere in the codebase or the UI**. The `opus-only-v5` arm
+writes "the edge of an all-day event… along the strip at the top of the week", naming things a reader
+can actually find. Accurate about behaviour, invented as vocabulary.
+
+**The finding worth carrying out of CMP-102.** This arm describes recurrence as an ask-first dialog
+with three options; the other three arms describe an apply-then-widen toast with two. A reader
+comparing the four READMEs would see a contradiction — and there isn't one. **Both surfaces exist:**
+`RecurrenceScopeDialog.tsx` (form and sidebar, three options) and `recurrence-scope.toast.tsx` (grid,
+two options). Four arms documented the same feature and split on which half of it is real, none of
+them wrong, none of them mentioning the other. That is a gap in the *product's* documentation that
+no single arm's review could have caught, and it only surfaced by checking all four against source
+together.
+
+**What a fact-check can and cannot rank.** This arm asserts the most and gets all of it right. The
+`flash-agsdk-only` arm asserts almost nothing about the week view — its section carries no
+interaction content at all despite the heading — and is therefore also not wrong. Verification
+rewards the former and cannot distinguish the latter from adequate; the completeness gap had to be
+recorded separately, against that section's own heading.
+
+Per-claim detail lives in the run's `manifest.json` under `manual_verification_result`.
