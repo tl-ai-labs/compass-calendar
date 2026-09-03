@@ -209,4 +209,53 @@ Highest value first: **FU-10** (PostHog `ph-no-capture` + confirm the server-sid
 - **Provenance complete:** 20 records, all 8 tracked paths verify `sha_after == disk`.
   `/mmo:revert` must key off the **earliest** record per path — the 4 new files carry
   `existed_before: false`, so revert **deletes** them rather than restoring a mid-run backup.
-- **Not done, by instruction:** no commit, no push, no browser verification of the rendered badge.
+- ~~**Not done, by instruction:** no commit, no push, no browser verification of the rendered badge.~~
+  **All three are now done** — see §8. Committed `649aea0c` and pushed; browser verification
+  performed by hand 2026-09-02.
+
+---
+
+## 8. Manual browser verification — 2026-09-02 — PASS
+
+Driven by hand by the human in `bun run dev:web` at `localhost:9080`, anonymous / IndexedDB mode,
+no backend. This closes the open item recorded in §7 above.
+
+| Check | Result |
+|---|---|
+| Badge renders on a conference-free, attendee-bearing card | **PASS** |
+| Overflow shape: 4 guests → **2 avatars + `+2` chip** (`MAX_VISIBLE − 1`, not 3 + `+1`) | **PASS** |
+| Ring colours per individual RSVP — both visible circles green for two `accepted` guests | **PASS** |
+| Group label reads `4 guests: 2 accepted, 1 tentative, 1 hasn't responded` — counts, never names | **PASS** |
+| Events without attendees render unchanged, no badge, no layout shift | **PASS** |
+| Title stays readable; no collision with the repeat glyph | **PASS** |
+
+### The fixture problem this arm has, and why it is worth recording
+
+**This arm gates the badge at `MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 52` but did not change the demo
+seed.** Morning standup ships at 30 minutes, which renders at roughly 31px — comfortably under the
+gate. So on a freshly seeded database the badge renders **nowhere at all**, on any event, because the
+only attendee-bearing seed event is too short to qualify and no other seed event has attendees.
+
+That is correct behaviour by the gate, and it is also indistinguishable at a glance from the feature
+being broken. The first pass of this check reported exactly that — "no attendees for any activity…
+it felt like there is a rendering mistake" — and the instinct was reasonable. It resolved only after
+the standup was stretched to 09:00–10:30 and given its four guests directly in IndexedDB, at which
+point the badge appeared immediately and every check above passed.
+
+**A/B-relevant:** the sibling `CMP-105/opus-plus-sonnet` arm has the same 52px gate and *did* edit
+`demo-data-seed.ts` to stretch Morning standup to 90 minutes precisely so its own badge would be
+visible on a seeded database. Same brief, same threshold, opposite call on whether the fixture is the
+feature's problem to solve. Neither is wrong against the requirements, but this arm's feature is
+invisible out of the box to anyone who has not hand-authored data, and a reviewer opening it cold
+would reasonably conclude it does not work.
+
+### Recording notes
+
+- Verified through the app's read path only. Test data was written **directly into IndexedDB**,
+  bypassing the app's save path, because in local / anonymous mode any move, resize or edit destroys
+  the attendee list outright (baseline bug **MV-01**, recorded on run `20260822-062945`, still
+  unticketed). Resizing the standup through the UI to clear the height gate would have destroyed the
+  very attendees the check needs.
+- This does **not** close FU-10 (PostHog session-replay masking) or any other follow-up in
+  `follow-ups.md`; none of them were exercised here.
+- Nothing was verified with a screen reader. The group label was read from the DOM, not announced.
