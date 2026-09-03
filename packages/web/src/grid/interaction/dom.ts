@@ -19,6 +19,8 @@ const DRAFT_CLONE_STRIPPED_ATTRIBUTES = [
 
 export const EVENT_CONTENT_ATTRIBUTE = "data-calendar-event-content";
 export const EVENT_CONTENT_SELECTOR = `[${EVENT_CONTENT_ATTRIBUTE}='true']`;
+export const EVENT_JOIN_CONTROL_ATTRIBUTE = "data-calendar-event-join-control";
+export const EVENT_JOIN_CONTROL_SELECTOR = `[${EVENT_JOIN_CONTROL_ATTRIBUTE}='true']`;
 export const EVENT_RESIZE_HANDLE_ATTRIBUTE =
   "data-calendar-event-resize-handle";
 export const EVENT_TIME_LABEL_ATTRIBUTE = "data-calendar-event-time-label";
@@ -36,6 +38,26 @@ export const getResizeHandleEdge = (
   const edge = handle?.getAttribute(EVENT_RESIZE_HANDLE_ATTRIBUTE);
 
   return isResizeEdge(edge) ? edge : null;
+};
+
+/**
+ * True when a pointerdown landed inside the join control. The interaction
+ * adapters use it to disown the pointer entirely.
+ *
+ * A nested control cannot defend itself here: PointerCaptureBoundary
+ * subscribes onPointerDownCapture on an *ancestor* of the cards and calls
+ * preventDefault() + stopPropagation() once it takes ownership, and capture on
+ * an ancestor always precedes the target phase. So the only way to keep the
+ * event alive for the anchor is for getInteractionTarget to return null over
+ * it. Mirrors getResizeHandleEdge above, which solves the same problem for the
+ * resize handles.
+ */
+export const isJoinControlTarget = (
+  event: Pick<PointerEvent, "target">,
+): boolean => {
+  const pointerTarget = event.target instanceof Element ? event.target : null;
+
+  return Boolean(pointerTarget?.closest(EVENT_JOIN_CONTROL_SELECTOR));
 };
 
 export const updateDraftEventTimeLabel = (

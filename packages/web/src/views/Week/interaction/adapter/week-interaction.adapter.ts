@@ -8,6 +8,7 @@ import {
   createDraftEventMount,
   getResizeHandleEdge,
   hideDraftEventTimeLabel,
+  isJoinControlTarget,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
 import {
@@ -483,6 +484,15 @@ export const createWeekInteractionAdapter = ({
   function getInteractionTarget(
     event: PointerEvent,
   ): WeekInteractionTarget | null {
+    // Own no pointer that started on the join control, so the anchor's own
+    // click survives. PointerCaptureBoundary preventDefault()s the pointerdown
+    // as soon as this adapter claims it, and it captures on an ancestor of the
+    // card, so the anchor cannot defend itself downstream. Bails ahead of every
+    // branch below, each of which already bails on getResizeHandleEdge.
+    if (isJoinControlTarget(event)) {
+      return null;
+    }
+
     const allDayResizeTarget = getAllDayResizeTarget(event);
 
     if (allDayResizeTarget) {

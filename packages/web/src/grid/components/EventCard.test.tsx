@@ -572,4 +572,410 @@ describe("EventCard", () => {
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
   });
+
+  it("renders the join link when a timed event has a conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Planning block" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Planning block/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not render the join link when a timed event has no conference", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent()}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the timed join link when displayMode is placeholder", () => {
+    render(
+      <TimedEventCard
+        displayMode="placeholder"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the timed join link when motionMode is dragging", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="dragging"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the timed join link when position width is below threshold", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="idle"
+        position={{ ...position, width: 30 }}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the timed join link on a 15-minute event", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          endDate: "2024-01-15T09:15:00.000Z",
+          startDate: "2024-01-15T09:00:00.000Z",
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders the timed join link when displayMode is draft", () => {
+    render(
+      <TimedEventCard
+        displayMode="draft"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Planning block" }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the timed join link when conference url uses javascript scheme", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "javascript:alert(1)",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("keeps the repeat icon visible when both repeat and join icons show on a timed event", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Planning block" }),
+    ).toBeInTheDocument();
+    expect(container.querySelector('svg[class*="right-1"]')).not.toBeNull();
+  });
+
+  it("renders all-day join link when conference exists and omits it without conference", () => {
+    const { rerender } = render(
+      <AllDayEventCard
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Conference" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <AllDayEventCard
+        event={createEvent({
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the all-day join link when isPlaceholder is true", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={true}
+        position={position}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("hides the all-day join link when width is below threshold", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={{ ...position, width: 30 }}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("adds pr-10 class to all-day title row when both repeat and join icons show", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          isAllDay: true,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Conference" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Conference").parentElement).toHaveClass("pr-10");
+  });
+
+  // The central invariant of this change, and the one thing that would silently
+  // regress if someone later "tidied" the fragment back into the card: the join
+  // control must NOT be a descendant of the role="button" root. The button role
+  // declares its children presentational, so a focusable descendant is an axe
+  // nested-interactive violation and a screen reader in browse mode may not
+  // expose the control at all. Every other join assertion in this file passes
+  // just as happily with the anchor nested.
+  it("renders the timed join control as a sibling of the card, not a child", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    const link = screen.getByRole("link", { name: "Join Planning block" });
+
+    expect(card.contains(link)).toBe(false);
+  });
+
+  it("renders the all-day join control as a sibling of the card, not a child", () => {
+    render(
+      <AllDayEventCard
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          isAllDay: true,
+          title: "Conference",
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    const link = screen.getByRole("link", { name: "Join Conference" });
+
+    expect(card.contains(link)).toBe(false);
+  });
+
+  it("renders the timed join control at exactly the width gate and hides it one pixel below", () => {
+    const event = createEvent({
+      conference: { label: "Google Meet", url: "https://meet.example.com/x" },
+    });
+
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={event}
+        motionMode="idle"
+        position={{ ...position, width: 60 }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Planning block" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={event}
+        motionMode="idle"
+        position={{ ...position, width: 59 }}
+      />,
+    );
+
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("renders the timed join control on an exactly-30-minute event", () => {
+    // The gate is `>= 30` and must stay inclusive: the demo seed's only
+    // conference-bearing event ("Morning standup") is exactly 30 minutes, and it
+    // is what gives the e2e accessibility scan a join control to look at.
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference: {
+            label: "Google Meet",
+            url: "https://meet.example.com/x",
+          },
+          endDate: "2024-01-15T09:30:00.000Z",
+          startDate: "2024-01-15T09:00:00.000Z",
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Join Planning block" }),
+    ).toBeInTheDocument();
+  });
+
+  it("insets the join control to clear the repeat glyph only when that glyph shows", () => {
+    // Pins the rightInsetPx wiring. Without it the control would sit on top of
+    // the repeat icon and nothing else in this file would notice.
+    const conference = {
+      label: "Google Meet",
+      url: "https://meet.example.com/x",
+    };
+
+    const { rerender } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({ conference })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    // left = 10 + 140 - 2 - 24
+    expect(screen.getByRole("link").style.left).toBe("124px");
+
+    rerender(
+      <TimedEventCard
+        displayMode="saved"
+        event={createEvent({
+          conference,
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+        })}
+        motionMode="idle"
+        position={position}
+      />,
+    );
+
+    // left = 10 + 140 - 16 - 24
+    expect(screen.getByRole("link").style.left).toBe("110px");
+  });
 });

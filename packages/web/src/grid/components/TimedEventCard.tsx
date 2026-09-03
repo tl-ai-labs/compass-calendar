@@ -46,6 +46,11 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import {
+  EventJoinIcon,
+  JOIN_CONTROL_REPEAT_CLEARANCE_PX,
+  resolveJoinHref,
+} from "./EventJoinIcon";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -56,6 +61,18 @@ import { EventRepeatIcon } from "./EventRepeatIcon";
 // event length, so every recurring timed event qualifies.
 const REPEAT_ICON_MIN_DURATION_MINUTES = 15;
 const REPEAT_ICON_MIN_WIDTH = 40;
+
+// The join control is an interactive 24px box, not a 10px decoration, so it
+// needs more room than the repeat glyph: at 40px wide it would leave 16px of
+// title, and a card that can't say which meeting it is has stopped doing its
+// job. Below this width the affordance isn't lost — the card is still
+// keyboard-reachable and the detail panel carries its own join link.
+const JOIN_ICON_MIN_WIDTH = 60;
+// Gated on duration rather than rendered height, for the same reason as the
+// repeat icon above. The comparison is `>=` and must stay inclusive: the demo
+// seed's conference-bearing "Morning standup" is exactly 30 minutes, and it is
+// what gives the e2e a11y scan a join control to look at.
+const JOIN_ICON_MIN_DURATION_MINUTES = 30;
 
 interface TimedEventCardProps {
   boxShadow?: CSSProperties["boxShadow"];
@@ -118,6 +135,17 @@ const TimedEventCardBase = (
     !isPlaceholder &&
     durationMinutes >= REPEAT_ICON_MIN_DURATION_MINUTES &&
     position.width >= REPEAT_ICON_MIN_WIDTH;
+
+  // Resolved here rather than gating on event.conference?.url alone so a
+  // rejected scheme also skips the title padding below. EventJoinIcon re-guards
+  // internally regardless.
+  const joinHref = resolveJoinHref(event.conference?.url);
+  const showJoinIcon =
+    joinHref !== null &&
+    !isPlaceholder &&
+    motionMode === "idle" &&
+    durationMinutes >= JOIN_ICON_MIN_DURATION_MINUTES &&
+    position.width >= JOIN_ICON_MIN_WIDTH;
 
   const showTimeLabel =
     !event.isAllDay &&
@@ -267,101 +295,131 @@ const TimedEventCardBase = (
       ? `${samplePrefix}${baseAccessibleLabel}${calendarAccentAccessibleSuffix(calendarIdentity)}`
       : `${samplePrefix}${baseAccessibleLabel}`) + edgeFocusSuffix;
 
+  // The join control is a SIBLING of the card, not a child. Both card roots are
+  // role="button", whose ARIA contract declares children presentational, so any
+  // focusable descendant is a nested-interactive violation — and a join control
+  // that isn't focusable fails its own keyboard requirement. Rendering it here
+  // also keeps it out of the drag ghost: createDraftEventClone clones the card
+  // root, which no longer contains it. The second child is null for every event
+  // without a scheme-valid conference URL, so the DOM is unchanged for them.
   return (
-    // biome-ignore lint/a11y/useSemanticElements: Grid events are draggable/resizable blocks, not native buttons.
-    <div
-      {...interactionAttributes}
-      aria-label={accessibleLabel}
-      data-edge-focus={focusedEdge ?? undefined}
-      ref={ref}
-      role="button"
-      tabIndex={0}
-      className={cn(
-        "absolute min-h-2.5 select-none overflow-hidden rounded-xs pr-0.75 pl-1.25 transition-[background-color,filter] duration-[260ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
-        "bg-(--event-bg) hover:bg-(--event-hover-bg)",
-        "hover:cursor-pointer",
-        eventFocusOutlineClass(focusedEdge),
-        event.isDemo &&
-          "outline outline-dashed outline-1 outline-text-muted/50",
-      )}
-      style={eventStyle}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
-        if (e.key !== "Enter" && e.key !== " ") {
-          return;
-        }
+    <>
+      {/* biome-ignore lint/a11y/useSemanticElements: Grid events are draggable/resizable blocks, not native buttons. */}
+      <div
+        {...interactionAttributes}
+        aria-label={accessibleLabel}
+        data-edge-focus={focusedEdge ?? undefined}
+        ref={ref}
+        role="button"
+        tabIndex={0}
+        className={cn(
+          "absolute min-h-2.5 select-none overflow-hidden rounded-xs pr-0.75 pl-1.25 transition-[background-color,filter] duration-[260ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "bg-(--event-bg) hover:bg-(--event-hover-bg)",
+          "hover:cursor-pointer",
+          eventFocusOutlineClass(focusedEdge),
+          event.isDemo &&
+            "outline outline-dashed outline-1 outline-text-muted/50",
+        )}
+        style={eventStyle}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+          if (e.key !== "Enter" && e.key !== " ") {
+            return;
+          }
 
-        e.preventDefault();
-        e.stopPropagation();
-        if (!onEventKeyDown) {
-          return;
-        }
-
-        onEventKeyDown(event);
-      }}
-      onMouseDown={(e: MouseEvent) => {
-        if (!onEventMouseDown) {
+          e.preventDefault();
           e.stopPropagation();
-          return;
-        }
+          if (!onEventKeyDown) {
+            return;
+          }
 
-        onEventMouseDown(event, e);
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {calendarIdentity && (
+          onEventKeyDown(event);
+        }}
+        onMouseDown={(e: MouseEvent) => {
+          if (!onEventMouseDown) {
+            e.stopPropagation();
+            return;
+          }
+
+          onEventMouseDown(event, e);
+        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {calendarIdentity && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-0 w-[3px]"
+            style={calendarAccentStyle(calendarIdentity)}
+          />
+        )}
         <div
-          aria-hidden="true"
-          className="absolute inset-y-0 left-0 w-[3px]"
-          style={calendarAccentStyle(calendarIdentity)}
+          className={cn("flex flex-col flex-wrap items-start", {
+            // Reserve the right column so a wrapping title cannot run under the
+            // join control (and, when both show, under the repeat glyph too).
+            // The control occupies rightInsetPx + JOIN_CONTROL_SIZE_PX from the
+            // card's right edge: 2+24=26, or 16+24=40 alongside the repeat
+            // glyph. The root already contributes 3px via pr-0.75, so these
+            // need to be >= 23px and >= 37px. Keep them in step with
+            // JOIN_CONTROL_SIZE_PX and with AllDayEventCard's matching pair.
+            "pr-6": showJoinIcon && !showRepeatIcon,
+            "pr-10": showJoinIcon && showRepeatIcon,
+          })}
+          style={{ color: contentColor }}
+          {...{ [EVENT_CONTENT_ATTRIBUTE]: "true" }}
+        >
+          <span style={titleStyle}>{event.title}</span>
+          {!event.isAllDay && (
+            <>
+              {showTimeLabel && (
+                <span
+                  className="relative"
+                  {...{ [EVENT_TIME_LABEL_ATTRIBUTE]: "true" }}
+                  style={{ ...timeLabelStyle, zIndex: ZIndex.LAYER_3 }}
+                >
+                  {timeRange}
+                </span>
+              )}
+              {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
+              <div
+                aria-hidden="true"
+                role="presentation"
+                {...{ [EVENT_RESIZE_HANDLE_ATTRIBUTE]: "startDate" }}
+                style={scalerStyle({ top: "-0.25px" })}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  onScalerMouseDown?.(event, e, "startDate");
+                }}
+              />
+              {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
+              <div
+                aria-hidden="true"
+                role="presentation"
+                {...{ [EVENT_RESIZE_HANDLE_ATTRIBUTE]: "endDate" }}
+                style={scalerStyle({ bottom: "-0.25px" })}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  onScalerMouseDown?.(event, e, "endDate");
+                }}
+              />
+            </>
+          )}
+        </div>
+        {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      </div>
+      {showJoinIcon && joinHref && (
+        <EventJoinIcon
+          baseColor={bgColor}
+          eventTitle={eventTitle}
+          position={position}
+          rightInsetPx={
+            showRepeatIcon ? JOIN_CONTROL_REPEAT_CLEARANCE_PX : undefined
+          }
+          url={joinHref}
         />
       )}
-      <div
-        className="flex flex-col flex-wrap items-start"
-        style={{ color: contentColor }}
-        {...{ [EVENT_CONTENT_ATTRIBUTE]: "true" }}
-      >
-        <span style={titleStyle}>{event.title}</span>
-        {!event.isAllDay && (
-          <>
-            {showTimeLabel && (
-              <span
-                className="relative"
-                {...{ [EVENT_TIME_LABEL_ATTRIBUTE]: "true" }}
-                style={{ ...timeLabelStyle, zIndex: ZIndex.LAYER_3 }}
-              >
-                {timeRange}
-              </span>
-            )}
-            {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
-            <div
-              aria-hidden="true"
-              role="presentation"
-              {...{ [EVENT_RESIZE_HANDLE_ATTRIBUTE]: "startDate" }}
-              style={scalerStyle({ top: "-0.25px" })}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                onScalerMouseDown?.(event, e, "startDate");
-              }}
-            />
-            {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}
-            <div
-              aria-hidden="true"
-              role="presentation"
-              {...{ [EVENT_RESIZE_HANDLE_ATTRIBUTE]: "endDate" }}
-              style={scalerStyle({ bottom: "-0.25px" })}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                onScalerMouseDown?.(event, e, "endDate");
-              }}
-            />
-          </>
-        )}
-      </div>
-      {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
-    </div>
+    </>
   );
 };
 

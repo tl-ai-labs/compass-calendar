@@ -663,3 +663,89 @@ describe("DayInteractionAdapter", () => {
     });
   });
 });
+
+// AC-3 layer 1: the pointer path.
+//
+// The join control is an anchor rendered as a sibling of the card. It can only
+// receive its own click if this adapter declines to own the pointerdown --
+// PointerCaptureBoundary subscribes onPointerDownCapture on an ANCESTOR of the
+// cards and calls preventDefault() + stopPropagation() the moment the adapter
+// claims the pointer, and capture on an ancestor always precedes the target
+// phase, so the anchor cannot defend itself downstream.
+//
+// These assert the differential deliberately: declining every pointer would
+// also make the "join control" case pass, so each block pairs the bail with a
+// card-body pointerdown that must still be owned.
+describe("DayInteractionAdapter join control (AC-3)", () => {
+  const registerWithJoinControl = (
+    event: GridEvent,
+    eventType: "all-day" | "timed",
+  ) => {
+    const { child, source } = registerEvent(event, eventType);
+    const joinControl = document.createElement("a");
+    const joinGlyph = document.createElement("span");
+
+    joinControl.setAttribute("data-calendar-event-join-control", "true");
+    joinControl.append(joinGlyph);
+    source.append(joinControl);
+
+    return { cardBody: child, joinControl, joinGlyph };
+  };
+
+  it("declines pointer ownership on a timed card's join control, but keeps it on the card body", () => {
+    const { cardBody, joinControl } = registerWithJoinControl(
+      timedEvent,
+      "timed",
+    );
+    const { adapter } = createAdapter();
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", {
+          target: joinControl,
+          x: 300,
+          y: 170,
+        }),
+      ),
+    ).toEqual({ reason: "no-day-interaction-target", shouldOwn: false });
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: cardBody, x: 160, y: 170 }),
+      ).shouldOwn,
+    ).toBe(true);
+  });
+
+  it("declines ownership when the pointer lands on the glyph inside the join control", () => {
+    // The real pointer target is the child SVG, never the anchor itself, so the
+    // adapter has to find the attribute via closest() rather than on the target.
+    const { joinGlyph } = registerWithJoinControl(timedEvent, "timed");
+    const { adapter } = createAdapter();
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: joinGlyph, x: 300, y: 170 }),
+      ),
+    ).toEqual({ reason: "no-day-interaction-target", shouldOwn: false });
+  });
+
+  it("declines pointer ownership on an all-day card's join control, but keeps it on the card body", () => {
+    const { cardBody, joinControl } = registerWithJoinControl(
+      allDayEvent,
+      "all-day",
+    );
+    const { adapter } = createAdapter();
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: joinControl, x: 300, y: 20 }),
+      ),
+    ).toEqual({ reason: "no-day-interaction-target", shouldOwn: false });
+
+    expect(
+      adapter.handlePointerDown(
+        makePointerEvent("pointerdown", { target: cardBody, x: 160, y: 20 }),
+      ).shouldOwn,
+    ).toBe(true);
+  });
+});

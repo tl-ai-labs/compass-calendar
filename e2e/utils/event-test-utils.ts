@@ -355,3 +355,115 @@ export const expectTimedEventMissing = async (page: Page, title: string) => {
     page.locator("#mainGrid").getByRole("button", { name: title }),
   ).toHaveCount(0, { timeout: 8000 });
 };
+
+export interface SeededLocalEvent {
+  conferenceUrl?: string;
+  conferenceLabel?: string | null;
+  end: string;
+  kind: "allDay" | "timed";
+  start: string;
+  title: string;
+}
+
+/**
+ * Writes one event row directly into the `compass-local` IndexedDB `events` object store.
+ *
+ * Necessary because conference is read-only provider-sourced data: the event form
+ * cannot set one, so a UI-created event can never render the join control. Every e2e
+ * spec runs signed out against local IndexedDB, so direct seeding into IndexedDB is
+ * required.
+ *
+ * MUST be called after prepareCalendarPage(page).
+ *
+ * Returns the generated event id.
+ */
+export const seedEventWithConference = async (
+  page: Page,
+  seed: SeededLocalEvent,
+): Promise<string> => {
+  const id = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) =>
+    b.toString(16).padStart(2, "0"),
+  ).join("");
+  const calendarIdFallback = Array.from(
+    crypto.getRandomValues(new Uint8Array(12)),
+    (b) => b.toString(16).padStart(2, "0"),
+  ).join("");
+
+  await page.evaluate(
+    async ({ dbName, id, calendarIdFallback, seed }) => {
+      const existingCalendarId = localStorage.getItem(
+        "compass.localCalendarId",
+      );
+      const calendarId = existingCalendarId || calendarIdFallback;
+      if (!existingCalendarId) {
+        localStorage.setItem("compass.localCalendarId", calendarIdFallback);
+      }
+
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open(dbName);
+
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+      });
+
+      if (!db.objectStoreNames.contains("events")) {
+        db.close();
+        throw new Error(
+          "seedEventWithConference ran before the app created compass-local — call prepareCalendarPage(page) first",
+        );
+      }
+
+      try {
+        const record = {
+          version: 2,
+          id,
+          isDemo: false,
+          event: {
+            id,
+            calendarId,
+            content: {
+              kind: "details",
+              title: seed.title,
+              description: "",
+              ...(seed.conferenceUrl
+                ? {
+                    conference: {
+                      url: seed.conferenceUrl,
+                      label: seed.conferenceLabel ?? "Compass Meet",
+                    },
+                  }
+                : {}),
+            },
+            schedule:
+              seed.kind === "timed"
+                ? {
+                    kind: "timed",
+                    start: seed.start,
+                    end: seed.end,
+                    timeZone: "UTC",
+                  }
+                : { kind: "allDay", start: seed.start, end: seed.end },
+            recurrence: { kind: "single" },
+            createdAt: new Date().toISOString(),
+            updatedAt: null,
+          },
+        };
+
+        await new Promise<void>((resolve, reject) => {
+          const transaction = db.transaction("events", "readwrite");
+          const store = transaction.objectStore("events");
+          store.put(record);
+
+          transaction.oncomplete = () => resolve();
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        });
+      } finally {
+        db.close();
+      }
+    },
+    { dbName: LOCAL_DB_NAME, id, calendarIdFallback, seed },
+  );
+
+  return id;
+};

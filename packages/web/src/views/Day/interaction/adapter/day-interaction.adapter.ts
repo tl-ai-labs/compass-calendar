@@ -10,6 +10,7 @@ import { getLocalMinutes } from "@web/grid/interaction/date";
 import {
   createDraftEventMount,
   getResizeHandleEdge,
+  isJoinControlTarget,
   updateDraftEventTimeLabel,
 } from "@web/grid/interaction/dom";
 import { type GridLayoutCache } from "@web/grid/interaction/layout.cache";
@@ -434,6 +435,15 @@ export const createDayInteractionAdapter = ({
   function getInteractionTarget(
     event: PointerEvent,
   ): DayInteractionTarget | null {
+    // Own no pointer that started on the join control, so the anchor's own
+    // click survives. PointerCaptureBoundary preventDefault()s the pointerdown
+    // as soon as this adapter claims it, and it captures on an ancestor of the
+    // card, so the anchor cannot defend itself downstream. Bails ahead of every
+    // branch below, each of which already bails on getResizeHandleEdge.
+    if (isJoinControlTarget(event)) {
+      return null;
+    }
+
     const allDayResizeTarget = getAllDayResizeTarget(event);
 
     if (allDayResizeTarget) {
