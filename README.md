@@ -55,3 +55,4 @@ Things you can't do in Compass (yet):
 - **Handbook**: [notion.site](https://alpaca-ty.notion.site/Compass-Handbook-26b237bde8f4805c9a56de6db3a7993d?utm_source=github&utm_medium=referral&utm_campaign=readme)
 - **Twitter**: [@CompassCalendar](https://x.com/CompassCalendar)
 - **LinkedIn**: [Compass Calendar](https://www.linkedin.com/company/compass-calendar)
+- **Weekly View Interactions**: [docs/frontend/weekly-view-interactions.md](./docs/frontend/weekly-view-interactions.md)
