@@ -10,6 +10,23 @@
     "hard_cost_cap_usd": 50
   },
   "auth_mode": "estimated",
+  "manual_verification_result": {
+    "performed_by": "assistant",
+    "date": "2026-09-02",
+    "method": "Source-of-truth fact-check, NOT a browser check. A docs run has no rendered surface to exercise, so every factual claim in the added README section was read back against the code it describes, at the anchor this run targets. Link targets were resolved with `git cat-file -e` on this branch, not assumed from main.",
+    "net": "PASS -- no factual errors. Every claim in the section is supported by code. One imprecision noted below; it does not make any sentence false.",
+    "claims_checked": {
+      "'Move events between day columns'": "TRUE -- timed and all-day drag both resolve a target day column; week-interaction.adapter.ts handles allDayDrag and timed drag across columns.",
+      "'stretch all-day events across multiple days'": "TRUE -- AllDayEventCard exposes startDate and endDate scaler handles (onScalerMouseDown), and the week adapter implements allDayResize / allDayResizeEnd.",
+      "'Dragging near the grid edge pages the view so you can keep moving seamlessly'": "TRUE but IMPRECISE -- the mechanism exists (week-interaction.adapter.ts calls runtime().onRequestWeekNavigation, wired in WeekInteractionCoordinator.tsx:182), however edge-navigation.ts sets WEEK_EDGE_NAVIGATION_DWELL_MS = 500: the pointer must DWELL in the edge zone for half a second. 'Dragging near the grid edge' reads as though proximity alone is enough. The sentence is not false and a user will discover the dwell by doing it, but it under-describes the trigger.",
+      "'Editing or deleting an occurrence applies right away, with a toast letting you expand the change to This and Following or All'": "TRUE, and precisely right about the grid path -- recurrence-scope.toast.tsx renders 'Deleted/Changed <name>' then 'Apply to series?' with exactly two actions, Following and All. Worth noting the app ALSO has a second, ask-first path: RecurrenceScopeDialog.tsx offers three options (This Event / This and Following / All Events) from the form and sidebar. Both are real; this section describes the grid one, which is the correct one for a section titled 'Weekly view interactions'.",
+      "'Choose from 11 colors or keep the Calendar default'": "TRUE -- EventColorSlotSchema is an 11-member enum whose own comment says it maps 1:1 onto Google's legacy 11 event colors, and theme.util.ts:53 returns the literal label 'Calendar default' when color is null.",
+      "'Your selection is saved on the event and colors the event's card in the grid'": "TRUE -- color rides on event content and drives the card palette."
+    },
+    "links_resolved": "Both relative links resolve on this branch: docs/frontend/week-drag-interaction.md and docs/acceptance/recurring-events.md.",
+    "scope_note": "This run also added 3 lines to .gitignore (the AI-SDLC delegated-worker session cache path). Unrelated to the documentation content and correct as written; noted only so the file count in this manifest is not mistaken for docs churn.",
+    "not_verified": "Nothing here was exercised in a running browser. These are code-to-prose consistency findings; a claim can be true of the code and still be confusing in practice."
+  },
   "outcome": "completed",
   "started_at": "2026-08-20T16:50:08.959Z",
   "finished_at": "2026-08-20T17:07:19.750Z",
