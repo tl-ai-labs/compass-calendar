@@ -1,0 +1,77 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_doc_001",
+  "phase": "docs",
+  "task_type": "doc_addition",
+  "module": "docs-frontend",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-09-03T09:46:49.612Z",
+  "duration_ms": 135742,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.250124,
+  "tokens": {
+    "input": 42877,
+    "input_cached": 64464,
+    "output": 19571,
+    "output_reasoning": 12037
+  },
+  "tool_calls": {
+    "count": 3,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/week-drag-interaction.md",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [
+      "docs/frontend/weekly-view-interactions.md"
+    ],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1587,
+    "scanned": 1588,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_doc_001.md",
+    "usage": "worker-usage-tp_doc_001.json"
+  }
+}

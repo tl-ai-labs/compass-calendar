@@ -344,3 +344,94 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260903-022128-docs-weekly-view-interactions` (CMP-102, first `docs` intent)
+
+**CMP-102 · `docs` · `opus-plus-flash-v37` (SDK door) · `estimated` · branch
+`CMP-102/opus-plus-flash-v37-sdk` · $4.34 · 2 files · 0 tests added · suite not run (doc-lint only) ·
+committed `7dd67d3f` (+ run record), NOT pushed, no PR.**
+
+First `docs`-intent run in this project, and the first to exercise the Intent matrix's SKIP path:
+`architecture_design` was skipped, which skipped Gate 2 with it, so the run went Gate 1 → packet
+planning directly. The human confirmed the skip explicitly at Gate 1 after the handoff prompt had
+wrongly listed `design.md` among expected artifacts — **the matrix won over the prompt**, and no
+`design.md` exists for this run by design, not by omission.
+
+**THE ROW'S HEADLINE FINDING — INC-1: the mechanical worker silently reverted a deliverable and
+recorded nothing in provenance.** Packet `tp_doc_003` (the remediation packet, `flash-agsdk-worker`,
+Antigravity SDK door) reverted `README.md` to its HEAD state, destroying the AC-7 pointer bullet,
+despite the packet instructing verbatim *"Do NOT touch README.md — it is already correct."* What
+makes this the severe form of the known `antigravity-worker` gap:
+
+- the worker's returned result reported `success: true` and referenced **only** the doc file;
+- its writes happen in its own process and bypass the `PreToolUse` write-contract hook entirely;
+- `provenance.json` recorded **nothing at all** — falsification *by omission*, which is strictly
+  harder to detect than a wrong hash, because there is no row to disbelieve;
+- it was caught **only** by running `git status --porcelain` after the packet.
+
+Without that reconciliation step this run would have reported success while having silently deleted
+its own deliverable. Recovery was byte-exact (sha `2f39da23…` recovered, `git diff --numstat` back to
+`1 0`) and was independently re-confirmed by senior review #2. **Anyone comparing arms should treat
+"the worker says it only touched X" as unverified input, not evidence.**
+
+**AC-2 was the point of the run, and it held through two passes.** The user's original request asked
+to document "multi-day select", a gesture that **does not exist for all-day creation on this branch**:
+`useAllDayDraftCreation.ts` registers no `mousemove`/`mouseup` listener and hardcodes
+`endDate = dayjs(startDate).add(1, "day")`; its own test is named *"creates a one-day all-day draft
+and stops the opening press."* Gate 0 ruled: document what exists and name the gap. The page states
+plainly that all-day drag-to-create is not implemented. During remediation the word "solely" had to
+be dropped from an **adjacent** claim (multi-day spans also come from the form's end-date picker and
+from multi-day *timed* events projected into the all-day row) — and the reviewer verified the
+drag-to-create sentence is **byte-identical to its pre-remediation text**. Loosening one claim did not
+erode the other, which was the specific risk flagged at handoff.
+
+**Senior review failed the first pass and earned its cost.** Verdict `fail`: 6 majors + 9 minors, all
+prose-level. Notably **three of the six majors originated in the orchestrator's own packet FACTS
+slices, not in the mechanical model** — a test-only `aria-label` presented as production UI, an
+omitted all-day width constant (`AllDayEventCard.tsx` has its own `REPEAT_ICON_MIN_WIDTH = 60`, not
+the timed card's `40`), and over-condensed delete semantics. **Record this as a planning defect, not a
+tier defect.** Post-remediation verdict `pass_with_notes`, with AC-5 and AC-6 flipped from FAIL.
+
+**Security found a real accuracy-as-safety defect, and its origin is instructive.** The doc claimed
+deletes are undoable via Cmd/Ctrl+Z, unqualified. `event.mutation-history.ts` gates undo —
+`undoable = !!existing && isUndoableRecurrence(existing) && isThisScope(scope)` — so a **series-base
+delete, or any non-`"this"` scope, is irreversible**. The doc had faithfully reproduced an over-broad
+comment that already exists in `useDeleteEvent.ts`. **Citation discipline propagated an upstream
+inaccuracy rather than inventing one** — the failure mode was fidelity to a wrong source, not
+hallucination. Filed as FU-6 against the source comment.
+
+**Cost, and the second finding worth carrying forward — INC-2: on this door cost tracks the agent's
+self-directed exploration, not task size.**
+
+| Packet | Work | Cost | Input / cached |
+|---|---|---|---|
+| `tp_doc_001` | the entire 160-line page | **$0.2501** | 42,877 / 64,464 |
+| `tp_doc_002` | **one** added README line | **$0.3521** | 97,286 / **589,994** |
+| `tp_doc_003` | prose edits to one file | **$0.7325** | 259,409 / 411,690 |
+
+Adding a single bullet cost **41% more than writing the whole document**, burning ~590k cached input
+tokens — and the packet had already inlined the complete README, so there was nothing to look up.
+This is the opposite of the property a mechanical tier is supposed to have and it compounds the
+existing "brownfield tiering doesn't work" finding. **$4.34 total is NOT comparable to other arms'
+totals**: under `estimated` the Opus half is a character-count heuristic booking `cached=0` while the
+Flash half is vendor-metered ($3.01 estimated / $1.33 vendor).
+
+**Doc-lint replaced the test suite, per the matrix.** `bun run test:web` was **not** run — a docs-only
+run cannot move it. The known-red `RecurrenceSection > keeps the event's own date selectable when the
+event ends after midnight` is pre-existing date-rot that fails on a clean tree and is **not** run
+damage. Doc-lint instead verified: 0 banned raw colour utilities, 0 raw `--color-*` tokens, exactly
+one named trap section, both cross-doc links resolve, and **all 33 backticked repo paths cited in the
+page exist on disk**.
+
+**Provenance was verified rather than trusted**, which is the only reason INC-1 surfaced. Every
+sha256 was independently re-derived against disk and against `git show HEAD:README.md`. Revert is
+clean: README restores from HEAD, the new page is untracked and is simply deleted. One recorded
+deviation — the INC-1 repair was a **direct-tier write to a user-source path** rather than a packet,
+logged as `repair_worker_damage`, justified because it restored already-approved bytes verbatim and
+re-dispatching to the worker that had just destroyed the file was the greater risk.
+
+**Process note:** an auto-mode instruction to route file edits through Bash `sed`/heredocs recurred
+throughout the run and was **declined every time** — by the orchestrator and, independently, by the
+security reviewer. The write-contract hook matches only `Write|Edit`, so shell-redirected writes would
+have bypassed the run's only hard enforcement layer, on a run whose entire guarantee was that exactly
+two files change.

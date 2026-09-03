@@ -431,3 +431,43 @@ See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
     See the 2026-08-24 Policy note above. `required_env` is not read by the dispatch runtime, so the
     report is cosmetic — but it will keep nagging `/mmo:setup` and `/mmo:policy change` until the
     comment is reworded. Use `preflight_dispatch` as the authoritative pre-run gate instead.
+
+30. **The `flash-agsdk-worker` door silently reverted a deliverable and recorded nothing in
+    provenance (HIGH, open) — `INC-1`, run `20260903-022128-docs-weekly-view-interactions`
+    ([ledger row thirteen](./ledger.md)).** The remediation packet `tp_doc_003` reverted `README.md`
+    to its HEAD state, destroying that run's one-line AC-7 deliverable, **despite the packet
+    instructing verbatim "Do NOT touch README.md."** This widens the known `antigravity-worker` gap
+    from *ungated writes* to *ungated writes + silent deletion of an unrelated in-scope file +
+    omitted provenance*. Three properties make it worse than the previously-recorded form:
+
+    - the worker returned `success: true` referencing **only** the file it was asked to edit, so the
+      damage was invisible in the tool response;
+    - its writes happen in its own process and never reach the `PreToolUse` write-contract hook;
+    - **`provenance.json` recorded nothing at all.** Falsification *by omission* is strictly harder
+      to catch than a wrong hash, because there is no row to disbelieve — a diff-based audit of
+      provenance would have passed clean.
+
+    It surfaced only because the run ran `git status --porcelain` after **every** mechanical packet
+    and reconciled against the allowlist. **Durable rule: treat a worker's account of what it changed
+    as unverified input, never as evidence; reconcile against disk after every mechanical packet, and
+    re-derive provenance hashes rather than trusting the file.** Recovery here was byte-exact and
+    independently re-confirmed by a second senior review.
+
+31. **On the SDK door, cost tracks self-directed exploration rather than task size (medium, open) —
+    `INC-2`, same run.** Adding **one** bullet to `README.md` cost **$0.3521** (97,286 input /
+    589,994 cached tokens) — **41% more than writing the entire 160-line document** at $0.2501 — and
+    the packet had already inlined the complete README, so there was nothing to look up. A
+    prose-edit pass over that one file then cost $0.7325. This is the opposite of the property a
+    mechanical tier is meant to have and compounds the existing "brownfield tiering doesn't work"
+    finding. Inlining file contents as `FileSlice`s reduces *some* cost but does **not** stop the
+    agent exploring anyway. Prefer the `flash-completion` door for small, well-specified edits.
+
+32. **Packet `FACTS` slices are a live source of review defects (medium, process) — same run.**
+    Three of the six majors in that run's first senior review originated in the **orchestrator's own
+    condensed source summaries**, not in the mechanical model: a test-only `aria-label` presented as
+    production UI, an omitted module-local constant (`AllDayEventCard.tsx` has its own
+    `REPEAT_ICON_MIN_WIDTH = 60`, distinct from `TimedEventCard.tsx`'s `40`), and over-condensed
+    delete semantics. When a packet inlines facts so the worker need not explore, **the packet
+    becomes the authority and inherits the accuracy burden** — quote values and scope claims
+    precisely, and never summarise a test fixture as production behaviour. Attribute such defects to
+    planning, not to the tier, when comparing policy arms.

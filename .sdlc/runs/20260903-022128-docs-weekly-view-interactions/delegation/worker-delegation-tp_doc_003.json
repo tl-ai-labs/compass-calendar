@@ -1,0 +1,213 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_doc_003",
+  "phase": "docs",
+  "task_type": "doc_addition",
+  "module": "docs-frontend",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-09-03T10:09:39.490Z",
+  "duration_ms": 339489,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.732477,
+  "tokens": {
+    "input": 259409,
+    "input_cached": 411690,
+    "output": 31290,
+    "output_reasoning": 20119
+  },
+  "tool_calls": {
+    "count": 17,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+        "args_clipped": false
+      },
+      {
+        "name": "find_file",
+        "args": {
+          "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+          "query": "*DatePickers*"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+        "args_clipped": false
+      },
+      {
+        "name": "search_directory",
+        "args": {
+          "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+          "query": "shouldRenderTimedInAllDayRow",
+          "num_results": "0"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+          "start_line": "0",
+          "end_line": "59"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+          "start_line": "109",
+          "end_line": "139"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/queries/event.view-model.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayEventCard.tsx",
+          "start_line": "24",
+          "end_line": "44"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/components/AllDayEventCard.tsx",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Forms/hooks/useDeleteEvent.ts",
+          "start_line": "0",
+          "end_line": "59"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Forms/hooks/useDeleteEvent.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/mutations/useEventMutations.ts",
+          "start_line": "789",
+          "end_line": "864"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/mutations/useEventMutations.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/mutations/event.mutation-history.ts",
+          "start_line": "74",
+          "end_line": "99"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/mutations/event.mutation-history.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/common/utils/toast/recurrence-scope.toast.tsx",
+          "start_line": "0",
+          "end_line": "59"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/common/utils/toast/recurrence-scope.toast.tsx",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/recurrence/recurrence-scope-opportunity.store.ts",
+          "start_line": "89",
+          "end_line": "129"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/events/recurrence/recurrence-scope-opportunity.store.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git status",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git restore README.md",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bun run check:semantic-colors",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/docs/frontend/weekly-view-interactions.md",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "node -e 'const fs = require(\"fs\"); const content = fs.readFileSync(\"docs/frontend/weekly-view-interactions.md\", \"utf8\"); console.log(JSON.stringify({ path: \"docs/frontend/weekly-view-interactions.md\", content }));'",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "README.md",
+      "docs/frontend/weekly-view-interactions.md"
+    ],
+    "removed": [],
+    "unchanged": 1586,
+    "scanned": 1588,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_doc_003.md",
+    "usage": "worker-usage-tp_doc_003.json"
+  }
+}

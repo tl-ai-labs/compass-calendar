@@ -1,10 +1,3 @@
-<!--
-  Living baseline discovery for the Compass repo.
-  Last refreshed: 2026-09-03 by run 20260903-022128-docs-weekly-view-interactions
-  (mode: refresh -> incremental; no source drift since the 2026-08-20 first-time scan).
-  The per-run snapshot lives at .sdlc/runs/<run-id>/discovery.md.
--->
-
 # Discovery — 20260903-022128-docs-weekly-view-interactions
 
 - **Mode:** refresh → **incremental**

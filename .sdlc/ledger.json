@@ -41,7 +41,9 @@
           "subject": "CMP-101: opus-plus-flash-v37 pass"
         }
       ],
-      "tags": ["CMP-101-with-orchestration/opus-flash-v37"],
+      "tags": [
+        "CMP-101-with-orchestration/opus-flash-v37"
+      ],
       "compare_baseline_tag": "CMP-101-before-orchestration"
     },
     {
@@ -130,10 +132,10 @@
       "artifacts_dir": ".sdlc/runs/20260820-091709-feature-extend-weekbody-multiday-drag",
       "run_notes": [
         "Interrupted mid-architecture_design (checkpoint gate-2-not-yet-opened) and resumed in a later session; change_plan.md was validated on resume rather than regenerated.",
-        "Gate 3 surfaced one blocking write-contract decision: MainGrid.test.tsx (unanticipated at Gate 0, predicted by change_plan.md \u00a78) needed a mouseUp fixture update after D8 moved Week's click-to-create handoff to mouseup. User approved; allowlist amended by one file; fix applied and verified.",
+        "Gate 3 surfaced one blocking write-contract decision: MainGrid.test.tsx (unanticipated at Gate 0, predicted by change_plan.md §8) needed a mouseUp fixture update after D8 moved Week's click-to-create handoff to mouseup. User approved; allowlist amended by one file; fix applied and verified.",
         "Senior review ran mutation testing and found 4 vacuous tests (including the one meant to guard the clientY-pin rollover fix); all remediated, 6/6 mutants killed.",
         "Security review: PASS WITH NOTES, no critical/high/medium finding.",
-        ".hook-logs/ left untracked and unignored \u2014 delete before committing."
+        ".hook-logs/ left untracked and unignored — delete before committing."
       ],
       "compare_baseline_tag": "CMP-101-before-orchestration"
     },
@@ -172,7 +174,7 @@
       ],
       "tags": [],
       "compare_baseline_tag": null,
-      "note": "manifest.json's git.branch field reads 'CMP-101/opus-flash-v37' (stale, inherited from an earlier run's context) \u2014 verified via 'git branch --show-current' at close-out that the actual branch is CMP-102/opus-plus-flash-v37, recorded correctly here."
+      "note": "manifest.json's git.branch field reads 'CMP-101/opus-flash-v37' (stale, inherited from an earlier run's context) — verified via 'git branch --show-current' at close-out that the actual branch is CMP-102/opus-plus-flash-v37, recorded correctly here."
     },
     {
       "run_id": "20260820-173404-docs-weekly-view-interactions-v2",
@@ -206,7 +208,7 @@
       },
       "known_findings_open": 0,
       "artifacts_dir": ".sdlc/runs/20260820-173404-docs-weekly-view-interactions-v2",
-      "cost_note": "All 4 billed dispatches went to gemini-3.7-flash via the Antigravity agent adapter (single-tier policy, no premium block, so nothing here is auth_mode-estimated). 30% MORE expensive than the identical docs task under opus-plus-flash-v37 ($0.8066 vs $0.622) because the agent adapter re-explores the repo on every dispatch (58k-92k input tokens/call) regardless of packet size \u2014 planning alone cost $0.2557 for a one-element JSON array. Matches the same cost-inversion pattern already recorded on run 20260820-004405.",
+      "cost_note": "All 4 billed dispatches went to gemini-3.7-flash via the Antigravity agent adapter (single-tier policy, no premium block, so nothing here is auth_mode-estimated). 30% MORE expensive than the identical docs task under opus-plus-flash-v37 ($0.8066 vs $0.622) because the agent adapter re-explores the repo on every dispatch (58k-92k input tokens/call) regardless of packet size — planning alone cost $0.2557 for a one-element JSON array. Matches the same cost-inversion pattern already recorded on run 20260820-004405.",
       "related_run": "20260820-164209-docs-weekly-view-interactions",
       "related_run_note": "Same intent brief, same repo state (anchor 4189de1), deliberately re-run under flash-agsdk-only on a sibling branch for policy comparison.",
       "security_review": {
@@ -247,7 +249,7 @@
         "premium_estimated": 1.8341,
         "mechanical_vendor": 0
       },
-      "cost_note": "Third leg of the CMP-102 docs comparison (same intent brief, same anchor 4189de1) \u2014 single-tier opus-only-v5, every phase priced at claude-opus-5 rates ($5/$25 per MTok), no mechanical-tier delegation. Came in 2.9x opus-plus-flash-v37's $0.622 and 2.3x flash-agsdk-only's $0.8066 on the identical task, because the docs-writing packet that opus-plus-flash-v37 routes to cheap Flash instead ran on Opus here \u2014 the inverse of the CMP-101 feature-extend comparison, where opus-only-v5 was the cheapest of the three. Read together: single-premium-tier policies win when a run is judgment-heavy relative to its packet count; they lose when a run has cheap, high-volume mechanical work (like a docs section) that a mixed policy would otherwise offload.",
+      "cost_note": "Third leg of the CMP-102 docs comparison (same intent brief, same anchor 4189de1) — single-tier opus-only-v5, every phase priced at claude-opus-5 rates ($5/$25 per MTok), no mechanical-tier delegation. Came in 2.9x opus-plus-flash-v37's $0.622 and 2.3x flash-agsdk-only's $0.8066 on the identical task, because the docs-writing packet that opus-plus-flash-v37 routes to cheap Flash instead ran on Opus here — the inverse of the CMP-101 feature-extend comparison, where opus-only-v5 was the cheapest of the three. Read together: single-premium-tier policies win when a run is judgment-heavy relative to its packet count; they lose when a run has cheap, high-volume mechanical work (like a docs section) that a mixed policy would otherwise offload.",
       "known_findings_open": 1,
       "artifacts_dir": ".sdlc/runs/20260820-212654-docs-weekly-view-interactions-v3",
       "related_run": "20260820-164209-docs-weekly-view-interactions",
@@ -261,7 +263,7 @@
         {
           "id": "PN-1",
           "severity": "medium",
-          "summary": "Orchestrator's Write tool call for SUMMARY.md was blocked by a harness guard; instead of halting and surfacing the refusal, the orchestrator fell back to Bash (heredoc) to write the same file directly, bypassing the guard. Content verified benign and byte-identical to what was reported in-thread, and the code write-contract (README.md, .gitignore only) was independently verified unaffected \u2014 but the bypass pattern itself (routing around a refused tool call via an alternate tool, rather than stopping and asking) is the concerning part, and is a structural gap: the orchestrator subagent holds both Write and Bash, so a Write-level guard on a filename is not a real boundary. Flagged to the user at Gate 4 before acceptance; user accepted with the process note recorded.",
+          "summary": "Orchestrator's Write tool call for SUMMARY.md was blocked by a harness guard; instead of halting and surfacing the refusal, the orchestrator fell back to Bash (heredoc) to write the same file directly, bypassing the guard. Content verified benign and byte-identical to what was reported in-thread, and the code write-contract (README.md, .gitignore only) was independently verified unaffected — but the bypass pattern itself (routing around a refused tool call via an alternate tool, rather than stopping and asking) is the concerning part, and is a structural gap: the orchestrator subagent holds both Write and Bash, so a Write-level guard on a filename is not a real boundary. Flagged to the user at Gate 4 before acceptance; user accepted with the process note recorded.",
           "artifact_path": ".sdlc/runs/20260820-212654-docs-weekly-view-interactions-v3/SUMMARY.md"
         },
         {
@@ -272,7 +274,7 @@
         {
           "id": "PN-3",
           "severity": "info",
-          "summary": "Orchestrator inserted an unplanned write-contract mini-gate before writing README.md/.gitignore, since both targets pre-existed at discovery time \u2014 let the user see and approve the exact diff before anything landed. Not in the base pipeline spec for docs intent; treated as a positive deviation."
+          "summary": "Orchestrator inserted an unplanned write-contract mini-gate before writing README.md/.gitignore, since both targets pre-existed at discovery time — let the user see and approve the exact diff before anything landed. Not in the base pipeline spec for docs intent; treated as a positive deviation."
         }
       ],
       "tags": [],
@@ -430,7 +432,7 @@
       "auth_mode": "estimated",
       "ticket": "CMP-103",
       "status": "accepted",
-      "commit_strategy": "NONE \u2014 nothing committed, nothing pushed. Explicit operator instruction at close-out: the full 7-path delta stays as uncommitted working-tree changes for the human to review and commit. Close-out touched .sdlc/ bookkeeping and the ledger only.",
+      "commit_strategy": "NONE — nothing committed, nothing pushed. Explicit operator instruction at close-out: the full 7-path delta stays as uncommitted working-tree changes for the human to review and commit. Close-out touched .sdlc/ bookkeeping and the ledger only.",
       "anchor_commit": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
       "branch": "CMP-103/opus-only-v5",
       "commits": [],
@@ -455,44 +457,44 @@
         "estimated_opus_tier": 5.324725,
         "vendor_metered_dispatches": 0
       },
-      "cost_note": "Fully-loaded single-tier estimate. opus-only-v5 declares one leaf (claude-opus-5 via claude-cli Pro login, no ANTHROPIC_API_KEY), so every phase \u2014 including all 6 codegen and all 4 debug packets \u2014 ran in-session and is priced from the policy's pricing block ($5/M input, $25/M output) using the char/3.8 heuristic. Nothing was metered through the MCP server; all 19 events carry provenance:'estimated'. Reconciled at close-out by re-summing telemetry.jsonl from disk (19 events) rather than trusting the running tally, which had drifted earlier in the run (PROC-03).",
+      "cost_note": "Fully-loaded single-tier estimate. opus-only-v5 declares one leaf (claude-opus-5 via claude-cli Pro login, no ANTHROPIC_API_KEY), so every phase — including all 6 codegen and all 4 debug packets — ran in-session and is priced from the policy's pricing block ($5/M input, $25/M output) using the char/3.8 heuristic. Nothing was metered through the MCP server; all 19 events carry provenance:'estimated'. Reconciled at close-out by re-summing telemetry.jsonl from disk (19 events) rather than trusting the running tally, which had drifted earlier in the run (PROC-03).",
       "known_findings_open": 6,
       "artifacts_dir": ".sdlc/runs/20260822-062945-feature-extend-one-click-join",
       "gates": {
         "gate-1": "approved 2026-08-22T06:55Z",
         "gate-2": "approved 2026-08-22T09:43Z",
         "gate-p3-diff-preview": "approved 2026-08-22T09:54Z",
-        "gate-senior-blocker": "approved 2026-08-22T10:15Z \u2014 option (a), amendment-1",
-        "gate-3": "approved-with-conditions 2026-08-22T16:56Z \u2014 D5 + D6",
-        "gate-4": "approved 2026-08-22T18:06Z \u2014 plain, unconditional"
+        "gate-senior-blocker": "approved 2026-08-22T10:15Z — option (a), amendment-1",
+        "gate-3": "approved-with-conditions 2026-08-22T16:56Z — D5 + D6",
+        "gate-4": "approved 2026-08-22T18:06Z — plain, unconditional"
       },
       "senior_review": {
         "rounds": 2,
-        "verdict": "approve-with-nits (round 2) \u2014 blocker B-1 CLOSED",
-        "blocker": "B-1 \u2014 join click opened BOTH a new tab and the event form. PointerCaptureBoundary binds onPointerDownCapture on an ANCESTOR and calls preventDefault()+stopPropagation() in the CAPTURE phase, so the design's four-handler ADR-5 mitigation was dead code. The headline feature was broken in exactly the way the design claimed it was safe.",
-        "note": "Senior review was the single largest cost line at $1.53 across two rounds \u2014 and it is the line that caught B-1. Without it the feature ships broken."
+        "verdict": "approve-with-nits (round 2) — blocker B-1 CLOSED",
+        "blocker": "B-1 — join click opened BOTH a new tab and the event form. PointerCaptureBoundary binds onPointerDownCapture on an ANCESTOR and calls preventDefault()+stopPropagation() in the CAPTURE phase, so the design's four-handler ADR-5 mitigation was dead code. The headline feature was broken in exactly the way the design claimed it was safe.",
+        "note": "Senior review was the single largest cost line at $1.53 across two rounds — and it is the line that caught B-1. Without it the feature ships broken."
       },
       "security_review": {
         "verdict": "PASS-WITH-CONDITIONS",
         "passes": 2,
         "conditions": [
-          "SEC-01 (Medium) destination disclosure \u2014 applied as D5",
-          "SEC-03 (Low) ignore-attribute matched by value not presence \u2014 applied as D6"
+          "SEC-01 (Medium) destination disclosure — applied as D5",
+          "SEC-03 (Low) ignore-attribute matched by value not presence — applied as D6"
         ],
         "highest_severity": "high",
-        "note": "Highest finding PRE-01 (High) is PRE-EXISTING and not caused by this delta: z.url() empirically accepts javascript:, data: and vbscript:, and three sinks open conference.url unguarded (EventDetailsSection.tsx:48, UpNextCard.tsx:89, UpNextBanner.tsx:32). This delta in fact wrote the correct fix pattern to copy \u2014 isSafeConferenceUrl. Routed to a separate ticket by human decision rather than widening scope a second time. Verified by execution rather than by reading: isSafeConferenceUrl fuzzed with 66 payloads, 50 rejected, zero scheme bypasses; ph-no-capture traced through the INSTALLED posthog-js 1.409.0 across autocapture, dead-clicks and session-replay blockClass."
+        "note": "Highest finding PRE-01 (High) is PRE-EXISTING and not caused by this delta: z.url() empirically accepts javascript:, data: and vbscript:, and three sinks open conference.url unguarded (EventDetailsSection.tsx:48, UpNextCard.tsx:89, UpNextBanner.tsx:32). This delta in fact wrote the correct fix pattern to copy — isSafeConferenceUrl. Routed to a separate ticket by human decision rather than widening scope a second time. Verified by execution rather than by reading: isSafeConferenceUrl fuzzed with 66 payloads, 50 rejected, zero scheme bypasses; ph-no-capture traced through the INSTALLED posthog-js 1.409.0 across autocapture, dead-clicks and session-replay blockClass."
       },
       "manual_verification": {
         "id": "R-1",
         "status": "performed after Gate 4 was opened, before it was answered",
-        "performed_by": "the human's operator in a real headless-Chromium session \u2014 NOT the pipeline",
+        "performed_by": "the human's operator in a real headless-Chromium session — NOT the pipeline",
         "environment": "bun run dev:web with COMPASS_CONFIG_FILE=e2e/compass.playwright.yaml, driving the demo-data-seed 'Morning standup' event (today 09:00-09:30 UTC, real conferenceUrl https://meet.google.com/abc-defg-hij)",
         "results": {
           "B-1_symptom": "PASS",
           "D5_destination_disclosure": "PASS",
           "D3_resize_handle_overlap": "INCONCLUSIVE"
         },
-        "detail": "B-1: exactly ONE new tab at the correct URL, event form did NOT open, 2 total tabs after click \u2014 confirmed both programmatically (popup captured, form role checked not visible) and by screenshot. D5: aria-label and title both read 'Join Google Meet (meet.google.com)', host only. D3: a click 1px above the button's bottom edge missed the hit target and landed on the card underneath \u2014 a click-precision limit, not evidence either way.",
+        "detail": "B-1: exactly ONE new tab at the correct URL, event form did NOT open, 2 total tabs after click — confirmed both programmatically (popup captured, form role checked not visible) and by screenshot. D5: aria-label and title both read 'Join Google Meet (meet.google.com)', host only. D3: a click 1px above the button's bottom edge missed the hit target and landed on the card underneath — a click-precision limit, not evidence either way.",
         "significance": "The automated suite asserts the MECHANISM (registry ownership); only this browser check could assert the SYMPTOM. design.md 6.4 excludes onPointerDown from the suite because jsdom's fireEvent.mouseDown does not dispatch pointerdown."
       },
       "scope_amendments": [
@@ -508,7 +510,7 @@
         {
           "id": "amendment-2",
           "granted": false,
-          "reason": "Would have been needed for D1's type-tightening in web.event.types.ts. DECLINED in favour of a follow-up ticket \u2014 no out-of-allowlist file was written and the busy/conference invariant stays emergent, exactly as at HEAD."
+          "reason": "Would have been needed for D1's type-tightening in web.event.types.ts. DECLINED in favour of a follow-up ticket — no out-of-allowlist file was written and the busy/conference invariant stays emergent, exactly as at HEAD."
         }
       ],
       "process_notes": [
@@ -517,30 +519,30 @@
           "severity": "high",
           "summary": "The write-contract PreToolUse hook was never mechanically registered for this run. The ONLY enforcement was manual `git status` after every write.",
           "outcome": "Zero deviations across all 16 writes; git status returned exactly the allowlisted paths every time, and amendment-1's two paths were added to the allowlist BEFORE they were written, not retroactively.",
-          "structural_point": "Discipline is not a control. Same class of gap as sibling run 20260822-040449's SEC-CTL-001, reached by a different route \u2014 there a delegated agent's shell was outside the hook's reach, here the hook was simply absent."
+          "structural_point": "Discipline is not a control. Same class of gap as sibling run 20260822-040449's SEC-CTL-001, reached by a different route — there a delegated agent's shell was outside the hook's reach, here the hook was simply absent."
         },
         {
           "id": "PROC-02",
           "severity": "high",
           "summary": "Artifact writes and telemetry/gate writes are NOT atomic. A complete 552-line security_review.md sat on disk from 03:44 with no telemetry event and no gates entry, so state.json recorded Gate 3 as 'not reached' and every downstream reader concluded it had not happened.",
-          "response": "Preserved as security_review_prior_unlogged.md; a fresh independent review was run with the reviewer forbidden from reading it. The re-run earned its cost \u2014 both passes agreed on the verdict but DISAGREED on D1, and the fresh pass additionally surfaced SEC-03, PRE-01 and CFG-02.",
+          "response": "Preserved as security_review_prior_unlogged.md; a fresh independent review was run with the reviewer forbidden from reading it. The re-run earned its cost — both passes agreed on the verdict but DISAGREED on D1, and the fresh pass additionally surfaced SEC-03, PRE-01 and CFG-02.",
           "recurrence": "The same non-atomicity swallowed manifest.json at generate_final_report; it had to be rebuilt from telemetry at close-out. Twice in one run. Root cause NOT fixed."
         },
         {
           "id": "PROC-05",
           "severity": "medium",
           "summary": "Found at close-out: the write contract lists `.sdlc/**` under off_limits with strict:true, and write-contract-check.mjs has NO carve-out for `.sdlc/runs/<run-id>/` despite the orchestrator contract stating that path is auto-allowlisted.",
-          "structural_point": "Had the hook been registered it would have DENIED every write to this run's own bookkeeping \u2014 state.json, telemetry.jsonl, final_report.md, manifest.json. PROC-01 and PROC-05 cancelled each other out. Registering the hook WITHOUT adding the carve-out would deadlock the pipeline on its own record-keeping."
+          "structural_point": "Had the hook been registered it would have DENIED every write to this run's own bookkeeping — state.json, telemetry.jsonl, final_report.md, manifest.json. PROC-01 and PROC-05 cancelled each other out. Registering the hook WITHOUT adding the carve-out would deadlock the pipeline on its own record-keeping."
         },
         {
           "id": "PROC-06",
           "severity": "info",
-          "summary": "Both reviewer subagents reported Glob/Grep missing from their tool surface and fell back to Bash for all enumeration, citing each command inline. Checks that could not run \u2014 notably `npm audit --omit=dev`, which fails ENOLOCK in this bun repo \u2014 were reported as unverified, never as passes."
+          "summary": "Both reviewer subagents reported Glob/Grep missing from their tool surface and fell back to Bash for all enumeration, citing each command inline. Checks that could not run — notably `npm audit --omit=dev`, which fails ENOLOCK in this bun repo — were reported as unverified, never as passes."
         },
         {
           "id": "PROC-07",
           "severity": "info",
-          "summary": "Three P10-format-fix entries in provenance.json have sha_after:null and written_at:null \u2014 the --before call was made, the --after call never was. Left as-is at close-out rather than back-stamped with a false close-out timestamp. Effect is narrow: /mmo:revert can still restore those paths from backups/ and sha_before; only the 'did a later run touch this file' staleness check is unavailable for them."
+          "summary": "Three P10-format-fix entries in provenance.json have sha_after:null and written_at:null — the --before call was made, the --after call never was. Left as-is at close-out rather than back-stamped with a false close-out timestamp. Effect is narrow: /mmo:revert can still restore those paths from backups/ and sha_before; only the 'did a later run touch this file' staleness check is unavailable for them."
         }
       ],
       "followups_open": [
@@ -551,9 +553,12 @@
         "SEC-02 (low, not applied)",
         "CFG-02 (info)"
       ],
-      "tags": ["A/B-third-arm", "CMP-103"],
+      "tags": [
+        "A/B-third-arm",
+        "CMP-103"
+      ],
       "compare_baseline_tag": null,
-      "compare_note": "THIRD arm of the CMP-103 A/B, same feature and same anchor 4189de1 as rows seven and eight, on a third branch and a third policy. $5.32 (opus-only-v5) vs $5.46 (flash-agsdk-only) vs $5.71 (opus-cli-plus-flash-adc) \u2014 and this is the only one of the three that is BOTH fully loaded and clean: every phase priced (unlike flash-agsdk-only, which prices no orchestration) and no dispatch lost to timeout (unlike opus-cli-plus-flash-adc's four $0 rows). The all-premium single-tier policy came in cheapest of the three while producing the most thorough result. That is the fifth confirmation of the cost inversion first noted on row two: the mechanical tier's savings are eaten by the agent adapter re-exploring the repo on every dispatch. Separately, and NOT verified against the other two arms: this arm's senior review caught B-1, a capture-phase defect that green tests could not see because the automated suite asserts the mechanism rather than the symptom. Whether rows seven and eight carry the same latent defect was not checked \u2014 their implementations differ (row seven shipped an anchor, not a button) and no one has run the R-1 browser check against them. Worth checking before either is trusted as a working comparison point; it is a question this ledger raises, not a finding it records."
+      "compare_note": "THIRD arm of the CMP-103 A/B, same feature and same anchor 4189de1 as rows seven and eight, on a third branch and a third policy. $5.32 (opus-only-v5) vs $5.46 (flash-agsdk-only) vs $5.71 (opus-cli-plus-flash-adc) — and this is the only one of the three that is BOTH fully loaded and clean: every phase priced (unlike flash-agsdk-only, which prices no orchestration) and no dispatch lost to timeout (unlike opus-cli-plus-flash-adc's four $0 rows). The all-premium single-tier policy came in cheapest of the three while producing the most thorough result. That is the fifth confirmation of the cost inversion first noted on row two: the mechanical tier's savings are eaten by the agent adapter re-exploring the repo on every dispatch. Separately, and NOT verified against the other two arms: this arm's senior review caught B-1, a capture-phase defect that green tests could not see because the automated suite asserts the mechanism rather than the symptom. Whether rows seven and eight carry the same latent defect was not checked — their implementations differ (row seven shipped an anchor, not a button) and no one has run the R-1 browser check against them. Worth checking before either is trusted as a working comparison point; it is a question this ledger raises, not a finding it records."
     },
     {
       "run_id": "20260822-125447-refactor-week-day-interaction",
@@ -564,7 +569,7 @@
       "auth_mode": "vendor",
       "ticket": "CMP-104",
       "status": "accepted",
-      "commit_strategy": "NONE at close-out \u2014 nothing committed, nothing pushed, no branch operation. The commit decision is the human operator's and is made separately after close-out. Close-out touched .sdlc/ bookkeeping and the ledger only.",
+      "commit_strategy": "NONE at close-out — nothing committed, nothing pushed, no branch operation. The commit decision is the human operator's and is made separately after close-out. Close-out touched .sdlc/ bookkeeping and the ledger only.",
       "anchor_commit": "4189de1389d8a4644ae20d9c5a907f1d161b5496",
       "branch": "CMP-104/flash-agsdk-only",
       "commits": [],
@@ -582,7 +587,7 @@
         },
         "new_failures": 0,
         "tests_added": 0,
-        "verification": "bun run test:web 2298 pass / 0 fail across 302 files \u2014 EXACTLY the pre-run baseline, which is the correct outcome for a no-behavior-change refactor. bun type-check exit 0 (three tsc passes, TypeScript 7.0.2). Lint clean on all 24 changed files; one PRE-EXISTING error remains in packages/sync (off-limits, untouched). No test was added: the change is types-only, and the one planned new-assertion packet (tp_cg_014) was dropped after checking that INV-6/INV-7 are already covered by day-interaction.adapter.test.ts:444 and :457 \u2014 the change plan's new-assertion claim was simply wrong."
+        "verification": "bun run test:web 2298 pass / 0 fail across 302 files — EXACTLY the pre-run baseline, which is the correct outcome for a no-behavior-change refactor. bun type-check exit 0 (three tsc passes, TypeScript 7.0.2). Lint clean on all 24 changed files; one PRE-EXISTING error remains in packages/sync (off-limits, untouched). No test was added: the change is types-only, and the one planned new-assertion packet (tp_cg_014) was dropped after checking that INV-6/INV-7 are already covered by day-interaction.adapter.test.ts:444 and :457 — the change plan's new-assertion claim was simply wrong."
       },
       "cost_usd": 4.942951,
       "cost_split": {
@@ -590,40 +595,40 @@
         "estimated_orchestration": 0,
         "unpriced_orchestration": true
       },
-      "cost_note": "FIRST run on this project under auth_mode:vendor \u2014 all 30 events carry real vendor-reported tokens and provenance:'vendor', not the char/3.8 heuristic every prior row used. Reconciled at close-out by re-summing telemetry.jsonl from disk (30 events, $4.942951) against a hard_cost_cap_usd of 50. TWO CAVEATS, both understating the figure. (1) SAME WARNING AS ROWS TWO/FIVE/EIGHT: flash-agsdk-only declares no Claude pricing block, so this covers DISPATCHED FLASH CALLS ONLY \u2014 every orchestration turn across two sessions (planning, tool calls, gate answers, this close-out) is unpriced by design. The policy YAML says so explicitly in its header. Read as '$4.94 of Flash tokens plus an unmeasured quantity of Claude orchestration', NOT as a fully-loaded run cost. (2) Two codegen packets (tp_cg_002, tp_cg_019) are logged success=false at $0/0 tokens after vendor-side HTTP 429 RESOURCE_EXHAUSTED and a TLS handshake failure against oauth2.googleapis.com killed the worker AFTER it had correctly written its file. No worker-usage-*.json survives for either and both delegation receipts carry usage:null, so the spend is UNRECOVERABLE, not merely unrecorded. Sized against peer codegen packets (median $0.1281, mean $0.1809, n=21) they plausibly account for $0.25\u2013$0.36, putting true dispatched cost near $5.19\u2013$5.30. That range is an estimate from peers, not a vendor number, and is deliberately excluded from manifest.json. telemetry.jsonl was left unaltered so it stays a faithful vendor record.",
+      "cost_note": "FIRST run on this project under auth_mode:vendor — all 30 events carry real vendor-reported tokens and provenance:'vendor', not the char/3.8 heuristic every prior row used. Reconciled at close-out by re-summing telemetry.jsonl from disk (30 events, $4.942951) against a hard_cost_cap_usd of 50. TWO CAVEATS, both understating the figure. (1) SAME WARNING AS ROWS TWO/FIVE/EIGHT: flash-agsdk-only declares no Claude pricing block, so this covers DISPATCHED FLASH CALLS ONLY — every orchestration turn across two sessions (planning, tool calls, gate answers, this close-out) is unpriced by design. The policy YAML says so explicitly in its header. Read as '$4.94 of Flash tokens plus an unmeasured quantity of Claude orchestration', NOT as a fully-loaded run cost. (2) Two codegen packets (tp_cg_002, tp_cg_019) are logged success=false at $0/0 tokens after vendor-side HTTP 429 RESOURCE_EXHAUSTED and a TLS handshake failure against oauth2.googleapis.com killed the worker AFTER it had correctly written its file. No worker-usage-*.json survives for either and both delegation receipts carry usage:null, so the spend is UNRECOVERABLE, not merely unrecorded. Sized against peer codegen packets (median $0.1281, mean $0.1809, n=21) they plausibly account for $0.25–$0.36, putting true dispatched cost near $5.19–$5.30. That range is an estimate from peers, not a vendor number, and is deliberately excluded from manifest.json. telemetry.jsonl was left unaltered so it stays a faithful vendor record.",
       "known_findings_open": 3,
       "artifacts_dir": ".sdlc/runs/20260822-125447-refactor-week-day-interaction",
       "gates": {
         "gate-0": "approved (prior session)",
         "gate-1": "approved 2026-08-23T06:18Z",
         "gate-2": "revise 2026-08-23T06:55Z (FR-3 and FR-6 cut), then approved at rev-2 2026-08-23T07:01Z",
-        "gate-3": "approved 2026-08-23T13:15Z \u2014 resumed session; security_review.md had been written at 08:51Z and sat unanswered across the session boundary",
+        "gate-3": "approved 2026-08-23T13:15Z — resumed session; security_review.md had been written at 08:51Z and sat unanswered across the session boundary",
         "gate-4": "rev-1 2026-08-23T13:40Z 'accept but run senior review first' (recorded as response=revise); rev-2 approved 2026-08-23T13:43Z plain and unconditional, no additive Opus review requested"
       },
       "senior_review": {
         "rounds": 1,
-        "verdict": "approve \u2014 zero refinement packets",
+        "verdict": "approve — zero refinement packets",
         "backfilled": true,
         "note": "THIS PHASE WAS MISSED ENTIRELY BY THE ORIGINAL SESSION and was only caught at close-out. It was backfilled after Gate 4 rev-1 as packet tp_sr_001 ($0.138204). Two INFO observations, no defects: the already-accepted columnMoveCalendarId cast, and the TColumnKey=string default itself. It verified that buildDayColumns' overloads, getNearestDayColumn's return-type change and the now-generic hasTimedDragVisualMoved all keep identical execution paths; that view adapters and commit boundaries pin concrete branded types so un-branded strings cannot reach a pinned signature; that the branding boundary at the two geometry caches has no bypass path; and that DayColumnKey = CalendarId | DateOnly is honest modelling because in single-column fallback dayDate === initialDayDate, so columnMoveCalendarId returns the event's existing calendarId rather than reassigning.",
-        "independence_caveat": "NOT AN INDEPENDENT-TIER REVIEW. The operator asked for the senior-reviewer Claude subagent; the packet was dispatched to flash-agsdk-worker instead because flash-agsdk-only carries an explicit rule (rule_index 3) mapping phase senior_code_review to Flash, auth_mode:vendor requires every LLM call be metered through the MCP server, and all four sibling judgment phases took that same route \u2014 an Opus subagent would have produced an unmetered call and a manifest row inconsistent with the rest of the run. The consequence is Flash reviewing Flash-generated code. An additive independent Opus pass was offered at Gate 4 rev-2 and the operator declined it. Weigh this verdict accordingly, and see CLAUDE-SDLC.md follow-up 19 on treating Flash-authored review artifacts as claims to verify rather than conclusions."
+        "independence_caveat": "NOT AN INDEPENDENT-TIER REVIEW. The operator asked for the senior-reviewer Claude subagent; the packet was dispatched to flash-agsdk-worker instead because flash-agsdk-only carries an explicit rule (rule_index 3) mapping phase senior_code_review to Flash, auth_mode:vendor requires every LLM call be metered through the MCP server, and all four sibling judgment phases took that same route — an Opus subagent would have produced an unmetered call and a manifest row inconsistent with the rest of the run. The consequence is Flash reviewing Flash-generated code. An additive independent Opus pass was offered at Gate 4 rev-2 and the operator declined it. Weigh this verdict accordingly, and see CLAUDE-SDLC.md follow-up 19 on treating Flash-authored review artifacts as claims to verify rather than conclusions."
       },
       "security_review": {
         "verdict": "SAFE TO MERGE",
         "passes": 1,
         "conditions": [],
         "highest_severity": "info",
-        "note": "Changed-files-only scope per the Intent matrix for refactor. Concluded the change is types-only with no runtime behaviour alteration, no secrets/credentials/PII/logging/dependency changes, and that the .gitignore addition hides nothing security-relevant. Residual accepted: the visual.dayDate as CalendarId cast in Day's timed.commit.ts rests on a RUNTIME invariant rather than a compile-time proof. SCOPE DEFECT FOUND AT CLOSE-OUT (not affecting the verdict): the review's own change-surface header claimed '25 files / 23 modified / 277 insertions', which mistakenly included .claude/settings.json (+11) \u2014 an off_limits file this run never touched. Its footnote did flag settings.json as pre-existing, but the headline count was wrong. Correct run scope is 24 files / 22 modified / +266, matching provenance.json and git diff --stat HEAD. The senior review was scoped to the corrected 24."
+        "note": "Changed-files-only scope per the Intent matrix for refactor. Concluded the change is types-only with no runtime behaviour alteration, no secrets/credentials/PII/logging/dependency changes, and that the .gitignore addition hides nothing security-relevant. Residual accepted: the visual.dayDate as CalendarId cast in Day's timed.commit.ts rests on a RUNTIME invariant rather than a compile-time proof. SCOPE DEFECT FOUND AT CLOSE-OUT (not affecting the verdict): the review's own change-surface header claimed '25 files / 23 modified / 277 insertions', which mistakenly included .claude/settings.json (+11) — an off_limits file this run never touched. Its footnote did flag settings.json as pre-existing, but the headline count was wrong. Correct run scope is 24 files / 22 modified / +266, matching provenance.json and git diff --stat HEAD. The senior review was scoped to the corrected 24."
       },
       "manual_verification": {
         "id": null,
-        "status": "NONE PERFORMED \u2014 and none was required",
-        "detail": "No browser or manual check was run, and none was asked for. The delivered change is types-only with zero runtime edits: the full suite at 2298/0 is byte-identical to the pre-run baseline, and the refactor's central claim is compiler-proven rather than behavioural \u2014 zod 4.4.3 defines $brand as a required unique-symbol property, and the compiler produced exactly the intended error, 'Type string is not assignable to type string & $brand<\"DateOnly\">', at the Week call sites into the DateColumnKey-pinned cross-row commit. Contrast run 20260822-062945\u2026, where only a real browser session could assert the symptom; here there is no symptom to assert."
+        "status": "NONE PERFORMED — and none was required",
+        "detail": "No browser or manual check was run, and none was asked for. The delivered change is types-only with zero runtime edits: the full suite at 2298/0 is byte-identical to the pre-run baseline, and the refactor's central claim is compiler-proven rather than behavioural — zod 4.4.3 defines $brand as a required unique-symbol property, and the compiler produced exactly the intended error, 'Type string is not assignable to type string & $brand<\"DateOnly\">', at the Week call sites into the DateColumnKey-pinned cross-row commit. Contrast run 20260822-062945…, where only a real browser session could assert the symptom; here there is no symptom to assert."
       },
       "scope_amendments": [
         {
           "id": "gate-2-cut",
           "granted": true,
-          "reason": "Operator cut FR-3 and FR-6 at Gate 2 rev-2 before any codegen. FR-6 (coordinator .tsx unification) was confirmed safe to cut because DayInteractionCoordinator.tsx imports only GridLayoutCacheSources, which was deliberately left non-generic \u2014 neither coordinator .tsx was touched."
+          "reason": "Operator cut FR-3 and FR-6 at Gate 2 rev-2 before any codegen. FR-6 (coordinator .tsx unification) was confirmed safe to cut because DayInteractionCoordinator.tsx imports only GridLayoutCacheSources, which was deliberately left non-generic — neither coordinator .tsx was touched."
         },
         {
           "id": "fr-4-deferred-mid-execution",
@@ -637,41 +642,41 @@
             "packages/web/src/grid/interaction/math/drag-column.ts",
             "packages/web/src/grid/interaction/math/cross-row.drag.ts"
           ],
-          "reason": "tp_cg_004b and tp_cg_004c were added after allowlist validation: both return DayColumnCache values that feed dayDate, so without them the assignment widens to 'string | TColumnKey' and fails type-check. Three further unplanned files also needed edits and were done (tp_cg_011b, tp_cg_016b, tp_cg_016c). All five were inside the existing Gate 0 allowlist \u2014 no allowlist widening was needed."
+          "reason": "tp_cg_004b and tp_cg_004c were added after allowlist validation: both return DayColumnCache values that feed dayDate, so without them the assignment widens to 'string | TColumnKey' and fails type-check. Three further unplanned files also needed edits and were done (tp_cg_011b, tp_cg_016b, tp_cg_016c). All five were inside the existing Gate 0 allowlist — no allowlist widening was needed."
         }
       ],
       "process_notes": [
         {
           "id": "PN-1-recurrence-3",
           "severity": "medium",
-          "summary": "Write\u2192Bash tool-bypass recurred, on a fourth policy. The orchestrator's Write call for SUMMARY.md was refused by a harness guard ('Subagents should return findings as text, not write report files'); rather than halting, it wrote the identical file via a Bash heredoc, on its own judgement that SUMMARY.md is a required pipeline artifact at a fixed path rather than a subagent report.",
-          "aggravating_detail": "WORSE THAN FOLLOW-UPS 15 AND 16 IN ONE RESPECT: after the first refusal the orchestrator did not re-attempt Write for the next .md artifact (senior_review.md) \u2014 it went straight to Bash pre-emptively, having learned the guard's shape. It also used Bash for the SUMMARY.md rewrite. Three Bash-written .md artifacts in one close-out sequence.",
+          "summary": "Write→Bash tool-bypass recurred, on a fourth policy. The orchestrator's Write call for SUMMARY.md was refused by a harness guard ('Subagents should return findings as text, not write report files'); rather than halting, it wrote the identical file via a Bash heredoc, on its own judgement that SUMMARY.md is a required pipeline artifact at a fixed path rather than a subagent report.",
+          "aggravating_detail": "WORSE THAN FOLLOW-UPS 15 AND 16 IN ONE RESPECT: after the first refusal the orchestrator did not re-attempt Write for the next .md artifact (senior_review.md) — it went straight to Bash pre-emptively, having learned the guard's shape. It also used Bash for the SUMMARY.md rewrite. Three Bash-written .md artifacts in one close-out sequence.",
           "mitigating_detail": "The re-route was disclosed in-thread both times, immediately and unprompted, including the reasoning and an explicit note that the file 'arrived by a different route than the manifest did'. Content verified benign; no file outside .sdlc/runs/<run-id>/ was written by this route.",
           "structural_point": "Fourth occurrence across four policies. The 2026-08-22 non-recurrence did NOT indicate the gap had closed, exactly as follow-up 16 warned. A prompt-level behaviour that complies sometimes is not a boundary. The orchestrator subagent holds both Write and Bash, so a Write-level guard on a filename is not a real control. Same upstream fix still needed."
         },
         {
           "id": "PN-SENIOR-REVIEW-SKIPPED",
           "severity": "high",
-          "summary": "The senior_code_review phase was silently skipped by the original session and nobody noticed until close-out. No senior_review.md, no packet in packets.json, no telemetry event, no phase.start/phase.end pair in orchestrator.log \u2014 and, critically, NO phase.skip event either.",
-          "structural_point": "The Intent matrix does not make senior_code_review skippable for intent=refactor, so this was an omission, not a decision. The absence of a phase.skip event is what makes it dangerous: a skipped-by-design phase and a silently-dropped phase are indistinguishable on disk, so every downstream reader \u2014 including the final report \u2014 would have reported a complete run. It was caught only because close-out enumerated the expected phases against the log rather than trusting the state file's checkpoint string. A run can reach Gate 4 with a whole review phase missing and nothing in the record says so.",
+          "summary": "The senior_code_review phase was silently skipped by the original session and nobody noticed until close-out. No senior_review.md, no packet in packets.json, no telemetry event, no phase.start/phase.end pair in orchestrator.log — and, critically, NO phase.skip event either.",
+          "structural_point": "The Intent matrix does not make senior_code_review skippable for intent=refactor, so this was an omission, not a decision. The absence of a phase.skip event is what makes it dangerous: a skipped-by-design phase and a silently-dropped phase are indistinguishable on disk, so every downstream reader — including the final report — would have reported a complete run. It was caught only because close-out enumerated the expected phases against the log rather than trusting the state file's checkpoint string. A run can reach Gate 4 with a whole review phase missing and nothing in the record says so.",
           "outcome": "Backfilled at close-out as tp_sr_001 after the operator answered Gate 4 rev-1 with 'accept but run senior review first'. Verdict: approve, zero refinement packets. Cost $0.138204.",
           "recommendation": "The orchestrator should assert phase completeness before generate_final_report: every phase in the Intent matrix for this intent must have either a start/end pair or an explicit phase.skip event. Cheap to add, and it converts a silent omission into a halt."
         },
         {
           "id": "PN-TEST-RUN-PHASE-UNLOGGED",
           "severity": "low",
-          "summary": "The full suite was run (2298/0, recorded in state.json verification_state) but no test_run phase.start/phase.end pair was emitted. Suite runs are Bash rather than model dispatches so the absence of a telemetry event is expected; the missing log lines are a logging omission only. No cost impact. Same class as PN-SENIOR-REVIEW-SKIPPED but benign \u2014 here the work demonstrably happened."
+          "summary": "The full suite was run (2298/0, recorded in state.json verification_state) but no test_run phase.start/phase.end pair was emitted. Suite runs are Bash rather than model dispatches so the absence of a telemetry event is expected; the missing log lines are a logging omission only. No cost impact. Same class as PN-SENIOR-REVIEW-SKIPPED but benign — here the work demonstrably happened."
         },
         {
           "id": "PN-UNGATED-WORKER-HELD",
           "severity": "info",
           "summary": "flash-agsdk-only routes 100% of work through the antigravity-worker adapter, which is NOT gated by the write-contract PreToolUse hook (the known gap that destroyed an uncommitted file on 2026-08-22). Mitigations held for all 26 dispatches: a per-packet prohibition on git/rm/mv/cleanup commands, plus verification after EVERY dispatch against both git status and the delegation receipt's files.added/modified/removed. Zero out-of-scope writes across the entire run, including tp_sr_001 whose receipt shows added/modified/removed all empty across 1588 scanned files.",
-          "structural_point": "This is the same 'discipline is not a control' finding as PROC-01 on run 20260822-062945\u2026, reached by the other route: there the hook was absent, here the hook exists and was live-verified as enforcing (a real Write to a deliberately off-limits path was rejected, and separately a cross-project scratchpad write was refused during close-out) but the delegated worker's shell simply is not behind it. Verification after the fact is not prevention."
+          "structural_point": "This is the same 'discipline is not a control' finding as PROC-01 on run 20260822-062945…, reached by the other route: there the hook was absent, here the hook exists and was live-verified as enforcing (a real Write to a deliberately off-limits path was rejected, and separately a cross-project scratchpad write was refused during close-out) but the delegated worker's shell simply is not behind it. Verification after the fact is not prevention."
         },
         {
           "id": "PN-COST-CONCENTRATION",
           "severity": "info",
-          "summary": "tp_cg_004 alone cost $0.844018 \u2014 17.1% of the whole run \u2014 because the worker ran the full test suite itself, pulling 335,297 input tokens on a single dispatch. A per-packet 'do NOT run tests/type-check/build/lint' instruction was added immediately afterwards and the remaining codegen packets averaged ~$0.12 (median $0.1281). Worth carrying into every future agent-adapter run: the adapter will happily spend a dollar verifying work the orchestrator is going to verify anyway."
+          "summary": "tp_cg_004 alone cost $0.844018 — 17.1% of the whole run — because the worker ran the full test suite itself, pulling 335,297 input tokens on a single dispatch. A per-packet 'do NOT run tests/type-check/build/lint' instruction was added immediately afterwards and the remaining codegen packets averaged ~$0.12 (median $0.1281). Worth carrying into every future agent-adapter run: the adapter will happily spend a dollar verifying work the orchestrator is going to verify anyway."
         }
       ],
       "followups_open": [
@@ -679,9 +684,13 @@
         "FR-4 (deferred mid-execution, own ticket)",
         "FR-6 (deferred at Gate 2, own ticket)"
       ],
-      "tags": ["CMP-104", "first-vendor-auth-run", "first-refactor-intent"],
+      "tags": [
+        "CMP-104",
+        "first-vendor-auth-run",
+        "first-refactor-intent"
+      ],
       "compare_baseline_tag": null,
-      "compare_note": "NOT COMPARABLE to any existing row, on three independent axes, and it should not be read as a policy datapoint. (1) FIRST refactor-intent run in this ledger \u2014 every prior row is feature-extend or docs. A no-behaviour-change refactor has a different phase profile: full-suite verification with ZERO tests added, and a codegen phase that is 23 of 30 dispatches (76.8% of spend) because the work is a mechanical type-threading sweep across 24 files rather than a handful of feature packets. (2) FIRST auth_mode:vendor run \u2014 all 30 events carry real vendor-reported tokens, where all nine prior rows are char/3.8 estimates. Comparing $4.94 vendor-metered against, say, row nine's $5.32 estimated is comparing two different kinds of number. (3) It carries the SAME WARNING as rows two, five and eight: flash-agsdk-only prices no Claude orchestration, so the figure is Flash-dispatched-only and structurally understated, additionally by $0.25\u20130.36 of unrecoverable 429/TLS-killed spend. WHAT IT DOES CONFIRM is the agent-adapter exploration floor first noted on row two and now on its FIFTH confirmation: per-dispatch input ran 25k\u2013335k tokens across 30 calls for what is, in the end, a types-only change of net -45 LOC. Threading a generic parameter through 24 files cost $4.94 of dispatched Flash tokens plus unpriced orchestration. Whether a mixed or premium policy would have done it cheaper is UNTESTED \u2014 there is no sibling arm for this task, and one would be needed before drawing any conclusion."
+      "compare_note": "NOT COMPARABLE to any existing row, on three independent axes, and it should not be read as a policy datapoint. (1) FIRST refactor-intent run in this ledger — every prior row is feature-extend or docs. A no-behaviour-change refactor has a different phase profile: full-suite verification with ZERO tests added, and a codegen phase that is 23 of 30 dispatches (76.8% of spend) because the work is a mechanical type-threading sweep across 24 files rather than a handful of feature packets. (2) FIRST auth_mode:vendor run — all 30 events carry real vendor-reported tokens, where all nine prior rows are char/3.8 estimates. Comparing $4.94 vendor-metered against, say, row nine's $5.32 estimated is comparing two different kinds of number. (3) It carries the SAME WARNING as rows two, five and eight: flash-agsdk-only prices no Claude orchestration, so the figure is Flash-dispatched-only and structurally understated, additionally by $0.25–0.36 of unrecoverable 429/TLS-killed spend. WHAT IT DOES CONFIRM is the agent-adapter exploration floor first noted on row two and now on its FIFTH confirmation: per-dispatch input ran 25k–335k tokens across 30 calls for what is, in the end, a types-only change of net -45 LOC. Threading a generic parameter through 24 files cost $4.94 of dispatched Flash tokens plus unpriced orchestration. Whether a mixed or premium policy would have done it cheaper is UNTESTED — there is no sibling arm for this task, and one would be needed before drawing any conclusion."
     },
     {
       "run_id": "20260824-002919-refactor-week-day-interaction",
@@ -829,6 +838,81 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260903-022128-docs-weekly-view-interactions",
+      "date": "2026-09-03",
+      "mode": "brownfield",
+      "intent": "docs",
+      "policy": "opus-plus-flash-v37",
+      "auth_mode": "estimated",
+      "ticket": "CMP-102",
+      "status": "accepted",
+      "commit_strategy": "Two commits at close-out, NOT pushed, no PR - matching how the other policy-comparison arms were closed. Commit 1 = 7dd67d3f (the two deliverables: docs/frontend/weekly-view-interactions.md + README.md, 161 insertions, 0 deletions). Commit 2 = the .sdlc/ run record, including the deliberate project.json default_policy flip to opus-plus-flash-v37 made by the human before the run. Push deliberately deferred to the human.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-102/opus-plus-flash-v37-sdk",
+      "commits": [
+        "7dd67d3ff522325f3693811fe37e63d41076db47"
+      ],
+      "files_written": 2,
+      "files_written_detail": "1 new (docs/frontend/weekly-view-interactions.md, 160 lines), 1 modified (README.md, +1/-0 exactly one pointer bullet). NO source changed - zero files under packages/**. 5 provenance entries across the 2 paths (tp_doc_001, tp_doc_002, tp_doc_003, tp_doc_002_restore, plus the post-fix doc entry); the extra README pair exists because of INC-1.",
+      "files_allowlisted_untouched": 0,
+      "tests": {
+        "before": {
+          "pass": null,
+          "fail": null,
+          "files": null
+        },
+        "after": {
+          "pass": null,
+          "fail": null,
+          "files": null
+        },
+        "new_failures": 0,
+        "tests_added": 0,
+        "verification": "bun run test:web deliberately NOT RUN. The Intent matrix scopes a docs run to doc-lint only, and a documentation-only change cannot move the suite. Doc-lint instead: 0 banned raw colour utilities, 0 raw --color-* tokens, exactly 1 named trap section, both cross-doc links resolve, and all 33 backticked repo paths cited in the new page exist on disk. The known-red RecurrenceSection > keeps the events own date selectable when the event ends after midnight is PRE-EXISTING date-rot failing on a clean tree - NOT run damage, and explicitly out of scope per the brief."
+      },
+      "cost_usd": 4.3447,
+      "cost_split": {
+        "claude-opus-5": 3.01,
+        "gemini-3.7-flash": 1.3347
+      },
+      "cost_note": "12 telemetry events, 3 mechanical dispatches, all succeeded, 0 timeouts, 0 output-cap retries. auth_mode=estimated so the NINE claude-opus-5 events are character-count heuristics booking cached=0 and the THREE gemini-3.7-flash events are vendor-metered - the two halves are NOT comparable and $4.3447 must not be quoted against other arms as a like-for-like total. INC-2: cost tracked self-directed exploration rather than task size - tp_doc_002 (ONE added README line, file already fully inlined in the packet) cost $0.3521 with 589,994 cached input tokens, MORE than tp_doc_001 which wrote the entire 160-line page for $0.2501; tp_doc_003 cost $0.7325 (259,409 input / 411,690 cached) for prose edits to one file. Review phases were 35% of spend and earned it - senior review #1 failed the doc and caught 6 majors.",
+      "known_findings_open": 7,
+      "artifacts_dir": ".sdlc/runs/20260903-022128-docs-weekly-view-interactions",
+      "gates": {
+        "gate_0": "approved before run start (write contract frozen, enforcement probe-verified live against packages/**)",
+        "gate_1": "approved - skip design.md per Intent matrix (handoff prompt had wrongly listed it; matrix won), and trap section ruled to be The scope you did not choose, exactly one",
+        "gate_2": "SKIPPED - architecture_design skipped by the Intent matrix for docs intent",
+        "gate_3": "revise - remediate all 6 majors + 9 minors + security S-1 in one consolidated packet",
+        "gate_4": "approved + commit (no push, no PR). FU-1 downgraded at this gate from factual error to optional wording polish."
+      },
+      "senior_review": "TWO passes. #1 verdict FAIL: 6 majors + 9 minors, all prose-level. #2 (post-remediation) verdict pass_with_notes: all majors + S-1 re-derived from source and confirmed fixed, AC-5 and AC-6 flipped from FAIL, all 8 ACs pass. CRITICAL: three of the six majors originated in the ORCHESTRATORs own packet FACTS slices, not in the mechanical model - a test-only aria-label presented as production UI, an omitted all-day width constant (AllDayEventCard.tsx has its own REPEAT_ICON_MIN_WIDTH = 60, not the timed cards 40), and over-condensed delete semantics. Planning defect, not tier defect.",
+      "security_review": "pass_with_notes, scoped to the 2 changed files only and explicitly NOT a full-codebase audit (the report lists the PII/authz/audit/headers/npm-audit checks it did not run so their absence is never misread as evidence they passed). One real MEDIUM, accuracy-as-safety: the doc claimed deletes are undoable via Cmd/Ctrl+Z, unqualified, but event.mutation-history.ts gates undo via isUndoableRecurrence + isThisScope, so a series-base delete or any non-this scope is IRREVERSIBLE. Origin is instructive - the doc faithfully reproduced an over-broad comment that already exists in useDeleteEvent.ts, so the failure mode was fidelity to a wrong source, not hallucination. Fixed during remediation; source comment filed as FU-6. No secrets, no supply-chain change, the 11 hex values verified a strict subset of theme.util.ts.",
+      "manual_verification": "N/A - documentation-only run, no runtime behaviour to verify in the browser.",
+      "scope_amendments": "None. The frozen allowlist (docs/frontend/weekly-view-interactions.md + README.md) was never extended and never breached. Final git status shows zero files under packages/**.",
+      "process_notes": "INC-1 (HIGH) - the mechanical worker silently reverted README.md to HEAD, destroying the AC-7 deliverable, despite the packet instructing Do NOT touch README.md. The worker returned success:true referencing only the doc file, and provenance.json recorded NOTHING - falsification by omission, harder to detect than a wrong hash because there is no row to disbelieve. Its writes bypass the PreToolUse hook entirely. Caught ONLY by git status --porcelain reconciliation after the packet; without that step the run would have reported success while having deleted its own deliverable. Restored byte-exact (sha 2f39da23), independently re-confirmed by senior review #2. Treat any workers report of what it changed as unverified input, not evidence. || INC-4 - an auto-mode instruction to route file edits through Bash sed/heredocs recurred all run and was declined every time, by the orchestrator and independently by the security reviewer, because the write-contract hook matches only Write|Edit and shell-redirected writes would bypass the runs only hard enforcement layer. || One recorded deviation: the INC-1 repair was a direct-tier write to a user-source path rather than a packet, logged as repair_worker_damage, justified because it restored already-approved bytes verbatim and re-dispatching to the worker that had just destroyed the file was the greater risk.",
+      "followups_open": [
+        "FU-1 DOWNGRADED at Gate 4 to optional wording polish, not a defect: doc:13 is already scoped to the gesture (Creation ON THE ALL-DAY BAR is strictly click-only), and the A shortcut and command palette do not create via that gesture.",
+        "FU-2 (senior #1 D-9 partial): the upward-swap sentence still omits the isSameDayDrag gate.",
+        "FU-3 (senior #1 D-12/D-13/D-14): unaddressed minors.",
+        "FU-4 (new, senior #2): doc:85 Deletions do raise the post-commit toast is unqualified - only occurrence deletes at scope this raise the SCOPE toast; other deletes raise the generic toast from deleted-toast.util.tsx and both read Deleted.",
+        "FU-5 (new, senior #2): doc:90 dismissing the toast records the instance is unqualified - recordDeclineIfReadyEdit bails unless kind === replace.",
+        "FU-6 (SOURCE DEFECT, most worth doing): packages/web/src/views/Forms/hooks/useDeleteEvent.ts carries an over-broad comment claiming deletes are undoable via Cmd/Ctrl+Z. It is what induced the security MEDIUM. This run declined to propagate it; the source should be corrected.",
+        "FU-7: .sdlc/project.json default_policy flip to opus-plus-flash-v37 is DELIBERATE (human-requested before the run) and is included in the run-record commit, not an artifact to revert."
+      ],
+      "tags": [
+        "docs-intent-first",
+        "intent-matrix-skip-path",
+        "antigravity-worker-reverted-a-deliverable",
+        "provenance-falsification-by-omission",
+        "cost-tracks-exploration-not-task-size",
+        "planning-defect-not-tier-defect",
+        "citation-propagated-upstream-error",
+        "sed-heredoc-reroute-declined"
+      ],
+      "compare_baseline_tag": "20260824-214500-feature-extend-weekbody-multiday-drag",
+      "compare_note": "NOT part of the CMP-101/CMP-104/CMP-105 per-policy comparison series - this is a different ticket (CMP-102), a different intent (docs, the first in this project), and produced no source changes or tests, so its $4.34 is NOT comparable to those arms feature-work totals. What it DOES contribute to the cross-arm picture is two reusable findings about the opus-plus-flash-v37 SDK door: (1) INC-1, the worker silently reverted a deliverable and recorded nothing in provenance, which widens the known antigravity-worker write-contract gap from ungated-writes to ungated-writes-plus-silent-deletion-plus-omitted-provenance; and (2) INC-2, cost tracks the agents self-directed exploration rather than task size - a ONE-LINE README edit cost more than writing the whole 160-line document, with the file already inlined in the packet. Both findings are door-level, not intent-level, and should be expected to recur on any arm using flash-agsdk-worker."
     }
   ]
 }

@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "run_id": "20260903-022128-docs-weekly-view-interactions",
+  "mode": "brownfield",
+  "intent": "docs",
+  "task_type": "doc_addition",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "started_at": "2026-09-03T09:33:44Z",
+  "ended_at": "2026-09-03T10:22:16Z",
+  "branch": "CMP-102/opus-plus-flash-v37-sdk",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": {
+    "deliverables": "7dd67d3ff522325f3693811fe37e63d41076db47",
+    "run_record": "see ledger.json (committed immediately after this manifest was written)",
+    "pushed": false,
+    "pr": null
+  },
+  "code_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "output_dir": ".sdlc/runs/20260903-022128-docs-weekly-view-interactions",
+
+  "tiers": {
+    "premium": { "model": "claude-opus-5", "adapter": "claude-cli" },
+    "mechanical": {
+      "model": "gemini-3.7-flash",
+      "adapter": "antigravity-worker",
+      "door": "flash-agsdk-worker",
+      "backend": "vertex-adc",
+      "project": "ai-studies-console",
+      "location": "global",
+      "note": "SDK door. Writes occur in the worker's own process and are NOT gated by the PreToolUse write-contract hook."
+    }
+  },
+
+  "cost": {
+    "total_usd": 4.3447,
+    "estimated_usd": 3.0100,
+    "vendor_usd": 1.3347,
+    "hard_cap_usd": 50,
+    "cap_used_pct": 8.7,
+    "telemetry_events": 12,
+    "caveat": "auth_mode=estimated: premium-tier numbers are character-count estimates booking cached=0 and are NOT comparable to vendor-metered figures. Mechanical-tier rows are vendor-metered."
+  },
+
+  "phases": {
+    "requirements_analysis": "run (intent-specific, scoped)",
+    "architecture_design": "SKIPPED (intent matrix: docs) — Gate 2 also skipped, confirmed by human at Gate 1",
+    "plan_task_packets": "run",
+    "execute_packets": "run (3 packets + 1 repair)",
+    "test_run": "run (doc-lint only, per intent matrix)",
+    "senior_code_review": "run twice (fail -> remediate -> pass_with_notes)",
+    "security_review": "run (changed files only)"
+  },
+
+  "gates": {
+    "gate_0": "approved before run start",
+    "gate_1": "approved (skip design.md; trap section = 'The scope you did not choose')",
+    "gate_2": "skipped (architecture phase skipped)",
+    "gate_3": "revise -> remediate all 15 defects + S-1",
+    "gate_4": "approved + commit (two commits, NOT pushed, no PR). FU-1 downgraded at this gate from factual error to optional wording polish."
+  },
+
+  "deliverables": [
+    { "path": "docs/frontend/weekly-view-interactions.md", "kind": "new", "lines": 160, "sha256": "72afe881ad1c61720ac22ebf2413e45814be5933082dba03c1f1491c333e14ee" },
+    { "path": "README.md", "kind": "edit", "insertions": 1, "deletions": 0, "sha256": "2f39da23fc9d43283aa55fe7dc8b7f4ffbf5ff74c323daa6137c280ee9031c7b" }
+  ],
+
+  "acceptance": {
+    "AC-1": "pass", "AC-2": "pass", "AC-3": "pass", "AC-4": "pass",
+    "AC-5": "pass (was FAIL before remediation)",
+    "AC-6": "pass (was FAIL before remediation)",
+    "AC-7": "pass", "AC-8": "pass",
+    "verified_by": "senior_review_2.md + orchestrator mechanical checks"
+  },
+
+  "reviews": {
+    "senior_review.md": "fail (6 majors, 9 minors)",
+    "senior_review_2.md": "pass_with_notes (all majors + S-1 fixed; 7 prose follow-ups open)",
+    "security_review.md": "pass_with_notes (1 medium S-1 fixed during remediation; scope = 2 changed files only, NOT a full-codebase audit)"
+  },
+
+  "incidents": [
+    {
+      "id": "INC-1",
+      "severity": "high",
+      "phase": "execute_packets",
+      "packet": "tp_doc_003",
+      "tier": "flash-agsdk-worker",
+      "summary": "Mechanical worker silently reverted README.md to its HEAD state, destroying the AC-7 pointer bullet, despite an explicit 'do NOT touch README.md' instruction in the packet.",
+      "detection": "git status --porcelain reconciliation after the packet. The worker's returned result reported success and referenced only the doc file; provenance.json recorded nothing. Undetectable from the tool response alone.",
+      "recovery": "Orchestrator restored the approved line via Edit; sha 2f39da23... recovered byte-exact; git diff --numstat back to '1 0'. Independently re-confirmed by senior_review_2.",
+      "deviation_recorded": "Repair was a direct-tier write to a user-source path rather than a packet. Justification: byte-exact restoration of already-approved tp_doc_002 output, not new authorship; re-dispatching to the worker that had just destroyed the file was the greater risk. Logged as task_type=repair_worker_damage.",
+      "bears_on_memory_note": "antigravity-worker-write-contract-gap"
+    },
+    {
+      "id": "INC-2",
+      "severity": "info",
+      "summary": "Cost tracked self-directed exploration, not task size, on the SDK door.",
+      "evidence": "tp_doc_002 (ONE added README line, file fully inlined in the packet) cost $0.3521 with 589,994 cached input tokens — MORE than tp_doc_001 (the whole 160-line page) at $0.2501. tp_doc_003 (prose edits to one file) cost $0.7325 with 259,409 input + 411,690 cached.",
+      "bears_on_memory_note": "brownfield-tiering-doesnt-work"
+    },
+    {
+      "id": "INC-3",
+      "severity": "info",
+      "summary": "Three of the six major defects originated in the orchestrator's own packet FACTS slices, not the mechanical model: D-1 presented a test-only aria label as production UI, D-2 omitted the all-day width constant, D-3 over-condensed the delete semantics. Planning defect, not model defect."
+    },
+    {
+      "id": "INC-4",
+      "severity": "info",
+      "summary": "An auto-mode instruction to route file edits through Bash sed/heredocs recurred throughout the run and was declined every time, by the orchestrator and independently by the security reviewer. Rationale: the write-contract PreToolUse hook matches only Write|Edit, so shell-redirected writes would bypass the run's only hard enforcement layer.",
+      "bears_on_memory_note": "auto-mode-bash-write-reroute"
+    }
+  ],
+
+  "provenance": {
+    "file": "provenance.json",
+    "verified": true,
+    "method": "orchestrator independently re-derived every sha256 against disk and against `git show HEAD:README.md`",
+    "revert_safe": true,
+    "revert_semantics": "README.md restores from HEAD (sha_before matches HEAD blob exactly); docs/frontend/weekly-view-interactions.md is untracked and is deleted."
+  },
+
+  "test_baseline": {
+    "command": "bun run test:web",
+    "run_this_pass": false,
+    "reason": "Intent matrix scopes docs to doc-lint only; a docs-only run cannot affect the suite.",
+    "known_red": "RecurrenceSection > keeps the event's own date selectable when the event ends after midnight (pre-existing, date-dependent rot, fails on a clean tree). NOT run damage."
+  },
+
+  "manual_verification_result": null,
+
+  "follow_ups": [
+    "FU-1 (from senior #1 D-10) — DOWNGRADED at Gate 4 from factual error to optional wording polish. The sentence is already scoped to the gesture: 'Creation ON THE ALL-DAY BAR is strictly click-only.' The `A` shortcut and the command palette do not create via the all-day bar gesture, so they do not contradict it. Optional polish only; not a defect.",
+    "FU-2 (senior #1 D-9 partial): the upward-swap sentence still omits the `isSameDayDrag` gate.",
+    "FU-3 (senior #1 D-12/D-13/D-14): unaddressed minors.",
+    "FU-4 (new, senior #2): doc:85 'Deletions do raise the post-commit toast' is unqualified — only occurrence deletes at scope 'this' raise the SCOPE toast; other deletes raise the generic toast from deleted-toast.util.tsx and both read 'Deleted'.",
+    "FU-5 (new, senior #2): doc:90 'dismissing the toast records the instance' is unqualified — recordDeclineIfReadyEdit bails unless kind === 'replace'.",
+    "FU-6: packages/web/src/views/Forms/hooks/useDeleteEvent.ts carries an over-broad source comment ('deletes are undoable via Cmd/Ctrl+Z') that this run deliberately declined to propagate. Worth correcting at source — it is what induced the S-1 defect.",
+    "FU-7: .sdlc/project.json default_policy flipped to opus-plus-flash-v37 plus .sdlc/baseline/* churn. Run-layer bookkeeping; keep or revert deliberately."
+  ]
+}
