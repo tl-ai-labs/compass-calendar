@@ -127,7 +127,33 @@
     "known_red": "RecurrenceSection > keeps the event's own date selectable when the event ends after midnight (pre-existing, date-dependent rot, fails on a clean tree). NOT run damage."
   },
 
-  "manual_verification_result": null,
+  "manual_verification_result": {
+    "status": "verified",
+    "verified_at": "2026-09-03",
+    "verified_by": "main session (human-directed), independent of the orchestrator's own reporting",
+    "method": "static verification — a docs-only run has no runtime surface, so the browser check is replaced by proving the artifact exists as committed and that every claim's cited source resolves",
+    "checks": [
+      "file present at HEAD in 7dd67d3f; working tree identical to committed version (git diff --quiet clean)",
+      "160 lines / 14551 bytes; all three commissioned topics present",
+      "35 of 35 cited packages/** source paths exist on disk — zero hallucinated references",
+      "both cross-links resolve: ./week-drag-interaction.md and ../acceptance/recurring-events.md",
+      "README.md pointer at line 58 resolves to the delivered page",
+      "AC-4 re-checked: no raw Tailwind/theme colour utility classes in the doc",
+      "markdown well-formed: code fences balanced",
+      "house style: single one-sentence-model opener, exactly one named trap section",
+      "11-slot colour enum matches event-color.contracts.ts verbatim, slot for slot"
+    ],
+    "claims_independently_rederived_against_source": [
+      "AC-2: all-day drag-to-create absent (useAllDayDraftCreation.ts hardcodes add(1,'day'), no mousemove listener)",
+      "D-1: role=\"button\" / \"Empty all-day space\" exist only in the .test.tsx, never in production",
+      "D-2: REPEAT_ICON_MIN_WIDTH is 60 in AllDayEventCard.tsx vs 40 in TimedEventCard.tsx",
+      "D-3: useEventMutations.ts:855 begin({ kind: \"delete\" }) — deletes do raise the scope toast",
+      "S-1: event.mutation-history.ts:85 undo gate — series-base delete is irreversible",
+      "colour enum: 11 slots verbatim"
+    ],
+    "limitation": "Cited source paths were checked for existence for all claims, and the six highest-risk claims above were re-derived line by line. The remaining ~30 assertions rest on the post-remediation senior review, not on independent re-derivation.",
+    "outcome": "success — all 8 acceptance criteria confirmed against the committed artifact"
+  },
 
   "follow_ups": [
     "FU-1 (from senior #1 D-10) — DOWNGRADED at Gate 4 from factual error to optional wording polish. The sentence is already scoped to the gesture: 'Creation ON THE ALL-DAY BAR is strictly click-only.' The `A` shortcut and the command palette do not create via the all-day bar gesture, so they do not contradict it. Optional polish only; not a defect.",

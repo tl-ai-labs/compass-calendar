@@ -435,3 +435,26 @@ throughout the run and was **declined every time** — by the orchestrator and, 
 security reviewer. The write-contract hook matches only `Write|Edit`, so shell-redirected writes would
 have bypassed the run's only hard enforcement layer, on a run whose entire guarantee was that exactly
 two files change.
+
+**Manual verification — VERIFIED / success (2026-09-03).** Performed by the main session at the
+human's request, independent of the orchestrator's own reporting. A docs-only run has no runtime
+surface, so the usual browser check was replaced by static verification of the **committed** artifact:
+
+- present at HEAD in `7dd67d3f`, working tree byte-identical to the committed version
+- 160 lines / 14,551 bytes; all three commissioned topics present
+- **35 of 35 cited `packages/**` paths exist on disk** — zero hallucinated references. (Counted as
+  unique path prefixes including the directory `packages/web/src`; the doc-lint figure of 33 counts
+  file paths only. Same result, different denominator.)
+- both cross-links resolve (`./week-drag-interaction.md`, `../acceptance/recurring-events.md`), and
+  the `README.md:58` pointer resolves to the delivered page
+- AC-4 clean, code fences balanced, house style intact (one-sentence-model opener + exactly one
+  named trap section)
+- 11-slot colour enum matches `event-color.contracts.ts` **verbatim**, slot for slot
+
+Six highest-risk claims were re-derived line by line against source rather than accepted from the
+review: AC-2 (drag-to-create absent), D-1 (test-only aria label), D-2 (60-vs-40 constants), D-3
+(deletes raise the toast), S-1 (undo gate / irreversible series-base delete), and the colour enum.
+
+**Stated limitation:** existence was checked for every cited path, but only those six claims were
+independently re-derived. The remaining ~30 assertions rest on the post-remediation senior review.
+All 8 acceptance criteria confirmed against the committed artifact.
