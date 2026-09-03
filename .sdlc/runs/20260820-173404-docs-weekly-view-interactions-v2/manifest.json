@@ -264,6 +264,21 @@
     "The two zero-cost 'skipped' events are bookkeeping, not model calls; they keep phase rollups complete.",
     "SUMMARY.md intentionally absent — the harness prohibits this orchestrator from authoring summary markdown. The rollup lives here; the narrative was returned to the operator as text. Same precedent as run 20260820-164209."
   ],
+  "manual_verification_result": {
+    "performed_by": "assistant",
+    "date": "2026-09-02",
+    "method": "Source-of-truth fact-check, NOT a browser check. A docs run has no rendered surface to exercise, so every factual claim in the added README section was read back against the code it describes. The link target was resolved with `git cat-file -e` on this branch, not assumed from main.",
+    "net": "PASS on accuracy -- every claim the section makes is true. But it is the thinnest of the four CMP-102 arms, and one gap is structural rather than factual: see coverage_gap below.",
+    "claims_checked": {
+      "'Set events to repeat with Day, Week, Month, and Year frequencies'": "TRUE, and this is the most specific correct claim any of the four arms makes. recurrence.constants.ts defines RECURRENCE_FREQUENCIES as exactly [DAILY, WEEKLY, MONTHLY, YEARLY] and FREQUENCY_MAP labels them 'Day', 'Week', 'Month', 'Year' -- the four words in the sentence are the four literal UI labels. No other arm names them.",
+      "'choose whether to edit or delete a single occurrence versus the whole series'": "TRUE but the vaguest phrasing of the four. Both real paths are covered by it without either being described: the grid's apply-then-widen toast (recurrence-scope.toast.tsx, two actions -- Following and All) and the form/sidebar's ask-first dialog (RecurrenceScopeDialog.tsx, three options -- This Event / This and Following / All Events). Not wrong; just underspecified enough that it cannot be wrong.",
+      "'Organize your schedule with 11 fixed color options'": "TRUE -- EventColorSlotSchema is an 11-member enum. 'Fixed' is a fair characterisation: it is a closed enum, not a free color picker. The section omits that a null color renders as the literal label 'Calendar default' (theme.util.ts:53), which the opus-plus-flash-v37 arm does mention."
+    },
+    "coverage_gap": "The section is titled 'Weekly view interactions' and contains NO weekly-view interaction content. Its two bullets are recurring events and colors -- both event-model features, neither specific to the week grid. Dragging, the one thing the heading promises, appears only as a bare trailing link to docs/frontend/week-drag-interaction.md with no prose at all. Compare the sibling arms, all three of which describe day-column moves and all-day multi-day stretch inline. Nothing here is FALSE, which is why the net verdict is PASS; but a reader who opens this section to learn what they can do in the week view is handed a link and sent away. Recorded as a completeness finding against the section's own heading, not as a factual defect.",
+    "links_resolved": "docs/frontend/week-drag-interaction.md resolves on this branch. Note it is written as a root-relative path without the './' prefix the two opus arms use -- both render correctly on GitHub and in most Markdown viewers; a cosmetic inconsistency across the study, not a defect.",
+    "scope_note": "This run also added 3 lines to .gitignore (the AI-SDLC delegated-worker session cache path). Unrelated to documentation content and correct as written.",
+    "not_verified": "Nothing was exercised in a running browser. These are code-to-prose consistency findings."
+  },
   "status": "accepted",
   "outcome": "completed",
   "terminal": true,
