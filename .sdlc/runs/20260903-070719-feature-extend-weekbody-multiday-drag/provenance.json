@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "run_id": "20260903-070719-feature-extend-weekbody-multiday-drag",
+  "intent": "feature-extend",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "git_head_after": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "commits": [],
+  "files_touched": [
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:045799eceb561dfbbd7092265d52b9d1a5d535f66ddee6771e382a6809f02700",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_cg_001",
+      "written_at": "2026-09-03T07:59:48.198Z"
+    },
+    {
+      "path": "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "existed_before": false,
+      "sha_before": null,
+      "sha_after": "sha256:0d0ce6672fa4561984d756724d6a400b6833c323db329b89e7ad56e2d30dd510",
+      "tracked_in_git": false,
+      "backup_path": null,
+      "packet_id": "tp_cg_001",
+      "written_at": "2026-09-03T07:59:48.251Z"
+    },
+    {
+      "path": "packages/web/src/interaction/interaction.constants.ts",
+      "existed_before": true,
+      "sha_before": "sha256:f7600560c6a2a09465d2054537f3e240ac7ff3209ecdbdc2c1e78d5be64913bc",
+      "sha_after": "sha256:e0339bed0ac0cc32859315b1cb1451b13091aedd1907f5da08184222231ff2a1",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_001",
+      "written_at": "2026-09-03T07:59:48.312Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.ts",
+      "existed_before": true,
+      "sha_before": "sha256:5b055bd33164b7a1dbcc8a33672e7bfc03d328c3270e0b0c3759cbf41d334891",
+      "sha_after": "sha256:160b298a88cea520fd5d9a37e84caab5a9d84851368323ea826b3a56295d09e7",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-09-03T08:10:30.652Z"
+    },
+    {
+      "path": "packages/web/src/grid/hooks/useAllDayDraftCreation.test.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:d4ade6b554cea1815bdc6b8d3bcd2cb1f9c2b4576df53f154b1ca6d8e7a40b69",
+      "sha_after": "sha256:f6b7896ea9fb3dc37a73f8a56a88ef93ae654a06a327590d1338bb61340836f0",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-09-03T08:10:30.713Z"
+    },
+    {
+      "path": "packages/web/src/views/Week/components/Grid/AllDayRow/AllDayRow.tsx",
+      "existed_before": true,
+      "sha_before": "sha256:12c22de745284749b42fea039f5d9079cedb45c9313497b7daa8f5fb95950058",
+      "sha_after": "sha256:9551977ecc1a5bcd8e378d0cade153a95a4f699ac5a6578ffb955365250f7181",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-09-03T08:10:30.776Z"
+    },
+    {
+      "path": "docs/frontend/week-drag-interaction.md",
+      "existed_before": true,
+      "sha_before": "sha256:c95d1001521d4470e9177a88347e5f723e7ca9ec622af2e0a770440c37964e7e",
+      "sha_after": "sha256:6e66f318bd3132e03d42b8f0324a1cf4217e0277758ae937e954e0a635f271df",
+      "tracked_in_git": true,
+      "backup_path": null,
+      "packet_id": "tp_cg_002",
+      "written_at": "2026-09-03T08:10:30.834Z"
+    }
+  ]
+}

@@ -41,7 +41,9 @@
           "subject": "CMP-101: opus-plus-flash-v37 pass"
         }
       ],
-      "tags": ["CMP-101-with-orchestration/opus-flash-v37"],
+      "tags": [
+        "CMP-101-with-orchestration/opus-flash-v37"
+      ],
       "compare_baseline_tag": "CMP-101-before-orchestration"
     },
     {
@@ -551,7 +553,10 @@
         "SEC-02 (low, not applied)",
         "CFG-02 (info)"
       ],
-      "tags": ["A/B-third-arm", "CMP-103"],
+      "tags": [
+        "A/B-third-arm",
+        "CMP-103"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "THIRD arm of the CMP-103 A/B, same feature and same anchor 4189de1 as rows seven and eight, on a third branch and a third policy. $5.32 (opus-only-v5) vs $5.46 (flash-agsdk-only) vs $5.71 (opus-cli-plus-flash-adc) \u2014 and this is the only one of the three that is BOTH fully loaded and clean: every phase priced (unlike flash-agsdk-only, which prices no orchestration) and no dispatch lost to timeout (unlike opus-cli-plus-flash-adc's four $0 rows). The all-premium single-tier policy came in cheapest of the three while producing the most thorough result. That is the fifth confirmation of the cost inversion first noted on row two: the mechanical tier's savings are eaten by the agent adapter re-exploring the repo on every dispatch. Separately, and NOT verified against the other two arms: this arm's senior review caught B-1, a capture-phase defect that green tests could not see because the automated suite asserts the mechanism rather than the symptom. Whether rows seven and eight carry the same latent defect was not checked \u2014 their implementations differ (row seven shipped an anchor, not a button) and no one has run the R-1 browser check against them. Worth checking before either is trusted as a working comparison point; it is a question this ledger raises, not a finding it records."
     },
@@ -679,7 +684,11 @@
         "FR-4 (deferred mid-execution, own ticket)",
         "FR-6 (deferred at Gate 2, own ticket)"
       ],
-      "tags": ["CMP-104", "first-vendor-auth-run", "first-refactor-intent"],
+      "tags": [
+        "CMP-104",
+        "first-vendor-auth-run",
+        "first-refactor-intent"
+      ],
       "compare_baseline_tag": null,
       "compare_note": "NOT COMPARABLE to any existing row, on three independent axes, and it should not be read as a policy datapoint. (1) FIRST refactor-intent run in this ledger \u2014 every prior row is feature-extend or docs. A no-behaviour-change refactor has a different phase profile: full-suite verification with ZERO tests added, and a codegen phase that is 23 of 30 dispatches (76.8% of spend) because the work is a mechanical type-threading sweep across 24 files rather than a handful of feature packets. (2) FIRST auth_mode:vendor run \u2014 all 30 events carry real vendor-reported tokens, where all nine prior rows are char/3.8 estimates. Comparing $4.94 vendor-metered against, say, row nine's $5.32 estimated is comparing two different kinds of number. (3) It carries the SAME WARNING as rows two, five and eight: flash-agsdk-only prices no Claude orchestration, so the figure is Flash-dispatched-only and structurally understated, additionally by $0.25\u20130.36 of unrecoverable 429/TLS-killed spend. WHAT IT DOES CONFIRM is the agent-adapter exploration floor first noted on row two and now on its FIFTH confirmation: per-dispatch input ran 25k\u2013335k tokens across 30 calls for what is, in the end, a types-only change of net -45 LOC. Threading a generic parameter through 24 files cost $4.94 of dispatched Flash tokens plus unpriced orchestration. Whether a mixed or premium policy would have done it cheaper is UNTESTED \u2014 there is no sibling arm for this task, and one would be needed before drawing any conclusion."
     },
@@ -829,6 +838,88 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260903-070719-feature-extend-weekbody-multiday-drag",
+      "date": "2026-09-03",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "opus-plus-flash-v37",
+      "auth_mode": "estimated",
+      "ticket": "CMP-101",
+      "status": "accepted-and-manually-verified",
+      "commit_strategy": "NONE at close-out - nothing committed, staged or pushed. Gate 4 ruling was 'approve, hold commit for browser check'. The human's in-app verification comes first.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-101/opus-plus-flash-v37-sdk",
+      "commits": [],
+      "files_written": 7,
+      "files_written_detail": "2 new (grid/interaction/math/all-day.create.ts + .test.ts), 5 modified (grid/hooks/useAllDayDraftCreation.ts + .test.tsx, interaction/interaction.constants.ts, views/Week/.../AllDayRow/AllDayRow.tsx, docs/frontend/week-drag-interaction.md). +481/-11. Scope cut from the 11-file allowlist to 7 at Gate 2; the Week wrapper hook and AllDayRow.test.tsx were dropped as not worth an agent preamble each.",
+      "files_allowlisted_untouched": 4,
+      "tests": {
+        "before": {
+          "pass": 2297,
+          "fail": 1,
+          "files": 302
+        },
+        "after": {
+          "pass": 2319,
+          "fail": 1,
+          "files": 303
+        },
+        "new_failures": 0,
+        "tests_added": 22,
+        "verification": "bun run test:web 2319 pass / 1 fail across 303 files, RE-RUN INDEPENDENTLY BY THE PARENT SESSION, not relayed. THE BASELINE WAS NOT 2298/0: the tree was ALREADY RED at 2297/1 before any change, from RecurrenceSection date-rot (line 176 hardcodes /Monday, August 3rd, 2026/ against a fixture pinned to 2026-08-03; today is 2026-09-03). The single failure after the run is that same pre-existing test, confirmed by running it isolated (5 pass / 1 fail). AC-3 byte-identity verified by git diff --numstat: 262 added, 0 REMOVED on the protected test file."
+      },
+      "cost_usd": 4.2944,
+      "cost_split": {
+        "flash-agsdk-worker": 1.8879,
+        "premium-opus-claude-cli": 2.4065
+      },
+      "cost_note": "9 telemetry events. auth_mode=estimated, so the Opus half books cached=0 and is a heuristic while the flash-agsdk-worker half is vendor-derived from TODO placeholder rates - NOT VALID FOR CROSS-POLICY RANKING against the other CMP-101 arms. Excludes $0.1538 of pre-check smoke dispatches (session total $4.4482). MECHANICAL TIER WAS NOT CHEAP: $1.8879 across only 3 packets is ~$0.63/packet, driven by the ~11.5k-token Antigravity identity preamble plus 1.85M cached input tokens on one packet. The 2-packet dispatch discipline was deliberate and load-bearing.",
+      "known_findings_open": [
+        "RecurrenceSection.test.tsx date-rot will start EVERY future run on this repo red. Off-allowlist here. Needs its own ticket.",
+        "AllDayRow has no test file at all - that is precisely the test that would have caught the F-1 blocker.",
+        "TP-R6: no test for the buttons !== 1 early-finish path, the only path that can commit a span without a mouseup.",
+        "biome format error at all-day.create.ts:43 (const last = split across two lines). Left unfixed per Gate 3 ruling.",
+        "Day-view column-construction pinning test belongs beside useDayCalendarColumns.ts:34-38; no Day test file was on the allowlist."
+      ],
+      "artifacts_dir": ".sdlc/runs/20260903-070719-feature-extend-weekbody-multiday-drag",
+      "gates": {
+        "gate-0": "approved (intent feature-extend, auth_mode estimated, 11-file allowlist, 2297/1 baseline not yet known)",
+        "gate-1": "approved - user accepted the DOUBLE-COMMIT: press commits the one-day draft, release commits the span. Forced by AC-3, whose protected test fires mouseDown ONLY (no mouseUp anywhere) and asserts exactly one call, so the timed template's commit-on-mouseup would have broken it.",
+        "gate-2": "approved - D-1 = option (c), opt-in option object multiDayDrag?:{getVisibleDates} plus two pinning tests. Option (a) was REJECTED after the architect showed the Day-view structural immunity protects the DATES but not the CALL COUNT, so (a) would have shipped a live Day regression (form flicker via startGridDraft resetting isFormOpen, then setFormOpen(true)).",
+        "gate-3": "approved - TP-R6/F-6/F-7/F-8 and the biome nit filed as follow-ups, not closed.",
+        "gate-4": "approved - close out, DO NOT COMMIT, hold for the human browser check."
+      },
+      "senior_review": "Caught F-1, a genuine blocker INVISIBLE TO EVERY TEST: the Week draft form CLOSED on release of a multi-day drag - AC-2 green in mocked hook tests, broken in the running app. Three layers: startGridDraft resets isFormOpen:false; the reopening effect no-ops because handleChange's deps [isDrafting, activity, setIsFormOpen] are all unchanged on a same-activity re-entry; and the bubble-phase useGridMouseUp fallback is severed by a capture-phase stopPropagation. The timed gesture survives the identical stopPropagation only because it transitions activity creating->gridClick; press-then-escalate commits gridClick twice and has no transition to ride. Also found TWO TESTS THAT COULD NOT FAIL (one asserted undefined===undefined; the other's 'clamp' input was already inside the window) and a try/catch whose fallbacks produced {start:'',end:''} - the exact corrupt zero-length range the design existed to prevent. The clamp fix was PROVEN BY MUTATION: disabling the clamp block fails 4 tests; restored byte-exact.",
+      "security_review": "pass_with_notes, nothing blocking. SEC-1 (low, no validity guard - every call site clamps upstream) and SEC-2 (info, the stopPropagation compensation is invariant-dependent). Reviewer listed PII/authz/audit-log as NOT APPLICABLE rather than passing them, which is the honest framing. npm audit CANNOT RUN here (Bun-only, ENOLOCK); bun audit --prod reports 75 vulns / 26 high, all pre-existing transitive, zero added by this run.",
+      "manual_verification": "PERFORMED AND PASSED 2026-09-03, Playwright-driven against the real dev server (local/anonymous mode, no backend). Forward drag col0->col2 = 8-30 -> 9-1 (3-day span) AND THE FORM STAYED OPEN ON RELEASE - the F-1 blocker fix confirmed in the running app. Plain click = 9-2 -> 9-2 (one day), so AC-3 holds in the app and not only in the unit test. Reverse drag col4->col2 = 9-1 -> 9-3 (same normalised range). Drag past the right edge clamps to the last visible day. Not covered: Escape mid-drag, the TP-R6 buttons!==1 path, and any Day-view interaction.",
+      "scope_amendments": "None. Scope was REDUCED 11 -> 7 files at Gate 2 (dropped the Week wrapper hook #8/#9 and AllDayRow.test.tsx #7; MainGrid.test.tsx #10 was conditional-on-red and never needed). No allowlist extension was required at any point.",
+      "process_notes": "FIVE process findings. (1) THE STATED BASELINE WAS WRONG - 2298/0 in the ledger, actually 2297/1. Checking it rather than trusting it is what stopped AC-7 being judged against a fiction. (2) A CLAIM DID NOT HOLD: Gate 3 reported 'biome check clean on all 6 code files'; the parent session ran it and found 1 format error. Root cause self-diagnosed: biome was run BEFORE the fix packet rewrote that file and never re-run - a verification predating a later write pass must be repeated. (3) PROVENANCE IS PARTLY FALSE - 5 of 7 sha_after entries are stale because the helper consumes its --before record on first --after, so the senior-review fix pass went unrecorded; backup_path is null on ALL 7. Parent session verified sha_before MATCHES git HEAD for all 5 tracked files, so plain git rollback is sound even though the tool's 'changed since?' check is not. (4) tp_cg_001 TELEMETRY IS FALSE - logged success:false / 0 tokens / $0 after a vendor 429 + TLS timeout, but the worker HAD ALREADY WRITTEN ALL THREE FILES and they pass 11/11. A dispatch result is not a proxy for filesystem state; git status is. (5) Both the orchestrator and the parent session INDEPENDENTLY DECLINED a repeated mid-session instruction to edit files via Bash sed/heredocs, because the write-contract PreToolUse hook matches Write|Edit only. Hook enforcement was probe-verified live: a Write to packages/core/ was denied naming this run id.",
+      "followups_open": [
+        "TP-R6 buttons!==1 path untested",
+        "F-6 hoisted function declarations",
+        "F-7 helper location",
+        "F-8 no-op useCallback",
+        "biome format nit at all-day.create.ts:43",
+        "RecurrenceSection date-rot (starts every future run red)",
+        "AllDayRow has no test file",
+        "Day-view column-construction pinning test",
+        "stale sha_after in provenance helper",
+        "false tp_cg_001 telemetry on write-then-fail"
+      ],
+      "tags": [
+        "policy-ab",
+        "feature-extend",
+        "no-commit",
+        "antigravity-sdk-door",
+        "blocker-invisible-to-tests",
+        "mutation-proved-tests",
+        "estimated-cost-axis",
+        "baseline-was-red"
+      ],
+      "compare_baseline_tag": "20260819-212923-feature-extend-weekbody-multiday-drag",
+      "compare_note": "FIFTH arm of the CMP-101 per-policy comparison and the FIRST to run opus-plus-flash-v37 with select.gemini-flash defaulted to flash-agsdk-worker (the Antigravity SDK agent door) instead of flash-completion. Branch cut fresh from main at 2d81253a. Prior arms: opus-flash-v37 COMPLETION door $4.26 / 8 files / +26 tests; flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests; opus-plus-sonnet $8.08 / 8 files / +39 tests. THIS ARM: $4.29 / 7 files / +22 tests. THE DIRECT PAIR IS THIS ARM vs 20260819-212923 - same policy, same judgment tier, ONLY the mechanical door differs: $4.29 (agsdk) vs $4.26 (completion), i.e. essentially identical total for FEWER files and FEWER tests. COST COMPARISON REMAINS NOT LIKE-FOR-LIKE (estimated axis, placeholder Flash rates). WHAT IS SUPPORTED: the agsdk door bought no cost saving here, and its ~11.5k/packet preamble forced a deliberate 2-packet design that a completion door would not have needed. WHAT IS NOT SUPPORTED: any claim about output quality across doors - this arm produced the fewest tests of the five but was the only one to catch a blocker invisible to its own test suite."
     }
   ]
 }

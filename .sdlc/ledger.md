@@ -15,6 +15,7 @@ real vendor-metered mechanical spend — the split is in each run's `manifest.js
 | 2026-08-22 | `20260822-040449-feature-extend-one-click-join` | brownfield · feature-extend | 4 written (3 edit, 1 new) | 2298/0 → 2309/0 (+11, 0 new failures) | $5.46 ⚠ | accepted → partially committed `53f057e4` on `CMP-103/flash-agsdk-only` (anchor 4189de1) |
 | 2026-08-22 | `20260822-062945-feature-extend-one-click-join` | brownfield · feature-extend | 7 written (6 edit, 1 new) | 2298/0 → 2326/0 (+28, 0 new failures) | $5.32 | accepted → **uncommitted** on `CMP-103/opus-only-v5` (anchor 4189de1) |
 | 2026-08-23 | `20260822-125447-refactor-week-day-interaction` | brownfield · refactor | 24 written (22 edit, 2 new) | 2298/0 → 2298/0 (+0 by design, 0 new failures) | $4.94 ⚠ | accepted → **uncommitted** on `CMP-104/flash-agsdk-only` (anchor 4189de1) |
+| 2026-09-03 | `20260903-070719-feature-extend-weekbody-multiday-drag` | brownfield · feature-extend | 7 written (5 edit, 2 new) | **2297/1** → 2319/1 (+22, 0 new failures) | $4.29 ⚠ | accepted → **uncommitted** on `CMP-101/opus-plus-flash-v37-sdk` (anchor 2d81253a) |
 
 ⚠ **The two rows above are not directly comparable.** `opus-plus-flash-v37` prices its Opus spend, so
 its $4.26 is fully loaded. `flash-agsdk-only` is deliberately single-model with no Claude pricing
@@ -344,3 +345,68 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260903-070719-feature-extend-weekbody-multiday-drag` (CMP-101 arm 5, first Antigravity-SDK door on `opus-plus-flash-v37`)
+
+**The policy question this arm exists to answer.** This is `opus-plus-flash-v37` with
+`select.gemini-flash` defaulted to `flash-agsdk-worker` (the Antigravity SDK agent) instead of
+`flash-completion`. Its direct pair is row one, `20260819-212923` — same policy, same judgment tier,
+**only the mechanical door differs**. Result: **$4.29 (agsdk) vs $4.26 (completion)** for *fewer*
+files and *fewer* tests. The agsdk door bought no cost saving. Its ~11.5k-token identity preamble
+per packet ($0.63/packet across only 3 packets, $1.89 total) forced a deliberate 2-packet design
+that a completion door would not have needed. Cost axis is `estimated` with placeholder Flash rates
+— **not valid for cross-policy ranking**.
+
+**The baseline in this ledger was wrong, and checking it mattered.** Every prior row states
+`2298/0`. The tree was already **red at 2297/1** before any change: `RecurrenceSection.test.tsx:176`
+hardcodes `/Monday, August 3rd, 2026/` against a fixture pinned to `2026-08-03`, and the calendar
+has moved past August. AC-7 was re-based to 2297/1 and the parent session re-ran the suite itself
+rather than relaying. **This will start every future run on this repo red until it is fixed.**
+
+**A blocker that no test could see (F-1).** The Week draft form *closed* on release of a multi-day
+drag — AC-2 green in mocked hook tests, broken in the running app. Three layers deep:
+`startGridDraft` resets `isFormOpen: false`; the reopening effect no-ops because `handleChange`'s
+deps are all unchanged on a same-activity re-entry; and the bubble-phase `useGridMouseUp` fallback
+is severed by a capture-phase `stopPropagation`. The timed gesture survives the identical
+`stopPropagation` only because it transitions `activity` `creating → gridClick`; press-then-escalate
+commits `gridClick` twice and has no transition to ride. **`AllDayRow` has no test file at all —
+that is exactly the test that would have caught it.**
+
+**Two tests that could not fail**, both found and fixed: one asserted `undefined === undefined`; the
+other's "clamp" input was already inside the window. The clamp fix was **proven by mutation** —
+disabling the block fails 4 tests — then restored byte-exact.
+
+**D-1 ruling (c) rejected a live regression, not a hypothetical one.** Option (a) leaned on the Day
+view's structural immunity, but that immunity protects the **dates**, not the **call count**: a Day
+drag still crosses the threshold and still fires the second commit, producing form flicker and
+possibly lost keystrokes. Shipped opt-in instead — `multiDayDrag?: { getVisibleDates }` — and
+`git diff packages/web/src/views/Day/` is empty, so Day is provably untouched.
+
+**One reported claim did not hold.** Gate 3 stated `biome check` was clean on all 6 code files; the
+parent session ran it and found 1 format error at `all-day.create.ts:43`. Self-diagnosed root cause:
+biome ran *before* the fix packet rewrote that file and was never re-run. **Any verification
+predating a later write pass has to be repeated.** Left unfixed per the Gate 3 ruling (FU-6).
+
+**Two run-machinery defects.** (1) 5 of 7 `sha_after` provenance entries are **stale** — the helper
+consumes its `--before` record on first `--after`, so the review-fix pass went unrecorded;
+`backup_path` is null on all 7. `sha_before` was independently verified to match `HEAD` for all 5
+tracked files, so **plain git rollback is sound even though `/mmo:revert`'s "changed since?" check
+is not.** (2) `tp_cg_001` telemetry is **false**: `success: false / 0 tokens / $0` after a 429 + TLS
+timeout, having already written all three files, which pass 11/11. A dispatch result is not a proxy
+for filesystem state — `git status` is.
+
+**Manual browser check: PERFORMED AND PASSED 2026-09-03**, Playwright-driven against the real dev
+server (`bun run dev:web`, local/anonymous mode, no backend). Week window Aug 30 Sun – Sep 5 Sat:
+
+| Gesture | Form dates | Verdict |
+|---|---|---|
+| Forward drag col0 → col2 | `8-30-2026` → `9-1-2026` (3 days) | AC-1/AC-2 — **form stayed OPEN on release**, spanning bar rendered |
+| Plain click, no drag | `9-2-2026` → `9-2-2026` (1 day) | AC-3 non-regression holds **in the app**, not just in the unit test |
+| Reverse drag col4 → col2 | `9-1-2026` → `9-3-2026` (3 days) | AC-4 — same normalised range |
+| Drag past right edge | `9-4-2026` → `9-5-2026` | AC-5 — clamped to last visible day |
+
+**This is the check the run could not do itself**, and it is the one that mattered: F-1 was green in
+mocked tests and broken in the app, so only the live gesture could settle whether the fix worked. It
+did. Not covered: Escape mid-drag, the TP-R6 `buttons !== 1` path, and any Day-view interaction.
+
+Nothing committed; 7 files sit in the working tree at `2d81253a`.

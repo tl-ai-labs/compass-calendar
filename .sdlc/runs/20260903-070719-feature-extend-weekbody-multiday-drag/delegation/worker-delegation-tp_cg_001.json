@@ -1,0 +1,51 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_cg_001",
+  "phase": "codegen",
+  "task_type": "frontend_util",
+  "module": "grid-allday-math",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": null,
+    "sdk_version": null,
+    "vertex_project": null,
+    "vertex_location": null,
+    "thinking": null
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-09-03T07:53:00.391Z",
+  "duration_ms": 364484,
+  "success": false,
+  "error": "The agent worker exited 1. WARNING:root:System step error (HTTP 429): Encountered retryable error from model provider: Agent execution terminated due to error. (\"request failed (code 429): Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.\")\nWARNING:root:System step error (HTTP 2): Agent execution terminated due to error. (\"agent executor error: doRequest: error sending request: Post \\\"https://aiplatform.googleapis.com/v1beta1/projects/ai-studies-console/locations/global/publishers/google/models/gemini-3.7-flash:streamGenerateContent?alt=sse\\\": net/http: TLS handshake timeout: doRequest: error sending request: Post \\\"https://aiplatform.googleapis.com/v1beta1/projects/ai-studies-console/locations/global/publishers/google/models/gemini-3.7-flash:streamGenerateContent?alt=sse\\\": net/http: TLS handshake timeout\")\ngemini_worker failed: AntigravityExecutionError: doRequest: error sending request: Post \"https://aiplatform.googleapis.com/v1beta1/projects/ai-studies-console/locations/global/publishers/google/models/gemini-3.7-flash:streamGenerateContent?alt=sse\": net/http: TLS handshake timeout: doRequest: error sending request: Post \"https://aiplatform.googleapis.com/v1beta1/projects/ai-studies-console/locations/global/publishers/google/models/gemini-3.7-flash:streamGenerateContent?alt=sse\": net/http: TLS handshake timeout",
+  "cost_usd": 0,
+  "tokens": {
+    "input": 0,
+    "input_cached": 0,
+    "output": 0,
+    "output_reasoning": 0
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [
+      "packages/web/src/grid/interaction/math/all-day.create.test.ts",
+      "packages/web/src/grid/interaction/math/all-day.create.ts"
+    ],
+    "modified": [
+      "packages/web/src/interaction/interaction.constants.ts"
+    ],
+    "removed": [],
+    "unchanged": 1586,
+    "scanned": 1589,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_cg_001.md",
+    "usage": "worker-usage-tp_cg_001.json"
+  }
+}

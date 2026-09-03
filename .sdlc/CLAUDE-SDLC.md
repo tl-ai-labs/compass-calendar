@@ -16,7 +16,7 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 
 | Command | Notes |
 |---|---|
-| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
+| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. ⚠ **The baseline is RED as of 2026-09-03: 2297 pass / 1 fail, not 2298/0.** `RecurrenceSection.test.tsx:176` hardcodes `/Monday, August 3rd, 2026/` against a fixture pinned to `2026-08-03` — date-rot, unrelated to any plugin run, and it will start every future run red until fixed. Re-base acceptance criteria against the measured number; never assume a green tree. |
 | `bun type-check` | Clean as of 2026-08-20. |
 | `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
 | `bun run verify` | Diff-aware. |
@@ -26,6 +26,16 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 before any test baseline, or the suite reports every file as failing on a missing `jsdom`.
 
 ## Policy
+
+> **Updated 2026-09-03** (`20260903-070719-feature-extend-weekbody-multiday-drag`). The default is
+> now **`opus-plus-flash-v37`**, set 2026-09-03T06:52:53Z, and its `select.gemini-flash` default was
+> flipped in-cache from `flash-completion` to **`flash-agsdk-worker`** — so the mechanical tier now
+> reaches Gemini through the **Antigravity SDK agent**, not one completion call per packet. That
+> edit lives in the plugin cache and **reverts on `/plugin update`**. Verified live: worker sidecar
+> reported `sdk: google-antigravity 0.1.12`, `vertex_project: ai-studies-console`,
+> `vertex_location: global`. Cost consequence: ~11.5k-token identity preamble **per packet**
+> (~$0.63/packet), so prefer few large packets over many small ones. The paragraph below is retained
+> for history and is **stale**.
 
 Default (as of `20260821-113930-feature-extend-one-click-join`): `opus-cli-plus-flash-adc`
 (`.sdlc/project.json`, superseding `opus-only-v5`). A custom policy — Opus tier via the
