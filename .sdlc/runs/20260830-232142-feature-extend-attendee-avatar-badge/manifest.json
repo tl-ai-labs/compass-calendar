@@ -9,6 +9,27 @@
   "branch": "CMP-105/flash-agsdk-only",
   "git_anchor": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
   "commits_made": 0,
+  "commits_made_correction": "Stale as of 2026-09-02. This field recorded the state at Gate 4 ('do NOT commit'), and it was true then. The work was subsequently committed as fe6520d3 'feat(web): show an attendee avatar badge on grid event cards' and pushed to this branch. Still no PR and never merged, so it remains an A/B data point -- but do not read commits_made: 0 as 'this arm shipped nothing'.",
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "net": "PASS -- the attendee badge renders and behaves as built. Note that 'as built' is a lower bar on this arm than on its three siblings; see the two structural notes below, both of which are known and were ruled on at their gates, not defects found today.",
+    "checks": {
+      "MV-1 badge renders on a card with attendees": "PASS",
+      "MV-2 overflow shape: 4 guests renders 3 dots plus a +1 chip": "PASS",
+      "MV-3 per-attendee dot colors follow each individual's own RSVP (green accepted, red declined, amber tentative)": "PASS",
+      "MV-4 hovering a dot surfaces that attendee's name and status": "PASS",
+      "MV-5 badge renders on a 15-minute card": "PASS -- and this is the point: this arm has NO size gate, so it renders where all three sibling arms deliberately suppress",
+      "MV-6 all-day card renders the badge beside the title": "PASS",
+      "MV-7 events without attendees render unchanged, no badge, no layout shift": "PASS"
+    },
+    "structural_note_1_no_size_gates": "Unlike all three sibling CMP-105 arms, this implementation has no MIN_HEIGHT or MIN_WIDTH threshold whatsoever -- the cards render the badge on any event with a non-empty attendees array. This is NOT an acceptance-criteria violation for this run: its ACs (requirements.md section 'Acceptance criteria', items 1-8) are entirely test-existence and suite-green criteria and never asked for a size gate, where the sibling arms' requirements did. The practical consequences cut both ways and are worth keeping for the comparison. Upside: the feature is visible out of the box on the stock 30-minute demo standup, where the opus-plus-flash-v37 arm's identical-looking feature renders NOWHERE on a freshly seeded database because its 52px gate suppresses it. Downside: nothing stops the badge appearing on a 15-minute sliver where it competes with the title for a card that has room for neither.",
+      "structural_note_2_raw_email_fallback": "AttendeeBadge.tsx uses `a.displayName ?? a.email`, so an attendee with no display name has their RAW EMAIL ADDRESS written into both the per-dot hover title and the group aria-label -- on the grid, which is on screen at rest and lands in every screenshare and screenshot. This is security finding F-1. It was NOT missed: the reviewer raised it, asked for an explicit Gate ruling, and Gate 3 ACCEPTED IT AS DEBT for this comparison arm while listing it must-fix-before-merge. All three sibling arms refused this by construction -- opus-plus-sonnet degrades an unnamed attendee to the literal 'Guest', opus-plus-flash-v37 whitelists a single letter-or-digit monogram so no attendee-supplied string reaches the DOM at all, and opus-only-v5's label function takes (status, count) and is structurally incapable of emitting an identity. This arm is the only one of the four that puts an email on the always-visible surface.",
+    "f1_confirmation_status": "The functional checks above were confirmed by hand. The F-1 raw-email fallback was NOT independently confirmed by observation in this pass -- it stands on the code at AttendeeBadge.tsx (the `?? a.email` expression in both the title and the summaryLabel) and on the Gate 3 ruling that accepted it. A future pass wanting to observe it directly should seed an attendee with displayName null and read the card's accessible label.",
+    "pre_existing_bug_not_a_finding_against_this_run": "Test data was written directly into IndexedDB, bypassing the app's save path, because in local / anonymous mode any move, resize or edit destroys the attendee list outright (baseline bug MV-01, recorded on run 20260822-062945, still unticketed). Not caused by this run; it constrains how the feature can be hand-tested.",
+    "not_closed_by_this_check": "None of the run's must-fix-before-merge follow-ups are closed by this check, F-1 and F-2 included. Nothing was verified with a screen reader."
+  },
   "acceptance": "accepted",
   "outcome": "accepted_with_followups",
   "accepted_at": "2026-08-31T08:20:00Z",

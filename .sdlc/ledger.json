@@ -908,7 +908,19 @@
       },
       "manual_verification": {
         "performed": false,
-        "note": "No browser check this run. Badge rendering on short/narrow cards (C-5/R-6) and the F-1 hover tooltip are both unverified in a live app."
+        "note": "No browser check this run. Badge rendering on short/narrow cards (C-5/R-6) and the F-1 hover tooltip are both unverified in a live app.",
+        "superseded_by": "manual_verification_result below — a hand-driven browser check was performed 2026-09-02 and closes the C-5/R-6 half of this gap. The F-1 half remains unobserved."
+      },
+      "manual_verification_result": {
+        "performed": true,
+        "performed_by": "human",
+        "date": "2026-09-02",
+        "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+        "net": "PASS — the badge renders and behaves as built. Seven checks: badge present, 3 dots + a +1 chip for four guests, per-attendee dot colors (green accepted / red declined / amber tentative), hover surfaces name and status, all-day card renders it beside the title, and attendee-free events are unchanged with no layout shift.",
+        "closes_C-5_R-6": "The 15-minute card DOES render the badge — this arm has no size gate at all, so it renders exactly where all three sibling arms deliberately suppress. That resolves the 'badge rendering on short/narrow cards' half of the gap recorded above, and it resolves it as 'renders', not 'suppressed'.",
+        "F-1_still_unobserved": "The raw-email fallback was NOT independently confirmed by observation. It stands on the code (`a.displayName ?? a.email` reaching both the per-dot title and the group aria-label in AttendeeBadge.tsx) and on the Gate 3 ruling that accepted it as debt. To observe it directly, seed an attendee with displayName null and read the card's accessible label.",
+        "comparison_note": "This arm's lack of a size gate is the mirror image of the opus-plus-flash-v37 arm's problem. That arm gates at 52px and did not touch the demo seed, so its badge renders NOWHERE on a freshly seeded database and reads as broken to anyone opening it cold. This arm's badge is visible out of the box but will render on a 15-minute sliver with no room for it. Neither violates its own acceptance criteria — this run's ACs are entirely test-existence and suite-green items and never asked for a size gate, where the sibling arms' requirements did.",
+        "detail": "Full per-check breakdown in runs/20260830-232142-feature-extend-attendee-avatar-badge/manifest.json under manual_verification_result."
       },
       "scope_amendments": [
         "C-6 .gitignore: Gate 0's generic 'add .sdlc/' default was found WRONG for this repo, which deliberately tracks .sdlc/ reports. The human applied a narrower fix outside the pipeline - ignoring .sdlc/runs/*/backups/ and .sdlc/local/ - keeping run reports tracked. The template default should not be offered blindly here again."
