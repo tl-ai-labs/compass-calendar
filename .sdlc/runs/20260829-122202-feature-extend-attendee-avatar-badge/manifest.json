@@ -172,6 +172,26 @@
     "Repo-root `bun lint` was GREEN at HEAD 2d81253a - verified by checking all non-run offender files together (exit 0, warnings only). .sdlc/CLAUDE-SDLC.md claims lint 'Fails repo-wide at baseline'; that claim is STALE for this commit and was corrected at close-out. It matters because it invites future runs to dismiss genuine lint regressions as inherited noise - this run's own senior review nearly did exactly that.",
     "Side effect of the provenance backup mechanism: .sdlc/runs/<run-id>/backups/ holds copies of source files (5 here) that biome lints as ordinary source. They are unformatted mid-run snapshots, so they contribute error-level format findings to a repo-root `bun lint`. Cosmetic, but it is why repo-root lint is red at close-out while the allowlist is clean."
   ],
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend), demo seed fully reseeded first",
+    "net": "PASS -- the attendee avatar badge renders and behaves as specified in the running app.",
+    "reseed_was_mandatory_here": "This is the only arm in the 12-run walkthrough whose check REQUIRED a full reseed rather than merely tolerating one. The run edited demo-data-seed.ts itself, stretching Morning standup from 30 to 90 minutes (09:00-10:30) so the card clears ATTENDEE_BADGE_MIN_HEIGHT = 52, and moving Try Compass to 11:00-12:00 to keep it clear. A stale IndexedDB still holding the 30-minute standup renders NO badge -- correctly, per the height gate -- which would read as a feature failure when it is in fact the fixture being out of date. Any future re-check of this arm must reseed first.",
+    "checks": {
+      "MV-1 reseed took: Morning standup runs 09:00-10:30": "PASS",
+      "MV-2 stacked avatar circles with initials render on the card": "PASS -- three circles (A, S, J) plus a +1 chip for the fourth guest, matching ATTENDEE_BADGE_MAX_VISIBLE = 3",
+      "MV-3 per-attendee ring colors": "PASS -- Avery and Sam ring green (accepted), Jordan rings amber (tentative); Riley (needsAction) is the guest folded into +1",
+      "MV-4 accessible text lists guests and statuses": "PASS -- '4 guests: Avery, accepted; Sam, accepted; Jordan, tentative; 1 more'",
+      "MV-5 no email address anywhere on the grid": "PASS -- security finding F-1 upheld visually; an unnamed attendee would degrade to 'Guest', never to an address",
+      "MV-6 events without attendees render unchanged, no badge, no layout shift": "PASS",
+      "MV-7 all-day strip renders normally": "PASS",
+      "MV-8 width gate suppresses the badge on narrow cards": "PASS -- drops out below ATTENDEE_BADGE_MIN_WIDTH = 90",
+      "MV-9 no collision with the title or the repeat glyph": "PASS"
+    },
+    "design_contrast_with_the_opus_only_v5_arm": "These two CMP-105 arms solved the same brief in materially different ways, and both work. This arm renders up to three stacked avatar circles with initials, each ringed by that individual's own RSVP, plus a +N overflow chip -- no aggregation. The opus-only-v5 arm (run 20260831-045511) renders a single dot colored by a worst-case aggregate (declined > needsAction > tentative > accepted) plus a guest count. This arm therefore shows WHO and their individual states but caps at three; that one shows a single risk signal for any list size. This arm also needed a 52px height gate and a seed change to be visible at all, where the aggregate dot fits in 24px and needed neither. Neither is more correct against the brief; the difference is worth keeping for the policy comparison.",
+    "note_on_ADR-4": "This check exercised the badge visually and by hovering/focusing the card. It does NOT close open follow-up ADR-4, which is about giving the badge a real accessible representation and replacing attribute-presence assertions with AT-reachability ones. Nothing here was verified with an actual screen reader."
+  },
   "status": "accepted",
   "provenance_note": "provenance.json was DEDUPED at Gate 4 close-out to one entry per path (9 entries: 5 new => revert deletes, 4 pre-existing => revert restores from git). The full 14-entry append history is preserved verbatim in provenance.raw.json. /mmo:revert is safe for this run.",
   "decisions": {
