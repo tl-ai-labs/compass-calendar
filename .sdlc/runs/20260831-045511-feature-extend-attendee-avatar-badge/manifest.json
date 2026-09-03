@@ -34,6 +34,27 @@
     { "gate": "gate-3", "title": "Security Review", "response": "approved", "note": "INFO-2 and INFO-4 ratified as accepted rulings; F-5 deferred as follow-up" },
     { "gate": "gate-4", "title": "Final Acceptance", "response": "accepted", "note": "Plain, unconditional. Close-out run: ledger.md + ledger.json appended, CLAUDE-SDLC.md fingerprint updated, write contract deactivated, state closed. Nothing committed by operator instruction." }
   ],
+  "manual_verification_result": {
+    "performed_by": "human",
+    "date": "2026-09-02",
+    "env": "bun run dev:web @ http://localhost:9080 (anonymous / IndexedDB mode, no backend)",
+    "net": "PASS -- all nine checks confirmed by hand in the running app. Every acceptance criterion that is observable in a browser behaves as specified.",
+    "fixture_note": "The demo seed carries exactly one attendee-bearing event (Morning standup, 4 guests: 2 accepted, 1 tentative, 1 needsAction), which alone exercises neither the color precedence, the 9+ count cap, the all-day path, nor the size gates. Three extra events and one all-day patch were written DIRECTLY into IndexedDB for the check, bypassing the app's save path entirely, so nothing was mutated through the repository and no seed data was destroyed. The fixture is throwaway browser state; no run artifact or source file was touched to produce it.",
+    "checks": {
+      "MV-1 aggregate color precedence, needsAction outranks tentative": "PASS -- Morning standup (2 accepted, 1 tentative, 1 needsAction) renders the grey bg-text-subtle dot with count 4, not the amber tentative dot. This is the non-obvious half of the D-2 precedence rule and it holds.",
+      "MV-2 declined outranks everything": "PASS -- a 3-guest event with one declined renders the red bg-error dot",
+      "MV-3 count cap": "PASS -- a 12-guest all-accepted event renders green plus '9+', not '12', so the badge stays two glyphs wide as ATTENDEE_COUNT_DISPLAY_MAX intends",
+      "MV-4 all-day path": "PASS -- an all-day event with a tentative guest renders the amber dot and count in-flow beside the title, not absolutely positioned",
+      "MV-5 height gate": "PASS -- a 15-minute event with 2 guests renders NO badge, confirming MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 24 suppresses it below the threshold while an ordinary 30-minute event (~31px) still carries it",
+      "MV-6 zero-attendee events unchanged": "PASS -- events with no attendees render no badge and no layout shift (AC-2)",
+      "MV-7 tooltip wording": "PASS -- hovering surfaces the attendeeSummaryLabel text, e.g. '4 guests, at least one hasn't responded'",
+      "MV-8 width gates": "PASS -- the badge drops out on very narrow cards per MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE / MIN_ALLDAY_WIDTH_FOR_ATTENDEE_BADGE",
+      "MV-9 no collision": "PASS -- title stays readable and the badge overlaps neither the title nor the bottom-right repeat glyph, which is what the 24px arithmetic in grid.constants.ts was derived to guarantee"
+    },
+    "d5_pii_ruling_upheld_visually": "No attendee name or email appears anywhere on the grid at any card size, including in the tooltip -- the badge carries count and aggregate state only. attendeeSummaryLabel takes (status, count) rather than the attendee objects, so it is structurally incapable of emitting one, and the rendered UI matches that.",
+    "not_separately_testable_in_local_mode": "AC-4's size gate cannot be exercised by resizing an existing attendee-bearing event in the running app, because in local / anonymous mode any resize destroys the attendee list (see the baseline bug below) -- the badge would then vanish for the wrong reason and the check would prove nothing. This is why the 15-minute case was authored directly in IndexedDB at the target size instead.",
+    "pre_existing_bug_not_a_finding_against_this_run": "In local / anonymous mode any move, resize or edit persists content wholesale through LocalEventRepository.replace with no merge against the existing record, permanently destroying conference, organizer and attendees. Recorded in full as MV-01 on run 20260822-062945 (branch CMP-103/opus-only-v5); still unticketed. It is a baseline defect, not caused by this run, and it constrains how this feature can be hand-tested rather than affecting whether it works."
+  },
   "status": "closed",
   "closed_at_phase": "close_out",
   "summary_note": "SUMMARY.md was NOT written — the harness Write guard refused it as an agent report file. The orchestrator complied rather than re-routing the write through Bash (second recorded non-recurrence of that pattern; see ledger.json process_notes PN-1-non-recurrence-2). Its narrative content was delivered in the orchestrator's final response and its structured content lives in this file's accepted_rulings, revert, followups, cost_provenance_note and rollup fields.",

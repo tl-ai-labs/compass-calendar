@@ -350,8 +350,14 @@ way — only this run's 8 files changed and every off-limits diff is empty.
 ## Row thirteen — `20260831-045511-feature-extend-attendee-avatar-badge`
 
 **CMP-105 · `feature-extend` · `opus-only-v5` · `estimated` · branch `CMP-105/opus-only-v5` ·
-anchor `2d81253a` · $4.10 · 8 files · +39 tests · 2298/0 → 2337/0 · uncommitted by the operator's
-explicit choice.**
+anchor `2d81253a` · $4.10 · 8 files · +39 tests · 2298/0 → 2337/0 · ~~uncommitted by the operator's
+explicit choice~~ → committed `64c282f1`.**
+
+> **Correction, 2026-09-02.** "Uncommitted by the operator's explicit choice" was true at close-out
+> and is now stale. The work was committed as `64c282f1 feat(web): show an attendee RSVP badge on
+> grid event cards` and pushed to this branch, which carries 8 changed files vs `main`. Still no PR
+> and never merged, so it remains an A/B data point — but do not read that line as "this arm shipped
+> nothing".
 
 Week grid event cards gained a compact RSVP badge (one aggregate status dot + guest count), and the
 RSVP colour/label vocabulary was extracted out of `EventDetailsSection.tsx` into a shared module the
@@ -439,3 +445,36 @@ title reserve at the 56px width gate before touching it; at the gate ~20px of ti
 reviewer's explicit advice was that a guessed bump is worse than a measured one). FU-3 records 11
 order-dependent failures under the unsharded `bun test` runner — **reported by the senior reviewer as
 pre-existing and not independently re-verified at baseline by the orchestrator.**
+
+**Manual in-app verification — 2026-09-02 — PASS.** Driven by hand in `bun run dev:web` at
+`localhost:9080`, anonymous / IndexedDB mode, no backend. Nine checks, all confirmed. Every
+acceptance criterion observable in a browser behaves as specified.
+
+**The check that mattered most is the aggregate precedence.** Morning standup carries 2 accepted,
+1 tentative and 1 `needsAction`, and the badge renders the **grey** `bg-text-subtle` dot with count
+`4` — not the amber tentative dot. That is the deliberately counter-intuitive half of D-2: a
+non-response outranks a tentative, because an unanswered invite is the bigger scheduling risk than
+an answered maybe. It holds in the running app, not just in the unit test. A 3-guest event with one
+declined renders red; a 12-guest all-accepted event renders green and **`9+`**, not `12`, so
+`ATTENDEE_COUNT_DISPLAY_MAX` bounds the badge at two glyphs as designed. The all-day path renders
+in-flow beside the title rather than absolutely positioned, and a 15-minute event with 2 guests
+renders no badge at all — `MIN_EVENT_HEIGHT_FOR_ATTENDEE_BADGE = 24` suppresses it below the
+threshold while an ordinary 30-minute card (~31px) still carries it, which is exactly the window the
+constant's derivation comment claims. Zero-attendee events are unchanged with no layout shift, the
+width gates drop the badge on very narrow cards, the tooltip surfaces `attendeeSummaryLabel`
+wording, and nothing overlaps the title or the bottom-right repeat glyph.
+
+**D-5's PII ruling was upheld visually, not just structurally.** No attendee name or email appears
+anywhere on the grid at any card size, tooltip included. `attendeeSummaryLabel` takes
+`(status, count)` rather than the attendee objects, so it is *incapable* of emitting one — and the
+rendered UI matches what that signature promises.
+
+**On fixture construction, since it bears on how much the check is worth.** The demo seed carries
+exactly one attendee-bearing event, which alone exercises neither the colour precedence, the count
+cap, the all-day path, nor the size gates. Three extra events and one all-day patch were written
+**directly into IndexedDB**, bypassing the app's save path entirely. That was not convenience: in
+local / anonymous mode any move, resize or edit destroys the attendee list outright (baseline bug
+MV-01, recorded on run `20260822-062945`, still unticketed), so resizing a real event down to 15
+minutes would have removed the badge for the *wrong reason* and proven nothing about AC-4. Authoring
+the 15-minute case at its target size sidesteps that entirely. MV-01 is not a finding against this
+run; it constrains how this feature can be hand-tested, not whether it works.
