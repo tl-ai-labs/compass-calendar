@@ -110,3 +110,54 @@ producing a wrong committed range specifically on edge-flip drags.
 Do not reintroduce a day-index-only visual (no `date` field) for any new drag
 interaction on the week grid — window-relative indices are only meaningful
 alongside the column dates they were built from in the same render.
+
+## All-day drag-to-create
+
+How dragging on empty all-day grid space creates a multi-day draft.
+
+- **The shape**: `mousedown` emits a one-day draft **synchronously** (unchanged
+  legacy behaviour), and a horizontal drag past
+  `ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX` (8px, x-axis only) escalates it to a
+  multi-day span previewed live and committed again on release.
+- **Why the press commit stays**: an existing test fires `mousedown` with no
+  `mouseup` and asserts a single one-day commit. Commit-on-release, the shape
+  `useTimedDraftCreation` uses, would break it. The gesture is an **escalation**
+  layered on top, never a replacement.
+- **The accepted double commit**: a real drag calls `onCreateGridDraft` twice
+  (press one-day, release span). Both drafts are built with
+  `replaceGridDraftSchedule` spreading the press draft, and the single-slot
+  `gridDraft` in the store ensures the second commit replaces rather than
+  duplicates (`clientId` is undefined on both).
+  Consequence: the Week form is live during the drag and its dates update as the
+  pointer moves.
+- **Preview writes**: use `draftActions.setGridDraft`, never `startGridDraft` —
+  the latter hard-resets `isFormOpen: false` and would yank the form shut
+  mid-gesture. On release, the commit routes through `startGridDraft` and
+  explicitly re-opens the form via `draftActions.setFormOpen(true)` because the
+  activity does not transition (remaining `'gridClick'`), so `handleChange` in
+  `useDraftActions` does not re-fire.
+- **Blur behavior**: `blur` **reverts** to the one-day press draft rather than
+  discarding, because the press is an independently completed user action. This
+  deliberately differs from `useTimedDraftCreation`, which discards on `blur`
+  because there the gesture created the draft.
+- **Day view opts out**: `multiDayDrag` is optional and Day omits it. Day's
+  columns are calendars on one date (`useDayCalendarColumns.ts:34-38` stamps
+  `date: dateInView` on every column), so a horizontal drag there carries no
+  day information.
+
+### Thresholds
+
+| Constant | Value | Purpose |
+| --- | --- | --- |
+| `INTERACTION_MOVE_THRESHOLD_PX` | 25 | Move an existing card |
+| `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` | 4 | Vertical duration drag |
+| `ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX` | 8 | Horizontal day-column intent |
+
+Do not unify these values; they measure different products of the gesture.
+
+### Pitfall
+
+The threshold is **x-axis only** on purpose. `hasExceededInteractionMoveThreshold`
+ORs both axes; using it here would let a purely vertical twitch toward the timed
+grid escalate the gesture and fire a spurious second commit for zero user intent.
+

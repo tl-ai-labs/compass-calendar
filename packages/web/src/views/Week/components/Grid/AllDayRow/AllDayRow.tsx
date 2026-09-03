@@ -3,6 +3,7 @@ import {
   type MouseEvent,
   type ReactNode,
   type RefCallback,
+  useCallback,
   useMemo,
 } from "react";
 import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
@@ -54,9 +55,22 @@ export const AllDayRow: FC<Props> = ({
     );
   const openAllDayDraft = (draft: GridEventDraft) => {
     draftActions.startGridDraft({ activity: "gridClick", draft });
+    // The release commit re-enters startGridDraft with unchanged activity/isDrafting,
+    // so useDraftActions.handleChange (deps [isDrafting, activity, setIsFormOpen])
+    // does not re-fire, and the capture-phase stopPropagation in
+    // useAllDayDraftCreation.finish stops useGridMouseUp from opening it.
+    draftActions.setFormOpen(true);
   };
+  const getVisibleDates = useCallback(
+    () =>
+      weekProps.component.weekDays.map((date) =>
+        date.format(YEAR_MONTH_DAY_FORMAT),
+      ),
+    [weekProps.component.weekDays],
+  );
   const onMouseDown = useAllDayDraftCreation({
     getStartDate: getAllDayDraftStartDate,
+    multiDayDrag: { getVisibleDates },
     onCreateGridDraft: openAllDayDraft,
   });
 

@@ -7,6 +7,16 @@
  * grid it distinguishes a click-to-create from a drag-to-resize-duration. Do
  * not unify these values; they measure different products of the gesture.
  *
+ * `ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX` (8) measures HORIZONTAL day-column
+ * intent across columns roughly 100-200px wide. While `TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX` (4)
+ * measures a vertical duration drag against a 15-minute row (where jitter escalation
+ * is invisible and free because the draft still looks like the default 30 minutes)
+ * and `INTERACTION_MOVE_THRESHOLD_PX` (25) gates moving an existing card (which is
+ * far too coarse here as 25px can be a third of a narrow day column), all-day draft
+ * creation jitter is not free: it flips hasMoved, producing a second draft commit at
+ * release and a form whose dates visibly re-seed on what the user meant as a click.
+ * 8px sits above ordinary click jitter and hand tremor while staying far below half a column.
+ *
  * `INTERACTION_EDGE_THRESHOLD_PX` is the shared proximity band for Day/Week
  * smart-scroll and Week edge-navigation — same distance, different axes.
  */
@@ -18,3 +28,4 @@ export const INTERACTION_MOVE_THRESHOLD_PX = 25;
 export const INTERACTION_COMMIT_TEARDOWN_DEADLINE_MS = 500;
 export const INTERACTION_EDGE_THRESHOLD_PX = 50;
 export const TIMED_DRAFT_CREATE_MOVE_THRESHOLD_PX = 4;
+export const ALLDAY_DRAFT_CREATE_MOVE_THRESHOLD_PX = 8;
