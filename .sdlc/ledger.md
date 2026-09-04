@@ -421,3 +421,27 @@ revert to *restore* a file it should *delete*.
 parent session, the orchestrator and the security reviewer independently. The hook matches only
 `Write|Edit`, so a Bash write would have bypassed Gate 0 enforcement **silently, with no refusal to
 report**. All 30 writes went through `Write`/`Edit`.
+
+**Human sign-off, 2026-09-03 — ALL WORKS.** The pending in-app check recorded above is now closed.
+The operator drove the running app (`bun run dev:web`, `http://localhost:9080`, branch at `28bb947d`,
+clean tree) against a 15-gesture checklist covering both views: Week timed drag within a column and
+across columns, both resize edges, click targeting, all-day drag and resize, multi-day all-day drag
+across rows, Escape-cancel mid-drag, and edge navigation; Day timed drag, cross-calendar drag, resize,
+click targeting, and a multi-day all-day drag that must not shift dates. **No regression on any
+gesture in either view.** That sign-off, not the automated suite, is the acceptance evidence for this
+arm.
+
+Immediately before the check the coordinator re-ran `bun run test:web` on this branch rather than
+relaying the row: **2339 pass / 1 fail / 1 error, 5856 expects across 308 files, 95.8s**. The one
+failure is the pre-existing `RecurrenceSection` "keeps the event's own date selectable when the event
+ends after midnight" **date rot** — red on a clean tree at `main`, date-dependent, and not yet rotted
+when this row recorded 2340/0. Nothing in the Week/Day interaction layer fails. Two known
+pre-existing defects were explicitly excluded from the operator's judgement rather than counted
+against this arm: the resize handle occluded on ~30% of timed cards in **both** views (proven
+pre-existing at `main@2d81253a` by stash-and-compare during the sibling SDK-door run), and the
+anonymous/local-mode destruction of conference/organizer/attendees on replace.
+
+**One stale field, flagged not fixed:** this row's headline still reads *"uncommitted by the human's
+explicit choice"*, but the branch has carried `b8928261` (source), `b33339e4` and `28bb947d` (SDLC
+record) since before this check and is in sync with `origin`. Pre-existing bookkeeping drift of the
+kind seen on several other arms; left as written.
