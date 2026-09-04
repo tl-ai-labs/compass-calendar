@@ -1,0 +1,302 @@
+[
+  {
+    "id": "tp_cg_001",
+    "phase": "codegen",
+    "task_type": "refactor_extract",
+    "module": "attendee-status-util",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/common/utils/attendee-status.util.ts",
+    "depends_on": [],
+    "instruction": "Create the NEW file packages/web/src/common/utils/attendee-status.util.ts. Read section '### 2.1' of .sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md (lines 41-132): it contains the COMPLETE intended file contents under 'Full intended contents'. Reproduce that TypeScript verbatim, including every comment. Do not add, rename, reorder or 'improve' any symbol. Export exactly three symbols: ATTENDEE_STATUS_DOT, attendeeStatusLabel, attendeeStatusSummary. The colour values must be the semantic tokens bg-success / bg-error / bg-warning / bg-text-subtle exactly as written - a raw Tailwind palette class (bg-green-500 etc.) fails `bun lint` before biome even runs. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.1, lines 41-132 - full intended file contents plus the exact output-string table the tests assert against.", "reason": "Authoritative source; contains the complete file body to reproduce verbatim." },
+      { "path": "packages/core/src/types/event-attendance.contracts.ts", "content": "Defines Attendee and AttendeeResponseStatus (4 values: needsAction, accepted, declined, tentative). READ-ONLY - off-limits for writes.", "reason": "Type source for the imports; must not be modified." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "File packages/web/src/common/utils/attendee-status.util.ts exists",
+      "Exports exactly ATTENDEE_STATUS_DOT, attendeeStatusLabel, attendeeStatusSummary",
+      "ATTENDEE_STATUS_DOT maps accepted->bg-success, declined->bg-error, tentative->bg-warning, needsAction->bg-text-subtle",
+      "attendeeStatusSummary([]) returns the empty string",
+      "attendeeStatusSummary returns '3 guests: 2 accepted, 1 hasn't responded' for 2 accepted + 1 needsAction",
+      "attendeeStatusSummary never reads displayName or email",
+      "Does not sort, splice or reverse the input array",
+      "No raw Tailwind palette colour class anywhere in the file",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_test_002",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "attendee-status-util",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/common/utils/attendee-status.util.test.ts",
+    "depends_on": ["tp_cg_001"],
+    "instruction": "Create the NEW test file packages/web/src/common/utils/attendee-status.util.test.ts. Implement test cases U-1 through U-9 exactly as tabulated in section '### packages/web/src/common/utils/attendee-status.util.test.ts' of the '## 4. Test plan' in change_plan.md (around line 855). Use `bun:test` (import { describe, expect, it } from 'bun:test'). This is a pure module with no DOM - do NOT import @testing-library/react or jest-dom. Import the symbols under test from './attendee-status.util'. Assert the exact strings given in the table, including the singular 'guest' vs plural 'guests' and the apostrophe in \"hasn't responded\". U-7 must supply the four statuses in REVERSE order and still expect the module's fixed order. U-8 must pass an Object.freeze'd array. U-9 must assert the summary contains no '@'. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "'## 4. Test plan' first table (U-1..U-9) plus section 2.1's exact output-string table.", "reason": "Defines the required cases and the exact expected strings." },
+      { "path": "packages/web/src/common/utils/attendee-status.util.ts", "content": "The module under test, produced by packet tp_cg_001.", "reason": "Import source; read the real file for exact signatures." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "File packages/web/src/common/utils/attendee-status.util.test.ts exists",
+      "Covers all nine cases U-1..U-9",
+      "Uses bun:test only; no DOM library imported",
+      "U-7 supplies statuses in reverse order and expects the module's fixed order",
+      "U-8 passes a frozen array and asserts no throw",
+      "U-9 asserts the summary contains no '@'",
+      "No raw Tailwind palette colour class appears anywhere, including in expected-value strings",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 8000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_003",
+    "phase": "codegen",
+    "task_type": "new_file_add",
+    "subtype": "react_component",
+    "module": "attendee-badge",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AttendeeBadge.tsx",
+    "depends_on": ["tp_cg_001"],
+    "instruction": "Create the NEW file packages/web/src/grid/components/AttendeeBadge.tsx. Read section '### 2.3' of change_plan.md (lines 139-326): it contains the COMPLETE intended file contents under 'Full intended contents', plus two long derivation comments for the width constants that must be reproduced verbatim. Export exactly six symbols: MAX_VISIBLE_ATTENDEE_DOTS (3), MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE (140), MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL (170), ATTENDEE_BADGE_ATTRIBUTE ('data-attendee-badge'), hasAttendeesToShow, AttendeeBadge. Obey the 'Notes the implementer must not improve' list at the end of that section: NO title attribute, NO organizer prop, keep key={attendee.email}, keep pointer-events-none on the root. The component returns null when there are no attendees. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.3, lines 139-326 - full prop interface, full intended contents, and the do-not-improve list. Also decision D-5 (PII) and D-7 (the 170px yield constant).", "reason": "Authoritative source; contains the complete component body to reproduce verbatim." },
+      { "path": "packages/web/src/common/utils/attendee-status.util.ts", "content": "Provides ATTENDEE_STATUS_DOT and attendeeStatusSummary, imported by this component.", "reason": "Import source produced by tp_cg_001." },
+      { "path": "packages/web/src/grid/components/EventRepeatIcon.tsx", "content": "Existing sibling badge-style component; shows the local convention for a small decorative card overlay tinted with darken(baseColor, 30).", "reason": "Style precedent for the +N counter colour." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "File packages/web/src/grid/components/AttendeeBadge.tsx exists",
+      "Exports all six required symbols with the exact stated values",
+      "Returns null for undefined and for empty attendees",
+      "Renders at most MAX_VISIBLE_ATTENDEE_DOTS dots and a +N counter beyond that",
+      "Dots are aria-hidden and an sr-only span carries the attendeeStatusSummary text with id={descriptionId}",
+      "Root carries pointer-events-none and data-attendee-badge='true'",
+      "Uses attendees.slice(...) and never mutates the input array",
+      "No title attribute anywhere; no attendee name or email in any rendered text or data-* attribute",
+      "No raw Tailwind palette colour class",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_test_004",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "attendee-badge",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AttendeeBadge.test.tsx",
+    "depends_on": ["tp_cg_003"],
+    "instruction": "Create the NEW test file packages/web/src/grid/components/AttendeeBadge.test.tsx. Implement cases B-1 through B-11 exactly as tabulated in the second table of '## 4. Test plan' in change_plan.md. Copy the import header shape from the existing packages/web/src/grid/components/EventCard.test.tsx (testing-library/react + bun:test + '@testing-library/jest-dom'). B-10 is a PII assertion and must use the fixture { email: 'secret@example.com', displayName: 'Ada' } and assert container.innerHTML contains NEITHER string. B-7 must pass an Object.freeze'd array. B-9 asserts the root class contains pointer-events-none. Do not write any raw Tailwind palette colour name anywhere, including in expected strings and comments - `bun lint` scans test files too. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "'## 4. Test plan' second table (B-1..B-11).", "reason": "Defines the required cases and assertions." },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "content": "The component under test, produced by packet tp_cg_003.", "reason": "Import source; read the real file for the exact prop names." },
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "content": "Existing sibling test file - copy its import header and testing-library usage conventions. DO NOT MODIFY THIS FILE in this packet.", "reason": "House style reference only." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "File packages/web/src/grid/components/AttendeeBadge.test.tsx exists",
+      "Covers all eleven cases B-1..B-11",
+      "B-10 asserts neither 'secret@example.com' nor 'Ada' appears in the rendered HTML",
+      "B-7 passes a frozen array and asserts no throw",
+      "B-6 asserts the description reports all attendees, not only the visible ones",
+      "No raw Tailwind palette colour class anywhere in the file",
+      "EventCard.test.tsx is NOT modified by this packet",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 12000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_005",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "event-form",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx",
+    "depends_on": ["tp_cg_001"],
+    "instruction": "Edit the EXISTING file packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx, applying exactly the three hunks in section '### 2.7' of change_plan.md (lines 548-578). Hunk 1: delete the now-unused `import { type AttendeeResponseStatus } from \"@core/types/event-attendance.contracts\";` line - leaving it in fails biome's unused-import rule. Hunk 2: add `import { ATTENDEE_STATUS_DOT, attendeeStatusLabel } from \"@web/common/utils/attendee-status.util\";`. Hunk 3: delete the local ATTENDEE_STATUS_DOT object literal and the local attendeeStatusLabel arrow function. CHANGE NOTHING ELSE. Every line of JSX must be left byte-identical: the file's rendered output must not change at all, because its test file EventForm.test.tsx is off-limits and must keep passing unedited. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.7, lines 548-578 - the three exact hunks and the warning that nothing else may change.", "reason": "Authoritative edit instructions." },
+      { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "content": "The 109-line file to edit. Local declarations at lines 12-20; the type import at line 4; call sites at lines 76 and 86 that must keep working by the same symbol names.", "reason": "Edit target - read the real file before editing." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "The local ATTENDEE_STATUS_DOT declaration is gone from this file",
+      "The local attendeeStatusLabel declaration is gone from this file",
+      "Both symbols are imported from @web/common/utils/attendee-status.util",
+      "The unused AttendeeResponseStatus type import is removed",
+      "MAX_VISIBLE_ATTENDEES = 6 is retained unchanged",
+      "No JSX line is altered; rendered output is identical",
+      "EventForm.test.tsx is NOT modified",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 10000, "maxOutputTokens": 3000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_006",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "timed-card",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/TimedEventCard.tsx",
+    "depends_on": ["tp_cg_003"],
+    "instruction": "Edit the EXISTING file packages/web/src/grid/components/TimedEventCard.tsx, applying exactly the five surgical hunks in section '### 2.5' of change_plan.md (lines 334-469). Hunk 1 adds `useId` to the react import. Hunk 2 adds the ./AttendeeBadge import. Hunk 3 inserts `attendeeDescriptionId` and the `showAttendeeBadge` predicate after the isCompactEvent line - the predicate MUST include the conjunction `(!showTimeLabel || position.width >= MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL)` exactly as written; do NOT simplify it by raising MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE instead. Hunk 4a adds a CONDITIONAL aria-describedby BEFORE the existing aria-label - the aria-label expression itself must not be touched. Hunk 4b turns the content wrapper's className into the given cn() call whose pr-10/pr-14 keys are BOTH keyed off showAttendeeBadge. Hunk 5 renders the badge as a direct child of the ROOT div immediately after the EventRepeatIcon line - NOT inside the content wrapper. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.5, lines 334-469 - the five hunks with exact insertion points and the geometry rationale. Also decision D-7 (lines 817-852) explaining why the predicate is a conjunction.", "reason": "Authoritative edit instructions." },
+      { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "content": "The 368-line file to edit. showTimeLabel is declared at line 122; isCompactEvent at 206; the aria-label at 274; the content wrapper at 321-325; the EventRepeatIcon render at 363.", "reason": "Edit target - read the real file before editing." },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "content": "Supplies AttendeeBadge, hasAttendeesToShow, MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE and MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL.", "reason": "Import source produced by tp_cg_003." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "The card's aria-label expression is byte-identical to before",
+      "aria-describedby is present only when showAttendeeBadge is true",
+      "showAttendeeBadge includes the !showTimeLabel || width >= 170 conjunction",
+      "The pr-10 / pr-14 reserve is applied only when showAttendeeBadge is true",
+      "With showAttendeeBadge false the content wrapper class is exactly 'flex flex-col flex-wrap items-start'",
+      "The badge is a direct child of the root div, not of the data-calendar-event-content wrapper",
+      "Both resize handle divs are unchanged",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 16000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_cg_007",
+    "phase": "codegen",
+    "task_type": "existing_file_edit",
+    "module": "allday-card",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/AllDayEventCard.tsx",
+    "depends_on": ["tp_cg_003"],
+    "instruction": "Edit the EXISTING file packages/web/src/grid/components/AllDayEventCard.tsx, applying exactly the four surgical hunks in section '### 2.6' of change_plan.md (lines 470-547). Hunk 1 adds `useId` to the react import. Hunk 2 adds the ./AttendeeBadge import. Hunk 3 inserts attendeeDescriptionId and showAttendeeBadge after the showRepeatIcon declaration - this card has NO time label, so its predicate has NO showTimeLabel term and NO compact-height term; only isPlaceholder, the 140px width gate and hasAttendeesToShow. Hunk 4a adds a CONDITIONAL aria-describedby BEFORE the existing aria-label, which must not be touched. Hunk 4b renders the badge INLINE inside the existing content flex row, immediately after the title span's closing tag, with className='ml-1'. The content row's own className must NOT change - the existing pr-3.5 repeat-icon reserve already covers it. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.6, lines 470-547 - the four hunks with exact insertion points and the inline-vs-absolute rationale.", "reason": "Authoritative edit instructions." },
+      { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "content": "The 228-line file to edit. showRepeatIcon at lines 76-77; the aria-label at 147; the content row at 187-192; the title span ends at 199.", "reason": "Edit target - read the real file before editing." },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "content": "Supplies AttendeeBadge, hasAttendeesToShow and MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE.", "reason": "Import source produced by tp_cg_003." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "The card's aria-label expression is byte-identical to before",
+      "aria-describedby is present only when showAttendeeBadge is true",
+      "The predicate contains no showTimeLabel term and no compact-height term",
+      "The badge renders inline inside the existing content row, after the title span",
+      "The content row's className is unchanged",
+      "Both resize handle divs are unchanged",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 14000, "maxOutputTokens": 4000 },
+    "retry_count": 0
+  },
+  {
+    "id": "tp_test_008",
+    "phase": "tests",
+    "task_type": "test_add",
+    "subtype": "unit",
+    "module": "cards",
+    "pass_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+    "intent": "feature-extend",
+    "artifact_path": "packages/web/src/grid/components/EventCard.test.tsx",
+    "depends_on": ["tp_cg_006", "tp_cg_007"],
+    "instruction": "APPEND-ONLY edit of the EXISTING file packages/web/src/grid/components/EventCard.test.tsx. You may NOT modify, reformat or delete any existing line. In particular the eleven accessible-name queries and every svg[class*=\"right-1\"] and resize-handle assertion must remain byte-identical. Make exactly two additions per section '### 2.8' of change_plan.md (lines 579-...): (1) add `import { ATTENDEE_BADGE_ATTRIBUTE } from \"./AttendeeBadge\";` to the existing import block; (2) append the three shared helpers (attendee, futureEvent, badgeDescriptionOf) and then new it(...) blocks for cases C-1 through C-20 from the third table of '## 4. Test plan', inside the existing describe('EventCard', ...) block, after the last existing test. C-16 and C-17 are the seven-step byte-identity guard specified in decision D-6 - step 7 (the sensitivity control asserting an attendee-bearing render DIFFERS from the baseline) is mandatory. C-18/C-19/C-20 are the D-7 time-label yield cases. Do not create, edit or delete any other file.",
+    "inputs": [
+      { "path": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk/change_plan.md", "content": "SECTION 2.8 (append-only rules + the three helpers), '## 4. Test plan' third table (C-1..C-20), decision D-6 (byte-identity guard mechanism) and decision D-7 (time-label yield).", "reason": "Authoritative source for every new case." },
+      { "path": "packages/web/src/grid/components/EventCard.test.tsx", "content": "The 575-line existing file. createEvent helper at lines 20-37; shared `position` at 39-44; describe block opens at 46 and closes at 575. Append inside it, after the final existing test.", "reason": "Edit target - append only, never modify existing lines." },
+      { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "content": "Supplies ATTENDEE_BADGE_ATTRIBUTE and the constants the width-gate cases depend on.", "reason": "Import source." }
+    ],
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "artifact_path": { "type": "string" },
+        "content": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["artifact_path", "content"]
+    },
+    "acceptance": [
+      "Every pre-existing line of EventCard.test.tsx is unchanged",
+      "All eleven pre-existing accessible-name queries still present verbatim",
+      "New cases C-1..C-20 are present",
+      "C-16 and C-17 implement all seven steps of D-6 including the sensitivity control",
+      "C-18 asserts badge absent AND full time-label text AND the content wrapper class has no pr-10/pr-14",
+      "C-19 asserts badge and time label coexist at width 170",
+      "C-20 asserts the badge still shows at width 150 when no time label is rendered",
+      "No raw Tailwind palette colour class anywhere in the file",
+      "No other file created or modified"
+    ],
+    "budget": { "maxInputTokens": 24000, "maxOutputTokens": 8000 },
+    "retry_count": 0
+  }
+]

@@ -344,3 +344,79 @@ mechanism is unsupported by the code; it is now recorded as an orchestrator/chil
 hazard with the mechanism explicitly UNCONFIRMED**, since no live off-limits probe has been run to
 settle whether the hook fires for the spawned process. Blast radius was verified independently either
 way — only this run's 8 files changed and every off-limits diff is empty.
+
+## Row thirteen — `20260903-000000-feature-extend-attendee-badge-sdk` (CMP-105 arm 5, the Antigravity SDK door)
+
+`feature-extend` · `opus-plus-flash-v37` (mechanical door `flash-agsdk-worker`, Gemini via `vertex-adc`) ·
+`auth_mode: estimated` · branch `CMP-105/opus-plus-flash-v37-sdk` off `main@2d81253a` ·
+**$8.83** · 8 files · **2297/1/1 → 2338/1/1 (+41)** · **nothing committed, by explicit choice at Gate 4**
+
+**The measurement this arm exists to produce: the SDK door is not a cost saving.** Mean per
+*successful* packet — **Flash $0.599 vs Opus codegen $0.631**, within 5% — while consuming
+**140.8k input tokens per dispatch against Opus's 48.5k (~3×)** and **failing 2 of 5 dispatches**
+on max-tokens. The token ratio and the failure count are directly measured and survive any
+correction to the placeholder Gemini pricing. This is the **third** arm pointing the same way,
+after CMP-101 ($4.29 agsdk vs $4.26 completion) and CMP-103 (2.1× per packet).
+
+**80% of a "flash SDK" arm ran on Opus.** All five `codegen` packets routed with `ruleIndex: -1`,
+*"Unrecognized task — fail safe to premium"*: the v37 `codegen` rule enumerates only greenfield
+`task_type` values, and the brownfield types this pipeline emits (`new_file_add`,
+`existing_file_edit`, `refactor_extract`) match none of them. Only `tests` and `debug` reached
+Flash. Task types were deliberately **not** reshaped to force the cheaper tier, so this measures
+the policy as written. At $8.83 it is the most expensive CMP-105 arm — ~4× flash-agsdk-only
+($2.23), ~2× opus-only-v5 ($4.10) — for the same feature.
+
+**A "failed" packet wrote 642 lines.** `tp_test_008` returned `success:false`, `result:null`,
+`cost_usd:0` after 8.6 minutes and had already written the entire 20-case test file to disk.
+`worker-delegation` evidence exists; `worker-usage` does not, which is why tokens booked zero.
+**~$0.94 of work the accounting never saw**, caught only by the post-packet `git status`.
+A dispatch result is not a proxy for filesystem state.
+
+**Both dispatch tiers bypass the `Write`/`Edit` hook** — not just the antigravity worker;
+`claude-cli` is agentic and edits directly. The hook enforced correctly against the orchestrator's
+and reviewer's own writes (both deny classes re-probed live, neither probe file created), but those
+were never the risk. **What actually held this run was procedural**: guard-file hashing plus
+`git status --short` after every packet.
+
+**The review phases earned their 18%.** Both reviewers independently found that the only
+card-level PII guard *could not fail* — C-10 rendered at width 140 where the badge is suppressed,
+so it asserted "no attendee email in the DOM" against a card with no badge, and would have passed
+with `AttendeeBadge` deleted. Three sibling cases were vacuous identically. The fix was **proved by
+mutation**, then **re-proved after the R-6 threshold moved** — which mattered: C-18 at 150 would
+have *inverted* and C-20 would have quietly stopped proving the conjunction, so both moved to 145.
+The reviewer reproduced the proof independently (18 failures across both badge files, exactly 12 in
+`EventCard.test.tsx`) and restored byte-identical.
+
+**Manual verification: PASSED (human in-app check, 2026-09-04).** The badge renders and is visible on
+grid event cards; the human explicitly confirmed the 1440-with-sidebar-open case at their real window
+size. **The prerequisite that nearly derailed the check is worth remembering:** the demo seed is a
+one-time external migration gated by the localStorage flag `compass.migration.demo-data-seed-v2`, not
+by whether events exist — a profile seeded before commit `9eac7a10` (which *added* attendee data to
+the seed) holds events with **no attendees at all**, and neither reloading nor "Clear sample events"
+will ever re-seed it. Fix: incognito window, or clear that flag plus IndexedDB.
+
+**A discrepancy kept on the record rather than discarded.** My automated probe at *exactly* 1440×900
+with the sidebar open measured the card at **130.1 × 23.7 with zero badges in the DOM** — which is
+correct behaviour against the 140 floor, not a defect. The human seeing badges means their effective
+column width exceeds 130px (larger display, zoom, or OS scaling). Both observations are true. The
+**140 floor is real and does suppress the badge below ~140px card width**; it simply does not bite at
+this user's layout, so "should the floor come down?" stays open as a *product* question. The original
+probe finding, for the record: at 1440×900 Week with
+the sidebar in its **default open** state the badge does not render at all — the card is
+**130.1 × 23.7px** against a 140 floor. It renders correctly with the sidebar collapsed (184px), in
+Day view (806px), and at 1920/2560. **R-6 fixed the wrong constraint for that case:** at 23.7px tall
+`showTimeLabel` is false, so the 150 gate is never consulted and the **140 floor** binds — and R-6
+reasoned about *column* width where the code compares `position.width`, the *card* width. The verdict
+was deliberately left `null` for the human rather than guessed. **AC-2 (all-day badge) has passing
+unit tests but no in-app confirmation** — the demo seed's only attendee-carrying event is timed.
+
+**Two pre-check cache entries were false and were corrected before Gate 0:** `test_command_probe`
+claimed 2298/0 (real clean-tree state is **2297/1/1**), and `dispatch_smoke` carried a note from the
+superseded `opus-plus-sonnet` policy. Also corrected mid-run: an off-limits contract entry pointing at
+a non-existent path, copied from discovery — the strict allowlist meant the file was never reachable,
+but the defense-in-depth layer was inert. Fixed by **tightening only**.
+
+**Scope amendment at Gate 0:** the requested Month-view scope was dropped as unbuildable — this repo
+has no Month view (`src/views/` is Day, Week, Life, Forms + 4 utility views; a repo-wide grep for
+Month components returns zero). The byte-identity guard was declined at Gate 0 and then
+**reinstated at Gate 1** as AC-13.

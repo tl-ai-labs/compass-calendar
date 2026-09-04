@@ -1,0 +1,46 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_debug_010",
+  "phase": "debug",
+  "task_type": "bug_fix_apply",
+  "module": "cards",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": null,
+    "sdk_version": null,
+    "vertex_project": null,
+    "vertex_location": null,
+    "thinking": null
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-09-04T07:55:17.305Z",
+  "duration_ms": 337683,
+  "success": false,
+  "error": "The agent worker exited 1. WARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\ngemini_worker failed: AntigravityExecutionError: model output error: max tokens limit reached (generation or context length exceeded).",
+  "cost_usd": 0,
+  "tokens": {
+    "input": 0,
+    "input_cached": 0,
+    "output": 0,
+    "output_reasoning": 0
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [],
+    "modified": [],
+    "removed": [],
+    "unchanged": 1592,
+    "scanned": 1592,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_debug_010.md",
+    "usage": "worker-usage-tp_debug_010.json"
+  }
+}

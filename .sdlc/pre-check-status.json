@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-25T04:44:41.674Z",
+  "updated_at": "2026-09-04T05:58:32.599Z",
   "steps": {
     "discovery_smoke": {
       "status": "pass",
@@ -8,21 +8,24 @@
     },
     "test_command_probe": {
       "status": "pass",
-      "note": "Re-probed under plugin 0.6.0 at HEAD 4189de1: bun test:web = 2298 pass / 0 fail across 302 files in 86.87s, exit 0. node_modules already present; no install needed; bun.lock untouched."
+      "note": "Re-probed 2026-09-04 on clean tree at HEAD 2d81253a (branch CMP-105/opus-plus-flash-v37-sdk): bun run test:web = 2297 pass / 1 fail / 1 error across 302 files in 108.6s, exit 1. The failure is PRE-EXISTING and unrelated: RecurrenceSection > keeps the events own date selectable when the event ends after midnight (date-rot). The prior cached note claiming 2298 pass / 0 fail was wrong. Any run starting from this branch starts RED by one test."
     },
     "dispatch_smoke": {
       "status": "pass",
-      "tiers_tested": ["opus (claude-cli)", "sonnet (claude-cli)"],
-      "note": "Re-run after 2026-08-24 policy switch to opus-plus-sonnet; prior cache covered v37 tiers only. Both OK. Sonnet returned fenced JSON -> {raw:...} fallback, no adapter strips fences."
+      "tiers_tested": [
+        "opus (claude-cli)",
+        "gemini-3.7-flash (antigravity-worker / flash-agsdk-worker door, vertex-adc)"
+      ],
+      "note": "Re-run 2026-09-04 after switching project default to opus-plus-flash-v37. Premium OK ($0.148, 11 out-tokens). Mechanical OK ($0.018, stop_reason agent_session_complete). NOTE: task_type smoke falls through to premium (rule_index -1, fail-safe); react_component correctly routes to flash-agsdk-worker (rule_index 7)."
     },
     "write_contract_smoke": {
       "status": "pass",
-      "path": "<repo-root>/.sdlc/pre-check/hello.txt",
+      "path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/pre-check/hello.txt",
       "note": "Wrote a file under .sdlc/pre-check/; write-contract auto-allowlists paths under .sdlc/."
     },
     "rollback_smoke": {
       "status": "pass",
-      "path": "<repo-root>/.sdlc/pre-check/hello.txt"
+      "path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/.sdlc/pre-check/hello.txt"
     },
     "report_finalized": {
       "status": "pass",

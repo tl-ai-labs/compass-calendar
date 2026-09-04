@@ -16,7 +16,7 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 
 | Command | Notes |
 |---|---|
-| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
+| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. **The clean-tree baseline is RED: 2297 pass / 1 fail / 1 error across 302 files (verified 2026-09-04 at `main@2d81253a`).** The failure is `RecurrenceSection > keeps the event's own date selectable when the event ends after midnight` — pure date-rot, unrelated to any plugin run. Diff against 2297/1/1, never against zero, and never call this suite "green". Note `.sdlc/pre-check-status.json` cached a false `2298 pass / 0 fail` for weeks; it has been corrected. Do not add `--parallel` (`.cursor/rules/web-testing.mdc` forbids it). |
 | `bun type-check` | Clean as of 2026-08-20. |
 | `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
 | `bun run verify` | Diff-aware. |
@@ -27,7 +27,14 @@ before any test baseline, or the suite reports every file as failing on a missin
 
 ## Policy
 
-Default (as of `20260821-113930-feature-extend-one-click-join`): `opus-cli-plus-flash-adc`
+**Current default (set 2026-09-04): `opus-plus-flash-v37`** — written to `.sdlc/project.json`,
+superseding `opus-plus-sonnet`. Its mechanical door defaults to **`flash-agsdk-worker`** (the
+Antigravity SDK agent session), with `flash-completion` available as the other door; Opus reaches
+Anthropic via `claude-cli` (subscription auth, no API key) and Gemini via Vertex ADC. Three arms
+now agree the SDK door buys **no cost saving** over the completion door — see ledger rows for
+CMP-101, CMP-103 and CMP-105 arm 5.
+
+Historical (as of `20260821-113930-feature-extend-one-click-join`): `opus-cli-plus-flash-adc`
 (`.sdlc/project.json`, superseding `opus-only-v5`). A custom policy — Opus tier via the
 `claude-cli` adapter (Claude Code subscription auth, no vendor API key) and Flash/mechanical
 tier (`gemini-3.7-flash`) via the `antigravity-worker` adapter, authenticated via gcloud

@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "run_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+  "mode": "brownfield",
+  "intent": "feature-extend",
+  "policy": "opus-plus-flash-v37",
+  "mechanical_door": "flash-agsdk-worker",
+  "gemini_backend": "vertex-adc",
+  "gcloud_project": "ai-studies-console",
+  "gcloud_location": "global",
+  "auth_mode": "estimated",
+  "cost_comparability_warning": "auth_mode=estimated. Direct-tier events are char/3.8 estimates booking input_tokens_cached=0; mechanical-tier events carry vendor-reported tokens but are priced from a policy pricing block still marked TODO for gemini-3.7-flash. These totals are NOT comparable across policies.",
+  "branch": "CMP-105/opus-plus-flash-v37-sdk",
+  "git_head_before": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+  "committed": false,
+
+  "totals": {
+    "cost_usd": 8.8346,
+    "events": 17,
+    "packets_planned": 8,
+    "packets_dispatched": 12,
+    "packets_failed": 2
+  },
+
+  "by_model": {
+    "claude-opus-5": { "dispatches": 12, "cost_usd": 7.0367, "input_tokens": 582196, "output_tokens": 102542 },
+    "gemini-3.7-flash": { "dispatches": 5, "succeeded": 3, "failed": 2, "cost_usd": 1.7979, "input_tokens": 704018, "output_tokens": 45873 }
+  },
+
+  "by_phase": {
+    "requirements_analysis": { "n": 1, "cost_usd": 0.2235 },
+    "architecture_design": { "n": 1, "cost_usd": 1.0355 },
+    "plan_task_packets": { "n": 1, "cost_usd": 0.4 },
+    "codegen": { "n": 5, "cost_usd": 3.1527 },
+    "tests": { "n": 3, "cost_usd": 0.8533 },
+    "debug": { "n": 4, "cost_usd": 1.5695 },
+    "senior_code_review": { "n": 1, "cost_usd": 0.9 },
+    "security_review": { "n": 1, "cost_usd": 0.7 }
+  },
+
+  "routing_finding": {
+    "headline": "The Antigravity SDK door produced no cost saving on this run.",
+    "mean_cost_per_successful_packet": { "flash_sdk": 0.5993, "opus_codegen": 0.6305 },
+    "input_tokens_per_dispatch": { "flash_sdk": 140804, "opus": 48516 },
+    "codegen_fell_through_to_premium": true,
+    "codegen_fallthrough_detail": "All 5 codegen packets routed with ruleIndex -1, reason 'Unrecognized task - fail safe to premium'. The policy's codegen rule matches only greenfield task_type values (controller_handler, react_component, ...); brownfield types (new_file_add, existing_file_edit, refactor_extract) match nothing. Only the tests and debug phases reached Flash.",
+    "sdk_door_failures": 2,
+    "sdk_door_failure_mode": "AntigravityExecutionError: max tokens limit reached (generation or context length exceeded), after 8.6 min and 5.6 min, both on the largest file."
+  },
+
+  "tests": {
+    "command": "bun run test:web",
+    "baseline": { "pass": 2297, "fail": 1, "error": 1, "files": 302, "verified_independently": true },
+    "final": { "pass": 2338, "fail": 1, "error": 1, "files": 304 },
+    "delta_pass": 41,
+    "new_failures": 0,
+    "suite_is_green": false,
+    "pre_existing_failure": "RecurrenceSection > keeps the event's own date selectable when the event ends after midnight (out of scope, off-limits, unchanged)"
+  },
+
+  "lint": {
+    "check_semantic_colors": "pass",
+    "biome_changed_files": "clean (8/8)",
+    "biome_packages_self_host": "0 errors, 10 warnings",
+    "bun_lint_whole_repo": "FAILS - exclusively on .sdlc/** JSON run artifacts (packets.json, delegation/*, backups/*, state.json). No source file implicated. .sdlc is not excluded from biome's scope; out of allowlist, not fixed."
+  },
+
+  "files_touched": [
+    { "path": "packages/web/src/common/utils/attendee-status.util.ts", "change": "new" },
+    { "path": "packages/web/src/common/utils/attendee-status.util.test.ts", "change": "new" },
+    { "path": "packages/web/src/grid/components/AttendeeBadge.tsx", "change": "new" },
+    { "path": "packages/web/src/grid/components/AttendeeBadge.test.tsx", "change": "new" },
+    { "path": "packages/web/src/grid/components/TimedEventCard.tsx", "change": "edit (+49/-1)" },
+    { "path": "packages/web/src/grid/components/AllDayEventCard.tsx", "change": "edit (+23/-0)" },
+    { "path": "packages/web/src/grid/components/EventCard.test.tsx", "change": "edit (+716/-0, append-only)" },
+    { "path": "packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx", "change": "edit (+4/-11)" }
+  ],
+  "files_touched_verified_against": "git status --short, re-checked after every packet",
+  "out_of_allowlist_writes": 0,
+  "guard_files_unchanged": [
+    "packages/web/src/views/Forms/EventForm/EventForm.test.tsx",
+    "packages/web/src/grid/components/AllDayGridRow.test.tsx",
+    "packages/web/src/views/Forms/EventForm/DateControlsSection/RecurrenceSection/RecurrenceSection.test.tsx"
+  ],
+
+  "gates": {
+    "gate_0": "approved before this run (discovery + write contract frozen)",
+    "gate_1": "approved; 3 open questions answered by the user",
+    "gate_2": "approved with two required edits (clipping fix + strike a false claim)",
+    "gate_3": "approved, security pass_with_notes; R-6 resolved by lowering the gate 170 -> 150",
+    "gate_4": "pending"
+  },
+
+  "reviews": {
+    "senior": { "verdict": "changes_required", "blocker": "R-1 C-10 PII guard could not fail", "resolved": "R-1..R-5 landed; R-6 resolved at Gate 3 by user decision" },
+    "security": { "verdict": "pass_with_notes", "blocking_items": ["S-1 (same as R-1)", "S-7 provenance"], "s1_resolved": true }
+  },
+
+  "verification_performed_by_orchestrator": [
+    "Re-ran the 2297/1/1 baseline from a clean tree rather than accepting it as given",
+    "Re-probed both write-contract deny classes live; both refused at the tool boundary, neither file created",
+    "Checked git status --short after every mechanical packet",
+    "Mutation-tested the PII guard TWICE - once after the R-1 fix (11 failures) and again after the R-6 gate change (12 failures); AttendeeBadge.tsx restored byte-identical both times (eca94544d2b58d19, then fc4b0bd85ac8c876)",
+    "Verified every model self-report against real git diff / test runs"
+  ],
+
+  "gate_4": "accepted by the user; nothing committed by explicit instruction - all 8 files left uncommitted in the working tree",
+
+  "manual_verification_status": "passed",
+  "manual_verification_result": "PASSED - human in-app check, 2026-09-04. The reviewer re-seeded demo data (the seed is gated by the one-time localStorage flag `compass.migration.demo-data-seed-v2`, so their profile held a pre-`9eac7a10` seed with no attendee data at all - a plain reload could never fix it) and confirmed the badge renders and is visible on grid event cards. They explicitly confirmed walkthrough item 2 - the 1440-with-sidebar-open case - as working at their actual window size.",
+  "manual_verification_discrepancy_kept_on_record": "The human's in-app check is the accepted verdict, but it does NOT reproduce my automated measurement, and I am recording rather than discarding the disagreement. At exactly 1440x900 CSS px with the right sidebar open, Playwright measured the standup card at 130.1 x 23.7 and NO badge in the DOM (`[data-attendee-badge]` count 0 page-wide) - correct behaviour, since MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE is 140. The human observing badges at their real window means their effective column width exceeded 130px (larger monitor, browser zoom, OS scaling, or narrower sidebar). CONCLUSION: the 140 floor is real and does suppress the badge below ~140px card width; it simply does not bite at this user's actual layout. The follow-up 'decide whether to lower the 140 floor' therefore stays OPEN as a product question, not as a bug.",
+  "automated_browser_probe_by_reviewer": {
+    "performed": "2026-09-04, Playwright/chromium against `bun run dev:web` on port 9080, anonymous 'Explore without an account' mode, demo seed",
+    "subject": "'Morning standup' - the only demo-seed event carrying attendees (4: 2 accepted, 1 tentative, 1 needsAction)",
+    "verdict": "PARTIAL - badge is correct WHERE it renders, but absent at the default 1440 laptop layout. Final verdict deferred to the human reviewer, who is checking manually.",
+    "measurements": [
+      "1440x900 Week, sidebar OPEN (default): card 130.1 x 23.7 -> NO badge anywhere on page",
+      "1440x900 Week, sidebar COLLAPSED: card 184.0 x 23.7 -> badge renders",
+      "1440x900 Day view: card 806.4 x 23.0 -> badge renders",
+      "1920x1080 Week: card 198.7 x 30 -> badge renders",
+      "2560x1440 Week: card 280 x 42.6 -> badge renders"
+    ],
+    "root_cause": "The binding constraint at 1440-with-sidebar is MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE = 140 (the floor), NOT the 150 gate. The card is 23.7px tall, below MIN_EVENT_HEIGHT_FOR_TIME_LABEL = 36, so showTimeLabel is false and the 150 gate is never consulted. R-6's analysis reasoned about COLUMN width landing in the 140-170 band, but the code compares position.width, which is the CARD width and is narrower than its column. Lowering 170 -> 150 was a correct change to a constraint that does not bind in this scenario.",
+    "confirmed_good_where_rendered": [
+      "3 status dots + '+1' overflow counter for the 4-attendee event (cap = 3)",
+      "No attendee email in visible card text (PII-1 holds in the running app)",
+      "aria-describedby wired from card to the sr-only description span",
+      "Card aria-label unchanged: 'Sample Timed event: Morning standup, 9 - 9:30 AM'"
+    ],
+    "not_verified_in_app": "AllDayEventCard badge (AC-2). The demo seed's only attendee-carrying event is timed, so the all-day path has passing unit tests but no in-app confirmation.",
+    "repro_scripts": "verify-badge.mjs, verify-badge2.mjs, verify-badge3.mjs in this run directory (gitignored by the repo-wide *.mjs rule); screenshots probe-1440.png, probe-1920.png, probe-2560.png, probe-1440-nosidebar.png, probe-day-1440.png"
+  },
+  "manual_verification_note": "RESOLVED 2026-09-04: the human ran the in-app check and reported the badge visible and working, including walkthrough item 2. See manual_verification_result and manual_verification_discrepancy_kept_on_record above. The point this note originally made still stands and is the run's main lesson: R-6 was a real defect a fully green suite could not see, so the in-app check was the only evidence that could settle it.",
+
+  "independent_verification_by_reviewer": {
+    "suite": "2338 pass / 1 fail / 1 error across 304 files in 83.1s - exact match",
+    "scope": "git status shows exactly the 8 allowlisted paths (4 modified, 4 new)",
+    "guard_files": "empty diff against 2d81253a",
+    "append_only": "EventCard.test.tsx +716/-0",
+    "constants": "MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL=150, MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE=140, C-18/C-20 at 145, C-21 at 163x60 - all confirmed in source",
+    "telemetry": "$8.8346 / 17 packets; Opus 12 = $7.04 (80%); Flash 5 (3 ok) = $1.80 (20%)",
+    "mutation_proof_reproduced": "Reviewer independently forced AttendeeBadge to return null: 18 failures across both badge test files, of which exactly 12 in EventCard.test.tsx - matching the orchestrator's count - including C-10, C-4, C-8, C-14, C-21. Restored byte-identical (md5 09796b1cd3fd66f24b358d1e4bfe6aaf), 52/52 green on both files."
+  },
+
+  "known_gaps": [
+    "Browser verification PENDING (see manual_verification_status). The R-6 defect was invisible to a green suite; the fix is likewise unverified in the running app until that check reports.",
+    "Dependency audit did not run: npm audit fails ENOLOCK on a Bun workspace and bun audit timed out at 300s. Reported as unknown, not clean. No dependency was added (empty diff vs package.json and lockfiles).",
+    "provenance.json sha_after is STALE for AttendeeBadge.tsx and EventCard.test.tsx (the R-6 edit had no --before record). backup_path is null on 7 of 10 entries. REVERT VIA GIT, not via the run's backups.",
+    "A failed packet (tp_test_008) wrote 642 lines to disk while reporting success:false, result:null, cost_usd:0. ~$0.94 of work was never accounted for.",
+    "The claude-cli premium tier is agentic and writes files directly, bypassing the Write/Edit PreToolUse hook - the same gap previously attributed only to the antigravity worker."
+  ],
+
+  "revert_instructions": {
+    "safe_method": "git checkout 2d81253a -- packages/web/src/grid/components/TimedEventCard.tsx packages/web/src/grid/components/AllDayEventCard.tsx packages/web/src/grid/components/EventCard.test.tsx packages/web/src/views/Forms/EventForm/EventDetailsSection.tsx  &&  rm packages/web/src/grid/components/AttendeeBadge.tsx packages/web/src/grid/components/AttendeeBadge.test.tsx packages/web/src/common/utils/attendee-status.util.ts packages/web/src/common/utils/attendee-status.util.test.ts",
+    "do_not_use": "/mmo:revert relying on provenance backups - backup_path is null for most entries and two sha_after values are stale."
+  },
+
+  "artifacts": {
+    "requirements": "requirements.md",
+    "change_plan": "change_plan.md",
+    "packets": "packets.json",
+    "senior_review": "review.md",
+    "security_review": "security_review.md",
+    "telemetry": "telemetry.jsonl",
+    "provenance": "provenance.json",
+    "summary": "SUMMARY.md"
+  }
+}

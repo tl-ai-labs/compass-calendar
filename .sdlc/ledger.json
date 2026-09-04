@@ -829,6 +829,60 @@
       ],
       "compare_baseline_tag": "20260820-091709-feature-extend-weekbody-multiday-drag",
       "compare_note": "FOURTH arm of the CMP-101 per-policy comparison, branch cut fresh from main at 4189de13 with git rev-list --count main..HEAD = 0 and an empty git diff main...HEAD -- packages/, so no prior arm's code was present. Prior arms: opus-flash-v37 $4.26 / 8 files / +26 tests (committed 297baf95); flash-agsdk-only $4.07 / 9 files / +29 tests; opus-only $3.06 / 11 files / +33 tests (committed 7ff1dfb4). THIS ARM: $8.08 / 8 files / +39 tests - most expensive AND most tested. THE COST COMPARISON IS NOT LIKE-FOR-LIKE: this arm ran under auth_mode=estimated (opus half heuristic, sonnet half vendor-reported) while the earlier arms differ in metering, and two of three debug cycles here were spent on TEST CORRECTNESS (mock.module leak, type errors) rather than feature code. WHAT IS SUPPORTED: this arm produced the most test coverage and the only mutation-proved teardown assertions of the four. Independent design corroboration: this arm reached option (c) - the opt-in flag - independently of the opus-only arm 7ff1dfb4, which chose the same, while opus-plus-flash-v37 chose (b)."
+    },
+    {
+      "run_id": "20260903-000000-feature-extend-attendee-badge-sdk",
+      "date": "2026-09-04",
+      "mode": "brownfield",
+      "intent": "feature-extend",
+      "policy": "opus-plus-flash-v37",
+      "auth_mode": "estimated",
+      "ticket": "CMP-105",
+      "status": "accepted_and_manually_verified",
+      "commit_strategy": "NONE by explicit user choice at Gate 4 - nothing committed, staged or pushed. HEAD remains 2d81253a and all 8 files sit in the working tree. Close-out touched .sdlc/ bookkeeping only.",
+      "anchor_commit": "2d81253ab8a4c8e69b27e28d12c6ae9cc61d1bfe",
+      "branch": "CMP-105/opus-plus-flash-v37-sdk",
+      "commits": [],
+      "files_written": 8,
+      "files_written_detail": "4 new (grid/components/AttendeeBadge.tsx + .test.tsx, common/utils/attendee-status.util.ts + .test.ts), 4 modified (grid/components/TimedEventCard.tsx +49/-1, grid/components/AllDayEventCard.tsx +23/-0, grid/components/EventCard.test.tsx +716/-0 append-only, views/Forms/EventForm/EventDetailsSection.tsx +4/-11)",
+      "files_allowlisted_untouched": "none - all 8 allowlisted paths were written",
+      "tests": "baseline 2297 pass / 1 fail / 1 error across 302 files -> final 2338 / 1 / 1 across 304 files (+41). NOT GREEN and never was: the one failure is the pre-existing RecurrenceSection date-rot test, untouched. Reviewer re-ran both baseline and final independently; both matched exactly.",
+      "cost_usd": 8.8346,
+      "cost_split": "Opus 12 dispatches $7.04 (80%); Flash flash-agsdk-worker 5 dispatches (3 ok, 2 failed) $1.80 (20%)",
+      "cost_note": "estimated mode, books cached=0, and the Gemini rates are still a TODO(pricing) placeholder - NOT valid for cross-policy dollar ranking. What is directly measured and survives any repricing: Flash consumed 140.8k input tokens per dispatch vs Opus 48.5k (~3x), and failed 2 of 5 dispatches on max-tokens.",
+      "known_findings_open": [
+        "BROWSER CHECK PARTIAL: at 1440x900 Week view with the sidebar in its DEFAULT OPEN state the badge does not render at all - the card is 130.1 x 23.7px and MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE is 140. Renders correctly with the sidebar collapsed (184px), in Day view (806px), and at 1920/2560.",
+        "R-6's fix addressed the wrong constraint for that scenario: the card is 23.7px tall so showTimeLabel is false and the 150 gate is never consulted; the 140 FLOOR binds. R-6 reasoned about COLUMN width but the code compares position.width, the CARD width, which is narrower than its column.",
+        "AC-2 (all-day card badge) has passing unit tests but NO in-app confirmation - the demo seed's only attendee-carrying event is timed.",
+        "Dependency audit did not run: npm audit fails ENOLOCK on Bun workspaces, bun audit timed out at 300s. Reported as unknown, not clean. No dependency was added.",
+        "AC-10 uses fireEvent.mouseDown, which bypasses hit-testing, so it is not evidence that resize handles are reachable by a real pointer.",
+        "bun lint repo-wide still fails, exclusively on .sdlc/** JSON artifacts; biome check packages self-host is 0 errors."
+      ],
+      "artifacts_dir": ".sdlc/runs/20260903-000000-feature-extend-attendee-badge-sdk",
+      "gates": "Gate 0 approved (Month dropped as unbuildable - no Month view exists in this repo). Gate 1 approved with three human decisions: Q-1 nested accessible name, Q-3 per-attendee capped dots, Q-6 byte-identity guard REINSTATED after being declined at Gate 0. Gate 2 approved + two fixes (conditional pr-14 reserve for the clipping regression; struck R-10's false jest-dom claim). Gate 3 approved, R-6 gate lowered 170 -> 150. Gate 4 accepted, commit declined.",
+      "senior_review": "changes_required - 1 blocker, 4 major. The blocker: the ONLY card-level PII guard (C-10) rendered at width 140 where the badge is suppressed, so it asserted 'no email in the DOM' against a card with no badge - it would have passed with AttendeeBadge deleted from the repo. C-4, C-8 and C-14 were vacuous identically. Found independently by BOTH reviewers.",
+      "security_review": "pass_with_notes. PII-1/2/3 verified in code: the only always-visible text added is the +N integer; attendee-status.util.ts references neither displayName nor email and builds its sentence by filtering a fixed 4-element status list, so no attendee-controlled string can reach output even from a malformed payload. Concrete stake found: posthog.bootstrap.ts runs person_profiles:'always' with autocapture and no text masking, so a displayName ?? email copy-paste into the sr-only span would have shipped attendee names to a third-party processor.",
+      "manual_verification": "PASSED - human in-app check 2026-09-04. Badge renders and is visible on grid event cards; the human explicitly confirmed the 1440-with-sidebar-open case at their real window size. PREREQUISITE THAT NEARLY DERAILED IT: the demo seed is a one-time external migration gated by the localStorage flag `compass.migration.demo-data-seed-v2`, NOT by whether events exist - a profile seeded before commit 9eac7a10 (which added attendee data) holds events with no attendees at all, and no amount of reloading or 'Clear sample events' will re-seed. Fix is an incognito window or clearing that flag + IndexedDB. DISCREPANCY KEPT ON RECORD: my Playwright probe at exactly 1440x900 with the sidebar open measured the card at 130.1x23.7 with zero badges in the DOM, which is correct behaviour against the 140 floor. The human's larger effective column width means the floor simply does not bite at their layout. The floor question stays OPEN as a product decision, not a bug.",
+      "scope_amendments": "Month view removed at Gate 0 as unbuildable (verified independently: src/views/ has Day, Week, Life, Forms + 4 utility views; repo-wide grep for Month components returns zero). Byte-identity guard declined at Gate 0 then REINSTATED at Gate 1 as AC-13.",
+      "process_notes": [
+        "THE MECHANISM FINDING: a 'failed' packet wrote 642 lines. tp_test_008 returned success:false, result:null, cost_usd:0 after 8.6 minutes and had written the entire 20-case test file to disk. Its worker-delegation evidence file exists but worker-usage does not, which is why tokens booked zero. ~$0.94 of work the accounting never saw. Only the post-packet git status caught it. A dispatch result is NOT a proxy for filesystem state.",
+        "BOTH dispatch tiers bypass the Write/Edit write-contract hook - not just the antigravity worker. claude-cli is agentic and edits files directly. The hook DID enforce correctly against the orchestrator's and reviewer's own writes (both deny classes re-probed live, neither probe file created), but those writes were never the risk. The enforcement that actually held this run was PROCEDURAL: guard-file hashing plus git status --short after every packet.",
+        "Mutation testing is what separated a real guard from a vacuous one, twice. After the R-1 fix (11 failures) and again after the R-6 gate change (12 failures) - because moving a threshold can silently re-vacuate a fixture: C-18 at 150 would have INVERTED and C-20 would have stopped proving the conjunction; both were relocated to 145. The reviewer independently reproduced the proof (18 failures across both badge files, exactly 12 in EventCard.test.tsx) and restored byte-identical, md5 09796b1cd3fd66f24b358d1e4bfe6aaf.",
+        "The pre-check cache lied twice and was corrected: it claimed test_command_probe 2298 pass / 0 fail (real clean-tree state is 2297/1/1) and carried a dispatch_smoke note from the superseded opus-plus-sonnet policy. Both re-run and rewritten before Gate 0.",
+        "A contract path defect introduced by the reviewer: the off-limits entry for the pre-existing failing test pointed at a non-existent path copied from discovery. The allowlist is a strict whitelist so the file was never reachable, but the defense-in-depth layer was inert. Corrected mid-run by TIGHTENING only.",
+        "The orchestrator withdrew its own fabrication charge against tp_cg_006/tp_cg_007 when git diff contradicted it. Every claim it made that the reviewer independently checked - across all four gates - held."
+      ],
+      "followups_open": [
+        "Decide whether the 140 floor should be lowered so the badge appears at the default 1440 laptop layout (card is 130px there).",
+        "Verify the all-day card badge in the running app; demo seed needs an attendee-carrying all-day event.",
+        "Fix the pre-existing RecurrenceSection date-rot test that starts every run on this repo red.",
+        "The v37 policy codegen rule enumerates only greenfield task_type values; brownfield types (new_file_add, existing_file_edit, refactor_extract) match nothing and fall to default: opus. Either extend the rule or accept that brownfield never reaches the mechanical tier for codegen.",
+        "Provenance backup_path is null on 7 of 10 entries and two sha_after are stale - /mmo:revert is unsafe for this run.",
+        "MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE = 140 duplicates DAY_COLUMN_MIN_USABLE_WIDTH = 140 from grid.constants.ts without importing it."
+      ],
+      "tags": ["cmp-105", "policy-comparison", "antigravity-sdk-door", "flash-agsdk-worker", "uncommitted", "manual-verification-pending"],
+      "compare_baseline_tag": "cmp-105-arms",
+      "compare_note": "FIFTH and final arm of the CMP-105 comparison (attendee avatar badge), the Antigravity SDK door on opus-plus-flash-v37. THE MEASUREMENT THIS ARM EXISTS TO PRODUCE: the SDK door is NOT a cost saving. Mean per SUCCESSFUL packet Flash $0.599 vs Opus codegen $0.631 - within 5% - while consuming ~3x the input tokens per dispatch and failing 2 of 5. And 80% of a 'flash SDK' arm executed on OPUS: all 5 codegen packets routed with ruleIndex -1 'Unrecognized task - fail safe to premium'. Only tests and debug ever reached Flash, and task types were deliberately NOT reshaped to force the cheaper tier. At $8.83 this is the most expensive CMP-105 arm: ~4x flash-agsdk-only ($2.23) and ~2x opus-only-v5 ($4.10) for the same feature. This is now the THIRD arm (with CMP-101 $4.29-vs-$4.26 and CMP-103 2.1x-per-packet) pointing the same way on the SDK door."
     }
   ]
 }

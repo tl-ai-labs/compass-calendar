@@ -1,0 +1,48 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_test_008",
+  "phase": "tests",
+  "task_type": "test_add",
+  "module": "cards",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": null,
+    "sdk_version": null,
+    "vertex_project": null,
+    "vertex_location": null,
+    "thinking": null
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "started_at": "2026-09-04T07:13:12.201Z",
+  "duration_ms": 514719,
+  "success": false,
+  "error": "The agent worker exited 1. WARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\nWARNING:root:System step error (HTTP 0): The maximum token limit was reached. (\"model output error: max tokens limit reached (generation or context length exceeded).\")\ngemini_worker failed: AntigravityExecutionError: model output error: max tokens limit reached (generation or context length exceeded).",
+  "cost_usd": 0,
+  "tokens": {
+    "input": 0,
+    "input_cached": 0,
+    "output": 0,
+    "output_reasoning": 0
+  },
+  "tool_calls": {
+    "count": 0,
+    "truncated": false,
+    "sample": []
+  },
+  "files": {
+    "added": [],
+    "modified": [
+      "packages/web/src/grid/components/EventCard.test.tsx"
+    ],
+    "removed": [],
+    "unchanged": 1591,
+    "scanned": 1592,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_test_008.md",
+    "usage": "worker-usage-tp_test_008.json"
+  }
+}
