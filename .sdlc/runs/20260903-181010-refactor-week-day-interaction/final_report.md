@@ -3,7 +3,7 @@
 - **Run:** `20260903-181010-refactor-week-day-interaction`
 - **Intent:** `refactor` · **Mode:** brownfield · **Branch:** `CMP-104/opus-plus-flash-v37-sdk` (from `main@2d81253a`)
 - **Policy:** `opus-plus-flash-v37`, mechanical tier on the **Antigravity SDK door** (`flash-agsdk-worker`)
-- **Auth mode:** `estimated` · **Nothing committed.** Working tree only.
+- **Auth mode:** `estimated` · **Committed + pushed 2026-09-04** (`7ad7bc38` source, `7bc2afe9` run record) after the human's browser walkthrough. *This report was finalised at Gate 4, before that check; §8b and the commit were appended after.*
 
 ---
 
@@ -175,7 +175,7 @@ This run is one arm of a policy comparison. What it showed:
 
 5. **A worker denied a read will guess rather than fail.** `tp_t4` was denied `adapter.helpers.ts` and invented the ownership-reason strings. They happened to be correct — verified against source afterwards — but the failure mode is silent.
 
-**Cost:** ~$25 estimated. This is bookkeeping only: the estimator books `input_tokens_cached: 0` and therefore materially overstates real `claude-cli` billing. It is not comparable across policy arms and it influenced no technical decision in this run.
+**Cost:** recorded at ~$25 estimated during the run; **corrected 2026-09-04 to $7.62** ($4.48 estimated-recomputed Opus + $3.13 vendor-metered Flash). The run's own telemetry had synthesized the direct-tier Opus packets with `input_tokens` 10–23× the artifacts they actually read or wrote — `tp_s1_s10_batch` alone was booked at 1.84M input tokens ($10.05), ~9× the model's context limit. Recomputing by the pipeline's own `chars/3.8` method against the real artifacts (subagent phases priced from each subagent's reported token count; non-subagent packets from artifact byte sizes; `cached=0` retained) gives $7.62, which matches the `opus-only-v5` sibling ($6.15) that ran the identical refactor. Full method in `cost_correction.md`; originals preserved in `telemetry.jsonl`. Still estimated, still books `input_tokens_cached: 0`, still not comparable across policy arms, and it influenced no technical decision in this run.
 
 ---
 
@@ -294,4 +294,4 @@ The ticket's actual prize was taken: the isomorphic adapter duplication is gone,
 
 Before merge, the run's own weak points are worth a maintainer's eye: **B-1's root cause (§1)**, the **revert gap (§6)**, and **m-6**.
 
-*Nothing has been committed. The working tree holds 26 modified and 10 new source files, all inside the frozen allowlist.*
+*At Gate 4 nothing was committed (26 modified + 10 new source files inside the frozen allowlist). After the human's 2026-09-04 browser walkthrough returned "all works", the run was committed and pushed: `7ad7bc38` (source, 36 files) and `7bc2afe9` (run record).*

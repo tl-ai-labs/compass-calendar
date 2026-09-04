@@ -15,7 +15,7 @@ real vendor-metered mechanical spend — the split is in each run's `manifest.js
 | 2026-08-22 | `20260822-040449-feature-extend-one-click-join` | brownfield · feature-extend | 4 written (3 edit, 1 new) | 2298/0 → 2309/0 (+11, 0 new failures) | $5.46 ⚠ | accepted → partially committed `53f057e4` on `CMP-103/flash-agsdk-only` (anchor 4189de1) |
 | 2026-08-22 | `20260822-062945-feature-extend-one-click-join` | brownfield · feature-extend | 7 written (6 edit, 1 new) | 2298/0 → 2326/0 (+28, 0 new failures) | $5.32 | accepted → **uncommitted** on `CMP-103/opus-only-v5` (anchor 4189de1) |
 | 2026-08-23 | `20260822-125447-refactor-week-day-interaction` | brownfield · refactor | 24 written (22 edit, 2 new) | 2298/0 → 2298/0 (+0 by design, 0 new failures) | $4.94 ⚠ | accepted → **uncommitted** on `CMP-104/flash-agsdk-only` (anchor 4189de1) |
-| 2026-09-03 | `20260903-181010-refactor-week-day-interaction` | brownfield · refactor | 36 written (26 edit, 10 new) | **2297/1/1 → 2309/1/1** (+12, 0 new failures; baseline already RED) | $25 ⚠ est | accepted → **uncommitted** on `CMP-104/opus-plus-flash-v37-sdk` (anchor 2d81253a) |
+| 2026-09-03 | `20260903-181010-refactor-week-day-interaction` | brownfield · refactor | 36 written (26 edit, 10 new) | **2297/1/1 → 2309/1/1** (+12, 0 new failures; baseline already RED) | **$7.62 ⚠ est** (corrected 2026-09-04; $7.6151 exact, recorded $25.03) | accepted → **committed + pushed** on `CMP-104/opus-plus-flash-v37-sdk` (anchor 2d81253a) |
 
 ⚠ **The two rows above are not directly comparable.** `opus-plus-flash-v37` prices its Opus spend, so
 its $4.26 is fully loaded. `flash-agsdk-only` is deliberately single-model with no Claude pricing
@@ -351,9 +351,10 @@ way — only this run's 8 files changed and every off-limits diff is empty.
 ## Row thirteen — `20260903-181010-refactor-week-day-interaction` (CMP-104 arm 5, first Antigravity **SDK door**)
 
 **CMP-104 · `refactor` · `opus-plus-flash-v37` (mechanical tier on `flash-agsdk-worker`, the SDK door) ·
-`estimated` · branch `CMP-104/opus-plus-flash-v37-sdk` off `main@2d81253a` · ~$25 est ·
-36 files (26 edit, 10 new) · +12 tests · 2297/1/1 → 2309/1/1 · uncommitted pending the human's
-browser check.**
+`estimated` · branch `CMP-104/opus-plus-flash-v37-sdk` off `main@2d81253a` · **$7.62 est**
+(corrected 2026-09-04; recorded $25.03) ·
+36 files (26 edit, 10 new) · +12 tests · 2297/1/1 → 2309/1/1 · committed + pushed 2026-09-04
+after the human's browser check.**
 
 **Fifth arm of the CMP-104 per-policy comparison and the first on the Antigravity *SDK* door.** Arm 2
 (`20260824-002919`) ran the same policy name on the *completion* door, so this pair isolates the door,
@@ -420,9 +421,22 @@ CJK characters mid-token while the file on disk was clean ASCII; trusting the ec
 only because every test-name set was diffed against HEAD. (v) A worker **denied a read guesses rather
 than fails** — it invented ownership-reason strings that happened to be right.
 
-**Do not quote the ~$25 as a policy comparison.** It is `estimated`, books `input_tokens_cached: 0`,
-and therefore materially overstates real `claude-cli` billing; the premium half is heuristic while the
-Flash half is vendor-reported. It influenced no technical decision in this run.
+**Cost corrected 2026-09-04: recorded $25.03 → recomputed $7.62** (opus $4.48 estimated-recomputed +
+flash $3.13 vendor-metered). The original opus figures were synthesized in-session with no persisted
+prompt and carried `input_tokens` 10–23× the artifacts each packet actually read/wrote —
+`tp_s1_s10_batch` alone claimed 1.84 M input tokens ($10.05), ~9× the model's context limit. The
+recompute applies the pipeline's own `chars/3.8` method to the real run artifacts: the 3 subagent
+phases are priced from each subagent's own `subagent_tokens_reported`; the 4 non-subagent packets are
+reconstructed from artifact byte sizes. `cached=0` retained per estimated mode. The result lands on the
+`CMP-104/opus-only-v5` sibling ($6.15), which ran the identical refactor through the identical
+estimator. Full method + per-packet table:
+`.sdlc/runs/20260903-181010-refactor-week-day-interaction/cost_correction.md`; originals preserved in
+`telemetry.jsonl` under `superseded_20260904`.
+
+**Do not quote the $7.62 (or the old $25) as a policy comparison.** It is `estimated`, books
+`input_tokens_cached: 0`, and is a mix of estimated and vendor-metered halves. The correction removes a
+fabricated ~3× inflation; it does not make the number vendor-authoritative. It influenced no technical
+decision in this run.
 
 **Revert is NOT clean.** 34 provenance entries, **33 with `backup_path: null`** — survivable only
 because all 26 modified files were tracked and committed at `2d81253a`, so git restores them regardless.
