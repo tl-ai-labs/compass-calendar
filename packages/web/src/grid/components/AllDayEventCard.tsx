@@ -5,6 +5,7 @@ import {
   forwardRef,
   type KeyboardEvent,
   type MouseEvent,
+  useId,
 } from "react";
 import dayjs from "@core/util/date/dayjs";
 import { isRecurringEvent } from "@core/util/event/event.util";
@@ -27,6 +28,11 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import {
+  AttendeeBadge,
+  hasAttendeesToShow,
+  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,
+} from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 const REPEAT_ICON_MIN_WIDTH = 60;
@@ -75,6 +81,14 @@ const AllDayEventCardBase = (
   const isRecurring = isRecurringEvent(event);
   const showRepeatIcon =
     isRecurring && !isPlaceholder && position.width >= REPEAT_ICON_MIN_WIDTH;
+  const attendeeDescriptionId = useId();
+  // No compact gate here - the all-day row is a fixed 20px
+  // (EVENT_ALLDAY_HEIGHT) and a 6px dot row fits. Only the width gate applies,
+  // because the badge shares the single flex row with the title.
+  const showAttendeeBadge =
+    !isPlaceholder &&
+    position.width >= MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE &&
+    hasAttendeesToShow(event.attendees);
   // Past events recede in the direction of the theme's grid, matching
   // TimedEventCard: the dark theme's light steel fill dims slightly, the
   // light theme's ink fill fades toward the paper. Only the fill moves — a
@@ -144,6 +158,7 @@ const AllDayEventCardBase = (
     // biome-ignore lint/a11y/useSemanticElements: All-day events are draggable/resizable blocks, not native buttons.
     <div
       {...interactionAttributes}
+      aria-describedby={showAttendeeBadge ? attendeeDescriptionId : undefined}
       aria-label={accessibleLabel}
       data-edge-focus={focusedEdge ?? undefined}
       ref={ref}
@@ -197,6 +212,14 @@ const AllDayEventCardBase = (
           {event.title}
           {"\u00A0"}
         </span>
+        {showAttendeeBadge && (
+          <AttendeeBadge
+            attendees={event.attendees}
+            baseColor={bgColor}
+            className="ml-1"
+            descriptionId={attendeeDescriptionId}
+          />
+        )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Resize handles are pointer-only drag targets hidden from assistive tech. */}

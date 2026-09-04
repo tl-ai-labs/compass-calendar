@@ -15,6 +15,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import "@testing-library/jest-dom";
 
 import { AllDayEventCard } from "./AllDayEventCard";
+import { ATTENDEE_BADGE_ATTRIBUTE } from "./AttendeeBadge";
 import { TimedEventCard } from "./TimedEventCard";
 
 const createEvent = (overrides: Partial<GridEvent> = {}): GridEvent =>
@@ -571,5 +572,720 @@ describe("EventCard", () => {
     expect(card).toHaveAttribute("data-edge-focus", "endDate");
     expect(card.style.boxShadow).toContain("3px 0 0 0 #3b82f6");
     expect(card.className).not.toContain("ring-accent");
+  });
+
+  const attendee = (
+    email: string,
+    responseStatus: "accepted" | "declined" | "needsAction" | "tentative",
+    displayName: string | null = null,
+  ) => ({ displayName, email, responseStatus });
+
+  const futureEvent = (overrides: Partial<GridEvent> = {}) =>
+    createEvent({
+      startDate: "2099-01-15T09:00:00.000Z",
+      endDate: "2099-01-15T10:00:00.000Z",
+      ...overrides,
+    });
+
+  const badgeDescriptionOf = (card: HTMLElement) => {
+    const id = card.getAttribute("aria-describedby");
+    return id === null
+      ? null
+      : (document.getElementById(id)?.textContent ?? null);
+  };
+
+  const badgePosition = { ...position, width: 190 };
+
+  // Precondition for every timed case that is supposed to have a badge on the
+  // card. The shared `position` is 140px wide, and a timed card showing a time
+  // label suppresses the badge below 170px (D-7), so a case that renders at
+  // `position` and then asserts something *about* the badge is asserting it
+  // against a card that has none - it would pass with AttendeeBadge deleted.
+  // Calling this first makes that failure loud instead of silent.
+  const expectBadge = (card: HTMLElement) => {
+    const badge = card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`);
+    expect(badge).not.toBeNull();
+    return badge;
+  };
+
+  it("C-1: timed card, 1 accepted attendee, position (140x60)", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).not.toBeNull();
+  });
+
+  it("C-2: all-day card, 1 accepted attendee", () => {
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "All-day event: Conference",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).not.toBeNull();
+  });
+
+  it("C-3: timed card, 2 accepted + 1 needsAction", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [
+            attendee("a@example.com", "accepted"),
+            attendee("b@example.com", "accepted"),
+            attendee("c@example.com", "needsAction"),
+          ],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    expect(badgeDescriptionOf(card)).toBe(
+      "3 guests: 2 accepted, 1 hasn't responded",
+    );
+  });
+
+  it("C-4: card name unchanged with a badge present", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    expectBadge(card);
+    expect(card).toBeInTheDocument();
+    expect(card.getAttribute("aria-label")).toBe(
+      "Timed event: Planning block, 9 - 10 AM",
+    );
+  });
+
+  it("C-5: all-day name unchanged with a badge present", () => {
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "All-day event: Conference",
+    });
+    expect(card).toBeInTheDocument();
+    expect(card.getAttribute("aria-label")).toBe("All-day event: Conference");
+  });
+
+  it("C-6: timed attendees: undefined and attendees: []", () => {
+    const { unmount } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees: undefined })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    let card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+    expect(card).not.toHaveAttribute("aria-describedby");
+
+    unmount();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees: [] })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+    expect(card).not.toHaveAttribute("aria-describedby");
+  });
+
+  it("C-7: all-day attendees: undefined and []", () => {
+    const { unmount } = render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: undefined,
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    let card = screen.getByRole("button", {
+      name: "All-day event: Conference",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+    expect(card).not.toHaveAttribute("aria-describedby");
+
+    unmount();
+
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    card = screen.getByRole("button", {
+      name: "All-day event: Conference",
+    });
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+    expect(card).not.toHaveAttribute("aria-describedby");
+  });
+
+  it("C-8: resize handles survive a badge on timed card", () => {
+    const onScalerMouseDown = mock();
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        onScalerMouseDown={onScalerMouseDown}
+        position={badgePosition}
+      />,
+    );
+
+    expectBadge(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    );
+
+    const handles = document.querySelectorAll(
+      "[data-calendar-event-resize-handle]",
+    );
+    expect(handles).toHaveLength(2);
+
+    fireEvent.mouseDown(handles[0]);
+    fireEvent.mouseDown(handles[1]);
+
+    expect(onScalerMouseDown).toHaveBeenCalledTimes(2);
+    expect(onScalerMouseDown.mock.calls[0]?.[2]).toBe("startDate");
+    expect(onScalerMouseDown.mock.calls[1]?.[2]).toBe("endDate");
+  });
+
+  it("C-9: all-day resize handles survive a badge", () => {
+    const onScalerMouseDown = mock();
+
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        isPlaceholder={false}
+        onScalerMouseDown={onScalerMouseDown}
+        position={position}
+      />,
+    );
+
+    const handles = document.querySelectorAll(
+      "[data-calendar-event-resize-handle]",
+    );
+    expect(handles).toHaveLength(2);
+    expect(handles[0]).toHaveAttribute(
+      "data-calendar-event-resize-handle",
+      "startDate",
+    );
+    expect(handles[1]).toHaveAttribute(
+      "data-calendar-event-resize-handle",
+      "endDate",
+    );
+
+    fireEvent.mouseDown(handles[0]);
+    fireEvent.mouseDown(handles[1]);
+
+    expect(onScalerMouseDown).toHaveBeenCalledTimes(2);
+    expect(onScalerMouseDown.mock.calls[0]?.[2]).toBe("startDate");
+    expect(onScalerMouseDown.mock.calls[1]?.[2]).toBe("endDate");
+  });
+
+  it("C-10: no email in card DOM", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [
+            attendee("secret@example.com", "accepted", "Ada Lovelace"),
+          ],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    // Without this precondition the two assertions below hold trivially on a
+    // card that renders no badge at all - i.e. they would still pass with the
+    // whole feature deleted. This is the only card-level PII guard, so it has
+    // to be provably live.
+    expectBadge(card);
+    expect(card.outerHTML).not.toContain("secret@example.com");
+    expect(card.outerHTML).not.toContain("Ada Lovelace");
+  });
+
+  it("C-11: badge does not displace the repeat icon", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          recurrence: { eventId: "series-1", rule: ["RRULE:FREQ=WEEKLY"] },
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const repeatIcon = container.querySelector('svg[class*="right-1"]');
+    expect(repeatIcon).not.toBeNull();
+
+    const badge = container.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`);
+    expect(badge).not.toBeNull();
+    expect(badge?.getAttribute("class")).toContain("right-4");
+  });
+
+  it("C-12: compact timed card suppresses the badge", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={{ ...position, height: COMPACT_EVENT_MAX_HEIGHT }}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+    expect(card).not.toHaveAttribute("aria-describedby");
+  });
+
+  it("C-13: narrow card suppresses the badge", () => {
+    const { unmount } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={{ ...position, width: 90 }}
+      />,
+    );
+
+    let card = screen.getByRole("button");
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+
+    unmount();
+
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        isPlaceholder={false}
+        position={{ ...position, width: 90 }}
+      />,
+    );
+
+    card = screen.getByRole("button");
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+  });
+
+  it("C-14: frozen attendees on a card", () => {
+    const attendees = Object.freeze([
+      attendee("alice@example.com", "accepted"),
+      attendee("bob@example.com", "declined"),
+    ]);
+
+    const { unmount } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    // badgePosition, not position: at 140 the badge is suppressed and the
+    // frozen array never reaches AttendeeBadge's slice(), so the freeze would
+    // not actually be exercised.
+    expectBadge(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    );
+    expect(
+      screen.getByRole("button", {
+        name: "Timed event: Planning block, 9 - 10 AM",
+      }),
+    ).toBeInTheDocument();
+
+    unmount();
+
+    render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees,
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "All-day event: Conference",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("C-15: overflow cap on a card", () => {
+    const attendees = [
+      ...Array.from({ length: 7 }, (_, i) =>
+        attendee(`accepted${i}@example.com`, "accepted"),
+      ),
+      ...Array.from({ length: 5 }, (_, i) =>
+        attendee(`needs${i}@example.com`, "needsAction"),
+      ),
+    ];
+
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    const dots = card.querySelectorAll('[class*="rounded-full"]');
+    expect(dots).toHaveLength(3);
+    expect(screen.getByText("+9")).toBeInTheDocument();
+    expect(badgeDescriptionOf(card)).toBe(
+      "12 guests: 7 accepted, 5 hasn't responded",
+    );
+  });
+
+  it("C-16: byte-identity guard, timed", () => {
+    // 1. Renders the card with no attendees key at all, captures container.innerHTML as baseline, and unmount()s.
+    const { container: baselineContainer, unmount: unmount1 } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent()}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+    const baseline = baselineContainer.innerHTML;
+    // 4. Asserts the no-attendee card root's attribute-name set is exactly ["aria-label", "class", "role", "style", "tabindex"] (sorted).
+    const card = baselineContainer.querySelector(
+      '[role="button"]',
+    ) as HTMLElement;
+    expect(card.getAttributeNames().sort()).toEqual([
+      "aria-label",
+      "class",
+      "role",
+      "style",
+      "tabindex",
+    ]);
+    // 5. Asserts the content wrapper's class attribute is exactly the pre-change string — "flex flex-col flex-wrap items-start".
+    const contentWrapper = baselineContainer.querySelector(
+      "[data-calendar-event-content]",
+    );
+    expect(contentWrapper?.getAttribute("class")).toBe(
+      "flex flex-col flex-wrap items-start",
+    );
+    // 6. Asserts baseline does not contain the substrings data-attendee-badge, aria-describedby or sr-only.
+    expect(baseline).not.toContain("data-attendee-badge");
+    expect(baseline).not.toContain("aria-describedby");
+    expect(baseline).not.toContain("sr-only");
+    unmount1();
+
+    // 2. Renders the same card with attendees: undefined, asserts container.innerHTML === baseline, unmounts.
+    const { container: undefinedContainer, unmount: unmount2 } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees: undefined })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+    expect(undefinedContainer.innerHTML).toBe(baseline);
+    unmount2();
+
+    // 3. Renders the same card with attendees: [], asserts container.innerHTML === baseline, unmounts.
+    const { container: emptyContainer, unmount: unmount3 } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({ attendees: [] })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+    expect(emptyContainer.innerHTML).toBe(baseline);
+    unmount3();
+
+    // 7. Sensitivity control: renders the same card with one attendee and asserts container.innerHTML !== baseline.
+    const { container: attendeeContainer, unmount: unmount4 } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={badgePosition}
+      />,
+    );
+    expect(attendeeContainer.innerHTML).not.toBe(baseline);
+    unmount4();
+  });
+
+  it("C-17: byte-identity guard, all-day", () => {
+    // 1. Renders the card with no attendees key at all, captures container.innerHTML as baseline, and unmount()s.
+    const { container: baselineContainer, unmount: unmount1 } = render(
+      <AllDayEventCard
+        event={futureEvent({ isAllDay: true, title: "Conference" })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    const baseline = baselineContainer.innerHTML;
+    // 4. Asserts the no-attendee card root's attribute-name set is exactly ["aria-label", "class", "role", "style", "tabindex"] (sorted).
+    const card = baselineContainer.querySelector(
+      '[role="button"]',
+    ) as HTMLElement;
+    expect(card.getAttributeNames().sort()).toEqual([
+      "aria-label",
+      "class",
+      "role",
+      "style",
+      "tabindex",
+    ]);
+    // 5. Asserts the content wrapper's class attribute is exactly the pre-change string — "flex min-w-0 items-center".
+    const contentWrapper = card.querySelector(".min-w-0");
+    expect(contentWrapper?.getAttribute("class")).toBe(
+      "flex min-w-0 items-center",
+    );
+    // 6. Asserts baseline does not contain the substrings data-attendee-badge, aria-describedby or sr-only.
+    expect(baseline).not.toContain("data-attendee-badge");
+    expect(baseline).not.toContain("aria-describedby");
+    expect(baseline).not.toContain("sr-only");
+    unmount1();
+
+    // 2. Renders the same card with attendees: undefined, asserts container.innerHTML === baseline, unmounts.
+    const { container: undefinedContainer, unmount: unmount2 } = render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: undefined,
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(undefinedContainer.innerHTML).toBe(baseline);
+    unmount2();
+
+    // 3. Renders the same card with attendees: [], asserts container.innerHTML === baseline, unmounts.
+    const { container: emptyContainer, unmount: unmount3 } = render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(emptyContainer.innerHTML).toBe(baseline);
+    unmount3();
+
+    // 7. Sensitivity control: renders the same card with one attendee and asserts container.innerHTML !== baseline.
+    const { container: attendeeContainer, unmount: unmount4 } = render(
+      <AllDayEventCard
+        event={futureEvent({
+          isAllDay: true,
+          title: "Conference",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        isPlaceholder={false}
+        position={position}
+      />,
+    );
+    expect(attendeeContainer.innerHTML).not.toBe(baseline);
+    unmount4();
+  });
+
+  it("C-18: time-label regression band — badge yields (D-7)", () => {
+    const { container } = render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          startDate: "2099-01-15T11:30:00.000Z",
+          endDate: "2099-01-15T12:45:00.000Z",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        // 145 is inside the suppression band: at or above the 140 floor, below
+        // the 150 label gate. Was 150 before R-6 lowered the gate from 170;
+        // at exactly 150 the badge now shows, which would have inverted this
+        // case rather than failing it.
+        position={{ ...position, width: 145, height: 60 }}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    // (a) card.querySelector("[data-attendee-badge]") is null
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).toBeNull();
+
+    // (b) the time label element [data-calendar-event-time-label] is present and its textContent is the full "11:30 AM - 12:45 PM"
+    const timeLabel = card.querySelector("[data-calendar-event-time-label]");
+    expect(timeLabel).not.toBeNull();
+    expect(timeLabel?.textContent).toBe("11:30 AM - 12:45 PM");
+
+    // (c) the content wrapper's class attribute is exactly "flex flex-col flex-wrap items-start" — i.e. neither pr-10 nor pr-14 was applied
+    const contentWrapper = container.querySelector(
+      "[data-calendar-event-content]",
+    );
+    expect(contentWrapper?.getAttribute("class")).toBe(
+      "flex flex-col flex-wrap items-start",
+    );
+  });
+
+  it("C-19: above the threshold they coexist (D-7)", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          startDate: "2099-01-15T11:30:00.000Z",
+          endDate: "2099-01-15T12:45:00.000Z",
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={{ ...position, width: 170, height: 60 }}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).not.toBeNull();
+    const timeLabel = card.querySelector("[data-calendar-event-time-label]");
+    expect(timeLabel).not.toBeNull();
+    expect(timeLabel?.textContent).toBe("11:30 AM - 12:45 PM");
+  });
+
+  it("C-20: the gate is a conjunction, not a raised floor (D-7)", () => {
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        // 145 (inside the 140-149 suppression band) with height 30, which is
+        // below MIN_EVENT_HEIGHT_FOR_TIME_LABEL (36) so no label renders. The
+        // badge must still show: the gate is a conjunction with showTimeLabel,
+        // not a raised floor. Was 150 before R-6; at 150 the gate no longer
+        // binds at all, so this case would have proved nothing.
+        position={{ ...position, width: 145, height: 30 }}
+      />,
+    );
+
+    const card = screen.getByRole("button");
+    expect(card.querySelector(`[${ATTENDEE_BADGE_ATTRIBUTE}]`)).not.toBeNull();
+  });
+
+  it("C-21: badge shows on a real Week column width with a time label (R-6)", () => {
+    // The regression R-6 was actually about. computeVisibleDayCount pins the
+    // Week column width to the 140-170 band, so a 1440px laptop with a sidebar
+    // lands near 163px. Under the old 170 gate a >=36px-tall future timed event
+    // showed no badge there, while a 30-minute event in the same column did.
+    render(
+      <TimedEventCard
+        displayMode="saved"
+        event={futureEvent({
+          attendees: [attendee("alice@example.com", "accepted")],
+        })}
+        motionMode="idle"
+        position={{ ...position, width: 163, height: 60 }}
+      />,
+    );
+
+    const card = screen.getByRole("button", {
+      name: "Timed event: Planning block, 9 - 10 AM",
+    });
+    // The time label is showing, so this is the conjunction's binding branch.
+    expect(
+      card.querySelector("[data-calendar-event-time-label]"),
+    ).not.toBeNull();
+    expectBadge(card);
   });
 });

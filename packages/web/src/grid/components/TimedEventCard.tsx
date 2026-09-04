@@ -5,6 +5,7 @@ import {
   forwardRef,
   type KeyboardEvent,
   type MouseEvent,
+  useId,
   useMemo,
 } from "react";
 import dayjs from "@core/util/date/dayjs";
@@ -46,6 +47,12 @@ import {
   useEdgeFocusStore,
 } from "@web/grid/shortcuts/edge-focus.store";
 import { type EventPosition } from "@web/grid/types/grid.types";
+import {
+  AttendeeBadge,
+  hasAttendeesToShow,
+  MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE,
+  MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL,
+} from "./AttendeeBadge";
 import { EventRepeatIcon } from "./EventRepeatIcon";
 
 // Gate the repeat indicator on the event's duration, not its rendered pixel
@@ -205,6 +212,32 @@ const TimedEventCardBase = (
 
   const isCompactEvent = position.height <= COMPACT_EVENT_MAX_HEIGHT;
 
+  const attendeeDescriptionId = useId();
+  // The badge YIELDS TO THE TIME LABEL. The label is nowrap and the card is
+  // overflow-hidden, so the badge's 40-56px reserve would clip a long range
+  // like "11:30 AM - 12:45 PM" on a card that renders it fine today. Below
+  // MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL the badge is dropped entirely -
+  // which, because the pr-10/pr-14 reserve is keyed off this same flag, also
+  // means the reserve is not applied and the content column keeps its full
+  // width. Suppressing the dots while still reserving the space would shrink
+  // the column for nothing and fix nothing.
+  //
+  // The gate is a CONJUNCTION, not a raised floor: it binds only when the time
+  // label is actually showing. A short card with no time label (height < 36)
+  // still shows the badge from 140px up.
+  //
+  // Also suppressed on compact cards for the same reason the time label is: at
+  // <= 15px the title is already a single cramped 10px line. On any suppressed
+  // card the attendee list is still one click away in the event form - the grid
+  // card is a summary surface.
+  const showAttendeeBadge =
+    !isPlaceholder &&
+    !isCompactEvent &&
+    position.width >= MIN_EVENT_WIDTH_FOR_ATTENDEE_BADGE &&
+    (!showTimeLabel ||
+      position.width >= MIN_EVENT_WIDTH_FOR_BADGE_WITH_TIME_LABEL) &&
+    hasAttendeesToShow(event.attendees);
+
   const titleStyle: CSSProperties = {
     fontSize: isCompactEvent
       ? GRID_EVENT_TITLE_COMPACT_FONT_SIZE
@@ -271,6 +304,7 @@ const TimedEventCardBase = (
     // biome-ignore lint/a11y/useSemanticElements: Grid events are draggable/resizable blocks, not native buttons.
     <div
       {...interactionAttributes}
+      aria-describedby={showAttendeeBadge ? attendeeDescriptionId : undefined}
       aria-label={accessibleLabel}
       data-edge-focus={focusedEdge ?? undefined}
       ref={ref}
@@ -319,7 +353,10 @@ const TimedEventCardBase = (
         />
       )}
       <div
-        className="flex flex-col flex-wrap items-start"
+        className={cn("flex flex-col flex-wrap items-start", {
+          "pr-10": showAttendeeBadge && !showRepeatIcon,
+          "pr-14": showAttendeeBadge && showRepeatIcon,
+        })}
         style={{ color: contentColor }}
         {...{ [EVENT_CONTENT_ATTRIBUTE]: "true" }}
       >
@@ -361,6 +398,17 @@ const TimedEventCardBase = (
         )}
       </div>
       {showRepeatIcon && <EventRepeatIcon baseColor={bgColor} />}
+      {showAttendeeBadge && (
+        <AttendeeBadge
+          attendees={event.attendees}
+          baseColor={bgColor}
+          className={cn(
+            "absolute bottom-0.5",
+            showRepeatIcon ? "right-4" : "right-1",
+          )}
+          descriptionId={attendeeDescriptionId}
+        />
+      )}
     </div>
   );
 };
