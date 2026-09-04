@@ -11,8 +11,8 @@ export const DAY_INTERACTION_EVENT_ID_ATTRIBUTE = day.idAttribute;
 export const DAY_INTERACTION_EVENT_TYPE_ATTRIBUTE = day.typeAttribute;
 
 export type DayInteractionEventType = ViewInteractionEventType;
-export type DayRegisteredEventTarget = ViewRegisteredEventTarget;
-export type DayEventRegistry = ViewEventRegistry;
+export type DayRegisteredEventTarget = ViewRegisteredEventTarget<"day">;
+export type DayEventRegistry = ViewEventRegistry<"day">;
 
 export const getDayInteractionTargetAttributes =
   day.getInteractionTargetAttributes;

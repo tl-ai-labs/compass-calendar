@@ -11,7 +11,7 @@ import { type VisualRect } from "../types/timed-drag.types";
  * next column is whichever is nearest to the source center shifted by the
  * pointer's horizontal delta.
  */
-export const resolveDragColumn = ({
+export const resolveDragColumn = <TKey extends string>({
   deltaX,
   initialDayIndex,
   layout,
@@ -19,7 +19,7 @@ export const resolveDragColumn = ({
 }: {
   deltaX: number;
   initialDayIndex: number;
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TKey>;
   sourceRect: VisualRect;
 }) => {
   const initialColumn = layout.dayColumns.find(

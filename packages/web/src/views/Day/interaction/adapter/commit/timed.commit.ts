@@ -5,6 +5,7 @@ import {
   hasTimedDragVisualMoved,
   hasTimedResizeVisualMoved,
 } from "@web/grid/interaction/commit/timed-moved";
+import { type CalendarColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
 import { type TimedResizeVisual } from "@web/grid/interaction/types/timed-resize.types";
 import {
@@ -16,7 +17,7 @@ import {
 
 export const commitTimedDragInteraction = (
   target: DayTimedDragTarget,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<CalendarColumnKey>,
   visibleDate: Dayjs,
 ): DayTimedDragCommitResult => {
   const hasMoved = hasTimedDragVisualMoved(visual);
@@ -52,7 +53,7 @@ export const commitTimedResizeInteraction = (
 
 export const timedDragVisualToDayGridEvent = (
   event: GridEvent,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<CalendarColumnKey>,
   visibleDate: Dayjs,
 ): GridEvent => ({
   ...event,
@@ -75,12 +76,31 @@ export const timedDragVisualToDayGridEvent = (
  * keep the event's own calendarId.
  */
 export const columnMoveCalendarId = (
-  visual: Pick<TimedDragVisual, "dayDate" | "initialDayDate">,
+  visual: Pick<
+    TimedDragVisual<CalendarColumnKey>,
+    "dayDate" | "initialDayDate"
+  >,
   event: GridEvent,
 ): CalendarId | undefined =>
   visual.dayDate !== visual.initialDayDate
-    ? (visual.dayDate as CalendarId)
+    ? columnKeyAsCalendarId(visual.dayDate)
     : event.calendarId;
+
+/**
+ * The one deliberate crossing from a Day column key to a calendar id.
+ *
+ * Reached only when `dayDate !== initialDayDate`, which by the comment above is
+ * unreachable in the single-column fallback (that array holds one key and it
+ * never changes). So at this point the key is provably a rendered calendar
+ * column's id rather than the fallback date.
+ *
+ * `as unknown as` is required because `CalendarColumnKey` and `CalendarId` are
+ * disjoint brands. The double cast is the signal that this is a deliberate,
+ * reasoned crossing — which is the improvement over the bare `as CalendarId`
+ * this replaced, where nothing marked it as load-bearing.
+ */
+const columnKeyAsCalendarId = (key: CalendarColumnKey): CalendarId =>
+  key as unknown as CalendarId;
 
 export const timedResizeVisualToDayGridEvent = (
   event: GridEvent,

@@ -1,25 +1,34 @@
-import { type GridEvent } from "@web/common/types/web.event.types";
+import {
+  type ViewAllDayDragCommitResult,
+  type ViewAllDayDragTarget,
+  type ViewAllDayResizeCommitResult,
+  type ViewAllDayResizeTarget,
+  type ViewInteractionAdapter,
+  type ViewInteractionCommitResult,
+  type ViewInteractionPointerOwnership,
+  type ViewInteractionRuntime,
+  type ViewInteractionTarget,
+  type ViewInteractionVisual,
+  type ViewResolvedEventTarget,
+  type ViewTimedDragCommitResult,
+  type ViewTimedDragTarget,
+  type ViewTimedResizeCommitResult,
+  type ViewTimedResizeTarget,
+} from "@web/grid/interaction/adapter/view-interaction.adapter.types";
 import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
-import {
-  type AllDayResizeEdge,
-  type AllDayResizeVisual,
-} from "@web/grid/interaction/types/all-day-resize.types";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type TimedDragVisual } from "@web/grid/interaction/types/timed-drag.types";
-import {
-  type TimedResizeEdge,
-  type TimedResizeVisual,
-} from "@web/grid/interaction/types/timed-resize.types";
-import {
-  type InteractionCancellationTargets,
-  type InteractionEngineSchedulerOptions,
-} from "@web/interaction/interaction.engine";
+import { type InteractionEngineSchedulerOptions } from "@web/interaction/interaction.engine";
 import { type WeekRegisteredEventTarget } from "../registry/week-event.registry";
 import { type WeekLayoutCacheSources } from "./geometry/week-layout.cache";
 
-export interface WeekInteractionPointerOwnership {
-  reason: string;
-  shouldOwn: boolean;
-}
+/**
+ * Week's adapter boundary: the shared `View*` types instantiated with Week's
+ * branded registered target and its `DateColumnKey` columns, plus the members
+ * that exist only in this view.
+ */
+
+export type WeekInteractionPointerOwnership = ViewInteractionPointerOwnership;
 
 export interface WeekInteractionAdapterOptions {
   engineOptions?: InteractionEngineSchedulerOptions;
@@ -27,123 +36,55 @@ export interface WeekInteractionAdapterOptions {
   runtime?: () => WeekInteractionRuntime;
 }
 
-export interface WeekInteractionRuntime {
-  getAllDayEventById?: (eventId: string) => GridEvent | null;
-  getTimedEventById(eventId: string): GridEvent | null;
+/**
+ * Week-only runtime members live here, not on `ViewInteractionRuntime`: the
+ * week window's visible dates and its mid-drag week navigation have no Day
+ * counterpart.
+ */
+export interface WeekInteractionRuntime
+  extends ViewInteractionRuntime<WeekRegisteredEventTarget> {
   /**
    * Local YYYY-MM-DD dates of the rendered day columns, in window order.
    * Sourced from the same React render that painted the columns so drag
    * geometry and drop dates always agree with what is on screen.
    */
   getVisibleDays(): string[];
-  isFormOpen?: () => boolean;
-  onClickAllDayEvent?: (event: GridEvent) => void;
-  onClickTimedEvent: (event: GridEvent) => void;
-  onCommitAllDayDrag?: (result: WeekAllDayDragCommitResult) => void;
-  onCommitAllDayResize?: (result: WeekAllDayResizeCommitResult) => void;
-  onCommitTimedDrag: (result: WeekTimedDragCommitResult) => void;
-  onCommitTimedResize?: (result: WeekTimedResizeCommitResult) => void;
-  onMotionActivation?: (target: WeekInteractionTarget) => void;
   onRequestWeekNavigation?: (direction: "next" | "prev") => void;
 }
 
-export interface WeekAllDayDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayDragEnd";
-}
+export type WeekAllDayDragCommitResult = ViewAllDayDragCommitResult;
+export type WeekAllDayResizeCommitResult = ViewAllDayResizeCommitResult;
+export type WeekTimedDragCommitResult = ViewTimedDragCommitResult;
+export type WeekTimedResizeCommitResult = ViewTimedResizeCommitResult;
 
-export interface WeekAllDayDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: WeekRegisteredEventTarget;
-  type: "allDayDrag";
-}
-
-export interface WeekAllDayResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "allDayResizeEnd";
-}
-
-export interface WeekAllDayResizeTarget {
-  edge: AllDayResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: WeekRegisteredEventTarget;
-  type: "allDayResize";
-}
-
-export interface WeekTimedDragCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedDragEnd";
-}
-
-export interface WeekTimedDragTarget {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: WeekRegisteredEventTarget;
-  type: "timedDrag";
-}
-
-export interface WeekTimedResizeCommitResult {
-  event: GridEvent;
-  eventId: string;
-  hadFormOpenBeforeInteraction: boolean;
-  hasMoved: boolean;
-  type: "timedResizeEnd";
-}
-
-export interface WeekTimedResizeTarget {
-  edge: TimedResizeEdge;
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: WeekRegisteredEventTarget;
-  type: "timedResize";
-}
+export type WeekAllDayDragTarget =
+  ViewAllDayDragTarget<WeekRegisteredEventTarget>;
+export type WeekAllDayResizeTarget =
+  ViewAllDayResizeTarget<WeekRegisteredEventTarget>;
+export type WeekTimedDragTarget =
+  ViewTimedDragTarget<WeekRegisteredEventTarget>;
+export type WeekTimedResizeTarget =
+  ViewTimedResizeTarget<WeekRegisteredEventTarget>;
 
 export type WeekInteractionTarget =
-  | WeekAllDayDragTarget
-  | WeekAllDayResizeTarget
-  | WeekTimedDragTarget
-  | WeekTimedResizeTarget;
+  ViewInteractionTarget<WeekRegisteredEventTarget>;
 
-export type WeekInteractionVisual =
-  | AllDayDragVisual
-  | AllDayResizeVisual
-  | TimedDragVisual
-  | TimedResizeVisual;
+export type WeekInteractionVisual = ViewInteractionVisual<DateColumnKey>;
 
-export type WeekInteractionCommitResult =
-  | WeekAllDayDragCommitResult
-  | WeekAllDayResizeCommitResult
-  | WeekTimedDragCommitResult
-  | WeekTimedResizeCommitResult;
+export type WeekInteractionCommitResult = ViewInteractionCommitResult;
 
-export type WeekEdgeNavigableVisual = AllDayDragVisual | TimedDragVisual;
+/** Week-only: Day has no all-day <-> timed conversion and no edge navigation. */
+export type WeekEdgeNavigableVisual =
+  | AllDayDragVisual<DateColumnKey>
+  | TimedDragVisual<DateColumnKey>;
 
-export type WeekResolvedEventTarget = {
-  event: GridEvent;
-  hadFormOpenBeforeInteraction: boolean;
-  registered: WeekRegisteredEventTarget;
-};
+export type WeekResolvedEventTarget =
+  ViewResolvedEventTarget<WeekRegisteredEventTarget>;
 
-export interface WeekInteractionAdapter {
-  cancel(): void;
-  connectCancellationEvents(
-    targets?: InteractionCancellationTargets,
-  ): () => void;
-  handlePointerCancel(event: PointerEvent): boolean;
-  handlePointerDown(event: PointerEvent): WeekInteractionPointerOwnership;
-  handlePointerMove(event: PointerEvent): boolean;
-  handlePointerUp(event: PointerEvent): boolean;
-  ownsPointer(event: Pick<PointerEvent, "pointerId">): boolean;
+/**
+ * Week-only: `rebuildLayoutAfterNavigation` exists because the week window can
+ * navigate mid-drag. Day cannot, so it is not on the shared adapter interface.
+ */
+export interface WeekInteractionAdapter extends ViewInteractionAdapter {
   rebuildLayoutAfterNavigation(): void;
 }

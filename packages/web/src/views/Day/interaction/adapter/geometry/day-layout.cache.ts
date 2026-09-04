@@ -14,6 +14,7 @@ import {
   type GridLayoutCache,
   type GridLayoutCacheSources,
 } from "@web/grid/interaction/layout.cache";
+import { type CalendarColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { INTERACTION_EDGE_THRESHOLD_PX } from "@web/interaction/interaction.constants";
 import {
   type DayAllDayDragTarget,
@@ -22,12 +23,25 @@ import {
   type DayTimedDragTarget,
 } from "../day-interaction.adapter.types";
 
-export type DayLayoutCache = GridLayoutCache;
+export type DayLayoutCache = GridLayoutCache<CalendarColumnKey>;
 export type DayLayoutCacheSources = GridLayoutCacheSources;
+
+/**
+ * The one place Day column keys enter the branded world.
+ *
+ * Keys arrive as a bare `string[]`: normally the rendered calendar ids from
+ * `DayInteractionAdapterOptions.getColumnKeys()` (a frozen signature owned
+ * outside this layer), and in the single-column fallback one locally-built
+ * `YYYY-MM-DD` date. `CalendarColumnKey` covers both on purpose — it brands the
+ * column-key *role*, not the value format, which is why it is deliberately not
+ * `CalendarId`.
+ */
+export const asDayColumnKeys = (keys: string[]): CalendarColumnKey[] =>
+  keys as CalendarColumnKey[];
 
 export const buildDayTimedLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: CalendarColumnKey[],
 ) =>
   buildTimedGridLayoutCache({
     ...sources,
@@ -45,7 +59,7 @@ export const buildDayTimedLayoutCache = (
 
 export const buildDayAllDayLayoutCache = (
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: CalendarColumnKey[],
 ) =>
   buildAllDayGridLayoutCache({
     ...sources,
@@ -64,7 +78,7 @@ const isAllDayTarget = (
 export const buildDayLayoutCacheForTarget = (
   target: DayInteractionTarget,
   sources: GridLayoutCacheSources,
-  visibleDates: string[],
+  visibleDates: CalendarColumnKey[],
 ) =>
   isAllDayTarget(target)
     ? buildDayAllDayLayoutCache(sources, visibleDates)

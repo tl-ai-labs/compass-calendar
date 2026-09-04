@@ -6,6 +6,7 @@ import {
   createTimedDragVisual,
   updateTimedDragVisual,
 } from "@web/grid/interaction/math/timed.drag";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import {
   type TimedDragVisual,
   type VisualPoint,
@@ -71,7 +72,7 @@ export const updateTimedDragInteractionVisual = ({
   pointer: VisualPoint;
   scrollDeltaPx: number;
   target: WeekTimedDragTarget;
-  visual: TimedDragVisual;
+  visual: TimedDragVisual<DateColumnKey>;
 }) => {
   const nextVisual = updateTimedDragVisual(visual, {
     layout,
@@ -92,7 +93,7 @@ export const updateTimedDragInteractionVisual = ({
 
 export const commitTimedDragInteraction = (
   target: WeekTimedDragTarget,
-  visual: TimedDragVisual,
+  visual: TimedDragVisual<DateColumnKey>,
 ): WeekTimedDragCommitResult => {
   // A drop in the all-day row is always a change, even onto the same day: the
   // event loses its time of day.

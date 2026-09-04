@@ -3,13 +3,15 @@ import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { type AllDayDragVisual } from "@web/grid/interaction/types/all-day-drag.types";
 import { type AllDayResizeVisual } from "@web/grid/interaction/types/all-day-resize.types";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 
-export const hasAllDayDragVisualMoved = (visual: AllDayDragVisual) =>
-  visual.dayDate !== visual.initialDayDate;
+export const hasAllDayDragVisualMoved = (
+  visual: AllDayDragVisual<DateColumnKey>,
+) => visual.dayDate !== visual.initialDayDate;
 
 export const allDayDragVisualToGridEvent = (
   event: GridEvent,
-  visual: AllDayDragVisual,
+  visual: AllDayDragVisual<DateColumnKey>,
 ): GridEvent => {
   // Delta (not absolute) semantics: multi-day spans are clamped to the
   // rendered window, so the initial column date is the clamped visible start,

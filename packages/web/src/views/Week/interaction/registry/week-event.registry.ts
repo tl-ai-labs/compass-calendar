@@ -11,8 +11,8 @@ export const WEEK_INTERACTION_EVENT_ID_ATTRIBUTE = week.idAttribute;
 export const WEEK_INTERACTION_EVENT_TYPE_ATTRIBUTE = week.typeAttribute;
 
 export type WeekInteractionEventType = ViewInteractionEventType;
-export type WeekRegisteredEventTarget = ViewRegisteredEventTarget;
-export type WeekEventRegistry = ViewEventRegistry;
+export type WeekRegisteredEventTarget = ViewRegisteredEventTarget<"week">;
+export type WeekEventRegistry = ViewEventRegistry<"week">;
 
 export const getWeekInteractionTargetAttributes =
   week.getInteractionTargetAttributes;

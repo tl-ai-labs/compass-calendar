@@ -3,6 +3,7 @@ import { YEAR_MONTH_DAY_FORMAT } from "@core/constants/date.constants";
 import dayjs from "@core/util/date/dayjs";
 import { type GridEvent } from "@web/common/types/web.event.types";
 import { gridEventDefaultPosition } from "@web/common/utils/event/event.util";
+import { EVENT_RESIZE_HANDLE_ATTRIBUTE } from "@web/grid/interaction/dom";
 import { dayEventRegistry } from "../registry/day-event.registry";
 import {
   createDayInteractionAdapter,
@@ -660,6 +661,91 @@ describe("DayInteractionAdapter", () => {
         endDate: expect.stringContaining("13:00"),
         startDate: expect.stringContaining("09:00"),
       }),
+    });
+  });
+
+  // Covers the handle guard inside the timed DRAG probe, not probe ordering:
+  // the four probes are mutually exclusive, so no permutation of them changes
+  // this result. Deleting the guard would.
+  it("refuses a timed drag for a pointerdown that lands on a resize handle", () => {
+    const handle = createTimedResizeHandle("endDate");
+    const { adapter } = createAdapter();
+
+    const ownership = adapter.handlePointerDown(
+      makePointerEvent("pointerdown", { target: handle, x: 160, y: 160 }),
+    );
+
+    expect(ownership).toEqual({
+      reason: "saved-timed-resize",
+      shouldOwn: true,
+    });
+    expect(ownership.reason).not.toBe("saved-timed-drag");
+  });
+
+  // Same: covers the handle guard in the all-day DRAG probe.
+  it("refuses an all-day drag for a pointerdown that lands on a resize handle", () => {
+    const { source } = registerEvent(allDayEvent, "all-day");
+    const handle = document.createElement("span");
+
+    handle.setAttribute(EVENT_RESIZE_HANDLE_ATTRIBUTE, "endDate");
+    source.append(handle);
+
+    const { adapter } = createAdapter();
+
+    const ownership = adapter.handlePointerDown(
+      makePointerEvent("pointerdown", { target: handle, x: 40, y: 20 }),
+    );
+
+    expect(ownership).toEqual({
+      reason: "saved-all-day-resize",
+      shouldOwn: true,
+    });
+    expect(ownership.reason).not.toBe("saved-all-day-drag");
+  });
+
+  // Integration-level: a cancelled drag must not corrupt the next one. This
+  // does NOT prove clearLayoutState() runs - every gesture reseeds layout and
+  // scrollTop in createVisual before updateVisual can read them, so the clear
+  // is hygiene rather than a guard. The clear itself is pinned by the
+  // createViewLayoutScrollState unit test.
+  it("does not let a cancelled drag corrupt the next drag's commit", () => {
+    const result: { current?: DayTimedDragCommitResult } = {};
+    const { child } = registerEvent(timedEvent, "timed");
+    const { adapter, flushFrame, mainGridElement } = createAdapter({
+      onTimedDrag: (nextResult) => {
+        result.current = nextResult;
+      },
+    });
+
+    adapter.handlePointerDown(
+      makePointerEvent("pointerdown", { target: child, x: 160, y: 160 }),
+    );
+    adapter.handlePointerMove(
+      makePointerEvent("pointermove", { target: child, x: 160, y: 220 }),
+    );
+    flushFrame();
+
+    mainGridElement.scrollTop = 120;
+    adapter.cancel();
+
+    adapter.handlePointerDown(
+      makePointerEvent("pointerdown", { target: child, x: 160, y: 160 }),
+    );
+    adapter.handlePointerMove(
+      makePointerEvent("pointermove", { target: child, x: 160, y: 220 }),
+    );
+    flushFrame();
+    adapter.handlePointerUp(
+      makePointerEvent("pointerup", { target: child, x: 160, y: 220 }),
+    );
+
+    expect(result.current).toMatchObject({
+      event: expect.objectContaining({
+        endDate: expect.stringContaining("11:00"),
+        startDate: expect.stringContaining("10:00"),
+      }),
+      hasMoved: true,
+      type: "timedDragEnd",
     });
   });
 });

@@ -14,8 +14,8 @@ import { clamp, snapToStep } from "./snap";
 
 const MINUTES_PER_DAY = 24 * 60;
 
-interface CreateTimedDragVisualInput {
-  dayDate: string;
+interface CreateTimedDragVisualInput<TKey extends string> {
+  dayDate: TKey;
   dayIndex: number;
   endMinutes: number;
   eventId: string;
@@ -24,13 +24,13 @@ interface CreateTimedDragVisualInput {
   startMinutes: number;
 }
 
-interface UpdateTimedDragVisualInput {
-  layout: GridLayoutCache;
+interface UpdateTimedDragVisualInput<TKey extends string> {
+  layout: GridLayoutCache<TKey>;
   pointer: VisualPoint;
   scrollDeltaPx?: number;
 }
 
-export const createTimedDragVisual = ({
+export const createTimedDragVisual = <TKey extends string>({
   dayDate,
   dayIndex,
   endMinutes,
@@ -38,7 +38,7 @@ export const createTimedDragVisual = ({
   pointerStart,
   sourceRect,
   startMinutes,
-}: CreateTimedDragVisualInput): TimedDragVisual => ({
+}: CreateTimedDragVisualInput<TKey>): TimedDragVisual<TKey> => ({
   crossRowSize: null,
   dayDate,
   dayIndex,
@@ -57,10 +57,10 @@ export const createTimedDragVisual = ({
   type: "timedDrag",
 });
 
-export const updateTimedDragVisual = (
-  visual: TimedDragVisual,
-  { layout, pointer, scrollDeltaPx = 0 }: UpdateTimedDragVisualInput,
-): TimedDragVisual => {
+export const updateTimedDragVisual = <TKey extends string>(
+  visual: TimedDragVisual<TKey>,
+  { layout, pointer, scrollDeltaPx = 0 }: UpdateTimedDragVisualInput<TKey>,
+): TimedDragVisual<TKey> => {
   const { allDay, timed } = getDragRowLayouts(layout, "timed");
   const row = resolveDragRow({
     allDay,
@@ -124,16 +124,16 @@ export const updateTimedDragVisual = (
   };
 };
 
-const getBoundedVerticalPlacement = ({
+const getBoundedVerticalPlacement = <TKey extends string>({
   candidateStartMinutes,
   layout,
   scrollDeltaPx,
   visual,
 }: {
   candidateStartMinutes: number;
-  layout: GridLayoutCache;
+  layout: GridLayoutCache<TKey>;
   scrollDeltaPx: number;
-  visual: TimedDragVisual;
+  visual: TimedDragVisual<TKey>;
 }) => {
   const currentScrollTop = getCurrentScrollTop(layout, scrollDeltaPx);
   const visibleStartMinutes = currentScrollTop / layout.pixelsPerMinute;
@@ -191,5 +191,7 @@ const getBoundedVerticalPlacement = ({
   };
 };
 
-const getCurrentScrollTop = (layout: GridLayoutCache, scrollDeltaPx: number) =>
-  (layout.smartScroll?.initialScrollTop ?? 0) + scrollDeltaPx;
+const getCurrentScrollTop = (
+  layout: GridLayoutCache<string>,
+  scrollDeltaPx: number,
+) => (layout.smartScroll?.initialScrollTop ?? 0) + scrollDeltaPx;

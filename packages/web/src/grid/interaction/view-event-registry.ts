@@ -12,10 +12,46 @@ const isViewInteractionEventType = (
 ): value is ViewInteractionEventType =>
   value === "all-day" || value === "timed";
 
-export type ViewRegisteredEventTarget =
-  RegisteredEventTarget<ViewInteractionEventType>;
+declare const VIEW_BRAND: unique symbol;
 
-export type ViewEventRegistry = EventRegistry<ViewInteractionEventType>;
+/**
+ * A DOM node resolved by one view's interaction registry.
+ *
+ * The `TView` parameter is a **phantom** tag: it is never written, never read,
+ * and erases at compile time. It exists because Week and Day targets were
+ * previously bare aliases of one shared type, which meant a shared adapter
+ * method instantiated for Day would silently accept a Week target — the very
+ * cross-view mistake the shared layer is supposed to make impossible.
+ * `{[VIEW_BRAND]?: "week"}` is not assignable to `{[VIEW_BRAND]?: "day"}` in
+ * either direction, so that mistake is now a compile error.
+ *
+ * Note this is the *inverse* of an optional field that makes one view look
+ * capable of another's behaviour: it carries no behaviour at all, and its only
+ * effect is to keep the two views apart.
+ *
+ * The property is optional so the raw `createEventRegistry` output — a plain
+ * object that has no such key — stays assignable to both instantiations. That
+ * is the single widening point; see `getRegisteredTarget` in the shared
+ * target-resolution module for the one cast that uses it.
+ */
+export type ViewRegisteredEventTarget<TView extends string = string> =
+  RegisteredEventTarget<ViewInteractionEventType> & {
+    readonly [VIEW_BRAND]?: TView;
+  };
+
+/**
+ * A view's interaction registry, carrying the same phantom view tag as its
+ * registered targets.
+ *
+ * The tag exists so that a registry and a registered-target type cannot be
+ * paired across views. Without it `weekEventRegistry` and `dayEventRegistry`
+ * are the same type, and the shared adapter root would happily accept Day's
+ * registry while branding everything it resolves as Week.
+ */
+export type ViewEventRegistry<TView extends string = string> =
+  EventRegistry<ViewInteractionEventType> & {
+    readonly [VIEW_BRAND]?: TView;
+  };
 
 /**
  * The `data-${viewName}-interaction-event-*` attribute names alone, with no
@@ -71,11 +107,13 @@ export const readCalendarEventIdFromElement = (
  * resolves its own DOM nodes. Day and Week previously hand-rolled identical
  * copies of this wiring; this factory is the single source of it.
  */
-export const createViewInteractionRegistry = (viewName: string) => {
+export const createViewInteractionRegistry = <TView extends string>(
+  viewName: TView,
+) => {
   const { idAttribute, typeAttribute } =
     viewInteractionAttributeNames(viewName);
 
-  const createRegistry = (): ViewEventRegistry =>
+  const createRegistry = (): ViewEventRegistry<TView> =>
     createEventRegistry<ViewInteractionEventType>({
       eventIdAttribute: idAttribute,
       eventTypeAttribute: typeAttribute,

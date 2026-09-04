@@ -1,12 +1,28 @@
 import { type DragRow } from "./types/timed-drag.types";
 
+/**
+ * The column-key parameter below defaults to `string`, not to `AnyColumnKey`.
+ *
+ * `string` is what the view boundaries actually hand in — Week's
+ * `getVisibleDays(): string[]` and Day's `getColumnKeys(): string[]` are both
+ * frozen signatures owned outside this layer — so a `string` default lets an
+ * un-branded caller keep compiling and lets each refactor step land on its own.
+ * Branding happens at exactly one entry point per view, which is where the
+ * key type is named explicitly.
+ *
+ * The default is not the discriminant. `GridLayoutCache<DateColumnKey>` and
+ * `GridLayoutCache<CalendarColumnKey>` are mutually unassignable regardless of
+ * what the default is; the guard against a *bare*, accidentally-widened
+ * reference in shared code is the G-3 grep, not this default.
+ */
+
 export interface GridLayoutCacheSources {
   allDayColumnsElement?: HTMLElement | null;
   mainGridElement?: HTMLElement | null;
   timedColumnsElement?: HTMLElement | null;
 }
 
-export interface GridLayoutCacheOptions {
+export interface GridLayoutCacheOptions<TKey extends string = string> {
   allDayColumnsElementId?: string;
   edgeThresholdPx: number;
   mainGridElementId?: string;
@@ -17,13 +33,16 @@ export interface GridLayoutCacheOptions {
   };
   timedColumnsElementId?: string;
   timedVisibleHours: number;
-  /** Local YYYY-MM-DD dates of the rendered day columns, in window order. */
-  visibleDates: string[];
+  /**
+   * Keys of the rendered columns, in window order. Week passes local
+   * YYYY-MM-DD dates, Day passes calendar ids — see `ColumnKey`.
+   */
+  visibleDates: TKey[];
 }
 
-export interface DayColumnCache {
-  /** Local YYYY-MM-DD date this column renders. */
-  date: string;
+export interface DayColumnCache<TKey extends string = string> {
+  /** Key this column renders — a date in Week, a calendar id in Day. */
+  date: TKey;
   index: number;
   left: number;
   width: number;
@@ -47,28 +66,28 @@ export interface SmartScrollCache {
   top: number;
 }
 
-export interface GridLayoutCache {
+export interface GridLayoutCache<TKey extends string = string> {
   /**
    * The *other* row's geometry, so a drag can hit-test the pointer against both
    * rows every frame and drop across them. Built for drags only (see
    * buildDragGridLayoutCache); resizes stay within one row and leave it
    * unset, as do layouts where the other row isn't on screen.
    */
-  crossRow?: GridLayoutCache;
-  dayColumns: DayColumnCache[];
+  crossRow?: GridLayoutCache<TKey>;
+  dayColumns: DayColumnCache<TKey>[];
   edgeNavigation: EdgeNavigationCache;
   pixelsPerMinute: number;
   snapMinutes: number;
   smartScroll?: SmartScrollCache;
 }
 
-interface BuildDayColumnsInput {
+interface BuildDayColumnsInput<TKey extends string = string> {
   left: number;
-  visibleDates: string[];
+  visibleDates: TKey[];
   width: number;
 }
 
-export const buildTimedGridLayoutCache = ({
+export const buildTimedGridLayoutCache = <TKey extends string = string>({
   edgeThresholdPx,
   mainGridElement,
   mainGridElementId,
@@ -78,7 +97,8 @@ export const buildTimedGridLayoutCache = ({
   timedColumnsElementId,
   timedVisibleHours,
   visibleDates,
-}: GridLayoutCacheOptions & GridLayoutCacheSources): GridLayoutCache | null => {
+}: GridLayoutCacheOptions<TKey> &
+  GridLayoutCacheSources): GridLayoutCache<TKey> | null => {
   const mainGrid = mainGridElement ?? getElementById(mainGridElementId);
 
   if (!mainGrid || visibleDates.length === 0) {
@@ -119,13 +139,14 @@ export const buildTimedGridLayoutCache = ({
   };
 };
 
-export const buildAllDayGridLayoutCache = ({
+export const buildAllDayGridLayoutCache = <TKey extends string = string>({
   allDayColumnsElement,
   allDayColumnsElementId,
   edgeThresholdPx,
   snapMinutes,
   visibleDates,
-}: GridLayoutCacheOptions & GridLayoutCacheSources): GridLayoutCache | null => {
+}: GridLayoutCacheOptions<TKey> &
+  GridLayoutCacheSources): GridLayoutCache<TKey> | null => {
   const rect = getElementRect(
     allDayColumnsElement ?? getElementById(allDayColumnsElementId),
   );
@@ -154,10 +175,10 @@ export const buildAllDayGridLayoutCache = ({
  * only when the drag's own row is missing — a missing *other* row just leaves
  * `crossRow` unset, which keeps the drag on its same-row path.
  */
-export const buildDragGridLayoutCache = (
-  options: GridLayoutCacheOptions & GridLayoutCacheSources,
+export const buildDragGridLayoutCache = <TKey extends string = string>(
+  options: GridLayoutCacheOptions<TKey> & GridLayoutCacheSources,
   sourceRow: DragRow,
-): GridLayoutCache | null => {
+): GridLayoutCache<TKey> | null => {
   const allDay = buildAllDayGridLayoutCache(options);
   const timed = buildTimedGridLayoutCache(options);
   const [primary, crossRow] =
@@ -166,16 +187,19 @@ export const buildDragGridLayoutCache = (
   return primary ? { ...primary, crossRow: crossRow ?? undefined } : null;
 };
 
-export function buildDayColumns(input: BuildDayColumnsInput): DayColumnCache[];
-export function buildDayColumns(
+export function buildDayColumns<TKey extends string = string>(
+  input: BuildDayColumnsInput<TKey>,
+): DayColumnCache<TKey>[];
+export function buildDayColumns<TKey extends string = string>(
   input: Pick<DOMRect, "left" | "width">,
-  visibleDates: string[],
-): DayColumnCache[];
-export function buildDayColumns(
-  input: BuildDayColumnsInput | Pick<DOMRect, "left" | "width">,
-  visibleDates?: string[],
-): DayColumnCache[] {
-  const dates = visibleDates ?? (input as BuildDayColumnsInput).visibleDates;
+  visibleDates: TKey[],
+): DayColumnCache<TKey>[];
+export function buildDayColumns<TKey extends string = string>(
+  input: BuildDayColumnsInput<TKey> | Pick<DOMRect, "left" | "width">,
+  visibleDates?: TKey[],
+): DayColumnCache<TKey>[] {
+  const dates =
+    visibleDates ?? (input as BuildDayColumnsInput<TKey>).visibleDates;
 
   if (dates.length === 0) {
     return [];
@@ -191,8 +215,11 @@ export function buildDayColumns(
   }));
 }
 
-export const getNearestDayColumn = (columns: DayColumnCache[], x: number) => {
-  let nearest: DayColumnCache | null = null;
+export const getNearestDayColumn = <TKey extends string = string>(
+  columns: DayColumnCache<TKey>[],
+  x: number,
+) => {
+  let nearest: DayColumnCache<TKey> | null = null;
   let nearestDistance = Number.POSITIVE_INFINITY;
 
   for (const column of columns) {

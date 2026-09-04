@@ -18,6 +18,7 @@ import {
   getNearestDayColumn,
   type SmartScrollCache,
 } from "@web/grid/interaction/layout.cache";
+import { type DateColumnKey } from "@web/grid/interaction/types/column-key.types";
 import { type DragRow } from "@web/grid/interaction/types/timed-drag.types";
 import { WEEK_EDGE_NAVIGATION_THRESHOLD_PX } from "../edge-navigation";
 
@@ -34,13 +35,13 @@ export interface WeekLayoutCacheInput extends GridLayoutCacheSources {
   visibleDays: string[];
 }
 
-export type WeekLayoutCache = GridLayoutCache;
+export type WeekLayoutCache = GridLayoutCache<DateColumnKey>;
 export type { SmartScrollCache };
 export { getNearestDayColumn };
 
 const weekLayoutCacheOptions = (
   sources: WeekLayoutCacheInput,
-): GridLayoutCacheOptions & WeekLayoutCacheSources => ({
+): GridLayoutCacheOptions<DateColumnKey> & WeekLayoutCacheSources => ({
   ...sources,
   allDayColumnsElementId: ID_ALLDAY_COLUMNS,
   edgeThresholdPx: WEEK_EDGE_NAVIGATION_THRESHOLD_PX,
@@ -52,7 +53,19 @@ const weekLayoutCacheOptions = (
   snapMinutes: GRID_TIME_STEP,
   timedColumnsElementId: ID_GRID_COLUMNS_TIMED,
   timedVisibleHours: TIMED_VISIBLE_HOURS,
-  visibleDates: sources.visibleDays,
+  // The one place Week column keys enter the branded world.
+  //
+  // `visibleDays` arrives as a bare `string[]` from
+  // `WeekInteractionRuntime.getVisibleDays()`, whose implementer lives outside
+  // this layer and whose signature is frozen, so the brand cannot be pushed
+  // any further up. The values are documented and produced as local
+  // YYYY-MM-DD column dates by the same React render that painted the
+  // columns, which is exactly what `DateColumnKey` asserts.
+  //
+  // Branding the whole array here means every downstream Week site —
+  // `dayColumns[i].date`, `getNearestDayColumn`, `resolveDragColumn`, both
+  // `create*DragVisual` calls — is brand-correct with no further cast.
+  visibleDates: sources.visibleDays as DateColumnKey[],
 });
 
 export const buildTimedWeekLayoutCache = (
