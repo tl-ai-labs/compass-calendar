@@ -91,6 +91,47 @@ required unique-symbol property, and the compiler produced exactly the intended 
 `Type string is not assignable to type string & $brand<"DateOnly">` — at the Week call sites into
 the `DateColumnKey`-pinned cross-row commit. FR-1's compile-time guarantee is real.
 
+## Manual verification — human sign-off, 2026-09-03: **ALL WORKS**
+
+In-app verification by the human, which the automated table above cannot substitute for. The
+operator drove the running app (`bun run dev:web`, `http://localhost:9080`, branch at `e9eb06ce`,
+clean tree) against a 15-gesture checklist across both views and reported **no regression on any
+gesture**.
+
+| Field | Value |
+|---|---|
+| `manual_verification_result` | **ALL WORKS** — no regression in either view |
+| Performed by | human operator |
+| Date | 2026-09-03 |
+| Env | `bun run dev:web` at `http://localhost:9080`, `CMP-104/flash-agsdk-only` @ `e9eb06ce`, clean tree |
+
+**Gestures exercised.** Week: timed drag within a day column; timed drag across day columns; resize
+from the bottom (end) edge; resize from the top (start) edge; click targeting opens the right event's
+form; all-day drag; all-day resize; multi-day all-day drag across rows; Escape mid-drag cancels with
+nothing committed; drag past the left/right edge navigates the week. Day: timed drag; drag across
+calendar columns; timed resize; click targeting; multi-day all-day drag that must not shift dates.
+Scroll-then-drag was called out specifically because `layout.cache.ts` took this arm's largest single
+change and a stale cache would surface as a card landing at the wrong time after scrolling.
+
+**Automated state at sign-off**, re-run on this branch immediately before the check rather than
+relayed from the table above: `bun run test:web` → **2297 pass / 1 fail / 1 error**, 5767 `expect()`
+calls across 302 files, 95.4s. The sole failure is the pre-existing, date-dependent
+`RecurrenceSection > keeps the event's own date selectable when the event ends after midnight` date
+rot, which is red on a clean tree at `main` and had not yet rotted when this run recorded 2298/0.
+Nothing in the Week/Day interaction layer fails.
+
+**Excluded as pre-existing**, not counted against this arm: the resize handle occluded on ~30% of
+timed cards in **both** views (Week 5/17, Day 2/6 — proven pre-existing at `main@2d81253a` by
+stash-and-compare during the sibling SDK-door run), so the grab silently becomes a *move*; and the
+anonymous/local-mode destruction of conference/organizer/attendees on any replace.
+
+> **Stale field flagged, not fixed:** the "Files changed" section below still reads *"Nothing has been
+> committed. `git HEAD` is unchanged at `4189de13`"*. The branch has carried `62162a95` (source) and
+> `e9eb06ce` (SDLC record) since before this check and is in sync with `origin`. Left as written, in
+> keeping with how the same drift was handled on the sibling arms.
+
+---
+
 ## Files changed
 
 **24 unique paths** — 21 modified under `packages/web`, 2 new type files, plus `.gitignore`.

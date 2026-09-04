@@ -216,5 +216,35 @@
     "loc": 708,
     "tests": 2298,
     "test_pass_rate": 1
+  },
+  "manual_verification_result": {
+    "net": "ALL WORKS - the operator exercised the running app against a 15-gesture checklist and reported no regression in either view. This sign-off, not the automated suite, is the acceptance evidence for this arm.",
+    "performed_by": "human operator",
+    "date": "2026-09-03",
+    "env": "bun run dev:web (http://localhost:9080), branch CMP-104/flash-agsdk-only at e9eb06ce, clean tree",
+    "gestures_exercised": [
+      "Week: timed drag within a day column",
+      "Week: timed drag across day columns",
+      "Week: resize from the bottom (end) edge",
+      "Week: resize from the top (start) edge",
+      "Week: click targeting opens the right event's form",
+      "Week: all-day drag",
+      "Week: all-day resize",
+      "Week: multi-day all-day drag across rows",
+      "Week: Escape mid-drag cancels with nothing committed",
+      "Week: drag past the left/right edge navigates the week",
+      "Day: timed drag",
+      "Day: drag across calendar columns",
+      "Day: timed resize",
+      "Day: click targeting",
+      "Day: multi-day all-day drag does not shift dates",
+      "Both: scroll the grid then drag, since layout.cache.ts took this arm's largest single change"
+    ],
+    "excluded_as_preexisting": [
+      "Resize handle occluded on ~30% of timed cards in BOTH views (Week 5/17, Day 2/6), so the grab silently becomes a move - proven pre-existing at main@2d81253a by stash-and-compare in the sibling SDK-door run",
+      "Anonymous/local IndexedDB mode destroys conference/organizer/attendees on any replace - pre-existing, unrelated to this run"
+    ],
+    "automated_at_signoff": "Coordinator re-ran bun run test:web on this branch immediately before the check rather than relaying this file: 2297 pass / 1 fail / 1 error, 5767 expect() calls across 302 files, 95.4s. The sole failure is the pre-existing, date-dependent RecurrenceSection date rot, red on a clean tree at main and not yet rotted when this run recorded 2298/0. Nothing in the Week/Day interaction layer fails.",
+    "note": "This file is a cost rollup, not the run's close-out record - this branch tracks no .sdlc/ledger.*, so the primary human-readable record is the 'Manual verification' section of SUMMARY.md. The key is duplicated here only so it stays greppable across the CMP-104 arms."
   }
 }
