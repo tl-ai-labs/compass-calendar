@@ -431,3 +431,37 @@ further defects were caught by project tooling rather than judgement: `state.jso
 **Ledger-table gap noticed, not silently fixed:** rows eleven (`20260824-002919`) and twelve
 (`20260824-214500`) have `##` sections but no row in the summary table at the top of this file. Left
 as-is; flagged here so the omission is visible.
+
+**Human sign-off, 2026-09-03 — ALL WORKS.** The pending in-app check recorded above is now closed.
+The operator drove the running app (`bun run dev:web`, `http://localhost:9080`, branch at `0f75ee73`,
+clean tree) against a **20-gesture** checklist and reported **no regression on any gesture in either
+view**. That sign-off, not the automated suite, is the acceptance evidence for this arm.
+
+**The checklist was deliberately wider here than on the sibling arms**, because this is the most
+invasive of the five CMP-104 arms and the only one that took the trap the SDK-door arm explicitly
+refused: it **deleted both views' registry and targeting modules** in favour of a shared
+`grid/interaction/view-interaction.bindings.ts` plus thin per-view bindings. Targeting is what turns a
+pointer position into an event identity, so the run also had to touch `MainGridEvents.tsx`,
+`AllDayEvents.tsx`, `GridDraft.tsx`, `DayCalendarEventCards.tsx`, `useWeekShortcutOwner.ts`,
+`useDayEventNudgeShortcuts.ts` and `day-event.focus.ts`. On top of the drag/resize/Escape/edge-nav
+checklist used on the other arms, the operator therefore exercised **click targeting** (the form that
+opens must belong to the card clicked), **draft creation on empty grid space**, **right-click context
+menu over the correct event**, **arrow-key nudge in both views**, and **read-only events staying
+un-draggable and un-resizable**. All held.
+
+Immediately before the check the coordinator re-ran `bun run test:web` on this branch rather than
+relaying the row: **2304 pass / 1 fail / 1 error, 5785 expects across 303 files, 102.7s**. The one
+failure is the pre-existing, date-dependent `RecurrenceSection` "keeps the event's own date selectable
+when the event ends after midnight" **date rot** — red on a clean tree at `main`, and not yet rotted
+when this row recorded 2305/0. Nothing in the interaction, targeting or bindings layer fails. Two
+known pre-existing defects were excluded from the operator's judgement rather than counted against
+this arm: the resize handle occluded on ~30% of timed cards in **both** views (Week 5/17, Day 2/6,
+proven pre-existing at `main@2d81253a` by stash-and-compare during the sibling SDK-door run), and the
+anonymous/local-mode destruction of conference/organizer/attendees on replace.
+
+**All three remaining CMP-104 arms were signed off in one sitting on 2026-09-03** — `opus-only-v5`
+(`cf0a5e17`), `flash-agsdk-only` (`adb37628`) and this one — each against the same core checklist on
+the same machine and the same seed data, following the `opus-plus-flash-v37-sdk` arm's sign-off the
+day before. All five arms now carry a human in-app result. **Every arm passed**, which is worth
+stating plainly: the human check discriminated nothing between the policies on this ticket, so it
+supports "no arm shipped a user-visible regression" and **not** any ranking between them.
