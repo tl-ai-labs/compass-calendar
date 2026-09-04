@@ -1,0 +1,221 @@
+{
+  "schema": "delegation-record/1",
+  "task_id": "tp_t2_phantom_brand_test",
+  "phase": "tests",
+  "task_type": "test_add",
+  "module": "grid-interaction-registry",
+  "model_id": "flash-agsdk-worker",
+  "model_name": "gemini-3.7-flash",
+  "cable": {
+    "sdk": "google-antigravity",
+    "sdk_version": "0.1.12",
+    "vertex_project": "ai-studies-console",
+    "vertex_location": "global",
+    "thinking": "NONE"
+  },
+  "workdir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+  "started_at": "2026-09-03T19:21:23.896Z",
+  "duration_ms": 110817,
+  "success": true,
+  "error": null,
+  "cost_usd": 0.347099,
+  "tokens": {
+    "input": 146312,
+    "input_cached": 406510,
+    "output": 7406,
+    "output_reasoning": 4583
+  },
+  "tool_calls": {
+    "count": 19,
+    "truncated": false,
+    "sample": [
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/event.registry.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/event.registry.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bun test",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check .",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx tsc --noEmit",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "list_directory",
+        "args": {
+          "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+        "args_clipped": false
+      },
+      {
+        "name": "list_directory",
+        "args": {
+          "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types",
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "edit_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bun test view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check --apply view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check --write view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "git status",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx tsc --noEmit view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx tsc -p ../../tsconfig.json --noEmit",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx tsc -p ../../../tsconfig.json --noEmit",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "run_command",
+        "args": {
+          "command_line": "bunx biome check view-event-registry.brand.test.ts",
+          "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+        },
+        "canonical_path": null,
+        "args_clipped": false
+      },
+      {
+        "name": "view_file",
+        "args": {
+          "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+          "start_line": "0",
+          "end_line": "799"
+        },
+        "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+        "args_clipped": false
+      }
+    ]
+  },
+  "files": {
+    "added": [
+      "view-event-registry.brand.test.ts"
+    ],
+    "modified": [],
+    "removed": [],
+    "unchanged": 32,
+    "scanned": 33,
+    "truncated": false,
+    "unreadable": []
+  },
+  "artifacts": {
+    "brief": "worker-task-tp_t2_phantom_brand_test.md",
+    "usage": "worker-usage-tp_t2_phantom_brand_test.json"
+  }
+}

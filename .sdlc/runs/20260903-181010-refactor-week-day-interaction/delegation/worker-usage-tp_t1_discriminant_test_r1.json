@@ -1,0 +1,185 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 395380,
+    "cached_content_token_count": 280742,
+    "candidates_token_count": 2474,
+    "thoughts_token_count": 2069,
+    "total_token_count": 399923,
+    "service_tier": null
+  },
+  "tool_call_count": 18,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check --write types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit --project ../../../tsconfig.json",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --jsx react-jsx types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit --ignoreConfig --target es2022 --module esnext --moduleResolution bundler --lib es2022,dom types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit --ignoreConfig --target es2022 --module esnext --moduleResolution bundler --lib es2022,dom --types bun types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx @biomejs/biome check types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "node -e 'console.log(JSON.stringify(require(\"fs\").readFileSync(\"types/column-key.types.test.ts\", \"utf8\")))'",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    }
+  ],
+  "text": "Access to path \"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/package.json\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction /home/sainadh/.gemini/antigravity] (\"denied by pre-tool hook: Access to path \\\"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/package.json\\\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction /home/sainadh/.gemini/antigravity]\"){\"path\":\"types/column-key.types.test.ts\",\"content\":\"import { type GridLayoutCache } from \\\"../layout.cache\\\";\\nimport { type CalendarColumnKey, type DateColumnKey } from \\\"./column-key.types\\\";\\nimport { type TimedDragVisual } from \\\"./timed-drag.types\\\";\\nimport { describe, expect, it } from \\\"bun:test\\\";\\n\\nconst dateVisual = null as unknown as TimedDragVisual<DateColumnKey>;\\nconst calendarVisual = null as unknown as TimedDragVisual<CalendarColumnKey>;\\nconst dateCache = null as unknown as GridLayoutCache<DateColumnKey>;\\nconst bareString: string = \\\"test\\\";\\n\\ndescribe(\\\"column-key discriminant\\\", () => {\\n  it(\\\"proves column key discriminant unassignability at compile time\\\", () => {\\n    // @ts-expect-error\\n    const _calendarVisual: TimedDragVisual<CalendarColumnKey> = dateVisual;\\n\\n    // @ts-expect-error\\n    const _dateVisual: TimedDragVisual<DateColumnKey> = calendarVisual;\\n\\n    // @ts-expect-error\\n    const _calendarCache: GridLayoutCache<CalendarColumnKey> = dateCache;\\n\\n    // @ts-expect-error\\n    const _dateKey: DateColumnKey = bareString;\\n    // @ts-expect-error\\n    const _calendarKey: CalendarColumnKey = bareString;\\n  });\\n\\n  it(\\\"asserts the brand has zero runtime footprint\\\", () => {\\n    const rawLiteral = \\\"2026-09-03\\\";\\n    const dateKey = rawLiteral as DateColumnKey;\\n\\n    expect(typeof dateKey).toBe(\\\"string\\\");\\n    expect(dateKey as string).toBe(rawLiteral);\\n  });\\n});\\n\"}"
+}

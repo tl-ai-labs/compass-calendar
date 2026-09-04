@@ -1,0 +1,193 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 552822,
+    "cached_content_token_count": 406510,
+    "candidates_token_count": 2823,
+    "thoughts_token_count": 4583,
+    "total_token_count": 560228,
+    "service_tier": null
+  },
+  "tool_call_count": 19,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/event.registry.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/event.registry.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check .",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "list_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+      "args_clipped": false
+    },
+    {
+      "name": "list_directory",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check --apply view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check --write view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc --noEmit view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc -p ../../tsconfig.json --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx tsc -p ../../../tsconfig.json --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bunx biome check view-event-registry.brand.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/view-event-registry.brand.test.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "Access to path \"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction /home/sainadh/.gemini/antigravity] (\"denied by pre-tool hook: Access to path \\\"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src\\\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction /home/sainadh/.gemini/antigravity]\"){\n  \"path\": \"view-event-registry.brand.test.ts\",\n  \"content\": \"import { createEventRegistry } from \\\"@web/grid/interaction/event.registry\\\";\\nimport { type ViewInteractionEventType } from \\\"@web/grid/interaction/view-event-registry\\\";\\nimport { type DayRegisteredEventTarget } from \\\"@web/views/Day/interaction/registry/day-event.registry\\\";\\nimport { type WeekRegisteredEventTarget } from \\\"@web/views/Week/interaction/registry/week-event.registry\\\";\\nimport { describe, expect, it } from \\\"bun:test\\\";\\n\\nconst weekTarget = null as unknown as WeekRegisteredEventTarget;\\nconst dayTarget = null as unknown as DayRegisteredEventTarget;\\n\\nconst raw = {\\n  element: null as unknown as HTMLElement,\\n  eventId: \\\"e1\\\",\\n  eventType: \\\"timed\\\" as ViewInteractionEventType,\\n};\\n\\nconst _asWeek: WeekRegisteredEventTarget = raw;\\nconst _asDay: DayRegisteredEventTarget = raw;\\n\\ndescribe(\\\"phantom view brand on ViewRegisteredEventTarget\\\", () => {\\n  it(\\\"proves Week and Day brands are not assignable to each other\\\", () => {\\n    // @ts-expect-error\\n    const _dayFromWeek: DayRegisteredEventTarget = weekTarget;\\n\\n    // @ts-expect-error\\n    const _weekFromDay: WeekRegisteredEventTarget = dayTarget;\\n  });\\n\\n  it(\\\"creates an event registry instance\\\", () => {\\n    const registry = createEventRegistry<ViewInteractionEventType>({\u7684\u5927\\n      eventIdAttribute: \\\"data-test-id\\\",\\n      eventTypeAttribute: \\\"data-test-type\\\",\\n      isEventType: (value: string | null): value is ViewInteractionEventType =>\\n        value === \\\"all-day\\\" || value === \\\"timed\\\",\\n    });\\n\\n    expect(typeof registry.resolveFromTarget).toBe(\\\"function\\\");\\n    expect(typeof registry.register).toBe(\\\"function\\\");\\n    expect(typeof registry.resolve).toBe(\\\"function\\\");\\n    expect(typeof registry.clear).toBe(\\\"function\\\");\\n  });\\n});\\n\"\n}"
+}

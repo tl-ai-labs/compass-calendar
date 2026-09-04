@@ -1,0 +1,385 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 1877470,
+    "cached_content_token_count": 1579993,
+    "candidates_token_count": 13568,
+    "thoughts_token_count": 10529,
+    "total_token_count": 1901567,
+    "service_tier": null
+  },
+  "tool_call_count": 40,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "PORT=3000 API_BASEURL=http://localhost:3000 bun test adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "PORT=3000 API_BASEURL=http://localhost:3000 BACKEND_BASEURL=http://localhost:3000 bun test adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "API_BASEURL=http://localhost:3000 BACKEND_BASEURL=http://localhost:3000/ PORT=3000 bun test adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --preload happy-dom adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --dom adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --preload @happy-dom/global-registrator/register adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x @biomejs/biome check adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction",
+        "query": "*.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/targeting/day-event.targeting.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/targeting/day-event.targeting.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction",
+        "query": "*"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun -e \"console.log(process.cwd())\"",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun -e \"import('happy-dom').then(m => console.log(Object.keys(m)))\"",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "find ../../../../../ -maxdepth 3 -name \"*test*\" -o -name \"bunfig*\"",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --config ../../../../../web/bunfig.toml adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/bunfig.toml",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --preload ../../../../../web/src/__tests__/web.preload.ts adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/src/grid/interaction/adapter.helpers.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/src/grid/interaction/dom.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/src/grid/interaction/adapter/view-target-resolution.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "find ../../../../../web/src/views/Week -name \"*interaction*.test.ts*\"",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/src/views/Week/interaction/adapter/week-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat ../../../../../web/src/views/Week/interaction/adapter/week-interaction.timed-resize.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+        "start_line": "629",
+        "end_line": "666"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x @biomejs/biome check adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --preload ../../../../../web/src/__tests__/web.preload.ts adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git diff adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "BACKEND_BASEURL=http://127.0.0.1:3000 PORT=3000 bun test --preload ../../../../../web/src/__tests__/web.preload.ts .",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x @biomejs/biome check .",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x @biomejs/biome check adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction/adapter/day-interaction.adapter.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git log -n 5 --oneline",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "cat adapter/day-interaction.adapter.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun -e 'console.log(JSON.stringify({ path: \"adapter/day-interaction.adapter.test.ts\", content: await Bun.file(\"adapter/day-interaction.adapter.test.ts\").text() }))'",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    }
+  ],
+  "text": "Access to path \"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/adapter.helpers.ts\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction /home/sainadh/.gemini/antigravity] (\"denied by pre-tool hook: Access to path \\\"/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/adapter.helpers.ts\\\" is denied. It is outside the allowed workspace directories: [/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/views/Day/interaction /home/sainadh/.gemini/antigravity]\"){\"path\":\"adapter/day-interaction.adapter.test.ts\",\"content\":\"import { Origin } from \\\"@core/constants/core.constants\\\";\\nimport { YEAR_MONTH_DAY_FORMAT } from \\\"@core/constants/date.constants\\\";\\nimport dayjs from \\\"@core/util/date/dayjs\\\";\\nimport { type GridEvent } from \\\"@web/common/types/web.event.types\\\";\\nimport { gridEventDefaultPosition } from \\\"@web/common/utils/event/event.util\\\";\\nimport { EVENT_RESIZE_HANDLE_ATTRIBUTE } from \\\"@web/grid/interaction/dom\\\";\\nimport { dayEventRegistry } from \\\"../registry/day-event.registry\\\";\\nimport {\\n  createDayInteractionAdapter,\\n  type DayAllDayDragCommitResult,\\n  type DayTimedDragCommitResult,\\n  type DayTimedResizeCommitResult,\\n} from \\\"./day-interaction.adapter\\\";\\nimport { afterEach, describe, expect, it } from \\\"bun:test\\\";\\n\\nconst visibleDate = dayjs(\\\"2026-05-20T00:00:00.000\\\");\\n\\nconst timedSourceRect = {\\n  height: 40,\\n  left: 0,\\n  top: 160,\\n  width: 320,\\n};\\n\\nconst allDaySourceRect = {\\n  height: 24,\\n  left: 0,\\n  top: 0,\\n  width: 320,\\n};\\n\\nconst CALENDAR_A = \\\"aaaaaaaaaaaaaaaaaaaaaaaa\\\";\\nconst CALENDAR_B = \\\"bbbbbbbbbbbbbbbbbbbbbbbb\\\";\\n\\nconst timedEvent: GridEvent = {\\n  _id: \\\"timed-event\\\",\\n  calendarId: CALENDAR_A as never,\\n  endDate: \\\"2026-05-18T10:00:00.000\\\",\\n  isAllDay: false,\\n  origin: Origin.COMPASS,\\n  position: gridEventDefaultPosition,\\n  startDate: \\\"2026-05-18T09:00:00.000\\\",\\n  title: \\\"Timed event\\\",\\n  user: \\\"user-1\\\",\\n};\\n\\nconst allDayEvent: GridEvent = {\\n  _id: \\\"all-day-event\\\",\\n  calendarId: CALENDAR_A as never,\\n  endDate: \\\"2026-05-21\\\",\\n  isAllDay: true,\\n  origin: Origin.COMPASS,\\n  position: gridEventDefaultPosition,\\n  row: 1,\\n  startDate: \\\"2026-05-20\\\",\\n  title: \\\"All-day event\\\",\\n  user: \\\"user-1\\\",\\n};\\n\\nconst multiDayAllDayEvent: GridEvent = {\\n  ...allDayEvent,\\n  _id: \\\"multi-day-all-day-event\\\",\\n  endDate: \\\"2026-05-22\\\",\\n  startDate: \\\"2026-05-19\\\",\\n  title: \\\"Multi-day all-day event\\\",\\n};\\n\\nconst elementWithRect = (\\n  left: number,\\n  top: number,\\n  width: number,\\n  height: number,\\n) => {\\n  const element = document.createElement(\\\"div\\\");\\n  const rect = {\\n    bottom: top + height,\\n    height,\\n    left,\\n    right: left + width,\\n    toJSON: () => ({}),\\n    top,\\n    width,\\n    x: left,\\n    y: top,\\n  } as DOMRect;\\n\\n  element.getBoundingClientRect = () => rect;\\n\\n  return element;\\n};\\n\\nconst makePointerEvent = (\\n  type: string,\\n  {\\n    isPrimary = true,\\n    pointerId = 1,\\n    target,\\n    x,\\n    y,\\n  }: {\\n    isPrimary?: boolean;\\n    pointerId?: number;\\n    target: EventTarget;\\n    x: number;\\n    y: number;\\n  },\\n) => {\\n  const event = new PointerEvent(type, {\\n    clientX: x,\\n    clientY: y,\\n    isPrimary,\\n    pointerId,\\n  });\\n\\n  Object.defineProperty(event, \\\"target\\\", { value: target });\\n\\n  return event;\\n};\\n\\nconst createAdapter = ({\\n  columnKeys,\\n  extraTimedEvents = [],\\n  mainGridScrollTop = 0,\\n  onAllDayDrag,\\n  onTimedDrag,\\n  onTimedResize,\\n}: {\\n  columnKeys?: string[];\\n  extraTimedEvents?: GridEvent[];\\n  mainGridScrollTop?: number;\\n  onAllDayDrag?: (result: DayAllDayDragCommitResult) => void;\\n  onTimedDrag?: (result: DayTimedDragCommitResult) => void;\\n  onTimedResize?: (result: DayTimedResizeCommitResult) => void;\\n} = {}) => {\\n  const frames = new Map<unknown, FrameRequestCallback>();\\n  const timers = new Map<unknown, () => void>();\\n  let nextFrameId = 1;\\n  let nextTimerId = 1;\\n  const allDayColumnsElement = elementWithRect(0, 0, 320, 40);\\n  const mainGridElement = elementWithRect(0, 40, 320, 780);\\n  const timedColumnsElement = elementWithRect(0, 40, 320, 780);\\n\\n  Object.defineProperty(mainGridElement, \\\"clientHeight\\\", { value: 780 });\\n  Object.defineProperty(mainGridElement, \\\"scrollHeight\\\", { value: 1560 });\\n  mainGridElement.scrollTop = mainGridScrollTop;\\n\\n  const adapter = createDayInteractionAdapter({\\n    engineOptions: {\\n      cancelFrame: (frame) => frames.delete(frame),\\n      clearTimer: (timer) => timers.delete(timer),\\n      now: () => 0,\\n      requestFrame: (callback) => {\\n        const frameId = nextFrameId;\\n\\n        nextFrameId += 1;\\n        frames.set(frameId, callback);\\n\\n        return frameId;\\n      },\\n      setTimer: (callback) => {\\n        const timerId = nextTimerId;\\n\\n        nextTimerId += 1;\\n        timers.set(timerId, callback);\\n\\n        return timerId;\\n      },\\n    },\\n    getColumnKeys: () => columnKeys ?? [],\\n    getLayoutSources: () => ({\\n      allDayColumnsElement,\\n      mainGridElement,\\n      timedColumnsElement,\\n    }),\\n    getVisibleDate: () => visibleDate,\\n    runtime: () => ({\\n      getAllDayEventById: (eventId) =>\\n        eventId === allDayEvent._id\\n          ? allDayEvent\\n          : eventId === multiDayAllDayEvent._id\\n            ? multiDayAllDayEvent\\n            : null,\\n      getTimedEventById: (eventId) =>\\n        extraTimedEvents.find((event) => event._id === eventId) ??\\n        (eventId === timedEvent._id ? timedEvent : null),\\n      onClickAllDayEvent: () => undefined,\\n      onClickTimedEvent: () => undefined,\\n      onCommitAllDayDrag: (result) => onAllDayDrag?.(result),\\n      onCommitAllDayResize: () => undefined,\\n      onCommitTimedDrag: (result) => onTimedDrag?.(result),\\n      onCommitTimedResize: (result) => onTimedResize?.(result),\\n    }),\\n  });\\n\\n  const flushFrame = (timestamp = 16) => {\\n    const [[frameId, callback]] = frames;\\n\\n    if (!callback) {\\n      throw new Error(\\\"Expected a frame callback to be scheduled\\\");\\n    }\\n\\n    frames.delete(frameId);\\n    callback(timestamp);\\n  };\\n\\n  const flushTimer = () => {\\n    const [[timerId, callback]] = timers;\\n\\n    if (!callback) {\\n      throw new Error(\\\"Expected a timer callback to be scheduled\\\");\\n    }\\n\\n    timers.delete(timerId);\\n    callback();\\n  };\\n\\n  return { adapter, flushFrame, flushTimer, mainGridElement };\\n};\\n\\nconst registerEvent = (event: GridEvent, eventType: \\\"all-day\\\" | \\\"timed\\\") => {\\n  const rect = event.isAllDay ? allDaySourceRect : timedSourceRect;\\n  const source = elementWithRect(rect.left, rect.top, rect.width, rect.height);\\n  const child = document.createElement(\\\"span\\\");\\n\\n  source.append(child);\\n  document.body.append(source);\\n  dayEventRegistry.register({\\n    element: source,\\n    eventId: event._id!,\\n    eventType,\\n  });\\n\\n  return { child, source };\\n};\\n\\nconst dragTimedEvent = () => {\\n  const result: { current?: DayTimedDragCommitResult } = {};\\n  const { child } = registerEvent(timedEvent, \\\"timed\\\");\\n  const { adapter, flushFrame } = createAdapter({\\n    onTimedDrag: (nextResult) => {\\n      result.current = nextResult;\\n    },\\n  });\\n\\n  adapter.handlePointerDown(\\n    makePointerEvent(\\\"pointerdown\\\", { target: child, x: 160, y: 160 }),\\n  );\\n  adapter.handlePointerMove(\\n    makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 220 }),\\n  );\\n  flushFrame();\\n  adapter.handlePointerUp(\\n    makePointerEvent(\\\"pointerup\\\", { target: child, x: 160, y: 220 }),\\n  );\\n\\n  if (!result.current) {\\n    throw new Error(\\\"Expected timed drag to commit\\\");\\n  }\\n\\n  return result.current;\\n};\\n\\nconst resizeTimedEvent = (edge: \\\"startDate\\\" | \\\"endDate\\\") => {\\n  const result: { current?: DayTimedResizeCommitResult } = {};\\n  const { source } = registerEvent(timedEvent, \\\"timed\\\");\\n  const handle = document.createElement(\\\"span\\\");\\n\\n  handle.setAttribute(\\\"data-calendar-event-resize-handle\\\", edge);\\n  source.append(handle);\\n\\n  const { adapter, flushFrame } = createAdapter({\\n    onTimedResize: (nextResult) => {\\n      result.current = nextResult;\\n    },\\n  });\\n\\n  adapter.handlePointerDown(\\n    makePointerEvent(\\\"pointerdown\\\", { target: handle, x: 160, y: 160 }),\\n  );\\n  adapter.handlePointerMove(\\n    makePointerEvent(\\\"pointermove\\\", { target: handle, x: 160, y: 220 }),\\n  );\\n  flushFrame();\\n  adapter.handlePointerUp(\\n    makePointerEvent(\\\"pointerup\\\", { target: handle, x: 160, y: 220 }),\\n  );\\n\\n  if (!result.current) {\\n    throw new Error(\\\"Expected timed resize to commit\\\");\\n  }\\n\\n  return result.current;\\n};\\n\\nconst dragAllDayEvent = () => {\\n  const result: { current?: DayAllDayDragCommitResult } = {};\\n  const { child } = registerEvent(allDayEvent, \\\"all-day\\\");\\n  const { adapter, flushFrame } = createAdapter({\\n    onAllDayDrag: (nextResult) => {\\n      result.current = nextResult;\\n    },\\n  });\\n\\n  adapter.handlePointerDown(\\n    makePointerEvent(\\\"pointerdown\\\", { target: child, x: 40, y: 20 }),\\n  );\\n  adapter.handlePointerMove(\\n    makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 20 }),\\n  );\\n  flushFrame();\\n  adapter.handlePointerUp(\\n    makePointerEvent(\\\"pointerup\\\", { target: child, x: 160, y: 20 }),\\n  );\\n\\n  if (!result.current) {\\n    throw new Error(\\\"Expected all-day drag to commit\\\");\\n  }\\n\\n  return result.current;\\n};\\n\\nconst activateAllDayEventWithoutMoving = () => {\\n  const result: { current?: DayAllDayDragCommitResult } = {};\\n  const { child } = registerEvent(multiDayAllDayEvent, \\\"all-day\\\");\\n  const { adapter, flushTimer } = createAdapter({\\n    onAllDayDrag: (nextResult) => {\\n      result.current = nextResult;\\n    },\\n  });\\n\\n  adapter.handlePointerDown(\\n    makePointerEvent(\\\"pointerdown\\\", { target: child, x: 40, y: 20 }),\\n  );\\n  flushTimer();\\n  adapter.handlePointerUp(\\n    makePointerEvent(\\\"pointerup\\\", { target: child, x: 40, y: 20 }),\\n  );\\n\\n  if (!result.current) {\\n    throw new Error(\\\"Expected all-day no-op drag to commit\\\");\\n  }\\n\\n  return result.current;\\n};\\n\\nconst createTimedResizeHandle = (edge: \\\"startDate\\\" | \\\"endDate\\\") => {\\n  const { source } = registerEvent(timedEvent, \\\"timed\\\");\\n  const handle = document.createElement(\\\"span\\\");\\n\\n  handle.setAttribute(\\\"data-calendar-event-resize-handle\\\", edge);\\n  source.append(handle);\\n\\n  return handle;\\n};\\n\\nafterEach(() => {\\n  document.body.innerHTML = \\\"\\\";\\n  dayEventRegistry.clear();\\n});\\n\\n// Two 160px-wide calendar columns across the 320px grid: dragging from\\n// column A's center (x=80) to column B's center (x=240) crosses columns.\\nconst dragEventAcrossCalendarColumns = (\\n  event: GridEvent,\\n  eventType: \\\"all-day\\\" | \\\"timed\\\",\\n  { toX, toY }: { toX: number; toY?: number },\\n) => {\\n  const results: {\\n    allDay?: DayAllDayDragCommitResult;\\n    timed?: DayTimedDragCommitResult;\\n  } = {};\\n  const { child } = registerEvent(event, eventType);\\n  const { adapter, flushFrame } = createAdapter({\\n    columnKeys: [CALENDAR_A, CALENDAR_B],\\n    extraTimedEvents: eventType === \\\"timed\\\" ? [event] : [],\\n    onAllDayDrag: (result) => {\\n      results.allDay = result;\\n    },\\n    onTimedDrag: (result) => {\\n      results.timed = result;\\n    },\\n  });\\n  const y = eventType === \\\"timed\\\" ? 160 : 20;\\n\\n  adapter.handlePointerDown(\\n    makePointerEvent(\\\"pointerdown\\\", { target: child, x: 80, y }),\\n  );\\n  adapter.handlePointerMove(\\n    makePointerEvent(\\\"pointermove\\\", { target: child, x: toX, y: toY ?? y }),\\n  );\\n  flushFrame();\\n  adapter.handlePointerUp(\\n    makePointerEvent(\\\"pointerup\\\", { target: child, x: toX, y: toY ?? y }),\\n  );\\n\\n  const result = eventType === \\\"timed\\\" ? results.timed : results.allDay;\\n\\n  if (!result) {\\n    throw new Error(\\\"Expected the drag to commit\\\");\\n  }\\n\\n  return result;\\n};\\n\\ndescribe(\\\"DayInteractionAdapter\\\", () => {\\n  it(\\\"keeps timed drag on the one visible date\\\", () => {\\n    const result = dragTimedEvent();\\n\\n    expect(result.type).toBe(\\\"timedDragEnd\\\");\\n    expect(result.event.isAllDay).toBe(false);\\n    expect(dayjs(result.event.startDate).isSame(visibleDate, \\\"day\\\")).toBe(true);\\n  });\\n\\n  it(\\\"moves a timed event to the other calendar when dropped on its column\\\", () => {\\n    const result = dragEventAcrossCalendarColumns(timedEvent, \\\"timed\\\", {\\n      toX: 240,\\n    });\\n\\n    expect(result.hasMoved).toBe(true);\\n    expect(result.event.calendarId).toBe(CALENDAR_B as never);\\n    expect(dayjs(result.event.startDate).isSame(visibleDate, \\\"day\\\")).toBe(true);\\n  });\\n\\n  it(\\\"keeps a timed event's calendar when dragged within its own column\\\", () => {\\n    const result = dragEventAcrossCalendarColumns(timedEvent, \\\"timed\\\", {\\n      toX: 80,\\n      toY: 220,\\n    });\\n\\n    expect(result.hasMoved).toBe(true);\\n    expect(result.event.calendarId).toBe(CALENDAR_A as never);\\n  });\\n\\n  it(\\\"moves an all-day event to the other calendar when dropped on its column\\\", () => {\\n    const result = dragEventAcrossCalendarColumns(allDayEvent, \\\"all-day\\\", {\\n      toX: 240,\\n    });\\n\\n    expect(result.hasMoved).toBe(true);\\n    expect(result.event.calendarId).toBe(CALENDAR_B as never);\\n    expect(result.event.startDate).toBe(allDayEvent.startDate);\\n    expect(result.event.endDate).toBe(allDayEvent.endDate);\\n  });\\n\\n  it(\\\"keeps a multi-day all-day event's dates on a cross-calendar move\\\", () => {\\n    const result = dragEventAcrossCalendarColumns(\\n      multiDayAllDayEvent,\\n      \\\"all-day\\\",\\n      { toX: 240 },\\n    );\\n\\n    expect(result.hasMoved).toBe(true);\\n    expect(result.event.calendarId).toBe(CALENDAR_B as never);\\n    expect(result.event.startDate).toBe(multiDayAllDayEvent.startDate);\\n    expect(result.event.endDate).toBe(multiDayAllDayEvent.endDate);\\n  });\\n\\n  it(\\\"disables cross-column movement for an event whose calendar has no column\\\", () => {\\n    const orphan: GridEvent = {\\n      ...timedEvent,\\n      _id: \\\"orphan-timed-event\\\",\\n      calendarId: \\\"cccccccccccccccccccccccc\\\" as never,\\n    };\\n    const result = dragEventAcrossCalendarColumns(orphan, \\\"timed\\\", {\\n      toX: 240,\\n    });\\n\\n    // Horizontal-only drag in the single-column fallback: no column change,\\n    // no time change, so the commit reports no movement at all.\\n    expect(result.hasMoved).toBe(false);\\n    expect(result.event.calendarId).toBe(orphan.calendarId!);\\n  });\\n\\n  it(\\\"keeps timed resize timed with a valid time range\\\", () => {\\n    const result = resizeTimedEvent(\\\"endDate\\\");\\n\\n    expect(result.type).toBe(\\\"timedResizeEnd\\\");\\n    expect(result.event.isAllDay).toBe(false);\\n    expect(dayjs(result.event.endDate).isAfter(result.event.startDate)).toBe(\\n      true,\\n    );\\n    expect(dayjs(result.event.startDate).isSame(visibleDate, \\\"day\\\")).toBe(true);\\n  });\\n\\n  it(\\\"creates a draft event time label when dragging a short timed event without one\\\", () => {\\n    const { child, source } = registerEvent(timedEvent, \\\"timed\\\");\\n    const { adapter, flushFrame } = createAdapter();\\n\\n    expect(\\n      source.querySelector(\\\"[data-calendar-event-time-label='true']\\\"),\\n    ).toBeNull();\\n\\n    adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: child, x: 160, y: 160 }),\\n    );\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 220 }),\\n    );\\n    flushFrame();\\n\\n    const draftEvent = document.querySelector(\\n      \\\"[data-calendar-draft-event='true']\\\",\\n    );\\n    const timeLabel = draftEvent?.querySelector(\\n      \\\"[data-calendar-event-time-label='true']\\\",\\n    );\\n\\n    expect(timeLabel).toBeInstanceOf(HTMLElement);\\n    expect(timeLabel?.textContent).not.toBe(\\\"\\\");\\n  });\\n\\n  it(\\\"uses the latest timed grid scroll position when it changes before timed drag commit\\\", () => {\\n    const result: { current?: DayTimedDragCommitResult } = {};\\n    const { child } = registerEvent(timedEvent, \\\"timed\\\");\\n    const { adapter, flushFrame, mainGridElement } = createAdapter({\\n      onTimedDrag: (nextResult) => {\\n        result.current = nextResult;\\n      },\\n    });\\n\\n    adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: child, x: 160, y: 160 }),\\n    );\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 220 }),\\n    );\\n    flushFrame();\\n\\n    mainGridElement.scrollTop = 120;\\n\\n    adapter.handlePointerUp(\\n      makePointerEvent(\\\"pointerup\\\", { target: child, x: 160, y: 220 }),\\n    );\\n\\n    expect(result.current).toMatchObject({\\n      event: expect.objectContaining({\\n        endDate: expect.stringContaining(\\\"13:00\\\"),\\n        startDate: expect.stringContaining(\\\"12:00\\\"),\\n      }),\\n      hasMoved: true,\\n      type: \\\"timedDragEnd\\\",\\n    });\\n  });\\n\\n  it(\\\"continues timed smart scroll while dragging a saved timed event\\\", () => {\\n    const result: { current?: DayTimedDragCommitResult } = {};\\n    const { child } = registerEvent(timedEvent, \\\"timed\\\");\\n    const { adapter, flushFrame, mainGridElement } = createAdapter({\\n      onTimedDrag: (nextResult) => {\\n        result.current = nextResult;\\n      },\\n    });\\n\\n    adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: child, x: 160, y: 160 }),\\n    );\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 220 }),\\n    );\\n    flushFrame(16);\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: child, x: 160, y: 810 }),\\n    );\\n    flushFrame(32);\\n    flushFrame(48);\\n\\n    expect(mainGridElement.scrollTop).toBe(20);\\n\\n    adapter.handlePointerUp(\\n      makePointerEvent(\\\"pointerup\\\", { target: child, x: 160, y: 810 }),\\n    );\\n\\n    expect(result.current?.type).toBe(\\\"timedDragEnd\\\");\\n  });\\n\\n  it(\\\"keeps all-day drag all-day on the one visible date\\\", () => {\\n    const result = dragAllDayEvent();\\n\\n    expect(result.type).toBe(\\\"allDayDragEnd\\\");\\n    expect(result.event.isAllDay).toBe(true);\\n    expect(result.event.startDate).toBe(\\n      visibleDate.format(YEAR_MONTH_DAY_FORMAT),\\n    );\\n    expect(result.event.endDate).toBe(\\n      visibleDate.add(1, \\\"day\\\").format(YEAR_MONTH_DAY_FORMAT),\\n    );\\n  });\\n\\n  it(\\\"keeps an activated no-op all-day drag on the original event dates\\\", () => {\\n    const result = activateAllDayEventWithoutMoving();\\n\\n    expect(result.type).toBe(\\\"allDayDragEnd\\\");\\n    expect(result.hasMoved).toBe(false);\\n    expect(result.event.startDate).toBe(multiDayAllDayEvent.startDate);\\n    expect(result.event.endDate).toBe(multiDayAllDayEvent.endDate);\\n  });\\n\\n  it(\\\"continues timed smart scroll in the RAF loop while resizing toward the grid edge\\\", () => {\\n    const result: { current?: DayTimedResizeCommitResult } = {};\\n    const handle = createTimedResizeHandle(\\\"endDate\\\");\\n    const { adapter, flushFrame, mainGridElement } = createAdapter({\\n      onTimedResize: (nextResult) => {\\n        result.current = nextResult;\\n      },\\n    });\\n\\n    adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: handle, x: 160, y: 160 }),\\n    );\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: handle, x: 160, y: 220 }),\\n    );\\n\\n    flushFrame(16);\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: handle, x: 160, y: 700 }),\\n    );\\n    flushFrame(32);\\n    flushFrame(48);\\n\\n    expect(mainGridElement.scrollTop).toBe(20);\\n\\n    adapter.handlePointerUp(\\n      makePointerEvent(\\\"pointerup\\\", { target: handle, x: 160, y: 700 }),\\n    );\\n\\n    expect(result.current).toMatchObject({\\n      event: expect.objectContaining({\\n        endDate: expect.stringContaining(\\\"19:30\\\"),\\n        startDate: expect.stringContaining(\\\"09:00\\\"),\\n      }),\\n    });\\n  });\\n\\n  it(\\\"uses the latest timed grid scroll position when it changes before timed resize commit\\\", () => {\\n    const result: { current?: DayTimedResizeCommitResult } = {};\\n    const handle = createTimedResizeHandle(\\\"endDate\\\");\\n    const { adapter, flushFrame, mainGridElement } = createAdapter({\\n      onTimedResize: (nextResult) => {\\n        result.current = nextResult;\\n      },\\n    });\\n\\n    adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: handle, x: 160, y: 160 }),\\n    );\\n    adapter.handlePointerMove(\\n      makePointerEvent(\\\"pointermove\\\", { target: handle, x: 160, y: 220 }),\\n    );\\n\\n    flushFrame();\\n\\n    mainGridElement.scrollTop = 120;\\n\\n    adapter.handlePointerUp(\\n      makePointerEvent(\\\"pointerup\\\", { target: handle, x: 160, y: 220 }),\\n    );\\n\\n    expect(result.current).toMatchObject({\\n      event: expect.objectContaining({\\n        endDate: expect.stringContaining(\\\"13:00\\\"),\\n        startDate: expect.stringContaining(\\\"09:00\\\"),\\n      }),\\n    });\\n  });\\n\\n  it(\\\"claims pointer ownership as timed resize rather than timed drag when pressing a resize handle\\\", () => {\\n    const handle = createTimedResizeHandle(\\\"endDate\\\");\\n    const { adapter } = createAdapter();\\n\\n    const ownership = adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: handle, x: 160, y: 160 }),\\n    );\\n\\n    expect(ownership).toEqual({\\n      reason: \\\"saved-timed-resize\\\",\\n      shouldOwn: true,\\n    });\\n    expect(ownership.reason).not.toBe(\\\"saved-timed-drag\\\");\\n  });\\n\\n  it(\\\"claims pointer ownership as all-day resize rather than all-day drag when pressing a resize handle\\\", () => {\\n    const { source } = registerEvent(allDayEvent, \\\"all-day\\\");\\n    const handle = document.createElement(\\\"span\\\");\\n\\n    handle.setAttribute(EVENT_RESIZE_HANDLE_ATTRIBUTE, \\\"endDate\\\");\\n    source.append(handle);\\n\\n    const { adapter } = createAdapter();\\n\\n    const ownership = adapter.handlePointerDown(\\n      makePointerEvent(\\\"pointerdown\\\", { target: handle, x: 40, y: 20 }),\\n    );\\n\\n    expect(ownership).toEqual({\\n      reason: \\\"saved-all-day-resize\\\",\\n      shouldOwn: true,\\n    });\\n    expect(ownership.reason).not.toBe(\\\"saved-all-day-drag\\\");\\n  });\\n});\\n\"}"
+}

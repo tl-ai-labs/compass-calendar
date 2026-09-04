@@ -1,0 +1,73 @@
+{
+  "run_id": "20260903-181010-refactor-week-day-interaction",
+  "mode": "brownfield",
+  "intent": "refactor",
+  "policy": "opus-plus-flash-v37",
+  "auth_mode": "estimated",
+  "status": "closed",
+  "phase": "close_out",
+  "checkpoint": "complete",
+  "output_dir": ".sdlc/runs/20260903-181010-refactor-week-day-interaction",
+  "code_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar",
+  "branch": "CMP-104/opus-plus-flash-v37-sdk",
+  "artifacts": {
+    "requirements": ".sdlc/runs/20260903-181010-refactor-week-day-interaction/requirements.md",
+    "change_plan": ".sdlc/runs/20260903-181010-refactor-week-day-interaction/change_plan.md",
+    "invariants": ".sdlc/runs/20260903-181010-refactor-week-day-interaction/invariants.json"
+  },
+  "gate_1": {
+    "response": "approved",
+    "q1_ruling": "option (a) record-and-defer + (c) no-third-writer constraint"
+  },
+  "gate_2": {
+    "response": "approved",
+    "q1_ruling": "F-1 correction ratified; hoist single-read shape, no runtimeReadStrategy flag",
+    "q2_ruling": "phantom view brand approved with 3 constraints (one widening point, symbol not exported, @ts-expect-error test both directions)"
+  },
+  "packets_done": [
+    "tp_s1_column_key_types",
+    "tp_s2_layout_generics",
+    "tp_s3_visual_generics",
+    "tp_s4_week_brand_entry",
+    "tp_s5_day_brand_entry",
+    "tp_t1_discriminant_test",
+    "tp_s7_registry_phantom_brand",
+    "tp_t2_phantom_brand_test",
+    "tp_s8_types_collapse",
+    "tp_s9_layout_scroll_state",
+    "tp_s10_target_resolution"
+  ],
+  "packets_remaining": [],
+  "packets_dropped": [
+    "tp_t3_mismatched_throw_test - unreachable via the public API; replaced by a direct seam test on createViewEngineAdapter in view-adapter-wiring.test.ts"
+  ],
+  "phases_remaining": [],
+  "gate_3": { "response": "approved" },
+  "gate_4": { "response": "approved" },
+  "close_out": {
+    "ledger_md": "row thirteen appended + summary-table row",
+    "ledger_json": "13th run object appended, JSON validated",
+    "claude_sdlc_md": "Validation table now records the RED test baseline; follow-up 34 (PN-BLIND-GATE) added; Runs section updated with row thirteen and the CMP-104 ledger-completeness caveat",
+    "policy_arm_recorded": "invariants.json POLICY-ARM: arm 5 of CMP-104, first on the Antigravity SDK door",
+    "committed": false,
+    "pushed": false,
+    "write_contract": "RELEASED AT GATE 4 BY THE HARNESS, NOT BY THIS ORCHESTRATOR - active:false with a documented deactivated_reason instructing re-freeze before any fix lands. See invariants.json CLOSE-OUT-CONTRACT-STATE. Flagged to the human; not re-armed unilaterally."
+  },
+  "final_report": ".sdlc/runs/20260903-181010-refactor-week-day-interaction/final_report.md",
+  "nothing_committed": true,
+  "revert_not_clean": "10 new source files; 8 recorded (revert deletes correctly), 2 unrecorded and must be rm'd manually. 34 provenance entries, 33 with backup_path null - survivable because all 26 modified files were tracked and committed at 2d81253a.",
+  "reviews": {
+    "senior": "request-changes (1 blocker, 3 majors) -> blocker and all three majors FIXED and re-verified",
+    "security": "pass_with_notes - nothing introduced blocks Gate 3"
+  },
+  "last_verified": {
+    "full_suite": "2309 pass / 1 fail / 1 error, 5793 expects, 305 files, exit 1 - sole failure is the pre-existing RecurrenceSection",
+    "subset": "140 pass / 0 fail / 24 files / 359 expects (baseline 128/21/337)",
+    "engine_subset": "31 pass / 0 fail / 3 files / 160 expects - identical to baseline; git status empty",
+    "type_check": "exit 0",
+    "lint_allowlisted_dirs": "zero diagnostics across 79 files (verified with scoped biome + --max-diagnostics=100)",
+    "week_adapter_loc": 494,
+    "day_adapter_loc": 323
+  },
+  "updated_at": "2026-09-03T19:45:00Z"
+}

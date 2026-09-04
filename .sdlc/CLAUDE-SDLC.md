@@ -16,9 +16,19 @@ Biome (Cursor and Codex both run format-after-edit) — never hand-format.
 
 | Command | Notes |
 |---|---|
-| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. |
-| `bun type-check` | Clean as of 2026-08-20. |
-| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. |
+| `bun test:web` | **Preferred.** `AGENTS.md` says avoid bare `bun test`; use the focused package test. **The baseline is RED — see below.** |
+| `bun type-check` | Clean as of 2026-09-03. Note it is a **separate gate**: the suite does not type-check. Covers `tsconfig.test.json`, so `@ts-expect-error` assertions in test files are genuinely enforced. |
+| `bun lint` | **Fails repo-wide at baseline** — pre-existing, unrelated to plugin runs. See follow-ups. **Do not verify it with a repo-wide grep — see follow-up 34.** |
+
+**The `bun test:web` baseline is RED and has been since at least `main@2d81253a` (2026-09-03):
+2297 pass / 1 fail / 1 error across 302 files, exit 1.** The single failure is
+`RecurrenceSection > keeps the event's own date selectable when the event ends after midnight` —
+date rot, unrelated to any feature area a run is likely to touch.
+
+Ledger rows up to and including row twelve quote a `2298/0` baseline. **That figure is stale and
+must not be used as an acceptance bar**; it was already unreachable when run
+`20260903-181010-refactor-week-day-interaction` measured it. The correct bar for a new run is
+**"no new failures beyond the known `RecurrenceSection` one"**, measured on the day, not inherited.
 | `bun run verify` | Diff-aware. |
 | `bun test:e2e` | Playwright. |
 
@@ -327,9 +337,71 @@ Project defaults in `.sdlc/project.json.off_limits_default`, plus the AI configs
     from `true` to `false` failed the six new assertions while the three old ones still passed —
     which is what turned a nominal gate condition into a met one.
 
+34. **A verification command whose output format the check does not understand will report success
+    it cannot observe (HIGH, open) — `PN-BLIND-GATE`.** Run
+    `20260903-181010-refactor-week-day-interaction` reported the lint gate **green through six
+    consecutive steps while it was red**, accumulating 12 dead imports and 7 format diffs inside its
+    own allowlist. The check ran repo-wide `bun run lint` and grepped stdout for `path:line:col`.
+    **Two independent defects, either sufficient alone:** Biome truncates at
+    `--max-diagnostics=20` and this repo's un-ignored `.sdlc` JSON artifacts consumed the budget
+    before source diagnostics printed; and Biome emits `format` diagnostics as `path format ━━━`
+    with **no `:line:col` at all**, so the pattern could never match one even untruncated. The
+    senior reviewer caught it by re-running the tool directly; self-verification never could have.
+    **The same failure mode then recurred twice** in the same run on a different question (counting
+    type assertions by grepping literal spellings rather than searching for assertions) — once by
+    the orchestrator, once independently by the reviewing coordinator, both wrong.
+    **Standard worth generalising: scope the tool to the paths under test, raise any output cap, and
+    read the tool's own summary line (`Found N errors`) — never infer a gate result from a grep over
+    output whose format and completeness are unstated assumptions of the check.** Directly
+    actionable: fixing follow-up 2 (`.sdlc` in `biome.json`'s ignore list) removes half the cause.
+
+35. **Never characterize a UI defect from one sampled element — enumerate every instance and print
+    the matrix (HIGH, open) — `PN-SAMPLE-OF-ONE`.** Same run, same underlying habit as 34. A resize
+    handle found unreachable on one Day card was written up as a *Day-specific* defect and reached
+    two permanent records that way. Re-probing **every** timed card in both views gave the real
+    shape: **Week 12/17 reachable, Day 4/6** — roughly 30% occluded in *both* views, so every
+    Day-vs-Week explanation on the table was structurally incapable of being the cause. The matrix
+    also killed the next-most-obvious hypothesis for free: it is **not height-dependent**, since at
+    `h=54` in Week five cards reach the handle and two do not.
+
+    **The generalized rule: for any UI defect, enumerate every instance of the affected element and
+    print the matrix before proposing a cause.** A sample of one cannot distinguish "this view is
+    broken" from "30% of everything is broken", and those have disjoint fix sets.
+
+    **The wider pattern, which is the real lesson of that run.** Five confidently-stated mechanisms
+    were wrong on inspection — the lint-gate grep (34), a type-assertion count taken from literal
+    spellings, a handle-nesting claim, a `showResizeCursor` claim, and this scope error. **Two of the
+    five reached a permanent record before correction.** All five share one shape: *a cause asserted
+    from a partial measurement whose missing half was never taken* — output format assumed, search
+    pattern assumed, one view's DOM measured and the other's assumed, a cursor read off the wrong
+    element, one card sampled and the rest assumed. Review caught three of five, which is the point:
+    **this is a habit review catches sometimes, not a lapse it catches reliably.** Ask what the
+    *other half* of the measurement is before writing a cause down.
+
+36. **Adapter-level interaction tests cannot observe occlusion (medium, open).** Same run: no test in
+    either view asserts that a **pointer can actually reach** a resize handle. The suite drives resize
+    by synthesising events on the handle element directly, so a handle covered by grid chrome still
+    passes. That is why a defect affecting ~30% of cards in both views was invisible to 2309 passing
+    tests and surfaced only under a real pointer. Any gesture whose entry point is a small hit target
+    needs at least one `elementFromPoint`-style assertion, or the suite is testing the handler and not
+    the gesture.
+
 ## Runs
 
-See [`.sdlc/ledger.md`](./ledger.md) (human) and `.sdlc/ledger.json` (machine).
+See [`.sdlc/ledger.md`](./ledger.md) (human) and [`.sdlc/ledger.json`](./ledger.json) (machine).
+**13 rows** as of 2026-09-03.
+
+Latest: **row thirteen — `20260903-181010-refactor-week-day-interaction`** (CMP-104 arm 5, first
+Antigravity **SDK door**, `opus-plus-flash-v37`, branch `CMP-104/opus-plus-flash-v37-sdk` off
+`main@2d81253a`, 36 files, 2297/1/1 → 2309/1/1, **uncommitted pending browser verification**).
+Read its `process_notes` before trusting any run's self-reported gate: it is the row where the
+run's own verification failed and review caught it (follow-up 34 above).
+
+**Ledger completeness caveat:** CMP-104 has **five** arms as branches (`flash-agsdk-only`,
+`opus-only-v5`, `opus-plus-flash-v37`, `opus-plus-sonnet`, `opus-plus-flash-v37-sdk`) but only
+**three** are ledgered as rows — `opus-only-v5` and `opus-plus-sonnet` were never written up. The
+ledger is not a complete picture of that ticket, and any cross-policy comparison drawn from it is
+partial.
 
 21. **Follow-ups 1 and 11 are RESOLVED on branch `CMP-104/flash-agsdk-only`, pending commit; still
     open on `main`.** Run `20260822-125447-refactor-week-day-interaction`'s packet `tp_cg_023` added

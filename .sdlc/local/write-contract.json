@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "active": false,
+  "mode": "brownfield",
+  "run_id": "20260903-181010-refactor-week-day-interaction",
+  "strict": true,
+  "deactivated_by": "main session (brownfield command), not the orchestrator subagent",
+  "deactivated_reason": "Gate 4 accepted, then released for the post-run manual browser verification, which drives the app from a Playwright script outside the repo (the hook refuses cross-project writes under an active contract). Verification is now COMPLETE and surfaced no defect requiring a fix, so this is also the normal close-out state per brownfield-guide step 7.3. No re-freeze is pending. If any fix is later applied to this run's files, set active:true first — the allowlist and off_limits below are the frozen Gate 0 contract, preserved verbatim.",
+  "allowlist": [
+    "packages/web/src/grid/interaction/**",
+    "packages/web/src/views/Week/interaction/**",
+    "packages/web/src/views/Day/interaction/**"
+  ],
+  "off_limits": [
+    "packages/web/src/interaction/**",
+    ".env",
+    ".env.*",
+    "*.env*",
+    ".mcp.json",
+    ".claude/**",
+    ".cursor/**",
+    ".codex/**",
+    ".agents/**",
+    ".hook-logs/**",
+    "AGENTS.md",
+    "node_modules/**",
+    "packages/*/node_modules/**",
+    "dist/**",
+    "build/**",
+    "packages/*/build/**",
+    ".next/**",
+    "buildcache/**",
+    "logs/**",
+    "test-results/**",
+    "playwright-report/**",
+    "blob-report/**",
+    "patches/**",
+    "bun.lock",
+    ".github/workflows/**",
+    ".sdlc/baseline/**",
+    ".git/**"
+  ]
+}

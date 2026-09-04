@@ -1,0 +1,176 @@
+{
+  "model": "gemini-3.7-flash",
+  "thinking": "NONE",
+  "sdk": "google-antigravity",
+  "sdk_version": "0.1.12",
+  "vertex_project": "ai-studies-console",
+  "vertex_location": "global",
+  "usage": {
+    "prompt_token_count": 424873,
+    "cached_content_token_count": 343946,
+    "candidates_token_count": 3264,
+    "thoughts_token_count": 4536,
+    "total_token_count": 432673,
+    "service_tier": null
+  },
+  "tool_call_count": 17,
+  "tool_calls_truncated": false,
+  "tool_calls": [
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/timed-drag.types.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "find_file",
+      "args": {
+        "directory_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+        "query": "*.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun --version",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/layout.cache.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x tsc --noEmit",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "edit_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun x tsc --noEmit | grep column-key.types.test.ts || echo \"No errors in test file\"",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "bun test types/column-key.types.test.ts",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "run_command",
+      "args": {
+        "command_line": "git status",
+        "working_dir": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction"
+      },
+      "canonical_path": null,
+      "args_clipped": false
+    },
+    {
+      "name": "view_file",
+      "args": {
+        "file_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+        "start_line": "0",
+        "end_line": "799"
+      },
+      "canonical_path": "/home/sainadh/projects/compass-calendar/compass/compass-calendar/packages/web/src/grid/interaction/types/column-key.types.test.ts",
+      "args_clipped": false
+    }
+  ],
+  "text": "{\"path\":\"types/column-key.types.test.ts\",\"content\":\"import { describe, expect, it } from \\\"bun:test\\\";\\nimport type { GridLayoutCache } from \\\"../layout.cache\\\";\\nimport type { CalendarColumnKey, DateColumnKey } from \\\"./column-key.types\\\";\\nimport type { TimedDragVisual } from \\\"./timed-drag.types\\\";\\n\\nconst dateVisual = null as unknown as TimedDragVisual<DateColumnKey>;\\nconst calendarVisual = null as unknown as TimedDragVisual<CalendarColumnKey>;\\nconst dateCache = null as unknown as GridLayoutCache<DateColumnKey>;\\nconst bareString: string = \\\"test\\\";\\n\\ndescribe(\\\"column-key discriminant\\\", () => {\\n  it(\\\"proves column key discriminant unassignability at compile time\\\", () => {\\n    // @ts-expect-error\\n    const _calendarVisual: TimedDragVisual<CalendarColumnKey> = dateVisual;\\n\\n    // @ts-expect-error\\n    const _dateVisual: TimedDragVisual<DateColumnKey> = calendarVisual;\\n\\n    // @ts-expect-error\\n    const _calendarCache: GridLayoutCache<CalendarColumnKey> = dateCache;\\n\\n    // @ts-expect-error\\n    const _dateKey: DateColumnKey = bareString;\\n    // @ts-expect-error\\n    const _calendarKey: CalendarColumnKey = bareString;\\n  });\\n\\n  it(\\\"asserts the brand has zero runtime footprint\\\", () => {\\n    const rawLiteral = \\\"2026-09-03\\\";\\n    const dateKey = rawLiteral as DateColumnKey;\\n\\n    expect(typeof dateKey).toBe(\\\"string\\\");\\n    expect(dateKey as string).toBe(rawLiteral);\\n  });\\n});\\n\"}"
+}
